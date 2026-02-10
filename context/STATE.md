@@ -23,6 +23,7 @@
 - 상세 화면에서 TOC는 현재 프로젝트 항목만 active(파란색) 표시 (2026-02-10)
 - 상세 모드에서 다른 글로벌 탭 클릭 시 상세 종료(해시 제거) 후 정상 탭 전환 (2026-02-10)
 - TOC 하단 사라짐 현상: 레이아웃/overflow/sticky 안정화로 해결 (body flex 제거 포함) (2026-02-10)
+- scrollRestoration=manual + forceScrollTop으로 복귀 스크롤 안정화 (2026-02-10)
 
 ## Current Truth
 - 코드베이스: C:\dev\portfolio_ui_test_v2 @ master
@@ -47,6 +48,7 @@
 
 ## Pending
 - All 탭에서 스크롤 중 All 탭 클릭 시 간헐적으로 Writing/Resume 근처로 이동하는 간헐 이슈 (W4 후속)
+- Work 탭 스크롤 중 TOC가 간헐적으로 사라지는 현상 (sticky/레이아웃 경계 조건, 재현 후 고정 필요)
 - Resume/Contact 탭 노출 여부 결정 (현재 TOC에서만 접근)
 - 이미지 에셋 준비
 - 모바일 반응형 (현재 고정 grid)
