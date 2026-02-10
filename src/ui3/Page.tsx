@@ -2,6 +2,10 @@ import { useState, useMemo, useRef, useEffect, Fragment } from 'react';
 import { sections, type Category } from '../shared/seed';
 import { useActiveSection } from '../shared/useActiveSection';
 import homeRaw from '../content/HOME_INTRO_TO_RELATION_KO.md?raw';
+import emptyHouseRaw from '../content/EMPTY_HOUSE_CPS_DETAIL_KO.md?raw';
+import skinDiaryRaw from '../content/SKIN_DIARY_DETAIL_KO.md?raw';
+import pmccRaw from '../content/PMCC_DETAIL_KO.md?raw';
+import { parseWorkDetail, type Block } from '../shared/parseWorkDetail';
 
 type TabOption = 'All' | Category;
 type WorkKey = 'empty-house' | 'skin-diary' | 'pmcc';
@@ -74,6 +78,74 @@ function getWorkTitle(key: WorkKey) {
   return 'PMCC';
 }
 
+const workRawMap: Record<WorkKey, string> = {
+  'empty-house': emptyHouseRaw,
+  'skin-diary': skinDiaryRaw,
+  'pmcc': pmccRaw,
+};
+
+function renderBlock(block: Block, idx: number) {
+  switch (block.type) {
+    case 'section-title':
+      return (
+        <div key={idx} className="work-detail-section-title">
+          {block.eyebrow && <div className="section-eyebrow">{block.eyebrow}</div>}
+          <h3 className="work-detail-subtitle">{block.title}</h3>
+          {block.desc && <p className="section-description">{renderBold(block.desc)}</p>}
+        </div>
+      );
+    case 'paragraph':
+      return <p key={idx} className="section-description">{renderBold(block.text)}</p>;
+    case 'heading':
+      return <h3 key={idx} className="work-detail-subtitle">{block.text}</h3>;
+    case 'cards':
+      return (
+        <div key={idx} className={`work-detail-cards ${block.items.length >= 3 ? 'cols-3' : 'cols-2'}`}>
+          {block.items.map((card, ci) => (
+            <div key={ci} className="work-detail-card">
+              <div className="work-detail-card-title">{card.title}</div>
+              <p className="work-detail-card-body">{renderBold(card.body)}</p>
+            </div>
+          ))}
+        </div>
+      );
+    case 'image':
+      return (
+        <div key={idx} className="work-detail-image-wrap">
+          <div className="image-placeholder" style={{ aspectRatio: '16 / 9' }}>
+            [Image: {block.src}]
+          </div>
+          {block.caption && <p className="work-detail-caption">{block.caption}</p>}
+        </div>
+      );
+    case 'table':
+      return (
+        <div key={idx} className="work-detail-table-wrap">
+          <table className="work-detail-table">
+            <thead>
+              <tr>
+                {block.headers.map((h, hi) => (
+                  <th key={hi}>{h}</th>
+                ))}
+              </tr>
+            </thead>
+            <tbody>
+              {block.rows.map((row, ri) => (
+                <tr key={ri}>
+                  {row.map((cell, ci) => (
+                    <td key={ci}>{renderBold(cell)}</td>
+                  ))}
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      );
+    default:
+      return null;
+  }
+}
+
 function getWorkKeyFromHash(): WorkKey | null {
   const h = window.location.hash || '';
   if (!h.startsWith(WORK_HASH_PREFIX)) return null;
@@ -128,6 +200,20 @@ export default function UI3Page() {
 
   const activeSection = useActiveSection();
   const sys = parseSystemContent(homeRaw);
+
+  const parsedWork = useMemo(() => {
+    if (!activeWork) return null;
+    return parseWorkDetail(workRawMap[activeWork]);
+  }, [activeWork]);
+
+  // Hero subtitle: 2nd section "Hero 바로 아래 짧은 2문장"
+  const heroSubtitle = useMemo(() => {
+    if (!activeWork) return '';
+    const raw = workRawMap[activeWork];
+    const match = raw.match(/### Hero 바로 아래 짧은 2문장\s*\n+([\s\S]*?)(?=\n---|\n## \d)/);
+    if (!match) return '';
+    return match[1].trim();
+  }, [activeWork]);
 
   const activeWorkSectionId = useMemo(() => {
     if (!activeWork) return null;
@@ -466,9 +552,20 @@ export default function UI3Page() {
 
               <h2 className="section-title">{getWorkTitle(activeWork)}</h2>
 
-              <div className="image-placeholder" style={{ aspectRatio: '16 / 9' }}>
-                [Detail placeholder — W5에서 콘텐츠 주입]
-              </div>
+              {heroSubtitle && (
+                <p className="section-description" style={{ marginBottom: '28px' }}>
+                  {renderBold(heroSubtitle)}
+                </p>
+              )}
+
+              {parsedWork &&
+                parsedWork
+                  .filter((s) => s.name !== 'Hero')
+                  .map((section) => (
+                    <div key={section.name} className="work-detail-section">
+                      {section.blocks.map((block, i) => renderBlock(block, i))}
+                    </div>
+                  ))}
             </section>
           )}
 

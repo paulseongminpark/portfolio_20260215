@@ -498,3 +498,116 @@ html {
 .work-detail-back:hover{
   text-decoration: underline;
 }
+
+/* W5: Work Detail sections */
+.work-detail-section {
+  margin-top: 48px;
+  padding-top: 32px;
+  border-top: 1px solid #e5e5e5;
+}
+
+.work-detail-section:first-of-type {
+  margin-top: 32px;
+}
+
+.work-detail-section-title {
+  margin-bottom: 20px;
+}
+
+.work-detail-subtitle {
+  font-size: 20px;
+  font-weight: 600;
+  color: #1a1a1a;
+  line-height: 1.35;
+  margin-bottom: 10px;
+}
+
+.work-detail-cards {
+  display: grid;
+  gap: 16px;
+  margin: 20px 0;
+}
+
+.work-detail-cards.cols-2 {
+  grid-template-columns: repeat(2, 1fr);
+}
+
+.work-detail-cards.cols-3 {
+  grid-template-columns: repeat(3, 1fr);
+}
+
+.work-detail-card {
+  border: 1px solid #e5e5e5;
+  border-radius: 10px;
+  padding: 20px;
+  background: #fafafa;
+}
+
+.work-detail-card-title {
+  font-size: 14px;
+  font-weight: 600;
+  color: #1a1a1a;
+  margin-bottom: 8px;
+  line-height: 1.4;
+}
+
+.work-detail-card-body {
+  font-size: 13px;
+  color: #666;
+  line-height: 1.6;
+  margin: 0;
+}
+
+.work-detail-image-wrap {
+  margin: 20px 0;
+}
+
+.work-detail-caption {
+  font-size: 12px;
+  color: #999;
+  margin-top: 8px;
+  line-height: 1.5;
+  font-style: italic;
+}
+
+.work-detail-table-wrap {
+  margin: 20px 0;
+  overflow-x: auto;
+}
+
+.work-detail-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 13px;
+}
+
+.work-detail-table th,
+.work-detail-table td {
+  border: 1px solid #e5e5e5;
+  padding: 10px 14px;
+  text-align: left;
+  line-height: 1.5;
+}
+
+.work-detail-table th {
+  background: #f5f5f5;
+  font-weight: 600;
+  color: #1a1a1a;
+}
+
+.work-detail-table td:first-child {
+  font-weight: 600;
+  color: #1a1a1a;
+  white-space: nowrap;
+}
+
+.work-detail-table td {
+  color: #666;
+}
+
+@media (max-width: 700px) {
+  .work-detail-cards.cols-2,
+  .work-detail-cards.cols-3 {
+    grid-template-columns: 1fr;
+  }
+}
