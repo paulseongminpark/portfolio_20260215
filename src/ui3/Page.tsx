@@ -7,6 +7,7 @@ type TabOption = 'All' | Category;
 type WorkKey = 'empty-house' | 'skin-diary' | 'pmcc';
 
 const WORK_HASH_PREFIX = '#work=';
+const DEFAULT_EXPANDED: Category[] = ['About', 'System', 'Work', 'Writing', 'Resume', 'Contact'];
 
 function parseSystemContent(raw: string) {
   const lines = raw.split('\n');
@@ -48,9 +49,7 @@ function parseSystemContent(raw: string) {
 }
 
 function renderBold(text: string) {
-  return text.split(/\*\*(.+?)\*\*/g).map((part, i) =>
-    i % 2 === 1 ? <strong key={i}>{part}</strong> : part
-  );
+  return text.split(/\*\*(.+?)\*\*/g).map((part, i) => (i % 2 === 1 ? <strong key={i}>{part}</strong> : part));
 }
 
 function getWorkKeyFromSection(section: { id: string; title: string; shortTitle: string }): WorkKey {
@@ -85,14 +84,11 @@ function getWorkKeyFromHash(): WorkKey | null {
 
 export default function UI3Page() {
   const [activeTab, setActiveTab] = useState<TabOption>('All');
-  const [expandedGroups, setExpandedGroups] = useState<Set<Category>>(
-    new Set(['About', 'System', 'Work', 'Writing', 'Resume', 'Contact'])
-  );
+  const [expandedGroups, setExpandedGroups] = useState<Set<Category>>(new Set(DEFAULT_EXPANDED));
 
   const tocRef = useRef<HTMLDivElement>(null);
 
-  // ✅ 탭 전환/TOC 클릭 시 스크롤 타이밍 문제(렌더 전에 scrollToSection 호출)를 없애기 위해
-  // 렌더 이후에만 스크롤 실행하도록 pendingScrollId를 사용합니다.
+  // ✅ 탭 전환/TOC 클릭 시: 렌더 이후에만 스크롤 실행
   const [pendingScrollId, setPendingScrollId] = useState<string | null>(null);
 
   // ✅ W4: Work 상세 모드(연결만)
@@ -115,7 +111,13 @@ export default function UI3Page() {
     returnStateRef.current = returnState;
   }, [returnState]);
 
-  const categories: Category[] = ['About', 'System', 'Work', 'Writing', 'Resume', 'Contact'];
+  useEffect(() => {
+    if ('scrollRestoration' in window.history) {
+      window.history.scrollRestoration = 'manual';
+    }
+  }, []);
+
+  const categories: Category[] = DEFAULT_EXPANDED;
 
   const groupedSections = useMemo(() => {
     return categories.reduce((acc, cat) => {
@@ -134,9 +136,7 @@ export default function UI3Page() {
   }, [activeWork, groupedSections.Work]);
 
   // ✅ 상세 모드에서는 스파이를 “현재 프로젝트 id”로 고정
-  const effectiveActiveSection = activeWork
-    ? (activeWorkSectionId ?? 'work')
-    : activeSection;
+  const effectiveActiveSection = activeWork ? (activeWorkSectionId ?? 'work') : activeSection;
 
   const scrollToSection = (sectionId: string) => {
     const el = document.getElementById(sectionId);
@@ -150,6 +150,28 @@ export default function UI3Page() {
   const scrollToCategoryStart = (cat: Category) => {
     const firstId = groupedSections[cat]?.[0]?.id;
     if (firstId) setPendingScrollId(firstId);
+  };
+
+  // ✅ 전역 smooth 영향 제거 + 강제 위치 고정
+  const forceScrollTo = (y: number) => {
+    const root = document.documentElement;
+    const prev = root.style.scrollBehavior;
+
+    root.style.scrollBehavior = 'auto';
+
+    window.scrollTo({ top: y, left: 0, behavior: 'auto' });
+    root.scrollTop = y;
+    document.body.scrollTop = y;
+
+    requestAnimationFrame(() => {
+      window.scrollTo({ top: y, left: 0, behavior: 'auto' });
+      root.scrollTop = y;
+      document.body.scrollTop = y;
+
+      requestAnimationFrame(() => {
+        root.style.scrollBehavior = prev;
+      });
+    });
   };
 
   const openWorkDetail = (key: WorkKey, opts?: { skipHistory?: boolean }) => {
@@ -186,7 +208,6 @@ export default function UI3Page() {
     setActiveWork(null);
     setPendingScrollId(null);
 
-    // history 제어는 외부에서 처리(브라우저 back/forward와 동기화)
     if (opts?.skipHistory) {
       // do nothing
     }
@@ -197,18 +218,19 @@ export default function UI3Page() {
       setReturnState(null);
 
       requestAnimationFrame(() => {
-        window.scrollTo({ top: rs.scrollY, behavior: 'smooth' });
+        forceScrollTo(rs.scrollY);
       });
+
       return;
     }
 
     // 복귀 상태가 없으면(직접 URL 진입 등) All로 안전 복귀
     setActiveTab('All');
-    setExpandedGroups(new Set(['About', 'System', 'Work', 'Writing', 'Resume', 'Contact']));
+    setExpandedGroups(new Set(DEFAULT_EXPANDED));
     setReturnState(null);
 
     requestAnimationFrame(() => {
-      window.scrollTo({ top: 0, behavior: 'smooth' });
+      forceScrollTo(0);
     });
   };
 
@@ -228,33 +250,29 @@ export default function UI3Page() {
   };
 
   const handleTabClick = (tab: TabOption) => {
-  // ✅ Work 상세 모드에서도 탭 전환 가능하게: 먼저 상세 종료 + 해시 제거
-  if (activeWorkRef.current) {
-    setActiveWork(null);
-    setReturnState(null);
-    setPendingScrollId(null);
+    // ✅ Work 상세 모드에서도 탭 전환 가능: 상세 종료 + 해시 제거
+    if (activeWorkRef.current) {
+      setActiveWork(null);
+      setReturnState(null);
+      setPendingScrollId(null);
+      window.history.pushState(null, '', `${window.location.pathname}${window.location.search}`);
+    }
 
-    // URL 해시(#work=...) 제거해서 브라우저 상태도 동기화
-    window.history.pushState(null, '', `${window.location.pathname}${window.location.search}`);
-  }
+    setActiveTab(tab);
 
-  setActiveTab(tab);
+    if (tab === 'All') {
+      setExpandedGroups(new Set(DEFAULT_EXPANDED));
+      setPendingScrollId(null);
 
-  if (tab === 'All') {
-    setExpandedGroups(new Set(['About', 'System', 'Work', 'Writing', 'Resume', 'Contact']));
-    setPendingScrollId(null);
+      // ✅ 간헐 리디렉 위치 튐 방지
+      forceScrollTo(0);
 
-    requestAnimationFrame(() => {
-      window.scrollTo({ top: 0, behavior: 'smooth' });
-    });
+      return;
+    }
 
-    return;
-  }
-
-  setExpandedGroups(new Set([tab]));
-  scrollToCategoryStart(tab);
-};
-
+    setExpandedGroups(new Set([tab]));
+    scrollToCategoryStart(tab);
+  };
 
   const toggleGroup = (category: Category) => {
     // ✅ 상세 모드에서는 토글 막고 Back으로만 복귀
@@ -304,7 +322,7 @@ export default function UI3Page() {
     // 복귀 상태가 없으니, “All/top”을 기본 복귀로 설정
     setReturnState({
       tab: 'All',
-      expanded: ['About', 'System', 'Work', 'Writing', 'Resume', 'Contact'],
+      expanded: DEFAULT_EXPANDED,
       scrollY: 0,
     });
 
@@ -367,11 +385,7 @@ export default function UI3Page() {
   };
 
   // ✅ All 탭에서는 “Work 헤더만” 파란색, 상세에서는 “Work 헤더 + 해당 프로젝트” 파란색
-  const workHeaderActive =
-    (activeTab === 'All' && effectiveActiveSection === 'work') ||
-    activeTab === 'Work' ||
-    !!activeWork;
-
+  const workHeaderActive = (activeTab === 'All' && effectiveActiveSection === 'work') || activeTab === 'Work' || !!activeWork;
   const showWorkItemActive = !!activeWork || activeTab === 'Work';
 
   return (
@@ -393,7 +407,7 @@ export default function UI3Page() {
 
       <div className="content-wrapper">
         <aside className="toc-container" style={{ position: 'sticky', top: '77px', alignSelf: 'flex-start' }}>
-          <div className="toc" ref={tocRef} >
+          <div className="toc" ref={tocRef}>
             {categories.map((category) => (
               <div key={category} className="toc-group" style={{ marginBottom: '8px' }}>
                 <button
@@ -413,8 +427,14 @@ export default function UI3Page() {
                         href={`#${section.id}`}
                         className={
                           category === 'Work'
-                            ? (showWorkItemActive && getActiveTocItem(section.id) ? 'active' : '')
-                            : (activeWork ? '' : (getActiveTocItem(section.id) ? 'active' : ''))
+                            ? showWorkItemActive && getActiveTocItem(section.id)
+                              ? 'active'
+                              : ''
+                            : activeWork
+                              ? ''
+                              : getActiveTocItem(section.id)
+                                ? 'active'
+                                : ''
                         }
                         onClick={(e) => {
                           e.preventDefault();
@@ -461,16 +481,13 @@ export default function UI3Page() {
 
             const showWorkCards = !activeWork && activeTab === 'All' && section.id === firstWorkId;
 
-            const visibleBase =
-              activeTab === 'All'
-                ? section.category !== 'Work'
-                : section.category === activeTab;
+            const visibleBase = activeTab === 'All' ? section.category !== 'Work' : section.category === activeTab;
 
             // ✅ 상세 모드에서는 모든 기존 섹션을 접어서 숨김(언마운트 금지)
             const visible = activeWork ? false : visibleBase;
 
-            const sectionClassName =
-              `section${activeTab === 'All' && section.category === 'Work' ? ' section-hidden' : ''}`;
+            const sectionClassName = `section${activeTab === 'All' && section.category === 'Work' ? ' section-hidden' : ''}`;
+
             return (
               <Fragment key={section.id}>
                 {mountWorkCardsHere && (
@@ -526,10 +543,7 @@ export default function UI3Page() {
                       <div className="section-description">
                         <ol style={{ paddingLeft: '20px', marginTop: '8px' }}>
                           {sys.flowItems.map((item, i) => (
-                            <li
-                              key={i}
-                              style={i < sys.flowItems.length - 1 ? { marginBottom: '8px' } : undefined}
-                            >
+                            <li key={i} style={i < sys.flowItems.length - 1 ? { marginBottom: '8px' } : undefined}>
                               {renderBold(item)}
                             </li>
                           ))}
