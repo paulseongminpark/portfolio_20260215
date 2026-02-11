@@ -2,15 +2,15 @@ import { useState, useMemo, useRef, useEffect, Fragment } from 'react';
 import { sections, type Category } from '../shared/seed';
 import { useActiveSection } from '../shared/useActiveSection';
 import homeRaw from '../content/HOME_INTRO_TO_RELATION_KO.md?raw';
-import emptyHouseRaw from '../content/EMPTY_HOUSE_CPS_DETAIL_KO.md?raw';
-import skinDiaryRaw from '../content/SKIN_DIARY_DETAIL_KO.md?raw';
-import pmccRaw from '../content/PMCC_DETAIL_KO.md?raw';
-import { parseWorkDetail, type Block } from '../shared/parseWorkDetail';
+import { type WorkKey } from '../content/work';
+import { useWorkDetail } from './hooks/useWorkDetail';
+import { useWorkRouting } from './hooks/useWorkRouting';
+import { renderBold } from './components/WorkDetailBlocks';
+import { WorkDetailView } from './components/WorkDetailView';
+import { TocPane } from './components/TocPane';
 
 type TabOption = 'All' | Category;
-type WorkKey = 'empty-house' | 'skin-diary' | 'pmcc';
 
-const WORK_HASH_PREFIX = '#work=';
 const DEFAULT_EXPANDED: Category[] = ['About', 'System', 'Work', 'Writing', 'Resume', 'Contact'];
 
 function parseSystemContent(raw: string) {
@@ -52,10 +52,6 @@ function parseSystemContent(raw: string) {
   };
 }
 
-function renderBold(text: string) {
-  return text.split(/\*\*(.+?)\*\*/g).map((part, i) => (i % 2 === 1 ? <strong key={i}>{part}</strong> : part));
-}
-
 function getWorkKeyFromSection(section: { id: string; title: string; shortTitle: string }): WorkKey {
   const id = (section.id ?? '').toLowerCase();
   const title = (section.title ?? '').toLowerCase();
@@ -78,82 +74,6 @@ function getWorkTitle(key: WorkKey) {
   return 'PMCC';
 }
 
-const workRawMap: Record<WorkKey, string> = {
-  'empty-house': emptyHouseRaw,
-  'skin-diary': skinDiaryRaw,
-  'pmcc': pmccRaw,
-};
-
-function renderBlock(block: Block, idx: number) {
-  switch (block.type) {
-    case 'section-title':
-      return (
-        <div key={idx} className="work-detail-section-title">
-          {block.eyebrow && <div className="section-eyebrow">{block.eyebrow}</div>}
-          <h3 className="work-detail-subtitle">{block.title}</h3>
-          {block.desc && <p className="section-description">{renderBold(block.desc)}</p>}
-        </div>
-      );
-    case 'paragraph':
-      return <p key={idx} className="section-description">{renderBold(block.text)}</p>;
-    case 'heading':
-      return <h3 key={idx} className="work-detail-subtitle">{block.text}</h3>;
-    case 'cards':
-      return (
-        <div key={idx} className={`work-detail-cards ${block.items.length >= 3 ? 'cols-3' : 'cols-2'}`}>
-          {block.items.map((card, ci) => (
-            <div key={ci} className="work-detail-card">
-              <div className="work-detail-card-title">{card.title}</div>
-              <p className="work-detail-card-body">{renderBold(card.body)}</p>
-            </div>
-          ))}
-        </div>
-      );
-    case 'image':
-      return (
-        <div key={idx} className="work-detail-image-wrap">
-          <div className="image-placeholder" style={{ aspectRatio: '16 / 9' }}>
-            [Image: {block.src}]
-          </div>
-          {block.caption && <p className="work-detail-caption">{block.caption}</p>}
-        </div>
-      );
-    case 'table':
-      return (
-        <div key={idx} className="work-detail-table-wrap">
-          <table className="work-detail-table">
-            <thead>
-              <tr>
-                {block.headers.map((h, hi) => (
-                  <th key={hi}>{h}</th>
-                ))}
-              </tr>
-            </thead>
-            <tbody>
-              {block.rows.map((row, ri) => (
-                <tr key={ri}>
-                  {row.map((cell, ci) => (
-                    <td key={ci}>{renderBold(cell)}</td>
-                  ))}
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
-      );
-    default:
-      return null;
-  }
-}
-
-function getWorkKeyFromHash(): WorkKey | null {
-  const h = window.location.hash || '';
-  if (!h.startsWith(WORK_HASH_PREFIX)) return null;
-  const v = decodeURIComponent(h.slice(WORK_HASH_PREFIX.length));
-  if (v === 'empty-house' || v === 'skin-diary' || v === 'pmcc') return v;
-  return null;
-}
-
 export default function UI3Page() {
   const [activeTab, setActiveTab] = useState<TabOption>('All');
   const [expandedGroups, setExpandedGroups] = useState<Set<Category>>(new Set(DEFAULT_EXPANDED));
@@ -171,23 +91,12 @@ export default function UI3Page() {
     scrollY: number;
   } | null>(null);
 
-  // ✅ popstate에서 최신 값을 참조하기 위한 refs
+  // ✅ popstate에서 최신 값을 참조하기 위한 ref
   const activeWorkRef = useRef<WorkKey | null>(null);
-  const returnStateRef = useRef<typeof returnState>(null);
 
   useEffect(() => {
     activeWorkRef.current = activeWork;
   }, [activeWork]);
-
-  useEffect(() => {
-    returnStateRef.current = returnState;
-  }, [returnState]);
-
-  useEffect(() => {
-    if ('scrollRestoration' in window.history) {
-      window.history.scrollRestoration = 'manual';
-    }
-  }, []);
 
   const categories: Category[] = DEFAULT_EXPANDED;
 
@@ -201,19 +110,7 @@ export default function UI3Page() {
   const activeSection = useActiveSection();
   const sys = parseSystemContent(homeRaw);
 
-  const parsedWork = useMemo(() => {
-    if (!activeWork) return null;
-    return parseWorkDetail(workRawMap[activeWork]);
-  }, [activeWork]);
-
-  // Hero subtitle: 2nd section "Hero 바로 아래 짧은 2문장"
-  const heroSubtitle = useMemo(() => {
-    if (!activeWork) return '';
-    const raw = workRawMap[activeWork];
-    const match = raw.match(/### Hero 바로 아래 짧은 2문장\s*\n+([\s\S]*?)(?=\n---|\n## \d)/);
-    if (!match) return '';
-    return match[1].trim();
-  }, [activeWork]);
+  const { parsedWork, heroSubtitle } = useWorkDetail(activeWork);
 
   const activeWorkSectionId = useMemo(() => {
     if (!activeWork) return null;
@@ -260,80 +157,14 @@ export default function UI3Page() {
     });
   };
 
-  const openWorkDetail = (key: WorkKey, opts?: { skipHistory?: boolean }) => {
-    // 처음 “베이스 → 상세” 진입일 때만 복귀 상태 저장
-    if (!activeWorkRef.current) {
-      setReturnState({
-        tab: activeTab,
-        expanded: Array.from(expandedGroups),
-        scrollY: window.scrollY,
-      });
-    }
-
-    setActiveWork(key);
-    setActiveTab('Work');
-    setExpandedGroups(new Set(['Work']));
-    setPendingScrollId(null);
-
-    if (!opts?.skipHistory) {
-      window.history.pushState(
-        { view: 'work-detail', key },
-        '',
-        `${window.location.pathname}${window.location.search}${WORK_HASH_PREFIX}${encodeURIComponent(key)}`
-      );
-    }
-
-    requestAnimationFrame(() => {
-      window.scrollTo({ top: 0, behavior: 'smooth' });
-    });
-  };
-
-  const closeWorkDetailInternal = (opts?: { skipHistory?: boolean }) => {
-    const rs = returnStateRef.current;
-
-    setActiveWork(null);
-    setPendingScrollId(null);
-
-    if (opts?.skipHistory) {
-      // do nothing
-    }
-
-    if (rs) {
-      setActiveTab(rs.tab);
-      setExpandedGroups(new Set(rs.expanded));
-      setReturnState(null);
-
-      requestAnimationFrame(() => {
-        forceScrollTo(rs.scrollY);
-      });
-
-      return;
-    }
-
-    // 복귀 상태가 없으면(직접 URL 진입 등) All로 안전 복귀
-    setActiveTab('All');
-    setExpandedGroups(new Set(DEFAULT_EXPANDED));
-    setReturnState(null);
-
-    requestAnimationFrame(() => {
-      forceScrollTo(0);
-    });
-  };
-
-  // ✅ Back 버튼 = 브라우저 back과 동일하게 동작
-  const requestCloseWorkDetail = () => {
-    // “앱 내부 상세 진입”이면 history.back()으로 동기화
-    if (window.location.hash.startsWith(WORK_HASH_PREFIX) && returnStateRef.current) {
-      window.history.back();
-      return;
-    }
-
-    // 직접 URL 진입(복귀 상태 없음)일 때는 앱 내부에서만 닫기 + 해시 제거
-    if (window.location.hash.startsWith(WORK_HASH_PREFIX)) {
-      window.history.pushState(null, '', `${window.location.pathname}${window.location.search}`);
-    }
-    closeWorkDetailInternal({ skipHistory: true });
-  };
+  const { openWorkDetail, requestCloseWorkDetail } = useWorkRouting({
+    activeWork, setActiveWork, activeWorkRef,
+    activeTab, setActiveTab,
+    expandedGroups, setExpandedGroups,
+    returnState, setReturnState,
+    setPendingScrollId, forceScrollTo,
+    defaultExpanded: DEFAULT_EXPANDED,
+  });
 
   const handleTabClick = (tab: TabOption) => {
     // ✅ Work 상세 모드에서도 탭 전환 가능: 상세 종료 + 해시 제거
@@ -373,11 +204,18 @@ export default function UI3Page() {
     scrollToCategoryStart(category);
   };
 
-  const handleTocItemClick = (section: { id: string; category: Category; title?: string; shortTitle?: string }) => {
-    // ✅ 상세 모드에서는 “Work 항목만” 상세 전환 허용(선택 프로젝트 표시 + 이동)
+  const handleTocItemClick = (sectionId: string) => {
+    let section: (typeof sections)[number] | undefined;
+    for (const cat of categories) {
+      section = groupedSections[cat].find((s) => s.id === sectionId);
+      if (section) break;
+    }
+    if (!section) return;
+
+    // ✅ 상세 모드에서는 "Work 항목만" 상세 전환 허용
     if (activeWorkRef.current) {
       if (section.category === 'Work') {
-        openWorkDetail(getWorkKeyFromSection(section as any));
+        openWorkDetail(getWorkKeyFromSection(section));
       }
       return;
     }
@@ -385,10 +223,6 @@ export default function UI3Page() {
     setActiveTab(section.category);
     setExpandedGroups(new Set([section.category]));
     setPendingScrollId(section.id);
-  };
-
-  const getActiveTocItem = (sectionId: string) => {
-    return effectiveActiveSection === sectionId;
   };
 
   // ✅ 렌더가 끝난 다음 프레임에 스크롤 실행
@@ -399,43 +233,6 @@ export default function UI3Page() {
       setPendingScrollId(null);
     });
   }, [pendingScrollId]);
-
-  // ✅ 초기 진입: 해시에 work가 있으면 상세 모드로 시작
-  useEffect(() => {
-    const key = getWorkKeyFromHash();
-    if (!key) return;
-
-    // 복귀 상태가 없으니, “All/top”을 기본 복귀로 설정
-    setReturnState({
-      tab: 'All',
-      expanded: DEFAULT_EXPANDED,
-      scrollY: 0,
-    });
-
-    openWorkDetail(key, { skipHistory: true });
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
-
-  // ✅ 브라우저 back/forward 동기화
-  useEffect(() => {
-    const onPopState = () => {
-      const key = getWorkKeyFromHash();
-      if (key) {
-        // work 상세로 이동(또는 다른 프로젝트로 이동)
-        openWorkDetail(key, { skipHistory: true });
-        return;
-      }
-
-      // work 상세에서 나가는 경우
-      if (activeWorkRef.current) {
-        closeWorkDetailInternal({ skipHistory: true });
-      }
-    };
-
-    window.addEventListener('popstate', onPopState);
-    return () => window.removeEventListener('popstate', onPopState);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
 
   // ✅ TOC 자동 따라오기 (필요할 때만 root.scrollTop 조정)
   useEffect(() => {
@@ -470,10 +267,6 @@ export default function UI3Page() {
     pointerEvents: 'none',
   };
 
-  // ✅ All 탭에서는 “Work 헤더만” 파란색, 상세에서는 “Work 헤더 + 해당 프로젝트” 파란색
-  const workHeaderActive = (activeTab === 'All' && effectiveActiveSection === 'work') || activeTab === 'Work' || !!activeWork;
-  const showWorkItemActive = !!activeWork || activeTab === 'Work';
-
   return (
     <div className="app-container">
       <div className="tabs-container">
@@ -492,81 +285,28 @@ export default function UI3Page() {
       </div>
 
       <div className="content-wrapper">
-        <aside className="toc-container" style={{ position: 'sticky', top: '77px', alignSelf: 'flex-start' }}>
-          <div className="toc" ref={tocRef}>
-            {categories.map((category) => (
-              <div key={category} className="toc-group" style={{ marginBottom: '8px' }}>
-                <button
-                  className={`toc-group-header ${expandedGroups.has(category) ? 'expanded' : ''} ${
-                    category === 'Work' && workHeaderActive ? 'active' : ''
-                  }`}
-                  onClick={() => toggleGroup(category)}
-                  type="button"
-                >
-                  {category}
-                </button>
-
-                <ul className={`toc-group-items ${expandedGroups.has(category) ? '' : 'collapsed'}`}>
-                  {groupedSections[category].map((section) => (
-                    <li key={section.id}>
-                      <a
-                        href={`#${section.id}`}
-                        className={
-                          category === 'Work'
-                            ? showWorkItemActive && getActiveTocItem(section.id)
-                              ? 'active'
-                              : ''
-                            : activeWork
-                              ? ''
-                              : getActiveTocItem(section.id)
-                                ? 'active'
-                                : ''
-                        }
-                        onClick={(e) => {
-                          e.preventDefault();
-                          handleTocItemClick(section);
-                        }}
-                      >
-                        {section.shortTitle}
-                      </a>
-                    </li>
-                  ))}
-                </ul>
-              </div>
-            ))}
-          </div>
-        </aside>
+        <TocPane
+          tocRef={tocRef}
+          categories={categories}
+          expandedGroups={expandedGroups}
+          groupedSections={groupedSections}
+          activeTab={activeTab}
+          activeSectionId={effectiveActiveSection}
+          activeWork={activeWork}
+          onToggleGroup={toggleGroup}
+          onItemClick={handleTocItemClick}
+        />
 
         <main className="main-content">
           {/* ✅ W4: 상세 모드(연결만). 기존 섹션들은 언마운트하지 않고, 아래에서 전부 접어서 유지합니다. */}
           {activeWork && (
-            <section id="work-detail" className="section">
-              <div className="section-eyebrow">WORK</div>
-
-              <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '10px' }}>
-                <button type="button" onClick={requestCloseWorkDetail} className="work-detail-back">
-                  ← Back
-                </button>
-                <div style={{ fontSize: '12px', color: '#999' }}>All / Work</div>
-              </div>
-
-              <h2 className="section-title">{getWorkTitle(activeWork)}</h2>
-
-              {heroSubtitle && (
-                <p className="section-description" style={{ marginBottom: '28px' }}>
-                  {renderBold(heroSubtitle)}
-                </p>
-              )}
-
-              {parsedWork &&
-                parsedWork
-                  .filter((s) => s.name !== 'Hero')
-                  .map((section) => (
-                    <div key={section.name} className="work-detail-section">
-                      {section.blocks.map((block, i) => renderBlock(block, i))}
-                    </div>
-                  ))}
-            </section>
+            <WorkDetailView
+              activeWork={activeWork}
+              title={getWorkTitle(activeWork)}
+              heroSubtitle={heroSubtitle}
+              parsedWork={parsedWork}
+              onBack={requestCloseWorkDetail}
+            />
           )}
 
           {sections.map((section) => {
