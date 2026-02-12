@@ -1,6 +1,7 @@
 # Logs
 logs
-!context/LOGS/
+context/LOGS/
+context/TODAY/
 *.log
 npm-debug.log*
 yarn-debug.log*
