@@ -3,15 +3,18 @@
 ## 지금 상태 (2026-02-12 기준)
 
 **완료**
-- W1~W4: Work 슬롯 재구성 + TOC + All탭 카드 + 상세 라우팅
+- W1~W5: Work 슬롯 재구성 + TOC + All탭 카드 + 상세 라우팅 + MD 주입
 - About 3개 + System 5개 실콘텐츠 주입
 - 탭 필터 + TOC 접기/펼치기 + 스크롤스파이
 
-**다음 할 일**
-- W5: Work 상세 MD(Overview~) 실제 주입
-- Writing/Resume/Contact placeholder 교체
-- [Image: 16:9] placeholder → 실제 이미지
-- vite build → 배포 URL 확보
+**다음 할 일 (W1~W14 로드맵 기준)**
+- W6: OpenAI 스타일 레이아웃 전환 (미디어 블록 중심, 타이포/색상, Footnote)
+- W7: Empty House 이미지 배치 시스템 (슬라이더/탭 UX 결정 및 구현)
+- W8~W9: Skin Diary AI / PMCC 콘텐츠 완성
+- W10: 글로벌 탭 인터랙션 (hover 라이브 포토, 클릭 애니메이션)
+- W11: Writing 섹션 신규 구성 (기술/독서/미학연구 3분할)
+- W12~W13: 버그 수정 + 에셋 품질 개선
+- W14: 배포 및 최종 검증
 
 **막힌 것**
 - All 탭 스크롤 중 간헐적 Writing/Resume 점프
