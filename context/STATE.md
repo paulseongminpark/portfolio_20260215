@@ -50,6 +50,9 @@ index.html → src/main.tsx → src/App.tsx → src/ui3/Page.tsx → src/shared/
 
 ## 과거 결정
 
+**2026-02-16**
+- STATE.md URL 전환: GitHub Pages → raw.githubusercontent.com (GPT 읽기 안정성 개선)
+
 **2026-02-15**
 - 프로젝트 마이그레이션 완료 (새 폴더 구조)
 - GitHub repo rename: portfolio_ui_test_v2 → portfolio_20260215
