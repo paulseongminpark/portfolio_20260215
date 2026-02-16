@@ -49,7 +49,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "bash -c 'DIRTY=0; for d in C:/dev/01_projects/*/; do if git -C \"$d\" status --porcelain context/STATE.md 2>/dev/null | grep -q .; then echo \"⚠️ $(basename $d): STATE.md 미커밋. /sync 필요\"; DIRTY=1; fi; done; if [ $DIRTY -eq 1 ]; then echo \"BLOCK: /sync 실행 후 종료하세요\"; exit 1; fi'"
+            "command": "bash -c 'DIRTY=0; for d in C:/dev/01_projects/*/; do if git -C \"$d\" status --porcelain context/STATE.md 2>/dev/null | grep -q .; then DIRTY=1; fi; done; exit $DIRTY'"
           }
         ]
       }
