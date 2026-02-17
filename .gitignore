@@ -26,3 +26,10 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
+
+# Temp/export files
+EXPORT_*.txt
+vite_err*.txt
+vite_out.txt
+nul
+public/work/
