@@ -132,6 +132,15 @@ export const sections: Section[] = [
     heroRatio: '16:9'
   },
   {
+    id: 'tech-review',
+    category: 'Writing',
+    eyebrow: 'Ongoing',
+    title: 'Tech Review',
+    shortTitle: 'Tech Review',
+    description: 'AI·빅테크·신기술 트렌드를 매일 추적하고, 산업·직무 관점에서 짧은 인사이트를 기록합니다.',
+    heroRatio: '16:9'
+  },
+  {
     id: 'resume-1',
     category: 'Resume',
     eyebrow: 'Updated 2026',
