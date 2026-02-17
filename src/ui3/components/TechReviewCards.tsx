@@ -9,7 +9,7 @@ interface ReviewPost {
 }
 
 const FEED_URL = 'https://paulseongminpark.github.io/tech-review/feed.json';
-const BLOG_URL = 'https://paulseongminpark.github.io/tech-review';
+const BLOG_URL = 'https://paulseongminpark.github.io';
 
 export function TechReviewCards() {
   const [posts, setPosts] = useState<ReviewPost[]>([]);
