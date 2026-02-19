@@ -1,0 +1,200 @@
+name: Create Daily Post
+
+on:
+  repository_dispatch:
+    types: [create-daily-post]
+
+permissions:
+  contents: write
+
+jobs:
+  create-post:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+
+      # ── KO 포스트 생성 ──────────────────────────────────────────────────────
+      - name: Parse KO content
+        id: parse_ko
+        env:
+          GIST_ID: ${{ github.event.client_payload.gist_id_ko }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          LANG: ko
+          POST_DATE: ${{ github.event.client_payload.post_date }}
+          DELETE_GIST: "false"
+        run: node scripts/parse-content.js
+
+      # ── EN 포스트 생성 ──────────────────────────────────────────────────────
+      - name: Parse EN content
+        id: parse_en
+        env:
+          GIST_ID: ${{ github.event.client_payload.gist_id_en }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          LANG: en
+          POST_DATE: ${{ github.event.client_payload.post_date }}
+          DELETE_GIST: "false"
+        run: node scripts/parse-content.js
+
+      # ── Claude API로 Comments 자동 생성 (KO) ────────────────────────────────
+      - name: Generate KO Comments via Claude API
+        id: comments_ko
+        env:
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+          POST_DATE: ${{ github.event.client_payload.post_date }}
+        run: |
+          POST_FILE="_posts/ko/${POST_DATE}-daily.md"
+          if [ ! -f "$POST_FILE" ]; then
+            echo "⚠️ KO 포스트 파일 없음: $POST_FILE"
+            exit 0
+          fi
+
+          # Comments 섹션 위까지의 본문 추출
+          POST_BODY=$(sed '/^## Comments/,$d' "$POST_FILE" | sed '/^---$/,/^---$/d' | tr '\n' '§' | sed 's/§§/\n/g' | tr '§' '\n')
+
+          # Claude API 호출
+          RESPONSE=$(curl -s https://api.anthropic.com/v1/messages \
+            -H "x-api-key: ${ANTHROPIC_API_KEY}" \
+            -H "anthropic-version: 2023-06-01" \
+            -H "content-type: application/json" \
+            -d "{
+              \"model\": \"claude-haiku-4-5-20251001\",
+              \"max_tokens\": 400,
+              \"messages\": [{
+                \"role\": \"user\",
+                \"content\": \"아래는 오늘의 Daily Tech Review 포스트 본문입니다.\n3개 토픽을 종합하여 취업 준비생 관점에서 간결한 코멘트 3개를 작성하세요.\n\n[포스트 본문]\n$(echo "$POST_BODY" | head -c 3000)\n\n## 출력 형식 (반드시 준수, 이 줄들만 출력)\n- **산업 연관성**: (이 소식들이 산업에 미치는 통합 인사이트, 2문장)\n- **직무 연관성**: (개발자/PM/데이터 직무 지원자에게 실질적 의미, 2문장)\n- **자소서/면접**: (면접에서 활용할 수 있는 포인트 1~2개, 구체적으로)\"
+              }]
+            }")
+
+          # 응답에서 text 추출
+          COMMENTS=$(echo "$RESPONSE" | node -e "
+            let data=''; process.stdin.on('data',d=>data+=d);
+            process.stdin.on('end',()=>{
+              try {
+                const j=JSON.parse(data);
+                console.log(j.content[0].text || '');
+              } catch(e) { console.log(''); }
+            });
+          ")
+
+          if [ -n "$COMMENTS" ]; then
+            # Comments 섹션 교체
+            python3 -c "
+          import sys
+          content = open('$POST_FILE', 'r').read()
+          comments = sys.stdin.read().strip()
+          # Comments 섹션 찾아서 교체
+          parts = content.split('## Comments\n')
+          if len(parts) >= 2:
+              new_content = parts[0] + '## Comments\n' + comments + '\n'
+              open('$POST_FILE', 'w').write(new_content)
+              print('✅ Comments 섹션 업데이트 완료')
+          else:
+              print('⚠️ Comments 섹션을 찾지 못했습니다')
+          " <<< "$COMMENTS"
+          else
+            echo "⚠️ Claude API 응답 비어있음, 기본 Comments 유지"
+          fi
+
+      # ── Claude API로 Comments 자동 생성 (EN) ────────────────────────────────
+      - name: Generate EN Comments via Claude API
+        id: comments_en
+        env:
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+          POST_DATE: ${{ github.event.client_payload.post_date }}
+        run: |
+          POST_FILE="_posts/en/${POST_DATE}-daily.md"
+          if [ ! -f "$POST_FILE" ]; then
+            echo "⚠️ EN 포스트 파일 없음: $POST_FILE"
+            exit 0
+          fi
+
+          POST_BODY=$(sed '/^## Comments/,$d' "$POST_FILE" | sed '/^---$/,/^---$/d' | tr '\n' '§' | sed 's/§§/\n/g' | tr '§' '\n')
+
+          RESPONSE=$(curl -s https://api.anthropic.com/v1/messages \
+            -H "x-api-key: ${ANTHROPIC_API_KEY}" \
+            -H "anthropic-version: 2023-06-01" \
+            -H "content-type: application/json" \
+            -d "{
+              \"model\": \"claude-haiku-4-5-20251001\",
+              \"max_tokens\": 400,
+              \"messages\": [{
+                \"role\": \"user\",
+                \"content\": \"Below is today's Daily Tech Review post content.\nSynthesize the topics and write 3 concise comments from a job seeker's perspective.\n\n[Post Content]\n$(echo "$POST_BODY" | head -c 3000)\n\n## Output Format (strictly follow, output ONLY these lines)\n- **Industry Insight**: (Integrated insight on how these news items affect the industry, 2 sentences)\n- **Career Relevance**: (Practical meaning for developer/PM/data job applicants, 2 sentences)\n- **Interview Prep**: (1-2 specific points to use in interviews or cover letters)\"
+              }]
+            }")
+
+          COMMENTS=$(echo "$RESPONSE" | node -e "
+            let data=''; process.stdin.on('data',d=>data+=d);
+            process.stdin.on('end',()=>{
+              try {
+                const j=JSON.parse(data);
+                console.log(j.content[0].text || '');
+              } catch(e) { console.log(''); }
+            });
+          ")
+
+          if [ -n "$COMMENTS" ]; then
+            python3 -c "
+          import sys
+          content = open('$POST_FILE', 'r').read()
+          comments = sys.stdin.read().strip()
+          parts = content.split('## Comments\n')
+          if len(parts) >= 2:
+              new_content = parts[0] + '## Comments\n' + comments + '\n'
+              open('$POST_FILE', 'w').write(new_content)
+              print('✅ EN Comments 섹션 업데이트 완료')
+          else:
+              print('⚠️ Comments 섹션을 찾지 못했습니다')
+          " <<< "$COMMENTS"
+          else
+            echo "⚠️ Claude API EN 응답 비어있음, 기본 Comments 유지"
+          fi
+
+      # ── Gist 삭제 ──────────────────────────────────────────────────────────
+      - name: Delete Gists
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GIST_ID_KO: ${{ github.event.client_payload.gist_id_ko }}
+          GIST_ID_EN: ${{ github.event.client_payload.gist_id_en }}
+        run: |
+          for GIST_ID in "$GIST_ID_KO" "$GIST_ID_EN"; do
+            if [ -n "$GIST_ID" ]; then
+              STATUS=$(curl -s -o /dev/null -w "%{http_code}" \
+                -X DELETE \
+                -H "Authorization: token ${GITHUB_TOKEN}" \
+                -H "Accept: application/vnd.github.v3+json" \
+                "https://api.github.com/gists/${GIST_ID}")
+              if [ "$STATUS" = "204" ]; then
+                echo "✅ Gist 삭제 완료: $GIST_ID"
+              else
+                echo "⚠️ Gist 삭제 실패 ($STATUS): $GIST_ID"
+              fi
+            fi
+          done
+
+      # ── 커밋 + Push ─────────────────────────────────────────────────────────
+      - name: Commit and push new posts
+        env:
+          POST_DATE: ${{ github.event.client_payload.post_date }}
+        run: |
+          git config user.name "tech-review-bot"
+          git config user.email "bot@tech-review.local"
+
+          git add _posts/ko/ _posts/en/
+
+          if git diff --cached --quiet; then
+            echo "ℹ️ 변경사항 없음"
+          else
+            git commit -m "[tech-review] ${POST_DATE} daily post 자동 생성"
+            git push
+            echo "✅ 포스트 커밋+Push 완료"
+          fi
