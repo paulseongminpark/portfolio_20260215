@@ -13,12 +13,9 @@ const BLOG_URL = 'https://paulseongminpark.github.io/tech-review';
 
 export function TechReviewCards() {
   const [posts, setPosts] = useState<ReviewPost[]>([]);
-  const [lang, setLang] = useState<'ko' | 'en'>('ko');
+  const [lang] = useState<'ko' | 'en'>('ko');
 
   useEffect(() => {
-    const browserLang = navigator.language.startsWith('en') ? 'en' : 'ko';
-    setLang(browserLang);
-
     fetch(FEED_URL)
       .then(r => r.json())
       .then(data => setPosts(data.posts || []))
