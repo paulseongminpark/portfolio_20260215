@@ -183,10 +183,41 @@ const HOOKS = [
 
 // ── 스킬 목록 ─────────────────────────────────────────────────────
 const SKILL_GROUPS = [
-  { label: "운영", skills: ["/morning", "/todo", "/sync-all", "/catchup", "/session-insights"] },
-  { label: "문서", skills: ["/docs-review", "/research", "/handoff", "/gpt-review"] },
-  { label: "배포", skills: ["/commit-push-pr", "/verify", "/verify-project-rules"] },
-  { label: "생성", skills: ["/skill-creator", "/subagent-creator", "/hook-creator"] },
+  {
+    label: "운영",
+    skills: [
+      { name: "/morning", desc: "모든 프로젝트 현황 + TODO 통합 브리핑" },
+      { name: "/todo", desc: "daily-memo Inbox 동기화 + 할 일 관리" },
+      { name: "/sync-all", desc: "전체 프로젝트 STATE 갱신 + git push" },
+      { name: "/catchup", desc: "새 세션 시작 시 5초 만에 이전 작업 복구" },
+      { name: "/session-insights", desc: "현재 세션 토큰 소비 + 비용 분석" },
+    ],
+  },
+  {
+    label: "문서",
+    skills: [
+      { name: "/docs-review", desc: "stale 문서 감지 + 업데이트 방향 제안" },
+      { name: "/research", desc: "코드베이스 + 웹 딝 리서치 워크플로우" },
+      { name: "/handoff", desc: "다른 AI에게 전달할 컨텍스트 문서 생성" },
+      { name: "/gpt-review", desc: "설계·플랜을 GPT 비판적 리뷰용 프롬프트로 포맷" },
+    ],
+  },
+  {
+    label: "배포",
+    skills: [
+      { name: "/commit-push-pr", desc: "커밋·푸시·PR 생성을 한 번에" },
+      { name: "/verify", desc: "모든 프로젝트 규칙 검증 (커밋 전 실행)" },
+      { name: "/verify-project-rules", desc: "브랜치·커밋 메시지·STATE 형식 검증" },
+    ],
+  },
+  {
+    label: "생성",
+    skills: [
+      { name: "/skill-creator", desc: "새 스킬 파일 구조화 + 패키징 가이드" },
+      { name: "/subagent-creator", desc: "전문 에이전트 설계 + 시스템 프롬프트 작성" },
+      { name: "/hook-creator", desc: "Claude Code 훅 이벤트 설정 + 레퍼런스" },
+    ],
+  },
 ];
 
 // ── 자동화 연동 ───────────────────────────────────────────────────
@@ -577,23 +608,12 @@ export function AiWorkflowSection({ raw: _raw }: AiWorkflowSectionProps) {
                 >
                   {grp.label}
                 </div>
-                <div style={{ display: "flex", flexWrap: "wrap", gap: 6 }}>
+                <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(200px, 1fr))", gap: 6 }}>
                   {grp.skills.map((sk) => (
-                    <span
-                      key={sk}
-                      style={{
-                        fontSize: 11,
-                        fontWeight: 600,
-                        color: C.purple,
-                        background: C.purpleBg,
-                        border: `1px solid ${C.purpleBorder}`,
-                        borderRadius: 6,
-                        padding: "3px 8px",
-                        fontFamily: "monospace",
-                      }}
-                    >
-                      {sk}
-                    </span>
+                    <div key={sk.name} style={{ display: "flex", flexDirection: "column", gap: 2, background: "#fff", border: `1px solid ${C.purpleBorder}`, borderRadius: 8, padding: "8px 10px" }}>
+                      <span style={{ fontSize: 11, fontWeight: 700, color: C.purple, fontFamily: "monospace" }}>{sk.name}</span>
+                      <span style={{ fontSize: 11, color: C.muted, lineHeight: 1.4 }}>{sk.desc}</span>
+                    </div>
                   ))}
                 </div>
               </div>
