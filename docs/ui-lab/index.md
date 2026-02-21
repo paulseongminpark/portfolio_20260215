@@ -1,6 +1,6 @@
 # UI Lab — 포트폴리오 레이아웃 실험
 
-_Updated: 2026-02-22_
+_Updated: 2026-02-22 (07~10 추가)_
 
 ## 개요
 
@@ -44,13 +44,22 @@ _Updated: 2026-02-22_
 | [[ui-lab/03-series#3-d\|3-d]] | 좌측 Warm 사이드바 | 문서/앱 레이아웃 |
 | [[ui-lab/03-series#3-e\|3-e]] | 블로그 아티클 (max-width 720px) | 가독성 최우선 |
 
+### 퓨전 계열 (07~10) — OpenAI × Anthropic
+
+| ID | 컨셉 | 배경 | 타이포 | 상태 |
+|----|------|------|--------|------|
+| 07 | Warm Index — 팔레트 퓨전 | #f9f6f0 | Libre Baskerville + Instrument Sans | ✅ |
+| 08 | Warm Card Grid — 팔레트 퓨전 | #ffffff + 카드 #f9f6f0 | Libre Baskerville + Instrument Sans | ✅ |
+| 09 | Quiet Precision — 제3의 미학 | #fafaf8 | Playfair Display + Inter | ✅ |
+| 10 | Deep Warm — 제3의 미학 | #1c1713 | Cormorant Garamond + DM Sans | ✅ |
+
 ---
 
 ## 다음 스텝
 
-- [ ] 02/03 계열 중 W6 최종 레이아웃 선정
+- [ ] 07~10 스크린샷 캡처 → `portfolio/public/lab/`
+- [ ] 07~10 중 W6 최종 레이아웃 후보 선정
 - [ ] 선정된 레이아웃 → 포트폴리오 본 작업에 적용 (W6)
-- [ ] 스크린샷 업데이트 → `portfolio/public/lab/`
 
 ## 관련
 
