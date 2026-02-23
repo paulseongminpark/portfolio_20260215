@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 
 // ── 색상 팔레트 ─────────────────────────────────────────────────────
 const C = {
@@ -172,6 +172,360 @@ const EVOLUTION = [
     deprecated: false,
   },
 ];
+
+// ── Obsidian 인터랙티브 목업 ─────────────────────────────────────────
+
+type FileKey =
+  | "HOME.md"
+  | "CLAUDE.md"
+  | "STATE.md"
+  | "PLANNING.md"
+  | "KNOWLEDGE.md";
+
+interface SidebarItem {
+  name: string;
+  indent: number;
+  fileKey?: FileKey;
+  folder?: boolean;
+}
+
+const SIDEBAR_ITEMS: SidebarItem[] = [
+  { name: "HOME.md", indent: 0, fileKey: "HOME.md" },
+  { name: "CLAUDE.md", indent: 0, fileKey: "CLAUDE.md" },
+  { name: "01_projects", indent: 0, folder: true },
+  { name: "orchestration", indent: 1, folder: true },
+  { name: "STATE.md", indent: 2, fileKey: "STATE.md" },
+  { name: "PLANNING.md", indent: 2, fileKey: "PLANNING.md" },
+  { name: "KNOWLEDGE.md", indent: 2, fileKey: "KNOWLEDGE.md" },
+  { name: "portfolio", indent: 1, folder: true },
+  { name: "tech-review", indent: 1, folder: true },
+  { name: "monet-lab", indent: 1, folder: true },
+  { name: "daily-memo", indent: 1, folder: true },
+  { name: "03_evidence", indent: 0, folder: true },
+];
+
+function FileContent({ fileKey }: { fileKey: FileKey }) {
+  const h = (text: string) => (
+    <div style={{ fontSize: 11, fontWeight: 600, color: C.purple, marginBottom: 4, marginTop: 12 }}>
+      {text}
+    </div>
+  );
+  const row = (items: [string, string, string?][]) => (
+    <div
+      style={{
+        display: "grid",
+        gridTemplateColumns: items[0]?.length === 3 ? "1fr 0.8fr 0.6fr" : "1fr 1fr",
+        gap: "2px 12px",
+        fontSize: 10,
+        paddingLeft: 4,
+        marginBottom: 10,
+      }}
+    >
+      {items.map((cols, i) =>
+        cols.map((col, j) => (
+          <span
+            key={`${i}-${j}`}
+            style={{
+              fontWeight: i === 0 ? 600 : 400,
+              color: i === 0 ? C.dim : undefined,
+              ...(j === 1 && i > 0 && col?.includes("active")
+                ? { color: C.green, fontWeight: 600 }
+                : j === 1 && i > 0 && col?.includes("building")
+                  ? { color: C.amber, fontWeight: 600 }
+                  : j === 1 && i > 0 && col?.includes("uncommitted")
+                    ? { color: C.purple, fontWeight: 600 }
+                    : {}),
+            }}
+          >
+            {col}
+          </span>
+        )),
+      )}
+    </div>
+  );
+  const bullet = (text: string, meta?: string) => (
+    <div style={{ paddingLeft: 4, fontSize: 10, lineHeight: 1.7 }}>
+      {meta && <span style={{ color: C.dim }}>{meta} </span>}
+      {text}
+    </div>
+  );
+  const link = (text: string) => (
+    <span style={{ color: C.purple }}>{"[["}{text}{"]]"}</span>
+  );
+
+  switch (fileKey) {
+    case "HOME.md":
+      return (
+        <>
+          <div style={{ fontSize: 16, fontWeight: 700, color: C.text, marginBottom: 4 }}>
+            HOME — Dev Workspace Hub
+          </div>
+          {h("Projects")}
+          {row([
+            ["Project", "Status", "Branch"],
+            ["orchestration", "v3.1 active", "main"],
+            ["portfolio", "building", "master"],
+            ["tech-review", "22 uncommitted", "main"],
+          ])}
+          {h("Today's Session")}
+          {bullet("Obsidian 섹션 추가 (portfolio)", "23:00")}
+          {bullet("Agent Teams 설계 완료 (orchestration)", "22:00")}
+          {h("Open Decisions")}
+          <div style={{ paddingLeft: 4, fontSize: 10, lineHeight: 1.7 }}>
+            <div>{link("D-023")} Phase E 파일럿 테스트</div>
+            <div>{link("D-024")} TR 프롬프트 Smart Brevity 전환</div>
+          </div>
+        </>
+      );
+
+    case "CLAUDE.md":
+      return (
+        <>
+          <div style={{ fontSize: 16, fontWeight: 700, color: C.text, marginBottom: 4 }}>
+            CLAUDE.md — 전역 규칙
+          </div>
+          {h("언어 & 출력")}
+          {bullet("한국어. 간결: DONE / FILES / NEXT")}
+          {bullet("불확실 → 보류+이유. 범위 밖 금지.")}
+          {h("Git")}
+          {bullet('커밋: "[project] 한줄 설명"')}
+          {bullet("force push 금지")}
+          {bullet("orchestration: main / portfolio: master")}
+          {h("에이전트 체인")}
+          <div style={{ paddingLeft: 4, fontSize: 10, lineHeight: 1.7 }}>
+            <div>구현 → {link("code-reviewer")} → {link("commit-writer")} → living docs</div>
+            <div>배포 → {link("pf-deployer")} → {link("security-auditor")} → push</div>
+            <div>분석 → gemini + codex → {link("ai-synthesizer")} → 반영</div>
+          </div>
+          {h("토큰 관리")}
+          {bullet("1세션 = 1목표. 150K+ → /compact")}
+          {bullet("node_modules, .git, dist 읽기 금지")}
+        </>
+      );
+
+    case "STATE.md":
+      return (
+        <>
+          <div style={{ fontSize: 16, fontWeight: 700, color: C.text, marginBottom: 4 }}>
+            STATE.md — Orchestration
+          </div>
+          {h("Current")}
+          <div style={{ paddingLeft: 4, fontSize: 10, lineHeight: 1.7 }}>
+            <div><span style={{ color: C.green, fontWeight: 600 }}>v3.1</span> Agent Teams & Linker System</div>
+            <div>에이전트 23개, 팀 3개, hooks 7개</div>
+          </div>
+          {h("In Progress")}
+          {bullet("tech-review 미커밋 22개 정리")}
+          {bullet("inbox-processor 실전: 8건 새 항목")}
+          {h("Completed (recent)")}
+          <div style={{ paddingLeft: 4, fontSize: 10, lineHeight: 1.7, color: C.dim }}>
+            <div>v3.0 에이전틱 워크플로우</div>
+            <div>v2.2 시스템 오버홀</div>
+            <div>v2.0 dev-vault Git 초기화</div>
+          </div>
+          {h("Next")}
+          {bullet("Phase E 파일럿 (Agent Teams + worktree 병렬)")}
+          {bullet("ai-synthesizer 실전 테스트")}
+        </>
+      );
+
+    case "PLANNING.md":
+      return (
+        <>
+          <div style={{ fontSize: 16, fontWeight: 700, color: C.text, marginBottom: 4 }}>
+            PLANNING.md — Architecture Decisions
+          </div>
+          {h("D-001: SoT를 Git으로 전환")}
+          <div style={{ paddingLeft: 4, fontSize: 10, lineHeight: 1.7 }}>
+            <div><span style={{ color: C.dim, fontWeight: 600 }}>문제:</span> Obsidian만으로는 다른 AI가 접근 불가</div>
+            <div><span style={{ color: C.dim, fontWeight: 600 }}>해결:</span> Git {link("STATE.md")} + GitHub Pages URL</div>
+            <div><span style={{ color: C.dim, fontWeight: 600 }}>효과:</span> AI 4종 동기화 해결</div>
+          </div>
+          {h("D-003: Jeff Su 폴더 방법론")}
+          <div style={{ paddingLeft: 4, fontSize: 10, lineHeight: 1.7 }}>
+            <div><span style={{ color: C.dim, fontWeight: 600 }}>문제:</span> 파일이 늘수록 구조가 무너짐</div>
+            <div><span style={{ color: C.dim, fontWeight: 600 }}>해결:</span> 5레벨 MAX, 2자리 넘버링, 99=Archive</div>
+          </div>
+          {h("D-019: Obsidian = 뷰어 전용")}
+          <div style={{ paddingLeft: 4, fontSize: 10, lineHeight: 1.7 }}>
+            <div><span style={{ color: C.dim, fontWeight: 600 }}>문제:</span> Obsidian 편집과 AI 편집이 충돌</div>
+            <div><span style={{ color: C.dim, fontWeight: 600 }}>해결:</span> 읽기 전용 + Claude Code 단일 쓰기</div>
+          </div>
+        </>
+      );
+
+    case "KNOWLEDGE.md":
+      return (
+        <>
+          <div style={{ fontSize: 16, fontWeight: 700, color: C.text, marginBottom: 4 }}>
+            KNOWLEDGE.md — Patterns & Rules
+          </div>
+          {h("반복 실수 패턴")}
+          {bullet("파일 재읽기 금지 — 이미 읽은 파일은 다시 읽지 않는다")}
+          {bullet("Write 전 Read 필수 — 기존 파일 수정 전 반드시 Read 먼저")}
+          {bullet("병렬 Write 금지 — 같은 파일을 동시에 수정하지 않는다")}
+          {h("에이전트 운영 규칙")}
+          {bullet("Haiku: 상태 확인, 브리핑, 요약")}
+          {bullet("Sonnet: 탐색, 검색, 코드 분석")}
+          {bullet("Opus: 설계 결정, 크로스 검증, 복잡한 실행")}
+          {h("교훈")}
+          {bullet("gemini-analyzer 분석 결과는 크로스 검증 필수")}
+          {bullet("100만 토큰 광역 분석은 개별 항목의 실제 사용 이력을 놓칠 수 있음")}
+        </>
+      );
+  }
+}
+
+function ObsidianMockup() {
+  const [activeFile, setActiveFile] = useState<FileKey>("HOME.md");
+
+  return (
+    <div
+      style={{
+        marginTop: 14,
+        border: `1px solid ${C.purpleBorder}`,
+        borderRadius: 10,
+        overflow: "hidden",
+      }}
+    >
+      {/* 타이틀바 */}
+      <div
+        style={{
+          display: "flex",
+          alignItems: "center",
+          gap: 8,
+          padding: "8px 14px",
+          background: C.purpleBg,
+          borderBottom: `1px solid ${C.purpleBorder}`,
+        }}
+      >
+        <div
+          style={{
+            width: 14,
+            height: 14,
+            borderRadius: 3,
+            background: C.purple,
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            fontSize: 8,
+            color: C.white,
+            fontWeight: 800,
+          }}
+        >
+          O
+        </div>
+        <span style={{ fontSize: 11, fontWeight: 600, color: C.purple }}>
+          dev-vault
+        </span>
+        <span
+          style={{
+            fontSize: 9,
+            color: C.dimmer,
+            marginLeft: "auto",
+            fontStyle: "italic",
+          }}
+        >
+          클릭해서 탐색
+        </span>
+      </div>
+
+      {/* 본문: 사이드바 + 에디터 */}
+      <div style={{ display: "flex", minHeight: 260 }}>
+        {/* 사이드바 */}
+        <div
+          style={{
+            width: 150,
+            flexShrink: 0,
+            padding: "10px 0",
+            background: "#faf8ff",
+            borderRight: `1px solid ${C.purpleBorder}`,
+            fontFamily:
+              "'SF Mono', 'Cascadia Code', 'Consolas', monospace",
+            fontSize: 10,
+            lineHeight: 1.9,
+            color: C.muted,
+            overflow: "hidden",
+          }}
+        >
+          {SIDEBAR_ITEMS.map((f) => {
+            const isActive = f.fileKey === activeFile;
+            const isClickable = !!f.fileKey;
+            return (
+              <div
+                key={`${f.name}-${f.indent}`}
+                role={isClickable ? "button" : undefined}
+                tabIndex={isClickable ? 0 : undefined}
+                onClick={
+                  isClickable
+                    ? () => setActiveFile(f.fileKey!)
+                    : undefined
+                }
+                onKeyDown={
+                  isClickable
+                    ? (e) => {
+                        if (e.key === "Enter" || e.key === " ") {
+                          e.preventDefault();
+                          setActiveFile(f.fileKey!);
+                        }
+                      }
+                    : undefined
+                }
+                style={{
+                  paddingLeft: 12 + f.indent * 12,
+                  paddingRight: 8,
+                  background: isActive ? C.purpleBg : undefined,
+                  borderLeft: isActive
+                    ? `2px solid ${C.purple}`
+                    : "2px solid transparent",
+                  color: isActive
+                    ? C.purple
+                    : isClickable
+                      ? C.text
+                      : C.muted,
+                  fontWeight: isActive ? 600 : 400,
+                  whiteSpace: "nowrap",
+                  overflow: "hidden",
+                  textOverflow: "ellipsis",
+                  cursor: isClickable ? "pointer" : "default",
+                  transition: "background 0.15s, color 0.15s",
+                }}
+              >
+                {f.folder ? (
+                  <span style={{ color: C.dimmer, marginRight: 3 }}>
+                    {"\u25B8"}
+                  </span>
+                ) : (
+                  <span style={{ marginRight: 3, opacity: 0.4 }}>
+                    {"\u25A0"}
+                  </span>
+                )}
+                {f.name}
+              </div>
+            );
+          })}
+        </div>
+
+        {/* 에디터 영역 */}
+        <div
+          style={{
+            flex: 1,
+            padding: "14px 18px",
+            background: C.white,
+            fontFamily:
+              "'SF Mono', 'Cascadia Code', 'Consolas', monospace",
+            fontSize: 11,
+            lineHeight: 1.75,
+            color: C.muted,
+            overflow: "auto",
+          }}
+        >
+          <FileContent fileKey={activeFile} />
+        </div>
+      </div>
+    </div>
+  );
+}
 
 // ── 메인 컴포넌트 ───────────────────────────────────────────────────
 export function ObsidianSystemSection() {
@@ -566,237 +920,8 @@ export function ObsidianSystemSection() {
           </div>
         </div>
 
-        {/* Obsidian UI 목업 */}
-        <div
-          style={{
-            marginTop: 14,
-            border: `1px solid ${C.purpleBorder}`,
-            borderRadius: 10,
-            overflow: "hidden",
-          }}
-        >
-          {/* 타이틀바 */}
-          <div
-            style={{
-              display: "flex",
-              alignItems: "center",
-              gap: 8,
-              padding: "8px 14px",
-              background: C.purpleBg,
-              borderBottom: `1px solid ${C.purpleBorder}`,
-            }}
-          >
-            <div
-              style={{
-                width: 14,
-                height: 14,
-                borderRadius: 3,
-                background: C.purple,
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-                fontSize: 8,
-                color: C.white,
-                fontWeight: 800,
-              }}
-            >
-              O
-            </div>
-            <span
-              style={{
-                fontSize: 11,
-                fontWeight: 600,
-                color: C.purple,
-              }}
-            >
-              dev-vault
-            </span>
-            <span style={{ fontSize: 10, color: C.dimmer, marginLeft: "auto" }}>
-              Obsidian v1.7
-            </span>
-          </div>
-
-          {/* 본문: 사이드바 + 에디터 */}
-          <div style={{ display: "flex", minHeight: 240 }}>
-            {/* 사이드바 */}
-            <div
-              style={{
-                width: 150,
-                flexShrink: 0,
-                padding: "10px 0",
-                background: "#faf8ff",
-                borderRight: `1px solid ${C.purpleBorder}`,
-                fontFamily:
-                  "'SF Mono', 'Cascadia Code', 'Consolas', monospace",
-                fontSize: 10,
-                lineHeight: 1.9,
-                color: C.muted,
-                overflow: "hidden",
-              }}
-            >
-              {[
-                { name: "HOME.md", indent: 0, active: true },
-                { name: "CLAUDE.md", indent: 0, active: false },
-                { name: "01_projects", indent: 0, active: false, folder: true },
-                { name: "orchestration", indent: 1, active: false, folder: true },
-                { name: "STATE.md", indent: 2, active: false },
-                { name: "PLANNING.md", indent: 2, active: false },
-                { name: "KNOWLEDGE.md", indent: 2, active: false },
-                { name: "portfolio", indent: 1, active: false, folder: true },
-                { name: "tech-review", indent: 1, active: false, folder: true },
-                { name: "monet-lab", indent: 1, active: false, folder: true },
-                { name: "daily-memo", indent: 1, active: false, folder: true },
-                { name: "03_evidence", indent: 0, active: false, folder: true },
-              ].map((f) => (
-                <div
-                  key={`${f.name}-${f.indent}`}
-                  style={{
-                    paddingLeft: 12 + f.indent * 12,
-                    paddingRight: 8,
-                    background: f.active ? C.purpleBg : undefined,
-                    borderLeft: f.active
-                      ? `2px solid ${C.purple}`
-                      : "2px solid transparent",
-                    color: f.active ? C.purple : C.muted,
-                    fontWeight: f.active ? 600 : 400,
-                    whiteSpace: "nowrap",
-                    overflow: "hidden",
-                    textOverflow: "ellipsis",
-                  }}
-                >
-                  {(f as { folder?: boolean }).folder ? (
-                    <span style={{ color: C.dimmer, marginRight: 3 }}>
-                      {"\u25B8"}
-                    </span>
-                  ) : (
-                    <span style={{ marginRight: 3, opacity: 0.4 }}>
-                      {"\u25A0"}
-                    </span>
-                  )}
-                  {f.name}
-                </div>
-              ))}
-            </div>
-
-            {/* 에디터 영역 */}
-            <div
-              style={{
-                flex: 1,
-                padding: "14px 18px",
-                background: C.white,
-                fontFamily:
-                  "'SF Mono', 'Cascadia Code', 'Consolas', monospace",
-                fontSize: 11,
-                lineHeight: 1.75,
-                color: C.muted,
-                overflow: "hidden",
-              }}
-            >
-              {/* 제목 */}
-              <div
-                style={{
-                  fontSize: 16,
-                  fontWeight: 700,
-                  color: C.text,
-                  marginBottom: 12,
-                }}
-              >
-                HOME — Dev Workspace Hub
-              </div>
-
-              {/* Projects 테이블 */}
-              <div
-                style={{
-                  fontSize: 11,
-                  fontWeight: 600,
-                  color: C.purple,
-                  marginBottom: 6,
-                }}
-              >
-                Projects
-              </div>
-              <div
-                style={{
-                  display: "grid",
-                  gridTemplateColumns: "1fr 0.8fr 0.6fr",
-                  gap: "2px 12px",
-                  fontSize: 10,
-                  marginBottom: 14,
-                  paddingLeft: 4,
-                }}
-              >
-                <span style={{ fontWeight: 600, color: C.dim }}>
-                  Project
-                </span>
-                <span style={{ fontWeight: 600, color: C.dim }}>
-                  Status
-                </span>
-                <span style={{ fontWeight: 600, color: C.dim }}>
-                  Branch
-                </span>
-                <span>orchestration</span>
-                <span style={{ color: C.green, fontWeight: 600 }}>
-                  v3.1 active
-                </span>
-                <span>main</span>
-                <span>portfolio</span>
-                <span style={{ color: C.amber, fontWeight: 600 }}>
-                  building
-                </span>
-                <span>master</span>
-                <span>tech-review</span>
-                <span style={{ color: C.purple, fontWeight: 600 }}>
-                  22 uncommitted
-                </span>
-                <span>main</span>
-              </div>
-
-              {/* Today's Session */}
-              <div
-                style={{
-                  fontSize: 11,
-                  fontWeight: 600,
-                  color: C.purple,
-                  marginBottom: 4,
-                }}
-              >
-                Today's Session
-              </div>
-              <div style={{ paddingLeft: 4, marginBottom: 14, fontSize: 10 }}>
-                <div>
-                  <span style={{ color: C.dim }}>23:00</span>{" "}
-                  Obsidian 섹션 추가 (portfolio)
-                </div>
-                <div>
-                  <span style={{ color: C.dim }}>22:00</span>{" "}
-                  Agent Teams 설계 완료 (orchestration)
-                </div>
-              </div>
-
-              {/* Open Decisions */}
-              <div
-                style={{
-                  fontSize: 11,
-                  fontWeight: 600,
-                  color: C.purple,
-                  marginBottom: 4,
-                }}
-              >
-                Open Decisions
-              </div>
-              <div style={{ paddingLeft: 4, fontSize: 10 }}>
-                <div>
-                  <span style={{ color: C.purple }}>{"[["}D-023{"]]"}</span>{" "}
-                  Phase E 파일럿 테스트
-                </div>
-                <div>
-                  <span style={{ color: C.purple }}>{"[["}D-024{"]]"}</span>{" "}
-                  TR 프롬프트 Smart Brevity 전환
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
+        {/* Obsidian UI 인터랙티브 목업 */}
+        <ObsidianMockup />
       </div>
 
       {/* ④ How It Works (AI Integration + Git Sync 통합) */}
