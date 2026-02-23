@@ -657,40 +657,50 @@ interface GEdge {
 
 const GRAPH_NODES: GNode[] = [
   // 허브 (중앙)
-  { id: "HOME.md", label: "HOME.md", x: 300, y: 140, color: C.purple, r: 20 },
-  { id: "CLAUDE.md", label: "CLAUDE.md", x: 300, y: 30, color: C.purple, r: 14 },
+  { id: "HOME.md", label: "HOME.md", x: 300, y: 140, color: C.purple, r: 12 },
+  { id: "CLAUDE.md", label: "CLAUDE.md", x: 300, y: 30, color: C.purple, r: 9 },
   // orchestration 클러스터 (좌측)
-  { id: "orch/STATE.md", label: "STATE", x: 120, y: 120, color: C.blue, r: 14 },
-  { id: "orch/PLANNING.md", label: "PLANNING", x: 60, y: 200, color: C.green, r: 12 },
-  { id: "orch/KNOWLEDGE.md", label: "KNOWLEDGE", x: 160, y: 240, color: C.amber, r: 12 },
-  { id: "orch/CHANGELOG.md", label: "CHANGELOG", x: 40, y: 80, color: C.teal, r: 10 },
+  { id: "orch/STATE.md", label: "STATE", x: 120, y: 120, color: C.blue, r: 9 },
+  { id: "orch/PLANNING.md", label: "PLANNING", x: 60, y: 200, color: C.green, r: 7 },
+  { id: "orch/KNOWLEDGE.md", label: "KNOWLEDGE", x: 160, y: 240, color: C.amber, r: 7 },
+  { id: "orch/CHANGELOG.md", label: "CHANGELOG", x: 40, y: 80, color: C.teal, r: 6 },
   // portfolio (우측 상단)
-  { id: "pf/STATE.md", label: "PF STATE", x: 480, y: 80, color: C.blue, r: 12 },
+  { id: "pf/STATE.md", label: "PF STATE", x: 480, y: 80, color: C.blue, r: 7 },
   // tech-review (우측)
-  { id: "tr/README.md", label: "TR README", x: 520, y: 180, color: C.rose, r: 12 },
+  { id: "tr/README.md", label: "TR README", x: 520, y: 180, color: C.rose, r: 7 },
   // monet (우측 하단)
-  { id: "monet/README.md", label: "monet", x: 460, y: 250, color: C.teal, r: 10 },
+  { id: "monet/README.md", label: "monet", x: 460, y: 250, color: C.teal, r: 6 },
   // daily (좌측 하단)
-  { id: "daily/Inbox.md", label: "Inbox", x: 240, y: 270, color: C.amber, r: 10 },
+  { id: "daily/Inbox.md", label: "Inbox", x: 240, y: 270, color: C.amber, r: 6 },
 ];
 
 const GRAPH_EDGES: GEdge[] = [
-  // HOME → 프로젝트 STATE/README (MOC)
+  // HOME → 프로젝트 STATE/README (MOC 허브)
   { from: "HOME.md", to: "orch/STATE.md" },
   { from: "HOME.md", to: "pf/STATE.md" },
   { from: "HOME.md", to: "tr/README.md" },
   { from: "HOME.md", to: "monet/README.md" },
   { from: "HOME.md", to: "daily/Inbox.md" },
-  // CLAUDE → knowledge/changelog (규칙 참조)
+  { from: "HOME.md", to: "CLAUDE.md" },
+  // CLAUDE → 규칙이 참조하는 문서들
   { from: "CLAUDE.md", to: "orch/KNOWLEDGE.md" },
   { from: "CLAUDE.md", to: "orch/CHANGELOG.md" },
-  // orch 내부 연결
+  { from: "CLAUDE.md", to: "orch/PLANNING.md" },
+  { from: "CLAUDE.md", to: "orch/STATE.md" },
+  // orch 내부 순환
   { from: "orch/STATE.md", to: "orch/PLANNING.md" },
   { from: "orch/STATE.md", to: "orch/CHANGELOG.md" },
   { from: "orch/PLANNING.md", to: "orch/KNOWLEDGE.md" },
-  // 크로스 프로젝트
+  { from: "orch/KNOWLEDGE.md", to: "orch/CHANGELOG.md" },
+  // 크로스 프로젝트 (orch가 다른 프로젝트를 추적)
   { from: "orch/STATE.md", to: "pf/STATE.md" },
   { from: "orch/STATE.md", to: "tr/README.md" },
+  { from: "orch/STATE.md", to: "monet/README.md" },
+  { from: "orch/STATE.md", to: "daily/Inbox.md" },
+  // 프로젝트 간 횡단
+  { from: "orch/KNOWLEDGE.md", to: "pf/STATE.md" },
+  { from: "tr/README.md", to: "orch/KNOWLEDGE.md" },
+  { from: "pf/STATE.md", to: "tr/README.md" },
   // daily → HOME (/todo merge)
   { from: "daily/Inbox.md", to: "HOME.md" },
 ];
