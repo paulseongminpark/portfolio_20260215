@@ -620,6 +620,176 @@ function ObsidianMockup() {
   );
 }
 
+// ── Graph View ──────────────────────────────────────────────────────
+
+interface GNode {
+  id: FileKey | "orch" | "pf" | "tr" | "monet" | "daily";
+  label: string;
+  x: number;
+  y: number;
+  color: string;
+  r?: number; // 노드 반지름
+}
+
+interface GEdge {
+  from: GNode["id"];
+  to: GNode["id"];
+}
+
+const GRAPH_NODES: GNode[] = [
+  // 허브 (중앙)
+  { id: "HOME.md", label: "HOME.md", x: 300, y: 140, color: C.purple, r: 20 },
+  { id: "CLAUDE.md", label: "CLAUDE.md", x: 300, y: 30, color: C.purple, r: 14 },
+  // orchestration 클러스터 (좌측)
+  { id: "orch/STATE.md", label: "STATE", x: 120, y: 120, color: C.blue, r: 14 },
+  { id: "orch/PLANNING.md", label: "PLANNING", x: 60, y: 200, color: C.green, r: 12 },
+  { id: "orch/KNOWLEDGE.md", label: "KNOWLEDGE", x: 160, y: 240, color: C.amber, r: 12 },
+  { id: "orch/CHANGELOG.md", label: "CHANGELOG", x: 40, y: 80, color: C.teal, r: 10 },
+  // portfolio (우측 상단)
+  { id: "pf/STATE.md", label: "PF STATE", x: 480, y: 80, color: C.blue, r: 12 },
+  // tech-review (우측)
+  { id: "tr/README.md", label: "TR README", x: 520, y: 180, color: C.rose, r: 12 },
+  // monet (우측 하단)
+  { id: "monet/README.md", label: "monet", x: 460, y: 250, color: C.teal, r: 10 },
+  // daily (좌측 하단)
+  { id: "daily/Inbox.md", label: "Inbox", x: 240, y: 270, color: C.amber, r: 10 },
+];
+
+const GRAPH_EDGES: GEdge[] = [
+  // HOME → 프로젝트 STATE/README (MOC)
+  { from: "HOME.md", to: "orch/STATE.md" },
+  { from: "HOME.md", to: "pf/STATE.md" },
+  { from: "HOME.md", to: "tr/README.md" },
+  { from: "HOME.md", to: "monet/README.md" },
+  { from: "HOME.md", to: "daily/Inbox.md" },
+  // CLAUDE → knowledge/changelog (규칙 참조)
+  { from: "CLAUDE.md", to: "orch/KNOWLEDGE.md" },
+  { from: "CLAUDE.md", to: "orch/CHANGELOG.md" },
+  // orch 내부 연결
+  { from: "orch/STATE.md", to: "orch/PLANNING.md" },
+  { from: "orch/STATE.md", to: "orch/CHANGELOG.md" },
+  { from: "orch/PLANNING.md", to: "orch/KNOWLEDGE.md" },
+  // 크로스 프로젝트
+  { from: "orch/STATE.md", to: "pf/STATE.md" },
+  { from: "orch/STATE.md", to: "tr/README.md" },
+  // daily → HOME (/todo merge)
+  { from: "daily/Inbox.md", to: "HOME.md" },
+];
+
+function VaultGraph() {
+  const [hovered, setHovered] = useState<GNode["id"] | null>(null);
+
+  const connectedTo = (nodeId: GNode["id"]) => {
+    if (!hovered) return true;
+    if (nodeId === hovered) return true;
+    return GRAPH_EDGES.some(
+      (e) =>
+        (e.from === hovered && e.to === nodeId) ||
+        (e.to === hovered && e.from === nodeId),
+    );
+  };
+
+  const edgeConnected = (edge: GEdge) => {
+    if (!hovered) return true;
+    return edge.from === hovered || edge.to === hovered;
+  };
+
+  const getNode = (id: GNode["id"]) => GRAPH_NODES.find((n) => n.id === id)!;
+
+  return (
+    <div style={{ marginTop: 8 }}>
+      <svg
+        viewBox="0 0 600 300"
+        style={{
+          width: "100%",
+          height: "auto",
+          background: "#faf8ff",
+          borderRadius: 10,
+          border: `1px solid ${C.purpleBorder}`,
+        }}
+      >
+        {/* 엣지 */}
+        {GRAPH_EDGES.map((edge) => {
+          const from = getNode(edge.from);
+          const to = getNode(edge.to);
+          const active = edgeConnected(edge);
+          return (
+            <line
+              key={`${edge.from}-${edge.to}`}
+              x1={from.x}
+              y1={from.y}
+              x2={to.x}
+              y2={to.y}
+              stroke={active ? C.purple : C.border}
+              strokeWidth={active && hovered ? 1.5 : 0.8}
+              strokeOpacity={active ? (hovered ? 0.7 : 0.3) : 0.1}
+              style={{ transition: "all 0.2s" }}
+            />
+          );
+        })}
+
+        {/* 노드 */}
+        {GRAPH_NODES.map((node) => {
+          const active = connectedTo(node.id);
+          const isHovered = node.id === hovered;
+          const r = node.r ?? 12;
+          return (
+            <g
+              key={node.id}
+              onMouseEnter={() => setHovered(node.id)}
+              onMouseLeave={() => setHovered(null)}
+              style={{ cursor: "pointer" }}
+            >
+              {/* 호버 시 glow */}
+              {isHovered && (
+                <circle
+                  cx={node.x}
+                  cy={node.y}
+                  r={r + 6}
+                  fill={node.color}
+                  opacity={0.12}
+                />
+              )}
+              <circle
+                cx={node.x}
+                cy={node.y}
+                r={r}
+                fill={active ? node.color : C.border}
+                opacity={active ? (isHovered ? 1 : 0.85) : 0.3}
+                style={{ transition: "all 0.2s" }}
+              />
+              <text
+                x={node.x}
+                y={node.y + r + 12}
+                textAnchor="middle"
+                fontSize={9}
+                fontWeight={isHovered ? 700 : 500}
+                fontFamily="'SF Mono', 'Cascadia Code', 'Consolas', monospace"
+                fill={active ? C.text : C.dimmer}
+                opacity={active ? 1 : 0.3}
+                style={{ transition: "all 0.2s" }}
+              >
+                {node.label}
+              </text>
+            </g>
+          );
+        })}
+      </svg>
+      <p
+        style={{
+          fontSize: 10,
+          color: C.dimmer,
+          marginTop: 8,
+          textAlign: "center",
+          fontStyle: "italic",
+        }}
+      >
+        노드에 마우스를 올려 연결 관계를 확인하세요
+      </p>
+    </div>
+  );
+}
+
 // ── 메인 컴포넌트 ───────────────────────────────────────────────────
 export function ObsidianSystemSection() {
   return (
@@ -1017,7 +1187,24 @@ export function ObsidianSystemSection() {
         <ObsidianMockup />
       </div>
 
-      {/* ④ How It Works (AI Integration + Git Sync 통합) */}
+      {/* ④ Graph View */}
+      <div>
+        <p style={labelStyle}>Graph View</p>
+        <p
+          style={{
+            fontSize: 13,
+            color: C.muted,
+            lineHeight: 1.65,
+            margin: "0 0 4px",
+          }}
+        >
+          HOME.md가 모든 프로젝트를 연결하는 중심 허브. 문서 간
+          {"[[wikilink]]"}가 지식 그래프를 만든다.
+        </p>
+        <VaultGraph />
+      </div>
+
+      {/* ⑤ How It Works (AI Integration + Git Sync 통합) */}
       <div>
         <p style={labelStyle}>How It Works</p>
         <p
