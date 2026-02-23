@@ -1,6 +1,6 @@
 import React from "react";
 
-// ── 색상 팔레트 (TechReviewSystemSection과 동일) ────────────────────
+// ── 색상 팔레트 ─────────────────────────────────────────────────────
 const C = {
   blue: "#2563eb",
   blueBg: "#eff4ff",
@@ -83,12 +83,12 @@ const LIVING_DOCS = [
   },
 ];
 
-// ── AI 연동 파이프라인 ──────────────────────────────────────────────
-const AI_PIPELINE = [
+// ── How It Works 파이프라인 (AI Integration + Git Sync 통합) ────────
+const PIPELINE = [
   {
     icon: "C",
     title: "Claude Code",
-    sub: "파일 편집",
+    sub: "파일 직접 편집",
     color: C.purple,
     bg: C.purpleBg,
     border: C.purpleBorder,
@@ -96,7 +96,7 @@ const AI_PIPELINE = [
   {
     icon: "G",
     title: "Git Commit",
-    sub: "변경 기록",
+    sub: "변경 이력 기록",
     color: C.teal,
     bg: C.tealBg,
     border: C.tealBorder,
@@ -104,166 +104,72 @@ const AI_PIPELINE = [
   {
     icon: "H",
     title: "GitHub",
-    sub: "원격 저장소",
+    sub: "원격 + Pages URL",
     color: C.blue,
     bg: C.blueBg,
     border: C.blueBorder,
   },
   {
-    icon: "P",
-    title: "Obsidian Git",
-    sub: "자동 Pull",
-    color: C.amber,
-    bg: C.amberBg,
-    border: C.amberBorder,
-  },
-  {
     icon: "O",
     title: "Obsidian",
-    sub: "뷰어",
+    sub: "10분 자동 Pull",
     color: C.green,
     bg: C.greenBg,
     border: C.greenBorder,
   },
 ];
 
-// ── Git 동기화 카드 ─────────────────────────────────────────────────
-const GIT_SYNC = [
-  {
-    tech: "Obsidian Git",
-    reason: "10분 자동 커밋",
-    detail:
-      "Obsidian Community Plugin. 10분 간격으로 변경 감지 → 자동 커밋 + 풀. 수동 조작 없이 양방향 동기화.",
-    color: C.purple,
-    bg: C.purpleBg,
-    border: C.purpleBorder,
-  },
-  {
-    tech: "dev-vault",
-    reason: "C:\\dev 전체를 단일 Git repo",
-    detail:
-      "프로젝트 폴더, 설정, 문서를 하나의 저장소로 관리. .gitignore로 node_modules, .git 하위 등 제외.",
-    color: C.teal,
-    bg: C.tealBg,
-    border: C.tealBorder,
-  },
-  {
-    tech: "GitHub Pages",
-    reason: "AI가 URL로 STATE.md 읽기",
-    detail:
-      "GitHub Pages로 STATE.md를 퍼블릭 URL로 노출. ChatGPT 등 외부 AI도 프로젝트 상태를 실시간으로 읽을 수 있다.",
-    color: C.amber,
-    bg: C.amberBg,
-    border: C.amberBorder,
-  },
-];
-
-// ── 진화 타임라인 ───────────────────────────────────────────────────
+// ── 진화 타임라인 (핵심 5단계로 압축) ──────────────────────────────
 const EVOLUTION = [
   {
     version: "v0",
     date: "2026-02 초",
-    title: "context-repo 시대",
-    desc: "Obsidian 볼트와 Git repo가 분리. PowerShell 스크립트로 STATE.md를 SNAPSHOT.txt로 변환, AutoHotKey로 ChatGPT에 주입하는 bridge 방식.",
+    title: "context-repo Bridge",
+    desc: "PowerShell → SNAPSHOT.txt 변환, AutoHotKey로 ChatGPT에 주입. Obsidian과 Git이 분리된 이중 SoT.",
     color: C.dim,
     bg: C.bg,
     border: C.border,
     deprecated: true,
   },
   {
-    version: "v0.5",
-    date: "Feb 15",
-    title: "Jeff Su + SoT 전환",
-    desc: "Jeff Su PARA 변형 폴더 구조 도입. Git을 단일 Source of Truth로 결정. context-repo bridge 방식 폐기. Claude Code = 유일한 쓰기 권한.",
+    version: "v1.0",
+    date: "Feb 15–17",
+    title: "Git SoT + Orchestration",
+    desc: "Jeff Su 폴더 방법론 도입, Git을 단일 SoT로 결정. Skills 11개, Scripts 5개, 문서 3분화(STATE/PLANNING/KNOWLEDGE) 구축.",
     color: C.blue,
     bg: C.blueBg,
     border: C.blueBorder,
     deprecated: false,
   },
   {
-    version: "v1.0",
-    date: "Feb 17",
-    title: "Orchestration System",
-    desc: "Skills 11개, Scripts 5개, Auto-memory 3-phase 구축. Obsidian Junction 연결, Multi-AI 오케스트레이션, 문서 3분화(STATE/PLANNING/KNOWLEDGE).",
+    version: "v2.0",
+    date: "Feb 19–21",
+    title: "dev-vault + Obsidian Git",
+    desc: "C:\\dev 전체를 단일 Git repo로 초기화. HOME.md 중앙 MOC 신설. Obsidian Git 플러그인으로 10분 자동 동기화.",
     color: C.purple,
     bg: C.purpleBg,
     border: C.purpleBorder,
     deprecated: false,
   },
   {
-    version: "v1.5",
-    date: "Feb 19",
-    title: "HOME.md 중앙 MOC",
-    desc: "C:\\dev 전체를 Obsidian 볼트로 확장. HOME.md 신설 — 모든 프로젝트의 진입점. ai-config를 orchestration/config/로 통합.",
+    version: "v3.0",
+    date: "Feb 22–23",
+    title: "Living Docs 규칙화",
+    desc: "문서 자동 갱신 원칙 공식화. 에이전트/스킬/hook 변경 시 6개 문서 필수 업데이트 — CLAUDE.md 체인 규칙으로 강제.",
     color: C.teal,
     bg: C.tealBg,
     border: C.tealBorder,
     deprecated: false,
   },
   {
-    version: "v2.0",
-    date: "Feb 21",
-    title: "dev-vault Git + Obsidian Git",
-    desc: "C:\\dev 전체를 단일 Git repo로 초기화. Obsidian Git 플러그인으로 10분 자동 커밋·풀. GitHub Pages로 STATE.md 퍼블릭 노출.",
+    version: "v3.1",
+    date: "Feb 23",
+    title: "Agent Teams + live-context",
+    desc: "에이전트 23개, 팀 3개. live-context.md로 세션 간 실시간 맥락 공유. project-linker로 프로젝트 간 변경 감지.",
     color: C.green,
     bg: C.greenBg,
     border: C.greenBorder,
     deprecated: false,
-  },
-  {
-    version: "v2.2",
-    date: "Feb 22",
-    title: "오버홀 + Living Docs 개념",
-    desc: "죽은 자동화 수리, stale 문서 정리. Living Docs 개념이 처음 등장 — 문서가 시스템에 의해 자동 갱신되어야 한다는 원칙.",
-    color: C.amber,
-    bg: C.amberBg,
-    border: C.amberBorder,
-    deprecated: false,
-  },
-  {
-    version: "v3.0",
-    date: "Feb 23",
-    title: "에이전틱 워크플로우",
-    desc: "Living Docs 업데이트 규칙이 CLAUDE.md 체인 규칙으로 공식화. 에이전트/스킬/hook 변경 시 6개 문서 필수 업데이트.",
-    color: C.rose,
-    bg: C.roseBg,
-    border: C.roseBorder,
-    deprecated: false,
-  },
-  {
-    version: "v3.1",
-    date: "Feb 23",
-    title: "Agent Teams + live-context",
-    desc: "에이전트 23개, 팀 3개. live-context.md로 세션 간 실시간 맥락 공유. context-linker + project-linker로 프로젝트 간 변경 감지.",
-    color: C.blue,
-    bg: C.blueBg,
-    border: C.blueBorder,
-    deprecated: false,
-  },
-];
-
-// ── 설계 결정 ADR ───────────────────────────────────────────────────
-const ADRS = [
-  {
-    id: "D-001",
-    title: "SoT를 Git으로 전환",
-    problem: "Obsidian만으로는 다른 AI가 접근 불가",
-    solution: "Git STATE.md + GitHub Pages URL로 모든 AI 공유",
-    impact: "AI 간 정보 동기화 해결",
-  },
-  {
-    id: "D-003",
-    title: "Jeff Su 폴더 방법론 채택",
-    problem: "파일이 늘수록 구조가 무너짐",
-    solution: "5레벨 MAX, 2자리 넘버링, 99=Archive 규칙",
-    impact: "자동 정렬 + 명확성",
-  },
-  {
-    id: "D-019",
-    title: "Obsidian = 뷰어 전용",
-    problem: "Obsidian 편집과 AI 편집이 충돌",
-    solution: "Obsidian은 읽기 전용, 모든 쓰기는 Claude Code + Git",
-    impact: "충돌 제거, 단일 쓰기 권한",
   },
 ];
 
@@ -273,7 +179,7 @@ export function ObsidianSystemSection() {
     <div
       style={{ display: "flex", flexDirection: "column", gap: 56, marginTop: 8 }}
     >
-      {/* ① Why Obsidian */}
+      {/* ① Why + Before/After */}
       <div>
         <p style={labelStyle}>Why Obsidian</p>
         <div
@@ -307,10 +213,88 @@ export function ObsidianSystemSection() {
               paddingLeft: 14,
             }}
           >
-            Living Docs: 문서는 작성 시점에 완성되는 게 아니라, 시스템이
+            Living Docs — 문서는 작성 시점에 완성되는 게 아니라, 시스템이
             매일 갱신해야 살아 있다. AI가 쓰고, Git이 기록하고, Obsidian이
             보여준다.
           </p>
+        </div>
+
+        {/* PIVOT: Before → After */}
+        <div
+          style={{
+            display: "flex",
+            gap: 0,
+            marginTop: 14,
+            border: `1px solid ${C.border}`,
+            borderRadius: 8,
+            overflow: "hidden",
+          }}
+        >
+          <div style={{ flex: 1, padding: "12px 14px", background: "#fafafa" }}>
+            <div
+              style={{
+                display: "flex",
+                gap: 6,
+                alignItems: "center",
+                marginBottom: 6,
+              }}
+            >
+              <span
+                style={{
+                  fontSize: 10,
+                  fontWeight: 700,
+                  color: C.rose,
+                  background: C.roseBg,
+                  border: `1px solid ${C.roseBorder}`,
+                  borderRadius: 3,
+                  padding: "2px 6px",
+                }}
+              >
+                BEFORE
+              </span>
+              <span style={{ fontSize: 10, color: C.dimmer }}>
+                context-repo bridge
+              </span>
+            </div>
+            <div style={{ fontSize: 11, color: C.muted, lineHeight: 1.6 }}>
+              PowerShell로 STATE.md를 SNAPSHOT.txt로 변환 → AutoHotKey
+              단축키로 ChatGPT에 복붙. Obsidian과 Git이 분리되어 어느 쪽이
+              최신인지 알 수 없었다.
+            </div>
+          </div>
+          <div style={{ width: 1, background: C.border, flexShrink: 0 }} />
+          <div style={{ flex: 1, padding: "12px 14px", background: C.white }}>
+            <div
+              style={{
+                display: "flex",
+                gap: 6,
+                alignItems: "center",
+                marginBottom: 6,
+              }}
+            >
+              <span
+                style={{
+                  fontSize: 10,
+                  fontWeight: 700,
+                  color: C.blue,
+                  background: C.blueBg,
+                  border: `1px solid ${C.blueBorder}`,
+                  borderRadius: 3,
+                  padding: "2px 6px",
+                }}
+              >
+                AFTER
+              </span>
+              <span style={{ fontSize: 10, color: C.dimmer }}>
+                현재 시스템
+              </span>
+            </div>
+            <div style={{ fontSize: 11, color: C.muted, lineHeight: 1.6 }}>
+              Claude Code가 마크다운을 직접 편집하고 Git으로 커밋. Obsidian
+              Git이 자동 Pull. 모든 AI가 같은 GitHub Pages URL로 상태를
+              읽는다.
+            </div>
+          </div>
         </div>
       </div>
 
@@ -366,11 +350,33 @@ export function ObsidianSystemSection() {
             </div>
           ))}
         </div>
-        <div style={{ display: "flex", gap: 8, flexWrap: "wrap", marginTop: 12 }}>
+        <div
+          style={{
+            display: "flex",
+            gap: 8,
+            flexWrap: "wrap",
+            marginTop: 12,
+          }}
+        >
           {[
-            { label: "Jeff Su 5레벨 MAX", color: C.blue, bg: C.blueBg, border: C.blueBorder },
-            { label: "2자리 넘버링", color: C.purple, bg: C.purpleBg, border: C.purpleBorder },
-            { label: "99=Archive", color: C.amber, bg: C.amberBg, border: C.amberBorder },
+            {
+              label: "Jeff Su 5레벨 MAX",
+              color: C.blue,
+              bg: C.blueBg,
+              border: C.blueBorder,
+            },
+            {
+              label: "2자리 넘버링",
+              color: C.purple,
+              bg: C.purpleBg,
+              border: C.purpleBorder,
+            },
+            {
+              label: "99=Archive",
+              color: C.amber,
+              bg: C.amberBg,
+              border: C.amberBorder,
+            },
           ].map((b) => (
             <span
               key={b.label}
@@ -390,7 +396,7 @@ export function ObsidianSystemSection() {
         </div>
       </div>
 
-      {/* ③ Living Documents */}
+      {/* ③ Living Documents + HOME.md 미리보기 */}
       <div>
         <p style={labelStyle}>Living Documents</p>
         <p
@@ -439,11 +445,93 @@ export function ObsidianSystemSection() {
             </div>
           ))}
         </div>
+
+        {/* HOME.md 미니 프리뷰 */}
+        <div
+          style={{
+            marginTop: 14,
+            background: C.white,
+            border: `1px solid ${C.border}`,
+            borderRadius: 10,
+            padding: "16px 18px",
+            position: "relative",
+          }}
+        >
+          <div
+            style={{
+              position: "absolute",
+              top: 10,
+              right: 12,
+              fontSize: 9,
+              fontWeight: 700,
+              color: C.dimmer,
+              textTransform: "uppercase",
+              letterSpacing: "0.4px",
+            }}
+          >
+            Preview
+          </div>
+          <div
+            style={{
+              fontSize: 10,
+              fontWeight: 700,
+              color: C.blue,
+              textTransform: "uppercase",
+              letterSpacing: "0.4px",
+              marginBottom: 10,
+            }}
+          >
+            HOME.md
+          </div>
+          <div
+            style={{
+              fontFamily:
+                "'SF Mono', 'Cascadia Code', 'Consolas', monospace",
+              fontSize: 11,
+              lineHeight: 1.7,
+              color: C.muted,
+            }}
+          >
+            <div style={{ color: C.text, fontWeight: 600 }}>
+              # HOME — Dev Workspace Hub
+            </div>
+            <div style={{ marginTop: 6 }}>
+              <span style={{ color: C.blue, fontWeight: 600 }}>
+                ## Projects
+              </span>
+            </div>
+            <div style={{ paddingLeft: 12 }}>
+              | Project | Status | Branch | Next |
+            </div>
+            <div style={{ paddingLeft: 12 }}>
+              | orchestration | v3.1 active | main | ... |
+            </div>
+            <div style={{ paddingLeft: 12 }}>
+              | portfolio | building | master | ... |
+            </div>
+            <div style={{ marginTop: 6 }}>
+              <span style={{ color: C.blue, fontWeight: 600 }}>
+                ## Today's Session
+              </span>
+            </div>
+            <div style={{ paddingLeft: 12 }}>
+              - 23:00 Obsidian 섹션 추가 (portfolio)
+            </div>
+            <div style={{ marginTop: 6 }}>
+              <span style={{ color: C.blue, fontWeight: 600 }}>
+                ## Open Decisions
+              </span>
+            </div>
+            <div style={{ paddingLeft: 12, color: C.dim }}>
+              - Phase E 파일럿 테스트 (Agent Teams)
+            </div>
+          </div>
+        </div>
       </div>
 
-      {/* ④ AI Integration */}
+      {/* ④ How It Works (AI Integration + Git Sync 통합) */}
       <div>
-        <p style={labelStyle}>AI Integration</p>
+        <p style={labelStyle}>How It Works</p>
         <p
           style={{
             fontSize: 13,
@@ -452,9 +540,11 @@ export function ObsidianSystemSection() {
             margin: "0 0 16px",
           }}
         >
-          쓰기 권한은 Claude Code에만 있다. Obsidian은 읽기 전용 뷰어로
-          사용하고, Git이 유일한 동기화 채널이다.
+          쓰기 권한은 Claude Code에만 있다. Obsidian은 읽기 전용 뷰어.
+          Git이 유일한 동기화 채널이자 Source of Truth.
         </p>
+
+        {/* 파이프라인 */}
         <div
           style={{
             display: "flex",
@@ -462,14 +552,15 @@ export function ObsidianSystemSection() {
             alignItems: "stretch",
             flexWrap: "wrap",
             rowGap: 8,
+            marginBottom: 16,
           }}
         >
-          {AI_PIPELINE.map((step, i) => (
+          {PIPELINE.map((step, i) => (
             <React.Fragment key={step.title}>
               <div
                 style={{
                   flex: "1 1 0",
-                  minWidth: 86,
+                  minWidth: 100,
                   background: step.bg,
                   border: `1px solid ${step.border}`,
                   borderRadius: 8,
@@ -505,12 +596,12 @@ export function ObsidianSystemSection() {
                   {step.sub}
                 </div>
               </div>
-              {i < AI_PIPELINE.length - 1 && (
+              {i < PIPELINE.length - 1 && (
                 <div
                   style={{
                     display: "flex",
                     alignItems: "center",
-                    padding: "0 3px",
+                    padding: "0 4px",
                     color: C.dim,
                     fontSize: 13,
                     flexShrink: 0,
@@ -522,96 +613,83 @@ export function ObsidianSystemSection() {
             </React.Fragment>
           ))}
         </div>
-        <div style={{ display: "flex", gap: 8, flexWrap: "wrap", marginTop: 14 }}>
-          {[
-            { label: "Obsidian = 뷰어", color: C.green, bg: C.greenBg, border: C.greenBorder },
-            { label: "Claude = Writer", color: C.purple, bg: C.purpleBg, border: C.purpleBorder },
-            { label: "Git = SoT", color: C.teal, bg: C.tealBg, border: C.tealBorder },
-          ].map((b) => (
-            <span
-              key={b.label}
-              style={{
-                fontSize: 11,
-                fontWeight: 600,
-                color: b.color,
-                background: b.bg,
-                border: `1px solid ${b.border}`,
-                borderRadius: 4,
-                padding: "3px 8px",
-              }}
-            >
-              {b.label}
-            </span>
-          ))}
-        </div>
-      </div>
 
-      {/* ⑤ Git Synchronization */}
-      <div>
-        <p style={labelStyle}>Git Synchronization</p>
-        <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
-          {GIT_SYNC.map((d) => (
+        {/* 역할 분리 규칙 — 3컬럼 카드 */}
+        <div
+          style={{
+            display: "grid",
+            gridTemplateColumns: "repeat(auto-fill, minmax(140px, 1fr))",
+            gap: 10,
+          }}
+        >
+          {[
+            {
+              role: "Writer",
+              who: "Claude Code",
+              detail: "마크다운 직접 편집 → git commit + push",
+              color: C.purple,
+              bg: C.purpleBg,
+              border: C.purpleBorder,
+            },
+            {
+              role: "Source of Truth",
+              who: "Git + GitHub",
+              detail:
+                "dev-vault 단일 repo. GitHub Pages로 STATE.md 퍼블릭 URL 노출",
+              color: C.teal,
+              bg: C.tealBg,
+              border: C.tealBorder,
+            },
+            {
+              role: "Viewer",
+              who: "Obsidian",
+              detail:
+                "Obsidian Git 플러그인 — 10분 간격 자동 Pull. 편집 금지, 읽기 전용",
+              color: C.green,
+              bg: C.greenBg,
+              border: C.greenBorder,
+            },
+          ].map((r) => (
             <div
-              key={d.tech}
+              key={r.role}
               style={{
-                display: "flex",
-                gap: 0,
-                border: `1px solid ${d.border}`,
-                borderRadius: 8,
-                overflow: "hidden",
+                border: `1px solid ${r.border}`,
+                borderRadius: 10,
+                padding: "14px 16px",
+                background: r.bg,
               }}
             >
               <div
                 style={{
-                  background: d.bg,
-                  padding: "12px 14px",
-                  minWidth: 130,
-                  flexShrink: 0,
-                  display: "flex",
-                  flexDirection: "column",
-                  justifyContent: "center",
+                  fontSize: 10,
+                  fontWeight: 700,
+                  color: r.color,
+                  textTransform: "uppercase",
+                  letterSpacing: "0.4px",
+                  marginBottom: 4,
                 }}
               >
-                <div
-                  style={{
-                    fontSize: 12,
-                    fontWeight: 700,
-                    color: d.color,
-                    marginBottom: 3,
-                  }}
-                >
-                  {d.tech}
-                </div>
-                <div style={{ fontSize: 10, color: C.dim, lineHeight: 1.4 }}>
-                  {d.reason}
-                </div>
+                {r.role}
               </div>
               <div
                 style={{
-                  padding: "12px 16px",
-                  background: C.white,
-                  display: "flex",
-                  alignItems: "center",
-                  borderLeft: `1px solid ${d.border}`,
+                  fontSize: 12,
+                  fontWeight: 600,
+                  color: C.text,
+                  marginBottom: 4,
                 }}
               >
-                <p
-                  style={{
-                    fontSize: 12,
-                    color: C.muted,
-                    lineHeight: 1.6,
-                    margin: 0,
-                  }}
-                >
-                  {d.detail}
-                </p>
+                {r.who}
+              </div>
+              <div style={{ fontSize: 11, color: C.muted, lineHeight: 1.55 }}>
+                {r.detail}
               </div>
             </div>
           ))}
         </div>
       </div>
 
-      {/* ⑥ Evolution */}
+      {/* ⑤ Evolution */}
       <div>
         <p style={labelStyle}>Evolution</p>
         <p
@@ -622,8 +700,8 @@ export function ObsidianSystemSection() {
             margin: "0 0 16px",
           }}
         >
-          2주 동안 8번의 구조 변경. context-repo bridge에서 시작해 Living
-          Docs 자동 갱신 시스템까지.
+          2주 동안 5번의 구조 변경. bridge 스크립트에서 시작해 23개
+          에이전트가 자동 갱신하는 Living Docs 시스템까지.
         </p>
         <div
           style={{
@@ -670,7 +748,9 @@ export function ObsidianSystemSection() {
                     border: `1px solid ${ev.border}`,
                     borderRadius: 3,
                     padding: "2px 6px",
-                    textDecoration: ev.deprecated ? "line-through" : undefined,
+                    textDecoration: ev.deprecated
+                      ? "line-through"
+                      : undefined,
                   }}
                 >
                   {ev.version}
@@ -685,7 +765,9 @@ export function ObsidianSystemSection() {
                   fontWeight: 600,
                   color: C.text,
                   marginBottom: 3,
-                  textDecoration: ev.deprecated ? "line-through" : undefined,
+                  textDecoration: ev.deprecated
+                    ? "line-through"
+                    : undefined,
                 }}
               >
                 {ev.title}
@@ -698,79 +780,104 @@ export function ObsidianSystemSection() {
         </div>
       </div>
 
-      {/* ⑦ Design Decisions */}
+      {/* ⑥ Impact */}
       <div>
-        <p style={labelStyle}>Design Decisions</p>
+        <p style={labelStyle}>Impact</p>
         <div
           style={{
-            position: "relative",
-            paddingLeft: 20,
-            borderLeft: `2px solid ${C.border}`,
+            display: "grid",
+            gridTemplateColumns: "repeat(auto-fill, minmax(140px, 1fr))",
+            gap: 10,
+            marginBottom: 16,
           }}
         >
-          {ADRS.map((adr, i) => (
+          {[
+            {
+              number: "4",
+              unit: "AI",
+              desc: "Claude · GPT · Gemini · Perplexity가 같은 STATE.md를 읽는다",
+              color: C.blue,
+              bg: C.blueBg,
+              border: C.blueBorder,
+            },
+            {
+              number: "38K",
+              unit: "토큰/세션",
+              desc: "CLAUDE.md 4줄 축소로 매 턴 절감",
+              color: C.purple,
+              bg: C.purpleBg,
+              border: C.purpleBorder,
+            },
+            {
+              number: "6",
+              unit: "Living Docs",
+              desc: "에이전트가 변경 시 자동 업데이트하는 문서 수",
+              color: C.teal,
+              bg: C.tealBg,
+              border: C.tealBorder,
+            },
+            {
+              number: "0",
+              unit: "수동 동기화",
+              desc: "Obsidian Git 자동 Pull + Claude 자동 Push",
+              color: C.green,
+              bg: C.greenBg,
+              border: C.greenBorder,
+            },
+          ].map((m) => (
             <div
-              key={adr.id}
+              key={m.unit}
               style={{
-                position: "relative",
-                marginBottom: i < ADRS.length - 1 ? 20 : 0,
+                border: `1px solid ${m.border}`,
+                borderRadius: 10,
+                padding: "16px",
+                background: m.bg,
+                textAlign: "center",
               }}
             >
               <div
                 style={{
-                  position: "absolute",
-                  left: -27,
-                  top: 2,
-                  width: 12,
-                  height: 12,
-                  borderRadius: "50%",
-                  background: C.blue,
-                  border: `2px solid ${C.white}`,
+                  fontSize: 24,
+                  fontWeight: 800,
+                  color: m.color,
+                  lineHeight: 1,
+                  marginBottom: 2,
                 }}
-              />
+              >
+                {m.number}
+              </div>
               <div
                 style={{
                   fontSize: 10,
                   fontWeight: 700,
-                  color: C.blue,
+                  color: m.color,
                   textTransform: "uppercase",
                   letterSpacing: "0.4px",
-                  marginBottom: 4,
+                  marginBottom: 6,
                 }}
               >
-                {adr.id}
+                {m.unit}
               </div>
-              <div
-                style={{
-                  fontSize: 13,
-                  fontWeight: 600,
-                  color: C.text,
-                  marginBottom: 4,
-                }}
-              >
-                {adr.title}
-              </div>
-              <div style={{ fontSize: 11, color: C.muted, lineHeight: 1.6 }}>
-                <span style={{ fontWeight: 600, color: C.dim }}>
-                  문제:
-                </span>{" "}
-                {adr.problem}
-              </div>
-              <div style={{ fontSize: 11, color: C.muted, lineHeight: 1.6 }}>
-                <span style={{ fontWeight: 600, color: C.dim }}>
-                  해결:
-                </span>{" "}
-                {adr.solution}
-              </div>
-              <div style={{ fontSize: 11, color: C.muted, lineHeight: 1.6 }}>
-                <span style={{ fontWeight: 600, color: C.dim }}>
-                  효과:
-                </span>{" "}
-                {adr.impact}
+              <div style={{ fontSize: 11, color: C.muted, lineHeight: 1.5 }}>
+                {m.desc}
               </div>
             </div>
           ))}
         </div>
+        <p
+          style={{
+            fontSize: 13,
+            color: C.muted,
+            lineHeight: 1.65,
+            margin: 0,
+            borderLeft: `3px solid ${C.blue}`,
+            paddingLeft: 14,
+          }}
+        >
+          bridge 스크립트를 폐기하고 역할을 셋으로 분리한 것이 가장 큰
+          전환점이었다. Writer, Source of Truth, Viewer — 각각 하나의
+          도구만 담당하면 충돌이 사라진다.
+        </p>
       </div>
     </div>
   );
