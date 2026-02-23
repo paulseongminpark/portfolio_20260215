@@ -14,6 +14,7 @@ import { LabRenderer } from "./components/LabRenderer";
 import aiWorkflowRaw from "../content/AI_WORKFLOW_KO.md?raw";
 import { AiWorkflowSection } from "./components/AiWorkflowSection";
 import { TechReviewSystemSection } from "./components/TechReviewSystemSection";
+import { ObsidianSystemSection } from "./components/ObsidianSystemSection";
 
 type TabOption = "All" | Category;
 
@@ -498,6 +499,14 @@ export default function UI3Page() {
                         {section.description}
                       </p>
                       <TechReviewSystemSection />
+                    </>
+                  ) : section.id === "obsidian-system" ? (
+                    <>
+                      <h2 className="section-title">{section.title}</h2>
+                      <p className="section-description">
+                        {section.description}
+                      </p>
+                      <ObsidianSystemSection />
                     </>
                   ) : section.id === "lab-ui" ? (
                     <>

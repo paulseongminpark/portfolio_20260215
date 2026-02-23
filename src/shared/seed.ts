@@ -111,7 +111,7 @@ export const sections: Section[] = [
     eyebrow: "AI Workflow",
     title: "AI Native System",
     shortTitle: "AI System",
-    description: "Claude Code + 16 Agents + 19 Skills + Automated Workflow",
+    description: "Claude Code + 23 Agents + 3 Teams + 7 Chains",
     heroRatio: "16:9",
   },
   {
@@ -171,6 +171,16 @@ export const sections: Section[] = [
     shortTitle: "TR System",
     description:
       "매일 자동 생성되는 AI 뉴스 큐레이션의 구조 — GitHub Actions, Perplexity API, Smart Brevity 파이프라인.",
+    heroRatio: "16:9",
+  },
+  {
+    id: "obsidian-system",
+    category: "Writing",
+    eyebrow: "Knowledge System",
+    title: "Obsidian Vault",
+    shortTitle: "Vault System",
+    description:
+      "AI가 편집하고 Obsidian이 보여주는 Living Docs 시스템 — Git 동기화, MOC 허브, 계층적 폴더 구조.",
     heroRatio: "16:9",
   },
   {
