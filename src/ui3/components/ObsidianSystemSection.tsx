@@ -1204,14 +1204,7 @@ export function ObsidianSystemSection() {
         </div>
 
         {/* 현재 구성 타이틀 + Vault 목업 + Graph View */}
-        <p
-          style={{
-            fontSize: 12,
-            fontWeight: 600,
-            color: C.text,
-            margin: "20px 0 8px",
-          }}
-        >
+        <p style={{ ...labelStyle, marginTop: 20 }}>
           현재 Obsidian 구성
         </p>
         <div
