@@ -178,7 +178,7 @@ export const sections: Section[] = [
     category: "Writing",
     eyebrow: "Knowledge System",
     title: "Obsidian Vault",
-    shortTitle: "Vault System",
+    shortTitle: "Obsidian",
     description:
       "AI가 편집하고 Obsidian이 보여주는 Living Docs 시스템 — Git 동기화, MOC 허브, 계층적 폴더 구조.",
     heroRatio: "16:9",

@@ -48,7 +48,6 @@ const VAULT_TREE = [
   { path: "tech-review/", indent: 1, desc: "AI 뉴스 큐레이션" },
   { path: "monet-lab/", indent: 1, desc: "UI 실험" },
   { path: "daily-memo/", indent: 1, desc: "모바일 INBOX" },
-  { path: "n8n/", indent: 1, desc: "자동화" },
   { path: "03_evidence/", indent: 0, desc: "스크린샷, 로그" },
 ];
 
@@ -156,6 +155,90 @@ const GIT_SYNC = [
     color: C.amber,
     bg: C.amberBg,
     border: C.amberBorder,
+  },
+];
+
+// ── 진화 타임라인 ───────────────────────────────────────────────────
+const EVOLUTION = [
+  {
+    version: "v0",
+    date: "2026-02 초",
+    title: "context-repo 시대",
+    desc: "Obsidian 볼트와 Git repo가 분리. PowerShell 스크립트로 STATE.md를 SNAPSHOT.txt로 변환, AutoHotKey로 ChatGPT에 주입하는 bridge 방식.",
+    color: C.dim,
+    bg: C.bg,
+    border: C.border,
+    deprecated: true,
+  },
+  {
+    version: "v0.5",
+    date: "Feb 15",
+    title: "Jeff Su + SoT 전환",
+    desc: "Jeff Su PARA 변형 폴더 구조 도입. Git을 단일 Source of Truth로 결정. context-repo bridge 방식 폐기. Claude Code = 유일한 쓰기 권한.",
+    color: C.blue,
+    bg: C.blueBg,
+    border: C.blueBorder,
+    deprecated: false,
+  },
+  {
+    version: "v1.0",
+    date: "Feb 17",
+    title: "Orchestration System",
+    desc: "Skills 11개, Scripts 5개, Auto-memory 3-phase 구축. Obsidian Junction 연결, Multi-AI 오케스트레이션, 문서 3분화(STATE/PLANNING/KNOWLEDGE).",
+    color: C.purple,
+    bg: C.purpleBg,
+    border: C.purpleBorder,
+    deprecated: false,
+  },
+  {
+    version: "v1.5",
+    date: "Feb 19",
+    title: "HOME.md 중앙 MOC",
+    desc: "C:\\dev 전체를 Obsidian 볼트로 확장. HOME.md 신설 — 모든 프로젝트의 진입점. ai-config를 orchestration/config/로 통합.",
+    color: C.teal,
+    bg: C.tealBg,
+    border: C.tealBorder,
+    deprecated: false,
+  },
+  {
+    version: "v2.0",
+    date: "Feb 21",
+    title: "dev-vault Git + Obsidian Git",
+    desc: "C:\\dev 전체를 단일 Git repo로 초기화. Obsidian Git 플러그인으로 10분 자동 커밋·풀. GitHub Pages로 STATE.md 퍼블릭 노출.",
+    color: C.green,
+    bg: C.greenBg,
+    border: C.greenBorder,
+    deprecated: false,
+  },
+  {
+    version: "v2.2",
+    date: "Feb 22",
+    title: "오버홀 + Living Docs 개념",
+    desc: "죽은 자동화 수리, stale 문서 정리. Living Docs 개념이 처음 등장 — 문서가 시스템에 의해 자동 갱신되어야 한다는 원칙.",
+    color: C.amber,
+    bg: C.amberBg,
+    border: C.amberBorder,
+    deprecated: false,
+  },
+  {
+    version: "v3.0",
+    date: "Feb 23",
+    title: "에이전틱 워크플로우",
+    desc: "Living Docs 업데이트 규칙이 CLAUDE.md 체인 규칙으로 공식화. 에이전트/스킬/hook 변경 시 6개 문서 필수 업데이트.",
+    color: C.rose,
+    bg: C.roseBg,
+    border: C.roseBorder,
+    deprecated: false,
+  },
+  {
+    version: "v3.1",
+    date: "Feb 23",
+    title: "Agent Teams + live-context",
+    desc: "에이전트 23개, 팀 3개. live-context.md로 세션 간 실시간 맥락 공유. context-linker + project-linker로 프로젝트 간 변경 감지.",
+    color: C.blue,
+    bg: C.blueBg,
+    border: C.blueBorder,
+    deprecated: false,
   },
 ];
 
@@ -528,7 +611,94 @@ export function ObsidianSystemSection() {
         </div>
       </div>
 
-      {/* ⑥ Design Decisions */}
+      {/* ⑥ Evolution */}
+      <div>
+        <p style={labelStyle}>Evolution</p>
+        <p
+          style={{
+            fontSize: 13,
+            color: C.muted,
+            lineHeight: 1.65,
+            margin: "0 0 16px",
+          }}
+        >
+          2주 동안 8번의 구조 변경. context-repo bridge에서 시작해 Living
+          Docs 자동 갱신 시스템까지.
+        </p>
+        <div
+          style={{
+            position: "relative",
+            paddingLeft: 20,
+            borderLeft: `2px solid ${C.border}`,
+          }}
+        >
+          {EVOLUTION.map((ev, i) => (
+            <div
+              key={ev.version}
+              style={{
+                position: "relative",
+                marginBottom: i < EVOLUTION.length - 1 ? 18 : 0,
+                opacity: ev.deprecated ? 0.55 : 1,
+              }}
+            >
+              <div
+                style={{
+                  position: "absolute",
+                  left: -27,
+                  top: 2,
+                  width: 12,
+                  height: 12,
+                  borderRadius: "50%",
+                  background: ev.deprecated ? C.dim : ev.color,
+                  border: `2px solid ${C.white}`,
+                }}
+              />
+              <div
+                style={{
+                  display: "flex",
+                  gap: 8,
+                  alignItems: "center",
+                  marginBottom: 4,
+                }}
+              >
+                <span
+                  style={{
+                    fontSize: 10,
+                    fontWeight: 700,
+                    color: ev.deprecated ? C.dim : ev.color,
+                    background: ev.bg,
+                    border: `1px solid ${ev.border}`,
+                    borderRadius: 3,
+                    padding: "2px 6px",
+                    textDecoration: ev.deprecated ? "line-through" : undefined,
+                  }}
+                >
+                  {ev.version}
+                </span>
+                <span style={{ fontSize: 10, color: C.dimmer }}>
+                  {ev.date}
+                </span>
+              </div>
+              <div
+                style={{
+                  fontSize: 12,
+                  fontWeight: 600,
+                  color: C.text,
+                  marginBottom: 3,
+                  textDecoration: ev.deprecated ? "line-through" : undefined,
+                }}
+              >
+                {ev.title}
+              </div>
+              <div style={{ fontSize: 11, color: C.muted, lineHeight: 1.6 }}>
+                {ev.desc}
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      {/* ⑦ Design Decisions */}
       <div>
         <p style={labelStyle}>Design Decisions</p>
         <div
