@@ -490,8 +490,8 @@ function ObsidianMockup() {
         style={{
           display: "flex",
           alignItems: "center",
-          gap: 8,
-          padding: "8px 14px",
+          gap: 6,
+          padding: "6px 10px",
           background: C.purpleBg,
           borderBottom: `1px solid ${C.purpleBorder}`,
         }}
@@ -528,19 +528,19 @@ function ObsidianMockup() {
       </div>
 
       {/* 본문: 사이드바 + 에디터 */}
-      <div style={{ display: "flex", minHeight: 340 }}>
+      <div style={{ display: "flex", minHeight: 280 }}>
         {/* 사이드바 */}
         <div
           style={{
-            width: 170,
+            width: 130,
             flexShrink: 0,
-            padding: "10px 0",
+            padding: "6px 0",
             background: "#faf8ff",
             borderRight: `1px solid ${C.purpleBorder}`,
             fontFamily:
               "'SF Mono', 'Cascadia Code', 'Consolas', monospace",
-            fontSize: 11,
-            lineHeight: 1.85,
+            fontSize: 9,
+            lineHeight: 1.7,
             color: C.muted,
             overflow: "auto",
           }}
@@ -622,12 +622,12 @@ function ObsidianMockup() {
         <div
           style={{
             flex: 1,
-            padding: "16px 22px",
+            padding: "12px 14px",
             background: C.white,
             fontFamily:
               "'SF Mono', 'Cascadia Code', 'Consolas', monospace",
-            fontSize: 12,
-            lineHeight: 1.8,
+            fontSize: 10,
+            lineHeight: 1.7,
             color: C.muted,
             overflow: "auto",
           }}
@@ -726,12 +726,12 @@ function VaultGraph() {
   const getNode = (id: GNode["id"]) => GRAPH_NODES.find((n) => n.id === id)!;
 
   return (
-    <div style={{ marginTop: 8, maxWidth: 540 }}>
+    <div>
       <svg
-        viewBox="0 0 600 300"
+        viewBox="0 0 580 310"
         style={{
           width: "100%",
-          height: "auto",
+          height: 310,
           background: "#faf8ff",
           borderRadius: 10,
           border: `1px solid ${C.purpleBorder}`,
@@ -804,17 +804,6 @@ function VaultGraph() {
           );
         })}
       </svg>
-      <p
-        style={{
-          fontSize: 10,
-          color: C.dimmer,
-          marginTop: 8,
-          textAlign: "center",
-          fontStyle: "italic",
-        }}
-      >
-        노드에 마우스를 올려 연결 관계를 확인하세요
-      </p>
     </div>
   );
 }
@@ -1212,27 +1201,22 @@ export function ObsidianSystemSection() {
           </div>
         </div>
 
-        {/* Obsidian UI 인터랙티브 목업 */}
-        <div style={{ maxWidth: 540 }}>
-          <ObsidianMockup />
-        </div>
-      </div>
-
-      {/* ④ Graph View */}
-      <div>
-        <p style={labelStyle}>Graph View</p>
-        <p
+        {/* Vault 목업 + Graph View 양옆 배치 */}
+        <div
           style={{
-            fontSize: 13,
-            color: C.muted,
-            lineHeight: 1.65,
-            margin: "0 0 4px",
+            display: "flex",
+            gap: 14,
+            marginTop: 14,
+            alignItems: "flex-start",
           }}
         >
-          HOME.md가 모든 프로젝트를 연결하는 중심 허브. 문서 간
-          {"[[wikilink]]"}가 지식 그래프를 만든다.
-        </p>
-        <VaultGraph />
+          <div style={{ flex: 1, minWidth: 0 }}>
+            <ObsidianMockup />
+          </div>
+          <div style={{ flex: 1, minWidth: 0 }}>
+            <VaultGraph />
+          </div>
+        </div>
       </div>
 
       {/* ⑤ How It Works (AI Integration + Git Sync 통합) */}
