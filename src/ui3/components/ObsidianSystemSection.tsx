@@ -219,12 +219,62 @@ export function ObsidianSystemSection() {
           </p>
         </div>
 
-        {/* PIVOT: Before → After */}
+        {/* PIVOT: Ctrl+Alt+V 시대 에피소드 */}
+        <div
+          style={{
+            display: "flex",
+            gap: 10,
+            marginTop: 14,
+            alignItems: "flex-start",
+            padding: "12px 14px",
+            background: "#fff7ed",
+            border: "1px solid #fed7aa",
+            borderRadius: 8,
+          }}
+        >
+          <span
+            style={{
+              fontSize: 10,
+              fontWeight: 700,
+              color: "#c2410c",
+              background: "#ffedd5",
+              border: "1px solid #fed7aa",
+              borderRadius: 3,
+              padding: "2px 6px",
+              flexShrink: 0,
+              marginTop: 1,
+            }}
+          >
+            PIVOT
+          </span>
+          <div>
+            <div
+              style={{
+                fontSize: 12,
+                fontWeight: 600,
+                color: C.text,
+                marginBottom: 4,
+              }}
+            >
+              Ctrl+Alt+V — 매 세션마다 복붙하던 시절
+            </div>
+            <div style={{ fontSize: 11, color: C.muted, lineHeight: 1.6 }}>
+              초기에는 PowerShell로 STATE.md를 SNAPSHOT.txt로 변환하고,
+              AutoHotKey 단축키(Ctrl+Alt+V)로 ChatGPT에 붙여넣었다.
+              어느 날 STATE.md를 업데이트했는데 SNAPSHOT 변환을 빠뜨렸고,
+              AI가 이미 끝난 작업을 처음부터 다시 설계했다.
+              Obsidian에도 같은 파일이 있었지만 어느 쪽이 최신인지 알 수
+              없었다. bridge 스크립트 3개, 수동 단계 2개 — 유지할 수 없었다.
+            </div>
+          </div>
+        </div>
+
+        {/* Before → After */}
         <div
           style={{
             display: "flex",
             gap: 0,
-            marginTop: 14,
+            marginTop: 10,
             border: `1px solid ${C.border}`,
             borderRadius: 8,
             overflow: "hidden",
@@ -252,14 +302,10 @@ export function ObsidianSystemSection() {
               >
                 BEFORE
               </span>
-              <span style={{ fontSize: 10, color: C.dimmer }}>
-                context-repo bridge
-              </span>
             </div>
             <div style={{ fontSize: 11, color: C.muted, lineHeight: 1.6 }}>
-              PowerShell로 STATE.md를 SNAPSHOT.txt로 변환 → AutoHotKey
-              단축키로 ChatGPT에 복붙. Obsidian과 Git이 분리되어 어느 쪽이
-              최신인지 알 수 없었다.
+              PowerShell 변환 → AutoHotKey 복붙 → 수동 확인.
+              이중 SoT, 동기화 누락 상시 발생.
             </div>
           </div>
           <div style={{ width: 1, background: C.border, flexShrink: 0 }} />
@@ -285,14 +331,10 @@ export function ObsidianSystemSection() {
               >
                 AFTER
               </span>
-              <span style={{ fontSize: 10, color: C.dimmer }}>
-                현재 시스템
-              </span>
             </div>
             <div style={{ fontSize: 11, color: C.muted, lineHeight: 1.6 }}>
-              Claude Code가 마크다운을 직접 편집하고 Git으로 커밋. Obsidian
-              Git이 자동 Pull. 모든 AI가 같은 GitHub Pages URL로 상태를
-              읽는다.
+              Claude Code가 직접 편집 → Git 커밋 → Obsidian 자동 Pull.
+              수동 단계 0개, SoT는 Git 하나.
             </div>
           </div>
         </div>
@@ -444,6 +486,84 @@ export function ObsidianSystemSection() {
               </div>
             </div>
           ))}
+        </div>
+
+        {/* /catchup 체감 스토리 */}
+        <div
+          style={{
+            display: "flex",
+            gap: 0,
+            marginTop: 14,
+            border: `1px solid ${C.border}`,
+            borderRadius: 8,
+            overflow: "hidden",
+          }}
+        >
+          <div style={{ flex: 1, padding: "12px 14px", background: "#fafafa" }}>
+            <div
+              style={{
+                display: "flex",
+                gap: 6,
+                alignItems: "center",
+                marginBottom: 6,
+              }}
+            >
+              <span
+                style={{
+                  fontSize: 10,
+                  fontWeight: 700,
+                  color: C.rose,
+                  background: C.roseBg,
+                  border: `1px solid ${C.roseBorder}`,
+                  borderRadius: 3,
+                  padding: "2px 6px",
+                }}
+              >
+                BEFORE
+              </span>
+              <span style={{ fontSize: 10, color: C.dimmer }}>
+                매 세션 시작
+              </span>
+            </div>
+            <div style={{ fontSize: 11, color: C.muted, lineHeight: 1.6 }}>
+              "어제 orchestration에서 에이전트 3개 만들었고, portfolio는
+              빌드 깨져 있고, tech-review는 프롬프트 수정 중이야..."
+              — 매번 5분간 컨텍스트를 직접 설명해야 했다.
+            </div>
+          </div>
+          <div style={{ width: 1, background: C.border, flexShrink: 0 }} />
+          <div style={{ flex: 1, padding: "12px 14px", background: C.white }}>
+            <div
+              style={{
+                display: "flex",
+                gap: 6,
+                alignItems: "center",
+                marginBottom: 6,
+              }}
+            >
+              <span
+                style={{
+                  fontSize: 10,
+                  fontWeight: 700,
+                  color: C.blue,
+                  background: C.blueBg,
+                  border: `1px solid ${C.blueBorder}`,
+                  borderRadius: 3,
+                  padding: "2px 6px",
+                }}
+              >
+                AFTER
+              </span>
+              <span style={{ fontSize: 10, color: C.dimmer }}>
+                /catchup 한 줄
+              </span>
+            </div>
+            <div style={{ fontSize: 11, color: C.muted, lineHeight: 1.6 }}>
+              AI가 STATE.md를 읽고 이미 알고 있다.
+              "orchestration v3.1, 다음은 tech-review 미커밋 22개 정리."
+              — 문서가 살아 있으면 설명할 필요가 없다.
+            </div>
+          </div>
         </div>
 
         {/* HOME.md 미니 프리뷰 */}
@@ -612,6 +732,56 @@ export function ObsidianSystemSection() {
               )}
             </React.Fragment>
           ))}
+        </div>
+
+        {/* 충돌 에피소드 */}
+        <div
+          style={{
+            display: "flex",
+            gap: 10,
+            marginBottom: 16,
+            alignItems: "flex-start",
+            padding: "12px 14px",
+            background: "#fff7ed",
+            border: "1px solid #fed7aa",
+            borderRadius: 8,
+          }}
+        >
+          <span
+            style={{
+              fontSize: 10,
+              fontWeight: 700,
+              color: "#c2410c",
+              background: "#ffedd5",
+              border: "1px solid #fed7aa",
+              borderRadius: 3,
+              padding: "2px 6px",
+              flexShrink: 0,
+              marginTop: 1,
+            }}
+          >
+            LESSON
+          </span>
+          <div>
+            <div
+              style={{
+                fontSize: 12,
+                fontWeight: 600,
+                color: C.text,
+                marginBottom: 4,
+              }}
+            >
+              Obsidian에서 편집하면 안 된다
+            </div>
+            <div style={{ fontSize: 11, color: C.muted, lineHeight: 1.6 }}>
+              Obsidian에서 PLANNING.md를 직접 고쳤는데, 같은 시간에
+              Claude Code도 같은 파일을 수정하고 커밋했다. Git 충돌이
+              발생했고, 어느 쪽 변경이 맞는지 판단하는 데 시간을 낭비했다.
+              이후 규칙을 만들었다 — 쓰기 권한은 하나에만.
+              Obsidian은 보는 도구, Claude는 쓰는 도구, Git은 기록.
+              역할을 나누니 충돌이 사라졌다.
+            </div>
+          </div>
         </div>
 
         {/* 역할 분리 규칙 — 3컬럼 카드 */}
