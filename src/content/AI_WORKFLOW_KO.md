@@ -1,21 +1,42 @@
 # AI Native Orchestration System
 
-**Claude Code를 운영체제처럼 쓴다. What만 정의하면 16개 에이전트가 How를 결정하고 실행한다.**
+**Claude Code를 운영체제처럼 쓴다. What만 정의하면 23개 에이전트가 How를 결정하고 실행한다.**
 
 ## 시스템 진화
 
 - v1.0 (2026-02-21): Skills 11개, Scripts 5개, Auto-Memory 3단계
 - v2.0 (2026-02-21): 에이전트 14개, 훅 5종, MCP 3개, Gemini CLI 연동
-- v2.1 (2026-02-22): SOT METRICS 추가, pf-orchestrator, 컨텍스트 라이브러리
+- v2.1 (2026-02-22): SOT METRICS 추가, content-writer, 훅 9종, 에이전트 16개
+- v2.2 (2026-02-22): 시스템 오버홀 — 죽은 자동화 수리, 불필요 제거, stale 문서 수정
+- v3.0 (2026-02-23): 에이전틱 워크플로우 — 체인 규칙 강제, agent.md 표준화, hooks 품질 게이트
+- v3.1 (2026-02-23): Agent Teams & Linker System — 에이전트 23개, 팀 3개, live-context.md 실시간 공유
 
-## 에이전트 아키텍처 (16개)
+## 에이전트 아키텍처 (23개)
 
-- **PROACTIVELY**: code-reviewer, commit-writer, orch-state, compressor
-- **Portfolio**: pf-context, pf-reviewer, pf-deployer, pf-orchestrator
-- **Orchestration**: orch-doc-writer, orch-skill-builder
-- **Analysis**: gemini-analyzer (1M 토큰), security-auditor
-- **Monet-lab**: ml-experimenter, ml-porter
-- **Content**: morning-briefer, content-writer
+- **PROACTIVELY** (6): code-reviewer, commit-writer, orch-state, compressor, context-linker, project-linker
+- **Portfolio** (3): pf-context, pf-reviewer, pf-deployer
+- **Orchestration** (3): orch-doc-writer, orch-skill-builder, meta-orchestrator
+- **AI Pipeline** (3): gemini-analyzer (1M), codex-reviewer, ai-synthesizer
+- **Monet-lab** (2): ml-experimenter, ml-porter
+- **Tech-review** (2): tr-monitor, tr-updater
+- **Daily** (2): inbox-processor, morning-briefer
+- **Other** (2): content-writer, security-auditor
+
+## 에이전트 팀 (3개)
+
+- **tech-review-ops**: tr-monitor, tr-updater, commit-writer
+- **ai-feedback-loop**: gemini-analyzer, codex-reviewer, ai-synthesizer
+- **daily-ops**: inbox-processor, orch-state, morning-briefer
+
+## 체인 규칙 (7개)
+
+- **구현**: implement → code-reviewer → commit-writer → living docs
+- **분석**: gemini + codex (병렬) → ai-synthesizer → 사용자 확인
+- **배포**: pf-deployer → security-auditor → 사용자 확인 → push
+- **Tech-review**: tr-monitor → tr-updater → commit-writer
+- **일일 운영**: inbox-processor → orch-state → morning-briefer
+- **디스패치**: catchup → meta-orchestrator → 팀 활성화
+- **프로젝트 연동**: context-linker (hook) → project-linker (커밋) → 맥락 주입
 
 ## 자동화 워크플로우
 
@@ -36,7 +57,7 @@ brainstorm → plan → implement → review → deploy
 - **SessionStart**: 세션 시작 시 작업 로그 + git status 자동 출력
 - **SessionEnd**: 세션 종료 시 /sync 권장 알림
 - **PreToolUse**: rm -rf, git push --force 자동 차단
-- **PostToolUse**: Write/Edit 후 context 파일 변경 감지
+- **PostToolUse**: Write/Edit 후 context 변경 감지 + live-context.md 자동 기록
 - **PreCompact**: compact 전 /verify 권장 알림
 - **Notification**: 비동기 알림 처리
 - **TeammateIdle**: Agent Teams 팀원 유휴 알림
@@ -44,16 +65,17 @@ brainstorm → plan → implement → review → deploy
 
 ## 스킬 시스템 (17개)
 
-- **운영**: /morning, /todo, /sync-all, /catchup, /session-insights
-- **문서**: /docs-review, /research, /write, /gpt-review
-- **배포**: /commit-push-pr, /verify, /verify-project-rules
-- **생성**: /skill-creator, /subagent-creator, /hook-creator
+- **세션 관리**: /morning, /catchup, /sync-all, /todo, /session-insights, /compressor
+- **문서·리서치**: /research, /gpt-review, /docs-review, /write
+- **배포·검증**: /commit-push-pr, /verify, /handoff
+- **시스템 구축**: /skill-creator, /hook-creator
+- **유지·관리**: /memory-review, /sync
 
 ## 멀티 AI 오케스트레이션
 
-- **Claude Code**: 실행 (유일한 Write 권한)
+- **Claude Code**: 실행 허브 (유일한 Write 권한)
 - **Gemini CLI**: 1M 토큰 코드베이스 전체 분석
-- **GPT-4o**: 설계 비판적 검토 (/gpt-review)
+- **Codex CLI**: codex-reviewer 에이전트 · 분석 체인 병렬 검증
 - **Perplexity**: 실시간 웹 검색
 
 ## GitHub & 자동화 연동
@@ -71,4 +93,4 @@ brainstorm → plan → implement → review → deploy
 
 ## 핵심 숫자
 
-16 Agents · 19 Skills · 9 Hooks · 3 MCP Servers · 2 AI Tools · 1 Automation Hub
+23 Agents · 17 Skills · 3 Teams · 7 Chains · 9 Hooks · 3+ AI Tools

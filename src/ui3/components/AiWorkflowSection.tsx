@@ -17,6 +17,8 @@ import {
   AI_MATRIX_ROWS,
   ADRS,
   MCP_SERVERS,
+  CHAIN_RULES,
+  AGENT_TEAMS,
 } from "./aiWorkflowData";
 
 interface AiWorkflowSectionProps {
@@ -85,7 +87,7 @@ export function AiWorkflowSection({ raw: _raw }: AiWorkflowSectionProps) {
             paddingLeft: 14,
           }}
         >
-          Claude Code를 운영체제처럼 쓴다. What만 정의하면 16개 에이전트가 How를
+          Claude Code를 운영체제처럼 쓴다. What만 정의하면 23개 에이전트가 How를
           결정하고 실행한다.
         </p>
         <p
@@ -217,10 +219,10 @@ export function AiWorkflowSection({ raw: _raw }: AiWorkflowSectionProps) {
           }}
         >
           처음엔 에이전트 2개였다. 가장 반복되는 작업 두 가지를 자동화했다.
-          v2.0에서 14개, 현재 16개가 됐다. 에이전트가 늘어나면서 시스템이
-          강력해졌지만, 동시에 복잡해졌다. AI 도구가 늘어날수록 오히려 시스템
-          복잡도가 상승하는 역설이 생겼다. 에이전트 하나가 추가될 때마다 다른
-          에이전트와의 경계를 다시 정의해야 했다.
+          v2.0에서 14개, v2.1에서 16개, v3.1에서 23개가 됐다. 에이전트가 늘어나면서
+          시스템이 강력해졌지만, 동시에 복잡해졌다. v3.0에서 체인 규칙을 도입해
+          에이전트 간 실행 순서를 강제했고, v3.1에서 팀과 Linker 시스템으로
+          프로젝트 간 맥락 단절 문제를 해결했다.
         </p>
         <div style={{ display: "flex", flexDirection: "column", gap: 0 }}>
           {TIMELINE.map((item, i, arr) => (
@@ -298,7 +300,7 @@ export function AiWorkflowSection({ raw: _raw }: AiWorkflowSectionProps) {
 
       {/* 4. 에이전트 계층 그리드 */}
       <div>
-        <div style={label}>에이전트 아키텍처 (16개)</div>
+        <div style={label}>에이전트 아키텍처 (23개)</div>
         <p
           style={{
             fontSize: 13,
@@ -309,13 +311,9 @@ export function AiWorkflowSection({ raw: _raw }: AiWorkflowSectionProps) {
         >
           각 에이전트는 하나의 역할만 가진다. code-reviewer는 리뷰만,
           commit-writer는 커밋 메시지만. 역할이 명확해야 에이전트가 딱딱
-          떨어지게 작동한다. 역할이 겹치는 순간 어느 에이전트가 처리할지
-          불명확해지고, AI가 판단을 포기하거나 잘못된 판단을 내린다. PROACTIVELY
-          에이전트 4개는 별도 호출 없이 상황을 감지해 자동으로 개입한다.
-          초기에는 Claude를 reader/executor/architect 3가지 모드로 구분하는
-          방식을 검토했으나, 현재는 에이전트별 model: haiku/sonnet/opus 직접
-          지정 방식으로 전환됐다.{" "}
-          <span style={{ color: "#999" }}>(구 설계 컨셉)</span>
+          떨어지게 작동한다. PROACTIVELY 에이전트 6개는 별도 호출 없이 상황을
+          감지해 자동으로 개입한다. v3.1에서 context-linker와 project-linker가
+          추가되어 세션 간 맥락 공유와 프로젝트 간 변경 영향 감지를 자동화했다.
         </p>
         <div
           style={{
@@ -356,6 +354,183 @@ export function AiWorkflowSection({ raw: _raw }: AiWorkflowSectionProps) {
                   </span>
                 ))}
               </div>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      {/* 4.5. 에이전트 팀 (3개) */}
+      <div>
+        <div style={label}>에이전트 팀 (3개)</div>
+        <p
+          style={{
+            fontSize: 13,
+            color: "#666",
+            lineHeight: 1.7,
+            margin: "0 0 16px",
+          }}
+        >
+          에이전트가 23개가 되자 개별 호출만으로는 한계가 왔다. 자주 함께
+          실행되는 에이전트를 팀으로 묶어 하나의 명령으로 체인 전체를
+          활성화한다. meta-orchestrator가 상황을 판단해 어떤 팀을 활성화할지
+          결정한다.
+        </p>
+        <div
+          style={{
+            display: "grid",
+            gridTemplateColumns: "repeat(auto-fill, minmax(240px, 1fr))",
+            gap: 10,
+          }}
+        >
+          {AGENT_TEAMS.map((team) => (
+            <div
+              key={team.name}
+              style={{
+                border: `1px solid ${team.border}`,
+                borderRadius: 10,
+                padding: "16px 18px",
+                background: team.bg,
+              }}
+            >
+              <div
+                style={{
+                  fontSize: 12,
+                  fontWeight: 700,
+                  color: team.color,
+                  marginBottom: 8,
+                }}
+              >
+                {team.name}
+              </div>
+              <div
+                style={{
+                  display: "flex",
+                  flexWrap: "wrap",
+                  gap: 4,
+                  marginBottom: 10,
+                }}
+              >
+                {team.agents.map((a) => (
+                  <span
+                    key={a}
+                    style={{
+                      fontSize: 10,
+                      color: team.color,
+                      background: "#fff",
+                      border: `1px solid ${team.border}`,
+                      borderRadius: 4,
+                      padding: "2px 6px",
+                    }}
+                  >
+                    {a}
+                  </span>
+                ))}
+              </div>
+              <p
+                style={{
+                  fontSize: 12,
+                  color: "#666",
+                  lineHeight: 1.6,
+                  margin: 0,
+                }}
+              >
+                {team.desc}
+              </p>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      {/* 4.6. 체인 규칙 (6개) */}
+      <div>
+        <div style={label}>체인 규칙 (7개)</div>
+        <p
+          style={{
+            fontSize: 13,
+            color: "#666",
+            lineHeight: 1.7,
+            margin: "0 0 16px",
+          }}
+        >
+          에이전트가 늘어나면서 "어떤 순서로 실행할지"가 가장 큰 문제가 됐다.
+          체인 규칙은 에이전트 실행 순서를 강제한다. 건너뛰기 금지. 리뷰를
+          통과하지 못하면 커밋할 수 없고, 보안 점검을 통과하지 못하면 배포할 수
+          없다.
+        </p>
+        <div
+          style={{
+            display: "grid",
+            gridTemplateColumns: "repeat(auto-fill, minmax(240px, 1fr))",
+            gap: 10,
+          }}
+        >
+          {CHAIN_RULES.map((chain) => (
+            <div
+              key={chain.id}
+              style={{
+                border: `1px solid ${chain.border}`,
+                borderRadius: 10,
+                padding: "16px 18px",
+                background: chain.bg,
+              }}
+            >
+              <div
+                style={{
+                  display: "flex",
+                  gap: 8,
+                  alignItems: "center",
+                  marginBottom: 8,
+                }}
+              >
+                <span
+                  style={{
+                    fontSize: 10,
+                    fontWeight: 700,
+                    color: chain.color,
+                    textTransform: "uppercase",
+                    letterSpacing: "0.04em",
+                    background: "#fff",
+                    border: `1px solid ${chain.border}`,
+                    borderRadius: 20,
+                    padding: "2px 8px",
+                  }}
+                >
+                  {chain.id}
+                </span>
+                <span
+                  style={{ fontSize: 13, fontWeight: 700, color: "#1a1a1a" }}
+                >
+                  {chain.title}
+                </span>
+              </div>
+              <div
+                style={{
+                  display: "flex",
+                  flexWrap: "wrap",
+                  gap: 4,
+                  marginBottom: 10,
+                }}
+              >
+                {chain.steps.map((step, i) => (
+                  <span
+                    key={step}
+                    style={{ fontSize: 11, color: chain.color, fontWeight: 500 }}
+                  >
+                    {step}
+                    {i < chain.steps.length - 1 ? " →" : ""}
+                  </span>
+                ))}
+              </div>
+              <p
+                style={{
+                  fontSize: 12,
+                  color: "#666",
+                  lineHeight: 1.6,
+                  margin: 0,
+                }}
+              >
+                {chain.desc}
+              </p>
             </div>
           ))}
         </div>
@@ -472,10 +647,11 @@ export function AiWorkflowSection({ raw: _raw }: AiWorkflowSectionProps) {
             margin: "0 0 16px",
           }}
         >
-          각 단계는 전문 에이전트로 분리돼 있다. brainstorm 단계에서
-          gemini-analyzer가 코드베이스 전체를 1M 토큰으로 읽고, deploy 단계에서
-          pf-deployer와 security-auditor가 순차적으로 검증한다. 내가 개입하는 건
-          What을 정의하는 것뿐이다. How는 각 단계의 에이전트가 결정한다.
+          각 단계는 전문 에이전트로 분리돼 있다. 분석이 필요하면
+          gemini-analyzer와 codex-reviewer가 병렬로 코드베이스를 검토하고,
+          ai-synthesizer가 교차 검증한다. deploy 단계에서는 pf-deployer와
+          security-auditor가 순차적으로 검증한다. 내가 개입하는 건 What을
+          정의하는 것뿐이다. How는 각 단계의 에이전트가 결정한다.
         </p>
         <div
           style={{
@@ -1066,9 +1242,9 @@ export function AiWorkflowSection({ raw: _raw }: AiWorkflowSectionProps) {
         >
           훅은 AI가 실수하는 걸 막는 안전장치다. Stop Hook은 AI가 미커밋
           상태에서 "완료됐습니다"라고 선언하는 걸 막는다. PreToolUse는 rm -rf나
-          git push --force 같은 위험 명령을 실행 전에 차단한다. 스킬은 반복
-          작업을 명령어 하나로 압축한 것이다. /morning 하나로 모든 프로젝트
-          현황이 나온다.
+          git push --force 같은 위험 명령을 실행 전에 차단한다. PostToolUse는
+          파일 변경을 감지해 live-context.md에 자동 기록한다. 9개 훅이
+          에이전트의 안전망으로 작동한다.
         </p>
         <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
           {HOOKS.map((h) => (
@@ -1101,7 +1277,7 @@ export function AiWorkflowSection({ raw: _raw }: AiWorkflowSectionProps) {
 
       {/* 스킬 시스템 */}
       <div>
-        <div style={label}>스킬 시스템 (19개)</div>
+        <div style={label}>스킬 시스템 (17개)</div>
         <p
           style={{
             fontSize: 13,

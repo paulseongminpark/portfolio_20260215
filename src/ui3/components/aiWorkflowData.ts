@@ -139,21 +139,54 @@ export interface Adr {
   impact: string;
 }
 
+export interface ChainRule {
+  id: string;
+  title: string;
+  steps: string[];
+  desc: string;
+  color: string;
+  bg: string;
+  border: string;
+}
+
+export interface AgentTeam {
+  name: string;
+  agents: string[];
+  desc: string;
+  color: string;
+  bg: string;
+  border: string;
+}
+
 // ── 헤드라인 배지 ─────────────────────────────────────────────────
 export const BADGES: StatBadge[] = [
   {
-    value: "16",
+    value: "23",
     desc: "Agents",
     color: C.blue,
     bg: C.blueBg,
     border: C.blueBorder,
   },
   {
-    value: "19",
+    value: "17",
     desc: "Skills",
     color: C.purple,
     bg: C.purpleBg,
     border: C.purpleBorder,
+  },
+  {
+    value: "3",
+    desc: "Teams",
+    color: C.rose,
+    bg: C.roseBg,
+    border: C.roseBorder,
+  },
+  {
+    value: "7",
+    desc: "Chains",
+    color: C.teal,
+    bg: C.tealBg,
+    border: C.tealBorder,
   },
   {
     value: "9",
@@ -161,13 +194,6 @@ export const BADGES: StatBadge[] = [
     color: C.green,
     bg: C.greenBg,
     border: C.greenBorder,
-  },
-  {
-    value: "3",
-    desc: "MCP Servers",
-    color: C.teal,
-    bg: C.tealBg,
-    border: C.tealBorder,
   },
   {
     value: "3+",
@@ -182,28 +208,35 @@ export const BADGES: StatBadge[] = [
 export const AGENT_GROUPS: AgentGroup[] = [
   {
     label: "PROACTIVELY",
-    agents: ["code-reviewer", "commit-writer", "orch-state", "compressor"],
+    agents: [
+      "code-reviewer",
+      "commit-writer",
+      "orch-state",
+      "compressor",
+      "context-linker",
+      "project-linker",
+    ],
     color: C.blue,
     bg: C.blueBg,
     border: C.blueBorder,
   },
   {
     label: "Portfolio",
-    agents: ["pf-context", "pf-reviewer", "pf-deployer", "pf-orchestrator"],
+    agents: ["pf-context", "pf-reviewer", "pf-deployer"],
     color: C.purple,
     bg: C.purpleBg,
     border: C.purpleBorder,
   },
   {
     label: "Orchestration",
-    agents: ["orch-doc-writer", "orch-skill-builder"],
+    agents: ["orch-doc-writer", "orch-skill-builder", "meta-orchestrator"],
     color: C.green,
     bg: C.greenBg,
     border: C.greenBorder,
   },
   {
-    label: "Analysis",
-    agents: ["gemini-analyzer (1M)", "security-auditor"],
+    label: "AI Pipeline",
+    agents: ["gemini-analyzer (1M)", "codex-reviewer", "ai-synthesizer"],
     color: C.amber,
     bg: C.amberBg,
     border: C.amberBorder,
@@ -216,17 +249,31 @@ export const AGENT_GROUPS: AgentGroup[] = [
     border: C.tealBorder,
   },
   {
-    label: "Content",
-    agents: ["morning-briefer", "content-writer"],
+    label: "Tech-review",
+    agents: ["tr-monitor", "tr-updater"],
     color: C.rose,
     bg: C.roseBg,
     border: C.roseBorder,
+  },
+  {
+    label: "Daily",
+    agents: ["inbox-processor", "morning-briefer"],
+    color: "#6366f1",
+    bg: "#eef2ff",
+    border: "#c7d2fe",
+  },
+  {
+    label: "Other",
+    agents: ["content-writer", "security-auditor"],
+    color: C.dimmer,
+    bg: C.bg,
+    border: C.border,
   },
 ];
 
 // ── 워크플로우 스텝 ───────────────────────────────────────────────
 export const FLOW_STEPS: FlowStep[] = [
-  { label: "brainstorm", agent: "gemini-analyzer" },
+  { label: "brainstorm", agent: "Claude Code" },
   { label: "plan", agent: "orch-doc-writer" },
   { label: "implement", agent: "Claude Code" },
   { label: "review", agent: "code-reviewer" },
@@ -263,9 +310,9 @@ export const AI_ROLES: AiRole[] = [
     border: C.purpleBorder,
   },
   {
-    name: "GPT (Codex xhigh)",
+    name: "Codex CLI",
     role: "비판적 검토",
-    detail: "/gpt-review 스킬 · 설계 크로스 검증",
+    detail: "codex-reviewer 에이전트 · 분석 체인 병렬 검증",
     color: C.green,
     bg: C.greenBg,
     border: C.greenBorder,
@@ -286,7 +333,7 @@ export const HOOKS: Hook[] = [
   { name: "SessionStart", desc: "작업 로그 + git status 자동 출력" },
   { name: "SessionEnd", desc: "세션 종료 시 /sync 권장 알림" },
   { name: "PreToolUse", desc: "rm -rf, git push --force 자동 차단" },
-  { name: "PostToolUse", desc: "Write/Edit 후 context 파일 변경 감지" },
+  { name: "PostToolUse", desc: "Write/Edit 후 context 변경 감지 + live-context.md 자동 기록" },
   { name: "PreCompact", desc: "compact 전 /verify 권장 알림" },
   { name: "Notification", desc: "비동기 알림 처리" },
   { name: "TeammateIdle", desc: "Agent Teams 팀원 유휴 알림" },
@@ -303,7 +350,7 @@ export const SKILL_GROUPS: SkillGroup[] = [
       { name: "/sync-all", desc: "전체 프로젝트 STATE 갱신 + git push" },
       { name: "/todo", desc: "daily-memo Inbox 동기화 + 할 일 관리" },
       { name: "/session-insights", desc: "현재 세션 토큰 소비 + 비용 분석" },
-      { name: "/token-check", desc: "현재 토큰 사용량 확인 + 권장 액션" },
+      { name: "/compressor", desc: "세션 종료 전 핵심 결정·작업·다음 할 일 압축" },
     ],
   },
   {
@@ -323,21 +370,13 @@ export const SKILL_GROUPS: SkillGroup[] = [
     skills: [
       { name: "/commit-push-pr", desc: "커밋·푸시·PR 생성을 한 번에" },
       { name: "/verify", desc: "모든 프로젝트 규칙 검증 (커밋 전 실행)" },
-      {
-        name: "/verify-project-rules",
-        desc: "브랜치·커밋 메시지·STATE 형식 검증",
-      },
-      { name: "/verify-log-format", desc: "LOG 파일 형식 및 태그 일관성 검증" },
+      { name: "/handoff", desc: "다른 AI에게 전달할 컨텍스트 문서 생성" },
     ],
   },
   {
     label: "시스템 구축",
     skills: [
       { name: "/skill-creator", desc: "새 스킬 파일 구조화 + 패키징 가이드" },
-      {
-        name: "/subagent-creator",
-        desc: "전문 에이전트 설계 + 시스템 프롬프트 작성",
-      },
       { name: "/hook-creator", desc: "Claude Code 훅 이벤트 설정 + 레퍼런스" },
     ],
   },
@@ -345,10 +384,7 @@ export const SKILL_GROUPS: SkillGroup[] = [
     label: "유지·관리",
     skills: [
       { name: "/memory-review", desc: "MEMORY.md 주간 정리 및 품질 관리" },
-      {
-        name: "/token-mode",
-        desc: "토큰 효율 모드 활성화 (간결 응답, 서브에이전트 우선)",
-      },
+      { name: "/sync", desc: "STATE.md 갱신 + LOG append + git commit + push" },
     ],
   },
 ];
@@ -366,7 +402,13 @@ export const MODEL_GROUPS: ModelGroup[] = [
   {
     model: "Haiku",
     role: "수집·확인·포맷",
-    agents: ["commit-writer", "morning-briefer"],
+    agents: [
+      "commit-writer",
+      "morning-briefer",
+      "inbox-processor",
+      "tr-monitor",
+      "context-linker",
+    ],
     color: "#059669",
     bg: "#ecfdf5",
     border: "#a7f3d0",
@@ -380,9 +422,12 @@ export const MODEL_GROUPS: ModelGroup[] = [
       "compressor",
       "pf-context",
       "pf-deployer",
-      "gemini-analyzer",
-      "pf-orchestrator",
       "ml-porter",
+      "project-linker",
+      "meta-orchestrator",
+      "tr-updater",
+      "gemini-analyzer",
+      "codex-reviewer",
     ],
     color: "#2563eb",
     bg: "#eff4ff",
@@ -396,10 +441,11 @@ export const MODEL_GROUPS: ModelGroup[] = [
       "code-reviewer",
       "pf-reviewer",
       "orch-doc-writer",
-      "security-auditor",
       "content-writer",
       "ml-experimenter",
       "orch-skill-builder",
+      "security-auditor",
+      "ai-synthesizer",
     ],
     color: "#7c3aed",
     bg: "#f5f3ff",
@@ -463,6 +509,21 @@ export const TIMELINE: TimelineItem[] = [
     v: "v2.1",
     date: "2026-02-22",
     desc: "SOT METRICS 추가, pf-orchestrator, content-writer, 훅 9종, 에이전트 16개",
+  },
+  {
+    v: "v2.2",
+    date: "2026-02-22",
+    desc: "시스템 오버홀 — 죽은 자동화 수리, 불필요 제거, stale 문서 수정",
+  },
+  {
+    v: "v3.0",
+    date: "2026-02-23",
+    desc: "에이전틱 워크플로우 — 체인 규칙 강제, agent.md 표준화, hooks 품질 게이트",
+  },
+  {
+    v: "v3.1",
+    date: "2026-02-23",
+    desc: "Agent Teams & Linker System — 에이전트 23개, 팀 3개, live-context.md 실시간 공유",
   },
 ];
 
@@ -555,13 +616,13 @@ export const CONFIG_LAYERS: ConfigLayer[] = [
   {
     indent: 0,
     path: "~/.claude/agents/",
-    desc: "에이전트 16개 정의",
+    desc: "에이전트 23개 정의",
     badge: "호출 시 로드",
   },
   {
     indent: 0,
     path: "~/.claude/skills/",
-    desc: "스킬 19개 정의",
+    desc: "스킬 17개 정의",
     badge: "호출 시 로드",
   },
   {
@@ -599,10 +660,10 @@ export const AI_MATRIX_ROWS = [
     spec: "파일 수정 · 커밋 · 에이전트 오케스트레이션",
   },
   {
-    ai: "GPT (Codex xhigh)",
-    role: "전략 · 비판 검토",
+    ai: "Codex CLI",
+    role: "비판적 검토",
     write: "❌",
-    spec: "설계 크로스 검증 · Canvas 시각화 · /gpt-review",
+    spec: "codex-reviewer 에이전트 · 분석 체인 병렬 검증 · /gpt-review",
   },
   {
     ai: "Gemini CLI",
@@ -667,5 +728,107 @@ export const ADRS: Adr[] = [
     problem: "세션 간 컨텍스트 완전 소실",
     solution: "SessionEnd→pending.md→검증→MEMORY.md",
     impact: "세션 재시작 시 5초 내 맥락 복구",
+  },
+  {
+    id: "D-020",
+    title: "Agent Teams & Linker System",
+    problem: "에이전트 16개가 독립 실행 → 프로젝트 간 맥락 단절",
+    solution: "팀 3개 + meta-orchestrator 디스패치 + live-context.md 실시간 공유",
+    impact: "프로젝트 간 변경 영향 자동 감지 + 체인 규칙으로 품질 보장",
+  },
+];
+
+// ── 체인 규칙 (6개) ─────────────────────────────────────────────
+export const CHAIN_RULES: ChainRule[] = [
+  {
+    id: "구현",
+    title: "구현 체인",
+    steps: ["implement", "code-reviewer", "commit-writer", "living docs"],
+    desc: "코드 작성 → Opus 리뷰 → Haiku 커밋 → 문서 갱신. 리뷰 통과 전 커밋 금지.",
+    color: C.blue,
+    bg: C.blueBg,
+    border: C.blueBorder,
+  },
+  {
+    id: "분석",
+    title: "분석 체인",
+    steps: ["gemini + codex (병렬)", "ai-synthesizer", "사용자 확인"],
+    desc: "Gemini 1M + Codex 병렬 분석 → Opus가 교차 검증 → 합의만 자동 반영.",
+    color: C.purple,
+    bg: C.purpleBg,
+    border: C.purpleBorder,
+  },
+  {
+    id: "배포",
+    title: "배포 체인",
+    steps: ["pf-deployer", "security-auditor", "사용자 확인", "push"],
+    desc: "빌드 검증 → 보안 점검 → GO/NO-GO 판단. 하나라도 실패 시 배포 중단.",
+    color: C.green,
+    bg: C.greenBg,
+    border: C.greenBorder,
+  },
+  {
+    id: "TR",
+    title: "Tech-review 체인",
+    steps: ["tr-monitor", "tr-updater", "commit-writer"],
+    desc: "Haiku가 미커밋 감지 → Sonnet이 블로그 업데이트 → Haiku가 커밋.",
+    color: C.rose,
+    bg: C.roseBg,
+    border: C.roseBorder,
+  },
+  {
+    id: "일일",
+    title: "일일 운영 체인",
+    steps: ["inbox-processor", "orch-state", "morning-briefer"],
+    desc: "Inbox 처리 → 상태 파악 → 통합 브리핑. 하루 시작을 자동화.",
+    color: C.amber,
+    bg: C.amberBg,
+    border: C.amberBorder,
+  },
+  {
+    id: "디스패치",
+    title: "디스패치 체인",
+    steps: ["catchup", "meta-orchestrator", "팀 활성화"],
+    desc: "세션 시작 시 상황 파악 → Sonnet이 어떤 팀을 활성화할지 판단.",
+    color: "#6366f1",
+    bg: "#eef2ff",
+    border: "#c7d2fe",
+  },
+  {
+    id: "연동",
+    title: "프로젝트 연동",
+    steps: ["context-linker (hook)", "project-linker (커밋)", "맥락 주입"],
+    desc: "PostToolUse hook이 변경 기록 → 커밋 시 프로젝트 간 영향 분석.",
+    color: C.teal,
+    bg: C.tealBg,
+    border: C.tealBorder,
+  },
+];
+
+// ── 에이전트 팀 (3개) ────────────────────────────────────────────
+export const AGENT_TEAMS: AgentTeam[] = [
+  {
+    name: "tech-review-ops",
+    agents: ["tr-monitor", "tr-updater", "commit-writer"],
+    desc: "Tech Review 블로그 미커밋 감지 → 업데이트 → 커밋까지 자동 처리.",
+    color: C.rose,
+    bg: C.roseBg,
+    border: C.roseBorder,
+  },
+  {
+    name: "ai-feedback-loop",
+    agents: ["gemini-analyzer", "codex-reviewer", "ai-synthesizer"],
+    desc: "Gemini + Codex 병렬 분석 → ai-synthesizer가 교차 검증 후 합의 도출.",
+    color: C.purple,
+    bg: C.purpleBg,
+    border: C.purpleBorder,
+  },
+  {
+    name: "daily-ops",
+    agents: ["inbox-processor", "orch-state", "morning-briefer"],
+    desc: "모바일 Inbox 처리 → 프로젝트 상태 파악 → 통합 브리핑 자동화.",
+    color: C.amber,
+    bg: C.amberBg,
+    border: C.amberBorder,
   },
 ];
