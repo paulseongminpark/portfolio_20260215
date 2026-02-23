@@ -185,7 +185,8 @@ type FileKey =
   | "pf/STATE.md"
   | "tr/README.md"
   | "monet/README.md"
-  | "daily/Inbox.md";
+  | "daily/Inbox.md"
+  | "evidence/README.md";
 
 // flat 리스트: folder는 folderId, 파일은 fileKey, parent로 접기 제어
 interface SidebarEntry {
@@ -214,9 +215,10 @@ const SIDEBAR: SidebarEntry[] = [
   { name: "daily-memo", indent: 1, folderId: "daily", parent: "projects" },
   { name: "Inbox.md", indent: 2, fileKey: "daily/Inbox.md", parent: "daily" },
   { name: "03_evidence", indent: 0, folderId: "evidence" },
+  { name: "README.md", indent: 1, fileKey: "evidence/README.md", parent: "evidence" },
 ];
 
-const DEFAULT_OPEN = new Set(["projects", "orch"]);
+const DEFAULT_OPEN = new Set(["projects", "orch", "pf", "tr", "monet", "daily", "evidence"]);
 
 // 공통 렌더 헬퍼
 const H = (text: string) => (
@@ -415,6 +417,23 @@ const FILE_CONTENT: Record<FileKey, React.ReactNode> = {
     </>
   ),
 
+  "evidence/README.md": (
+    <>
+      {Title("03_evidence — 근거 자료")}
+      {H("목적")}
+      {B("설계 결정의 근거가 되는 원본 자료를 보관")}
+      {B("스크린샷, 로그, 벤치마크 결과, 에러 기록")}
+      {H("구조")}
+      {B("screenshots/ — UI 캡처, 에러 화면")}
+      {B("logs/ — 세션 로그, 빌드 로그")}
+      {B("benchmarks/ — 토큰 사용량, 응답 시간 측정")}
+      {H("규칙")}
+      {B("날짜 프리픽스: 2026-02-23_screenshot.png")}
+      {B(".gitignore에서 제외 — dev-vault에는 포함 안 됨")}
+      {B("로컬 전용, 필요 시 수동으로 공유")}
+    </>
+  ),
+
   "daily/Inbox.md": (
     <>
       {Title("Inbox.md — 모바일 메모")}
@@ -509,21 +528,21 @@ function ObsidianMockup() {
       </div>
 
       {/* 본문: 사이드바 + 에디터 */}
-      <div style={{ display: "flex", minHeight: 260 }}>
+      <div style={{ display: "flex", minHeight: 340 }}>
         {/* 사이드바 */}
         <div
           style={{
-            width: 150,
+            width: 170,
             flexShrink: 0,
             padding: "10px 0",
             background: "#faf8ff",
             borderRight: `1px solid ${C.purpleBorder}`,
             fontFamily:
               "'SF Mono', 'Cascadia Code', 'Consolas', monospace",
-            fontSize: 10,
-            lineHeight: 1.9,
+            fontSize: 11,
+            lineHeight: 1.85,
             color: C.muted,
-            overflow: "hidden",
+            overflow: "auto",
           }}
         >
           {SIDEBAR.map((entry) => {
@@ -603,12 +622,12 @@ function ObsidianMockup() {
         <div
           style={{
             flex: 1,
-            padding: "14px 18px",
+            padding: "16px 22px",
             background: C.white,
             fontFamily:
               "'SF Mono', 'Cascadia Code', 'Consolas', monospace",
-            fontSize: 11,
-            lineHeight: 1.75,
+            fontSize: 12,
+            lineHeight: 1.8,
             color: C.muted,
             overflow: "auto",
           }}
