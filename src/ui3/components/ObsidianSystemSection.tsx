@@ -726,7 +726,7 @@ function VaultGraph() {
   const getNode = (id: GNode["id"]) => GRAPH_NODES.find((n) => n.id === id)!;
 
   return (
-    <div style={{ marginTop: 8 }}>
+    <div style={{ marginTop: 8, maxWidth: 540 }}>
       <svg
         viewBox="0 0 600 300"
         style={{
@@ -1213,7 +1213,9 @@ export function ObsidianSystemSection() {
         </div>
 
         {/* Obsidian UI 인터랙티브 목업 */}
-        <ObsidianMockup />
+        <div style={{ maxWidth: 540 }}>
+          <ObsidianMockup />
+        </div>
       </div>
 
       {/* ④ Graph View */}
