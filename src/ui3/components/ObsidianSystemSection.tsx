@@ -1203,12 +1203,21 @@ export function ObsidianSystemSection() {
           </div>
         </div>
 
-        {/* Vault 목업 + Graph View 양옆 배치 */}
+        {/* 현재 구성 타이틀 + Vault 목업 + Graph View */}
+        <p
+          style={{
+            fontSize: 12,
+            fontWeight: 600,
+            color: C.text,
+            margin: "20px 0 8px",
+          }}
+        >
+          현재 Obsidian 구성
+        </p>
         <div
           style={{
             display: "flex",
             gap: 14,
-            marginTop: 14,
             alignItems: "stretch",
           }}
         >
