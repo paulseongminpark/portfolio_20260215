@@ -566,84 +566,234 @@ export function ObsidianSystemSection() {
           </div>
         </div>
 
-        {/* HOME.md 미니 프리뷰 */}
+        {/* Obsidian UI 목업 */}
         <div
           style={{
             marginTop: 14,
-            background: C.white,
-            border: `1px solid ${C.border}`,
+            border: `1px solid ${C.purpleBorder}`,
             borderRadius: 10,
-            padding: "16px 18px",
-            position: "relative",
+            overflow: "hidden",
           }}
         >
+          {/* 타이틀바 */}
           <div
             style={{
-              position: "absolute",
-              top: 10,
-              right: 12,
-              fontSize: 9,
-              fontWeight: 700,
-              color: C.dimmer,
-              textTransform: "uppercase",
-              letterSpacing: "0.4px",
+              display: "flex",
+              alignItems: "center",
+              gap: 8,
+              padding: "8px 14px",
+              background: C.purpleBg,
+              borderBottom: `1px solid ${C.purpleBorder}`,
             }}
           >
-            Preview
+            <div
+              style={{
+                width: 14,
+                height: 14,
+                borderRadius: 3,
+                background: C.purple,
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                fontSize: 8,
+                color: C.white,
+                fontWeight: 800,
+              }}
+            >
+              O
+            </div>
+            <span
+              style={{
+                fontSize: 11,
+                fontWeight: 600,
+                color: C.purple,
+              }}
+            >
+              dev-vault
+            </span>
+            <span style={{ fontSize: 10, color: C.dimmer, marginLeft: "auto" }}>
+              Obsidian v1.7
+            </span>
           </div>
-          <div
-            style={{
-              fontSize: 10,
-              fontWeight: 700,
-              color: C.blue,
-              textTransform: "uppercase",
-              letterSpacing: "0.4px",
-              marginBottom: 10,
-            }}
-          >
-            HOME.md
-          </div>
-          <div
-            style={{
-              fontFamily:
-                "'SF Mono', 'Cascadia Code', 'Consolas', monospace",
-              fontSize: 11,
-              lineHeight: 1.7,
-              color: C.muted,
-            }}
-          >
-            <div style={{ color: C.text, fontWeight: 600 }}>
-              # HOME — Dev Workspace Hub
+
+          {/* 본문: 사이드바 + 에디터 */}
+          <div style={{ display: "flex", minHeight: 240 }}>
+            {/* 사이드바 */}
+            <div
+              style={{
+                width: 150,
+                flexShrink: 0,
+                padding: "10px 0",
+                background: "#faf8ff",
+                borderRight: `1px solid ${C.purpleBorder}`,
+                fontFamily:
+                  "'SF Mono', 'Cascadia Code', 'Consolas', monospace",
+                fontSize: 10,
+                lineHeight: 1.9,
+                color: C.muted,
+                overflow: "hidden",
+              }}
+            >
+              {[
+                { name: "HOME.md", indent: 0, active: true },
+                { name: "CLAUDE.md", indent: 0, active: false },
+                { name: "01_projects", indent: 0, active: false, folder: true },
+                { name: "orchestration", indent: 1, active: false, folder: true },
+                { name: "STATE.md", indent: 2, active: false },
+                { name: "PLANNING.md", indent: 2, active: false },
+                { name: "KNOWLEDGE.md", indent: 2, active: false },
+                { name: "portfolio", indent: 1, active: false, folder: true },
+                { name: "tech-review", indent: 1, active: false, folder: true },
+                { name: "monet-lab", indent: 1, active: false, folder: true },
+                { name: "daily-memo", indent: 1, active: false, folder: true },
+                { name: "03_evidence", indent: 0, active: false, folder: true },
+              ].map((f) => (
+                <div
+                  key={`${f.name}-${f.indent}`}
+                  style={{
+                    paddingLeft: 12 + f.indent * 12,
+                    paddingRight: 8,
+                    background: f.active ? C.purpleBg : undefined,
+                    borderLeft: f.active
+                      ? `2px solid ${C.purple}`
+                      : "2px solid transparent",
+                    color: f.active ? C.purple : C.muted,
+                    fontWeight: f.active ? 600 : 400,
+                    whiteSpace: "nowrap",
+                    overflow: "hidden",
+                    textOverflow: "ellipsis",
+                  }}
+                >
+                  {(f as { folder?: boolean }).folder ? (
+                    <span style={{ color: C.dimmer, marginRight: 3 }}>
+                      {"\u25B8"}
+                    </span>
+                  ) : (
+                    <span style={{ marginRight: 3, opacity: 0.4 }}>
+                      {"\u25A0"}
+                    </span>
+                  )}
+                  {f.name}
+                </div>
+              ))}
             </div>
-            <div style={{ marginTop: 6 }}>
-              <span style={{ color: C.blue, fontWeight: 600 }}>
-                ## Projects
-              </span>
-            </div>
-            <div style={{ paddingLeft: 12 }}>
-              | Project | Status | Branch | Next |
-            </div>
-            <div style={{ paddingLeft: 12 }}>
-              | orchestration | v3.1 active | main | ... |
-            </div>
-            <div style={{ paddingLeft: 12 }}>
-              | portfolio | building | master | ... |
-            </div>
-            <div style={{ marginTop: 6 }}>
-              <span style={{ color: C.blue, fontWeight: 600 }}>
-                ## Today's Session
-              </span>
-            </div>
-            <div style={{ paddingLeft: 12 }}>
-              - 23:00 Obsidian 섹션 추가 (portfolio)
-            </div>
-            <div style={{ marginTop: 6 }}>
-              <span style={{ color: C.blue, fontWeight: 600 }}>
-                ## Open Decisions
-              </span>
-            </div>
-            <div style={{ paddingLeft: 12, color: C.dim }}>
-              - Phase E 파일럿 테스트 (Agent Teams)
+
+            {/* 에디터 영역 */}
+            <div
+              style={{
+                flex: 1,
+                padding: "14px 18px",
+                background: C.white,
+                fontFamily:
+                  "'SF Mono', 'Cascadia Code', 'Consolas', monospace",
+                fontSize: 11,
+                lineHeight: 1.75,
+                color: C.muted,
+                overflow: "hidden",
+              }}
+            >
+              {/* 제목 */}
+              <div
+                style={{
+                  fontSize: 16,
+                  fontWeight: 700,
+                  color: C.text,
+                  marginBottom: 12,
+                }}
+              >
+                HOME — Dev Workspace Hub
+              </div>
+
+              {/* Projects 테이블 */}
+              <div
+                style={{
+                  fontSize: 11,
+                  fontWeight: 600,
+                  color: C.purple,
+                  marginBottom: 6,
+                }}
+              >
+                Projects
+              </div>
+              <div
+                style={{
+                  display: "grid",
+                  gridTemplateColumns: "1fr 0.8fr 0.6fr",
+                  gap: "2px 12px",
+                  fontSize: 10,
+                  marginBottom: 14,
+                  paddingLeft: 4,
+                }}
+              >
+                <span style={{ fontWeight: 600, color: C.dim }}>
+                  Project
+                </span>
+                <span style={{ fontWeight: 600, color: C.dim }}>
+                  Status
+                </span>
+                <span style={{ fontWeight: 600, color: C.dim }}>
+                  Branch
+                </span>
+                <span>orchestration</span>
+                <span style={{ color: C.green, fontWeight: 600 }}>
+                  v3.1 active
+                </span>
+                <span>main</span>
+                <span>portfolio</span>
+                <span style={{ color: C.amber, fontWeight: 600 }}>
+                  building
+                </span>
+                <span>master</span>
+                <span>tech-review</span>
+                <span style={{ color: C.purple, fontWeight: 600 }}>
+                  22 uncommitted
+                </span>
+                <span>main</span>
+              </div>
+
+              {/* Today's Session */}
+              <div
+                style={{
+                  fontSize: 11,
+                  fontWeight: 600,
+                  color: C.purple,
+                  marginBottom: 4,
+                }}
+              >
+                Today's Session
+              </div>
+              <div style={{ paddingLeft: 4, marginBottom: 14, fontSize: 10 }}>
+                <div>
+                  <span style={{ color: C.dim }}>23:00</span>{" "}
+                  Obsidian 섹션 추가 (portfolio)
+                </div>
+                <div>
+                  <span style={{ color: C.dim }}>22:00</span>{" "}
+                  Agent Teams 설계 완료 (orchestration)
+                </div>
+              </div>
+
+              {/* Open Decisions */}
+              <div
+                style={{
+                  fontSize: 11,
+                  fontWeight: 600,
+                  color: C.purple,
+                  marginBottom: 4,
+                }}
+              >
+                Open Decisions
+              </div>
+              <div style={{ paddingLeft: 4, fontSize: 10 }}>
+                <div>
+                  <span style={{ color: C.purple }}>{"[["}D-023{"]]"}</span>{" "}
+                  Phase E 파일럿 테스트
+                </div>
+                <div>
+                  <span style={{ color: C.purple }}>{"[["}D-024{"]]"}</span>{" "}
+                  TR 프롬프트 Smart Brevity 전환
+                </div>
+              </div>
             </div>
           </div>
         </div>
