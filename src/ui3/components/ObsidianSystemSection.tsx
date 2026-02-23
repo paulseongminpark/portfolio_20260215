@@ -178,206 +178,284 @@ const EVOLUTION = [
 type FileKey =
   | "HOME.md"
   | "CLAUDE.md"
-  | "STATE.md"
-  | "PLANNING.md"
-  | "KNOWLEDGE.md";
+  | "orch/STATE.md"
+  | "orch/PLANNING.md"
+  | "orch/KNOWLEDGE.md"
+  | "orch/CHANGELOG.md"
+  | "pf/STATE.md"
+  | "tr/README.md"
+  | "monet/README.md"
+  | "daily/Inbox.md";
 
-interface SidebarItem {
+// flat 리스트: folder는 folderId, 파일은 fileKey, parent로 접기 제어
+interface SidebarEntry {
   name: string;
   indent: number;
   fileKey?: FileKey;
-  folder?: boolean;
+  folderId?: string;   // 이 항목이 폴더면 ID
+  parent?: string;     // 부모 폴더 ID (접힐 때 숨김)
 }
 
-const SIDEBAR_ITEMS: SidebarItem[] = [
+const SIDEBAR: SidebarEntry[] = [
   { name: "HOME.md", indent: 0, fileKey: "HOME.md" },
   { name: "CLAUDE.md", indent: 0, fileKey: "CLAUDE.md" },
-  { name: "01_projects", indent: 0, folder: true },
-  { name: "orchestration", indent: 1, folder: true },
-  { name: "STATE.md", indent: 2, fileKey: "STATE.md" },
-  { name: "PLANNING.md", indent: 2, fileKey: "PLANNING.md" },
-  { name: "KNOWLEDGE.md", indent: 2, fileKey: "KNOWLEDGE.md" },
-  { name: "portfolio", indent: 1, folder: true },
-  { name: "tech-review", indent: 1, folder: true },
-  { name: "monet-lab", indent: 1, folder: true },
-  { name: "daily-memo", indent: 1, folder: true },
-  { name: "03_evidence", indent: 0, folder: true },
+  { name: "01_projects", indent: 0, folderId: "projects" },
+  { name: "orchestration", indent: 1, folderId: "orch", parent: "projects" },
+  { name: "STATE.md", indent: 2, fileKey: "orch/STATE.md", parent: "orch" },
+  { name: "PLANNING.md", indent: 2, fileKey: "orch/PLANNING.md", parent: "orch" },
+  { name: "KNOWLEDGE.md", indent: 2, fileKey: "orch/KNOWLEDGE.md", parent: "orch" },
+  { name: "CHANGELOG.md", indent: 2, fileKey: "orch/CHANGELOG.md", parent: "orch" },
+  { name: "portfolio", indent: 1, folderId: "pf", parent: "projects" },
+  { name: "STATE.md", indent: 2, fileKey: "pf/STATE.md", parent: "pf" },
+  { name: "tech-review", indent: 1, folderId: "tr", parent: "projects" },
+  { name: "README.md", indent: 2, fileKey: "tr/README.md", parent: "tr" },
+  { name: "monet-lab", indent: 1, folderId: "monet", parent: "projects" },
+  { name: "README.md", indent: 2, fileKey: "monet/README.md", parent: "monet" },
+  { name: "daily-memo", indent: 1, folderId: "daily", parent: "projects" },
+  { name: "Inbox.md", indent: 2, fileKey: "daily/Inbox.md", parent: "daily" },
+  { name: "03_evidence", indent: 0, folderId: "evidence" },
 ];
 
-function FileContent({ fileKey }: { fileKey: FileKey }) {
-  const h = (text: string) => (
-    <div style={{ fontSize: 11, fontWeight: 600, color: C.purple, marginBottom: 4, marginTop: 12 }}>
-      {text}
-    </div>
-  );
-  const row = (items: [string, string, string?][]) => (
-    <div
-      style={{
-        display: "grid",
-        gridTemplateColumns: items[0]?.length === 3 ? "1fr 0.8fr 0.6fr" : "1fr 1fr",
-        gap: "2px 12px",
-        fontSize: 10,
-        paddingLeft: 4,
-        marginBottom: 10,
-      }}
-    >
-      {items.map((cols, i) =>
-        cols.map((col, j) => (
-          <span
-            key={`${i}-${j}`}
-            style={{
-              fontWeight: i === 0 ? 600 : 400,
-              color: i === 0 ? C.dim : undefined,
-              ...(j === 1 && i > 0 && col?.includes("active")
-                ? { color: C.green, fontWeight: 600 }
-                : j === 1 && i > 0 && col?.includes("building")
-                  ? { color: C.amber, fontWeight: 600 }
-                  : j === 1 && i > 0 && col?.includes("uncommitted")
-                    ? { color: C.purple, fontWeight: 600 }
-                    : {}),
-            }}
-          >
-            {col}
-          </span>
-        )),
-      )}
-    </div>
-  );
-  const bullet = (text: string, meta?: string) => (
-    <div style={{ paddingLeft: 4, fontSize: 10, lineHeight: 1.7 }}>
-      {meta && <span style={{ color: C.dim }}>{meta} </span>}
-      {text}
-    </div>
-  );
-  const link = (text: string) => (
-    <span style={{ color: C.purple }}>{"[["}{text}{"]]"}</span>
-  );
+const DEFAULT_OPEN = new Set(["projects", "orch"]);
 
-  switch (fileKey) {
-    case "HOME.md":
-      return (
-        <>
-          <div style={{ fontSize: 16, fontWeight: 700, color: C.text, marginBottom: 4 }}>
-            HOME — Dev Workspace Hub
-          </div>
-          {h("Projects")}
-          {row([
-            ["Project", "Status", "Branch"],
-            ["orchestration", "v3.1 active", "main"],
-            ["portfolio", "building", "master"],
-            ["tech-review", "22 uncommitted", "main"],
-          ])}
-          {h("Today's Session")}
-          {bullet("Obsidian 섹션 추가 (portfolio)", "23:00")}
-          {bullet("Agent Teams 설계 완료 (orchestration)", "22:00")}
-          {h("Open Decisions")}
-          <div style={{ paddingLeft: 4, fontSize: 10, lineHeight: 1.7 }}>
-            <div>{link("D-023")} Phase E 파일럿 테스트</div>
-            <div>{link("D-024")} TR 프롬프트 Smart Brevity 전환</div>
-          </div>
-        </>
-      );
+// 공통 렌더 헬퍼
+const H = (text: string) => (
+  <div style={{ fontSize: 11, fontWeight: 600, color: C.purple, marginBottom: 4, marginTop: 12 }}>{text}</div>
+);
+const B = (text: string, meta?: string) => (
+  <div style={{ paddingLeft: 4, fontSize: 10, lineHeight: 1.7 }}>
+    {meta && <span style={{ color: C.dim }}>{meta} </span>}{text}
+  </div>
+);
+const L = (text: string) => (
+  <span style={{ color: C.purple }}>{"[["}{text}{"]]"}</span>
+);
+const Title = (text: string) => (
+  <div style={{ fontSize: 16, fontWeight: 700, color: C.text, marginBottom: 4 }}>{text}</div>
+);
+const Dim = (text: string) => (
+  <div style={{ paddingLeft: 4, fontSize: 10, lineHeight: 1.7, color: C.dim }}>{text}</div>
+);
+const Label = (label: string, value: string) => (
+  <div style={{ paddingLeft: 4, fontSize: 10, lineHeight: 1.7 }}>
+    <span style={{ color: C.dim, fontWeight: 600 }}>{label}:</span> {value}
+  </div>
+);
 
-    case "CLAUDE.md":
-      return (
-        <>
-          <div style={{ fontSize: 16, fontWeight: 700, color: C.text, marginBottom: 4 }}>
-            CLAUDE.md — 전역 규칙
-          </div>
-          {h("언어 & 출력")}
-          {bullet("한국어. 간결: DONE / FILES / NEXT")}
-          {bullet("불확실 → 보류+이유. 범위 밖 금지.")}
-          {h("Git")}
-          {bullet('커밋: "[project] 한줄 설명"')}
-          {bullet("force push 금지")}
-          {bullet("orchestration: main / portfolio: master")}
-          {h("에이전트 체인")}
-          <div style={{ paddingLeft: 4, fontSize: 10, lineHeight: 1.7 }}>
-            <div>구현 → {link("code-reviewer")} → {link("commit-writer")} → living docs</div>
-            <div>배포 → {link("pf-deployer")} → {link("security-auditor")} → push</div>
-            <div>분석 → gemini + codex → {link("ai-synthesizer")} → 반영</div>
-          </div>
-          {h("토큰 관리")}
-          {bullet("1세션 = 1목표. 150K+ → /compact")}
-          {bullet("node_modules, .git, dist 읽기 금지")}
-        </>
-      );
+const FILE_CONTENT: Record<FileKey, React.ReactNode> = {
+  "HOME.md": (
+    <>
+      {Title("HOME — Dev Workspace Hub")}
+      {H("Projects")}
+      <div style={{ display: "grid", gridTemplateColumns: "1fr 0.8fr 0.6fr", gap: "2px 12px", fontSize: 10, paddingLeft: 4, marginBottom: 10 }}>
+        <span style={{ fontWeight: 600, color: C.dim }}>Project</span>
+        <span style={{ fontWeight: 600, color: C.dim }}>Status</span>
+        <span style={{ fontWeight: 600, color: C.dim }}>Branch</span>
+        <span>orchestration</span><span style={{ color: C.green, fontWeight: 600 }}>v3.1 active</span><span>main</span>
+        <span>portfolio</span><span style={{ color: C.amber, fontWeight: 600 }}>building</span><span>master</span>
+        <span>tech-review</span><span style={{ color: C.purple, fontWeight: 600 }}>22 uncommitted</span><span>main</span>
+      </div>
+      {H("Today's Session")}
+      {B("Obsidian 섹션 추가 (portfolio)", "23:00")}
+      {B("Agent Teams 설계 완료 (orchestration)", "22:00")}
+      {H("Open Decisions")}
+      <div style={{ paddingLeft: 4, fontSize: 10, lineHeight: 1.7 }}>
+        <div>{L("D-023")} Phase E 파일럿 테스트</div>
+        <div>{L("D-024")} TR 프롬프트 Smart Brevity 전환</div>
+      </div>
+    </>
+  ),
 
-    case "STATE.md":
-      return (
-        <>
-          <div style={{ fontSize: 16, fontWeight: 700, color: C.text, marginBottom: 4 }}>
-            STATE.md — Orchestration
-          </div>
-          {h("Current")}
-          <div style={{ paddingLeft: 4, fontSize: 10, lineHeight: 1.7 }}>
-            <div><span style={{ color: C.green, fontWeight: 600 }}>v3.1</span> Agent Teams & Linker System</div>
-            <div>에이전트 23개, 팀 3개, hooks 7개</div>
-          </div>
-          {h("In Progress")}
-          {bullet("tech-review 미커밋 22개 정리")}
-          {bullet("inbox-processor 실전: 8건 새 항목")}
-          {h("Completed (recent)")}
-          <div style={{ paddingLeft: 4, fontSize: 10, lineHeight: 1.7, color: C.dim }}>
-            <div>v3.0 에이전틱 워크플로우</div>
-            <div>v2.2 시스템 오버홀</div>
-            <div>v2.0 dev-vault Git 초기화</div>
-          </div>
-          {h("Next")}
-          {bullet("Phase E 파일럿 (Agent Teams + worktree 병렬)")}
-          {bullet("ai-synthesizer 실전 테스트")}
-        </>
-      );
+  "CLAUDE.md": (
+    <>
+      {Title("CLAUDE.md — 전역 규칙")}
+      {H("언어 & 출력")}
+      {B("한국어. 간결: DONE / FILES / NEXT")}
+      {B("불확실 → 보류+이유. 범위 밖 금지.")}
+      {H("Git")}
+      {B('커밋: "[project] 한줄 설명"')}
+      {B("force push 금지")}
+      {H("에이전트 체인")}
+      <div style={{ paddingLeft: 4, fontSize: 10, lineHeight: 1.7 }}>
+        <div>구현 → {L("code-reviewer")} → {L("commit-writer")} → living docs</div>
+        <div>배포 → {L("pf-deployer")} → {L("security-auditor")} → push</div>
+        <div>분석 → gemini + codex → {L("ai-synthesizer")} → 반영</div>
+      </div>
+      {H("토큰 관리")}
+      {B("1세션 = 1목표. 150K+ → /compact")}
+      {B("node_modules, .git, dist 읽기 금지")}
+    </>
+  ),
 
-    case "PLANNING.md":
-      return (
-        <>
-          <div style={{ fontSize: 16, fontWeight: 700, color: C.text, marginBottom: 4 }}>
-            PLANNING.md — Architecture Decisions
-          </div>
-          {h("D-001: SoT를 Git으로 전환")}
-          <div style={{ paddingLeft: 4, fontSize: 10, lineHeight: 1.7 }}>
-            <div><span style={{ color: C.dim, fontWeight: 600 }}>문제:</span> Obsidian만으로는 다른 AI가 접근 불가</div>
-            <div><span style={{ color: C.dim, fontWeight: 600 }}>해결:</span> Git {link("STATE.md")} + GitHub Pages URL</div>
-            <div><span style={{ color: C.dim, fontWeight: 600 }}>효과:</span> AI 4종 동기화 해결</div>
-          </div>
-          {h("D-003: Jeff Su 폴더 방법론")}
-          <div style={{ paddingLeft: 4, fontSize: 10, lineHeight: 1.7 }}>
-            <div><span style={{ color: C.dim, fontWeight: 600 }}>문제:</span> 파일이 늘수록 구조가 무너짐</div>
-            <div><span style={{ color: C.dim, fontWeight: 600 }}>해결:</span> 5레벨 MAX, 2자리 넘버링, 99=Archive</div>
-          </div>
-          {h("D-019: Obsidian = 뷰어 전용")}
-          <div style={{ paddingLeft: 4, fontSize: 10, lineHeight: 1.7 }}>
-            <div><span style={{ color: C.dim, fontWeight: 600 }}>문제:</span> Obsidian 편집과 AI 편집이 충돌</div>
-            <div><span style={{ color: C.dim, fontWeight: 600 }}>해결:</span> 읽기 전용 + Claude Code 단일 쓰기</div>
-          </div>
-        </>
-      );
+  "orch/STATE.md": (
+    <>
+      {Title("STATE.md — Orchestration")}
+      {H("Current")}
+      <div style={{ paddingLeft: 4, fontSize: 10, lineHeight: 1.7 }}>
+        <div><span style={{ color: C.green, fontWeight: 600 }}>v3.1</span> Agent Teams & Linker System</div>
+        <div>에이전트 23개, 팀 3개, hooks 7개</div>
+      </div>
+      {H("In Progress")}
+      {B("tech-review 미커밋 22개 정리")}
+      {B("inbox-processor 실전: 8건 새 항목")}
+      {H("Completed (recent)")}
+      {Dim("v3.0 에이전틱 워크플로우")}
+      {Dim("v2.2 시스템 오버홀")}
+      {Dim("v2.0 dev-vault Git 초기화")}
+      {H("Next")}
+      {B("Phase E 파일럿 (Agent Teams + worktree 병렬)")}
+      {B("ai-synthesizer 실전 테스트")}
+    </>
+  ),
 
-    case "KNOWLEDGE.md":
-      return (
-        <>
-          <div style={{ fontSize: 16, fontWeight: 700, color: C.text, marginBottom: 4 }}>
-            KNOWLEDGE.md — Patterns & Rules
-          </div>
-          {h("반복 실수 패턴")}
-          {bullet("파일 재읽기 금지 — 이미 읽은 파일은 다시 읽지 않는다")}
-          {bullet("Write 전 Read 필수 — 기존 파일 수정 전 반드시 Read 먼저")}
-          {bullet("병렬 Write 금지 — 같은 파일을 동시에 수정하지 않는다")}
-          {h("에이전트 운영 규칙")}
-          {bullet("Haiku: 상태 확인, 브리핑, 요약")}
-          {bullet("Sonnet: 탐색, 검색, 코드 분석")}
-          {bullet("Opus: 설계 결정, 크로스 검증, 복잡한 실행")}
-          {h("교훈")}
-          {bullet("gemini-analyzer 분석 결과는 크로스 검증 필수")}
-          {bullet("100만 토큰 광역 분석은 개별 항목의 실제 사용 이력을 놓칠 수 있음")}
-        </>
-      );
-  }
-}
+  "orch/PLANNING.md": (
+    <>
+      {Title("PLANNING.md — Architecture Decisions")}
+      {H("D-001: SoT를 Git으로 전환")}
+      {Label("문제", "Obsidian만으로는 다른 AI가 접근 불가")}
+      {Label("해결", "Git STATE.md + GitHub Pages URL")}
+      {Label("효과", "AI 4종 동기화 해결")}
+      {H("D-003: Jeff Su 폴더 방법론")}
+      {Label("문제", "파일이 늘수록 구조가 무너짐")}
+      {Label("해결", "5레벨 MAX, 2자리 넘버링, 99=Archive")}
+      {H("D-019: Obsidian = 뷰어 전용")}
+      {Label("문제", "Obsidian 편집과 AI 편집이 충돌")}
+      {Label("해결", "읽기 전용 + Claude Code 단일 쓰기")}
+    </>
+  ),
+
+  "orch/KNOWLEDGE.md": (
+    <>
+      {Title("KNOWLEDGE.md — Patterns & Rules")}
+      {H("반복 실수 패턴")}
+      {B("파일 재읽기 금지 — 이미 읽은 파일은 다시 읽지 않는다")}
+      {B("Write 전 Read 필수 — 기존 파일 수정 전 반드시 Read 먼저")}
+      {B("병렬 Write 금지 — 같은 파일을 동시에 수정하지 않는다")}
+      {H("에이전트 운영 규칙")}
+      {B("Haiku: 상태 확인, 브리핑, 요약")}
+      {B("Sonnet: 탐색, 검색, 코드 분석")}
+      {B("Opus: 설계 결정, 크로스 검증, 복잡한 실행")}
+      {H("교훈")}
+      {B("gemini-analyzer 분석 결과는 크로스 검증 필수")}
+      {B("100만 토큰 광역 분석은 개별 항목의 실제 사용 이력을 놓칠 수 있음")}
+    </>
+  ),
+
+  "orch/CHANGELOG.md": (
+    <>
+      {Title("CHANGELOG.md — Version History")}
+      {H("v3.1 — 2026-02-23")}
+      {B("Agent Teams & Linker System")}
+      {B("에이전트 7개 추가 (16→23), 팀 3개, live-context.md")}
+      {B("context-linker + project-linker 프로젝트 간 연동")}
+      {H("v3.0 — 2026-02-23")}
+      {B("에이전틱 워크플로우 강화")}
+      {B("체인 규칙, agent.md 표준화, hooks 품질 게이트")}
+      {H("v2.2 — 2026-02-22")}
+      {B("시스템 오버홀 — 죽은 자동화 수리, stale 문서 정리")}
+      {H("v2.0 — 2026-02-21")}
+      {B("dev-vault git init, Obsidian Git 연동, agents 14개")}
+      {H("v1.0 — 2026-02-17")}
+      {B("skills 11개, scripts 5개, auto-memory 3-phase")}
+    </>
+  ),
+
+  "pf/STATE.md": (
+    <>
+      {Title("STATE.md — Portfolio")}
+      {H("Current")}
+      <div style={{ paddingLeft: 4, fontSize: 10, lineHeight: 1.7 }}>
+        <div>React + Vite, vanilla CSS, hash routing</div>
+        <div>Branch: <span style={{ fontWeight: 600 }}>master</span></div>
+      </div>
+      {H("Sections")}
+      {B("About (3) · System (6) · Work (3) · Writing (4) · Lab (1)")}
+      {H("In Progress")}
+      {B("Obsidian Vault System 섹션 구현")}
+      {B("AI Workflow 섹션 데이터 업데이트")}
+      {H("Next")}
+      {B("Writing 카테고리 나머지 콘텐츠 채우기")}
+      {B("Vercel 배포 + 커스텀 도메인")}
+    </>
+  ),
+
+  "tr/README.md": (
+    <>
+      {Title("Tech Review — AI 뉴스 큐레이션")}
+      {H("개요")}
+      {B("매일 아침 GitHub Actions가 Perplexity API를 호출해")}
+      {B("AI·빅테크·신기술 뉴스를 Smart Brevity 형식으로 자동 생성")}
+      {H("스택")}
+      {B("GitHub Actions (cron) → Perplexity API → Jekyll → GitHub Pages")}
+      {H("요일별 테마")}
+      {B("Mon: AI R&D · Tue: 빅테크 · Wed: AI×Industry")}
+      {B("Thu: 스타트업 · Fri: 규제 · Sat: 도구&인프라")}
+      {H("현황")}
+      <div style={{ paddingLeft: 4, fontSize: 10, lineHeight: 1.7 }}>
+        <div><span style={{ color: C.purple, fontWeight: 600 }}>22개</span> 미커밋 포스트</div>
+        <div>ko / en 2개 언어, 연간 ~600개 포스트</div>
+      </div>
+    </>
+  ),
+
+  "monet/README.md": (
+    <>
+      {Title("monet-lab — UI 실험실")}
+      {H("목적")}
+      {B("shadcn/ui + Tailwind CSS 기반 컴포넌트 실험")}
+      {B("포트폴리오에 이식하기 전 프로토타이핑 공간")}
+      {H("실험 목록")}
+      {B("카드 레이아웃 변형 (3종)")}
+      {B("타임라인 컴포넌트 (수직/수평)")}
+      {B("인터랙티브 코드 블록")}
+      {H("워크플로우")}
+      <div style={{ paddingLeft: 4, fontSize: 10, lineHeight: 1.7 }}>
+        <div>{L("ml-experimenter")} 실험 리뷰 → {L("ml-porter")} 이식 판단</div>
+      </div>
+    </>
+  ),
+
+  "daily/Inbox.md": (
+    <>
+      {Title("Inbox.md — 모바일 메모")}
+      {H("개요")}
+      {B("핸드폰 Claude Code에서 빠르게 메모를 남기는 INBOX")}
+      {B("브랜치에 누적 → 컴퓨터에서 /todo로 merge + TODO 반영")}
+      {H("최근 항목")}
+      <div style={{ paddingLeft: 4, fontSize: 10, lineHeight: 1.7 }}>
+        <div><span style={{ color: C.dim }}>02-23 21:30</span> portfolio Obsidian 섹션 아이디어</div>
+        <div><span style={{ color: C.dim }}>02-23 18:00</span> tr 프롬프트 개선안 — 산업별 키워드 강화</div>
+        <div><span style={{ color: C.dim }}>02-22 23:15</span> n8n webhook → daily-memo 자동화 검토</div>
+      </div>
+      {H("흐름")}
+      <div style={{ paddingLeft: 4, fontSize: 10, lineHeight: 1.7 }}>
+        <div>핸드폰 메모 → 브랜치 Inbox.md 누적 → /todo merge → {L("TODO.md")} 반영</div>
+      </div>
+    </>
+  ),
+};
 
 function ObsidianMockup() {
   const [activeFile, setActiveFile] = useState<FileKey>("HOME.md");
+  const [openFolders, setOpenFolders] = useState<Set<string>>(() => new Set(DEFAULT_OPEN));
+
+  const toggleFolder = (id: string) => {
+    setOpenFolders((prev) => {
+      const next = new Set(prev);
+      if (next.has(id)) next.delete(id);
+      else next.add(id);
+      return next;
+    });
+  };
+
+  // 부모가 닫혀 있으면 숨김
+  const isVisible = (entry: SidebarEntry): boolean => {
+    if (!entry.parent) return true;
+    // 직계 부모가 열려 있고, 부모의 부모도 열려 있어야 함
+    const parentEntry = SIDEBAR.find((e) => e.folderId === entry.parent);
+    if (!parentEntry) return openFolders.has(entry.parent);
+    return openFolders.has(entry.parent) && isVisible(parentEntry);
+  };
 
   return (
     <div
@@ -448,31 +526,38 @@ function ObsidianMockup() {
             overflow: "hidden",
           }}
         >
-          {SIDEBAR_ITEMS.map((f) => {
-            const isActive = f.fileKey === activeFile;
-            const isClickable = !!f.fileKey;
+          {SIDEBAR.map((entry) => {
+            if (!isVisible(entry)) return null;
+            const isFolder = !!entry.folderId;
+            const isFile = !!entry.fileKey;
+            const isActive = isFile && entry.fileKey === activeFile;
+            const isOpen = isFolder && openFolders.has(entry.folderId!);
+
+            const handleClick = () => {
+              if (isFolder) toggleFolder(entry.folderId!);
+              else if (isFile) {
+                setActiveFile(entry.fileKey!);
+                // 파일 클릭 시 부모 폴더 자동 열기
+                if (entry.parent && !openFolders.has(entry.parent)) {
+                  setOpenFolders((prev) => new Set([...prev, entry.parent!]));
+                }
+              }
+            };
+
             return (
               <div
-                key={`${f.name}-${f.indent}`}
-                role={isClickable ? "button" : undefined}
-                tabIndex={isClickable ? 0 : undefined}
-                onClick={
-                  isClickable
-                    ? () => setActiveFile(f.fileKey!)
-                    : undefined
-                }
-                onKeyDown={
-                  isClickable
-                    ? (e) => {
-                        if (e.key === "Enter" || e.key === " ") {
-                          e.preventDefault();
-                          setActiveFile(f.fileKey!);
-                        }
-                      }
-                    : undefined
-                }
+                key={`${entry.folderId ?? entry.fileKey ?? entry.name}-${entry.indent}`}
+                role="button"
+                tabIndex={0}
+                onClick={handleClick}
+                onKeyDown={(e) => {
+                  if (e.key === "Enter" || e.key === " ") {
+                    e.preventDefault();
+                    handleClick();
+                  }
+                }}
                 style={{
-                  paddingLeft: 12 + f.indent * 12,
+                  paddingLeft: 12 + entry.indent * 12,
                   paddingRight: 8,
                   background: isActive ? C.purpleBg : undefined,
                   borderLeft: isActive
@@ -480,19 +565,27 @@ function ObsidianMockup() {
                     : "2px solid transparent",
                   color: isActive
                     ? C.purple
-                    : isClickable
+                    : isFile
                       ? C.text
                       : C.muted,
                   fontWeight: isActive ? 600 : 400,
                   whiteSpace: "nowrap",
                   overflow: "hidden",
                   textOverflow: "ellipsis",
-                  cursor: isClickable ? "pointer" : "default",
+                  cursor: "pointer",
                   transition: "background 0.15s, color 0.15s",
                 }}
               >
-                {f.folder ? (
-                  <span style={{ color: C.dimmer, marginRight: 3 }}>
+                {isFolder ? (
+                  <span
+                    style={{
+                      color: C.dimmer,
+                      marginRight: 3,
+                      display: "inline-block",
+                      transition: "transform 0.15s",
+                      transform: isOpen ? "rotate(90deg)" : "rotate(0deg)",
+                    }}
+                  >
                     {"\u25B8"}
                   </span>
                 ) : (
@@ -500,7 +593,7 @@ function ObsidianMockup() {
                     {"\u25A0"}
                   </span>
                 )}
-                {f.name}
+                {entry.name}
               </div>
             );
           })}
@@ -520,7 +613,7 @@ function ObsidianMockup() {
             overflow: "auto",
           }}
         >
-          <FileContent fileKey={activeFile} />
+          {FILE_CONTENT[activeFile]}
         </div>
       </div>
     </div>
