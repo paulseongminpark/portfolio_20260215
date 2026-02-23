@@ -479,10 +479,12 @@ function ObsidianMockup() {
   return (
     <div
       style={{
-        marginTop: 14,
         border: `1px solid ${C.purpleBorder}`,
         borderRadius: 10,
         overflow: "hidden",
+        display: "flex",
+        flexDirection: "column",
+        height: "100%",
       }}
     >
       {/* 타이틀바 */}
@@ -528,7 +530,7 @@ function ObsidianMockup() {
       </div>
 
       {/* 본문: 사이드바 + 에디터 */}
-      <div style={{ display: "flex", minHeight: 280 }}>
+      <div style={{ display: "flex", flex: 1 }}>
         {/* 사이드바 */}
         <div
           style={{
@@ -726,12 +728,12 @@ function VaultGraph() {
   const getNode = (id: GNode["id"]) => GRAPH_NODES.find((n) => n.id === id)!;
 
   return (
-    <div>
+    <div style={{ display: "flex", flexDirection: "column", width: "100%" }}>
       <svg
         viewBox="0 0 580 310"
         style={{
           width: "100%",
-          height: 310,
+          flex: 1,
           background: "#faf8ff",
           borderRadius: 10,
           border: `1px solid ${C.purpleBorder}`,
@@ -1207,13 +1209,13 @@ export function ObsidianSystemSection() {
             display: "flex",
             gap: 14,
             marginTop: 14,
-            alignItems: "flex-start",
+            alignItems: "stretch",
           }}
         >
           <div style={{ flex: 1, minWidth: 0 }}>
             <ObsidianMockup />
           </div>
-          <div style={{ flex: 1, minWidth: 0 }}>
+          <div style={{ flex: 1, minWidth: 0, display: "flex" }}>
             <VaultGraph />
           </div>
         </div>
