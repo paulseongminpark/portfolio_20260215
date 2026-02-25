@@ -9,6 +9,10 @@ _Updated: 2026-02-22 (07~10 추가)_
 
 실험 환경: `C:\dev\01_projects\04_monet-lab` | 로컬: `http://localhost:5174`
 
+### 초기 실험 (monet-lab 이전)
+
+- [[ui-lab/2026-02-04-ui-sandbox-openai-layout|2026-02-04 UI Sandbox]] — OpenAI /about 레이아웃 실험 (TOC viewport 고정, clamp 배율, scrollspy). `portfolio_ui_sandbox`에서 진행. 현재 monet-lab 실험의 출발점.
+
 ---
 
 ## 실험 목록
