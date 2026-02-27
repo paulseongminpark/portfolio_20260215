@@ -10,6 +10,7 @@ export interface BlockOverrides {
   hidden?: boolean;
   order?: number;
   customCss?: string;
+  highlight?: HighlightColor;
 }
 
 interface SelectedBlock {
@@ -67,11 +68,6 @@ export function PageEditorProvider({ workKey, children }: { workKey: string; chi
   const [overrides, setOverrides] = useState<Record<string, BlockOverrides>>(() => loadOverrides(workKey));
   const [highlightTool, setHighlightTool] = useState<HighlightTool>(null);
   const history = useRef<Record<string, BlockOverrides>[]>([]);
-
-  const pushHistory = useCallback(() => {
-    history.current.push(structuredClone(overrides));
-    if (history.current.length > MAX_UNDO) history.current.shift();
-  }, [overrides]);
 
   const select = useCallback((id: string, type: string, el: HTMLElement) => {
     setSelected({ id, type, el });
@@ -138,8 +134,11 @@ export function PageEditorProvider({ workKey, children }: { workKey: string; chi
     <Ctx.Provider value={{
       enabled, setEnabled, selected, select, deselect,
       overrides, setOverride, resetBlock, resetAll,
+      moveBlock: () => {},
       undo, canUndo,
       highlightTool, setHighlightTool,
+      textMarks: [],
+      addTextMark: () => {},
       workKey, exportCss,
     }}>
       {children}

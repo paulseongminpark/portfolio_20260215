@@ -388,7 +388,6 @@ function getBlockType(item: Processed): string {
 export function WorkDetailBlocks({ blocks, activeWork }: { blocks: Block[]; activeWork: string }) {
   const processed = preprocessBlocks(blocks);
   let qiCount = 0;
-  let sectionTitleCount = 0;
   return (
     <>
       {processed.map((item, i) => {

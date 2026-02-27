@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { usePageEditor, type HighlightTool } from './PageEditorContext';
+import { usePageEditor } from './PageEditorContext';
 
 function NumInput({ label, value, onChange, min, max, step }: {
   label: string; value: number | undefined; onChange: (v: number | undefined) => void;
