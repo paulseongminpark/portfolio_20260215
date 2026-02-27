@@ -109,7 +109,7 @@ export const sections: Section[] = [
     id: "system-ai",
     category: "System",
     eyebrow: "AI Workflow",
-    title: "AI Native System",
+    title: "HOW I AI",
     shortTitle: "AI System",
     description: "Claude Code + 23 Agents + 3 Teams + 7 Chains",
     heroRatio: "16:9",

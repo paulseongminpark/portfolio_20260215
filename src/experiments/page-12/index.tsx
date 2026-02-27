@@ -88,12 +88,22 @@ function renderBold(text: string): React.ReactNode[] {
   );
 }
 
+function renderBoldPlain(text: string): React.ReactNode[] {
+  const parts = text.split(/(\*\*[^*]+\*\*)/g);
+  return parts.map((p, i) =>
+    p.startsWith("**") && p.endsWith("**")
+      ? <strong key={i} style={{ fontWeight: 600 }}>{p.slice(2, -2)}</strong>
+      : <span key={i}>{p}</span>
+  );
+}
+
 // ── TOC ──────────────────────────────────────────────────────────
 function scrollToId(id: string) {
   document.getElementById(id)?.scrollIntoView({ behavior: "smooth", block: "start" });
 }
 
 const ANTHROPIC = "#D4632D";
+const TOC_SIDEBAR_WIDTH = 220;
 
 const P12_TOC: Array<{ id: string; label: string; mini: string; items: Array<{ id: string; label: string }> }> = [
   { id: "about",   label: "About",                    mini: "AB", items: [
@@ -147,6 +157,28 @@ function getWorkTitle(key: WorkKey) {
   return "PMCC";
 }
 
+const WORK_KEY_SET = new Set<WorkKey>(["empty-house", "skin-diary", "pmcc"]);
+
+function parseWorkFromSearch(search: string): WorkKey | null {
+  const params = new URLSearchParams(search);
+  const work = params.get("work");
+  if (!work) return null;
+  return WORK_KEY_SET.has(work as WorkKey) ? (work as WorkKey) : null;
+}
+
+function getWorkFromLocation(): WorkKey | null {
+  if (typeof window === "undefined") return null;
+  return parseWorkFromSearch(window.location.search);
+}
+
+function getUrlWithWork(work: WorkKey | null): string {
+  if (typeof window === "undefined") return "";
+  const url = new URL(window.location.href);
+  if (work) url.searchParams.set("work", work);
+  else url.searchParams.delete("work");
+  return `${url.pathname}${url.search}${url.hash}`;
+}
+
 const SYSTEM_ITEMS = [
   { id: "product-1", label: "Operating Principles", title: "", body: "사람의 의지에 기대지 않고, 행동이 나오게 만드는 '조건'을 설계합니다.", type: "text" as const },
   { id: "product-2", label: "Flow", title: "", body: "", flowItems: sys.flowItems, type: "list" as const },
@@ -159,9 +191,10 @@ const SYSTEM_ITEMS = [
 interface SectionGrid {
   sections: { heading: string; items: string[] }[];
   cols?: 2 | 3;
+  disableHighlight?: boolean;
 }
 
-function SectionFlowGrid({ sections, cols = 3 }: SectionGrid) {
+function SectionFlowGrid({ sections, cols = 3, disableHighlight = false }: SectionGrid) {
   const colStyle = cols === 2 ? "1fr 1fr" : "1fr 1fr 1fr";
   return (
     <div style={{ display: "grid", gridTemplateColumns: colStyle, gap: 2, alignItems: "stretch" }}>
@@ -180,9 +213,13 @@ function SectionFlowGrid({ sections, cols = 3 }: SectionGrid) {
               letterSpacing: "0.14em", textTransform: "uppercase",
               marginBottom: 16,
             }}>
-              <mark style={{ background: "rgba(37, 99, 235, 0.14)", color: "#1d4ed8", borderRadius: 2, padding: "2px 6px" }}>
-                {sec.heading}
-              </mark>
+              {disableHighlight ? (
+                <span style={{ color: "#666" }}>{sec.heading}</span>
+              ) : (
+                <mark style={{ background: "rgba(37, 99, 235, 0.14)", color: "#1d4ed8", borderRadius: 2, padding: "2px 6px" }}>
+                  {sec.heading}
+                </mark>
+              )}
             </p>
             {/* flowing items — no dash markers */}
             <div style={{ display: "flex", flexDirection: "column", gap: 6 }}>
@@ -191,7 +228,7 @@ function SectionFlowGrid({ sections, cols = 3 }: SectionGrid) {
                   fontFamily: "'Inter','Noto Sans KR',sans-serif",
                   fontSize: 13, color: "#444", lineHeight: 1.75, margin: 0,
                 }}>
-                  {renderBold(item)}
+                  {disableHighlight ? renderBoldPlain(item) : renderBold(item)}
                 </p>
               ))}
             </div>
@@ -213,10 +250,10 @@ function P12TocGroupItem({ group, expanded, activeGroup, activeItem, onToggle, o
     <div style={{ marginBottom: 2 }}>
       <a href={`#${group.id}`}
         onClick={(e) => { e.preventDefault(); scrollToId(group.id); if (group.items.length > 0) onToggle(); }}
-        onMouseEnter={(e) => { if (!isActive) { const el = e.currentTarget as HTMLElement; el.style.color = "#111"; el.style.fontWeight = "700"; } }}
-        onMouseLeave={(e) => { if (!isActive) { const el = e.currentTarget as HTMLElement; el.style.color = "#666"; el.style.fontWeight = "400"; } }}
+        onMouseEnter={(e) => { if (!isActive) { const el = e.currentTarget as HTMLElement; el.style.color = ANTHROPIC; el.style.fontWeight = "700"; } }}
+        onMouseLeave={(e) => { if (!isActive) { const el = e.currentTarget as HTMLElement; el.style.color = "#4f4f4f"; el.style.fontWeight = "400"; } }}
         style={{ display: "block", fontFamily: "'Inter', sans-serif", fontSize: 11,
-          fontWeight: isActive ? 600 : 400, color: isActive ? ANTHROPIC : "#666",
+          fontWeight: isActive ? 600 : 400, color: isActive ? ANTHROPIC : "#4f4f4f",
           textDecoration: "none", padding: "5px 0", letterSpacing: "0.02em", transition: "color 0.15s", cursor: "pointer" }}>
         {group.label}
       </a>
@@ -227,10 +264,10 @@ function P12TocGroupItem({ group, expanded, activeGroup, activeItem, onToggle, o
             return (
               <a key={item.id} href={`#${item.id}`}
                 onClick={(e) => { e.preventDefault(); onItemClick ? onItemClick(item.id) : scrollToId(item.id); }}
-                onMouseEnter={(e) => { if (!active) { const el = e.currentTarget as HTMLElement; el.style.color = "#222"; el.style.fontWeight = "600"; } }}
-                onMouseLeave={(e) => { if (!active) { const el = e.currentTarget as HTMLElement; el.style.color = "#999"; el.style.fontWeight = "400"; } }}
+                onMouseEnter={(e) => { if (!active) { const el = e.currentTarget as HTMLElement; el.style.color = ANTHROPIC; el.style.fontWeight = "600"; } }}
+                onMouseLeave={(e) => { if (!active) { const el = e.currentTarget as HTMLElement; el.style.color = "#6f6f6f"; el.style.fontWeight = "400"; } }}
                 style={{ display: "block", fontFamily: "'Inter', sans-serif", fontSize: 10,
-                  fontWeight: active ? 600 : 400, color: active ? ANTHROPIC : "#999",
+                  fontWeight: active ? 600 : 400, color: active ? ANTHROPIC : "#6f6f6f",
                   textDecoration: "none", padding: "3px 0 3px 10px", transition: "color 0.15s",
                   whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis",
                   borderLeft: active ? `2px solid ${ANTHROPIC}` : "2px solid transparent",
@@ -255,22 +292,15 @@ function P12TocSidebar({ expandedGroups, onToggleGroup, activeGroup, activeItem,
       onMouseEnter={() => setHovered(true)}
       onMouseLeave={() => setHovered(false)}
       style={{
-        position: "fixed", left: 220, top: 0, height: "100vh", overflowY: "auto",
-        width: 200,
+        position: "fixed", left: 0, top: 0, height: "100vh", overflowY: "auto",
+        width: TOC_SIDEBAR_WIDTH,
         borderRight: "1px solid #e8e8e8", background: "#fafafa",
         zIndex: 10, display: "flex", flexDirection: "column",
         padding: "72px 18px 24px", boxSizing: "border-box",
-        opacity: hovered ? 1 : 0.85,
+        opacity: hovered ? 1 : 0.96,
         transform: hovered ? "translateX(0)" : "translateX(-3px)",
         transition: "opacity 0.3s ease, transform 0.3s ease",
       }}>
-      <div style={{ marginBottom: 24 }}>
-        <button onClick={() => scrollToId("contact")}
-          style={{ background: "none", border: "none", cursor: "pointer", padding: 0,
-            fontFamily: "'Playfair Display', serif", fontSize: 14, fontStyle: "italic", color: "#111" }}>
-          PSM
-        </button>
-      </div>
       <nav style={{ flex: 1 }}>
         {P12_TOC.map((group) => (
           <P12TocGroupItem key={group.id} group={group}
@@ -285,7 +315,7 @@ function P12TocSidebar({ expandedGroups, onToggleGroup, activeGroup, activeItem,
 }
 
 // ── Nav ──────────────────────────────────────────────────────────
-function Nav({ onLogoClick, onNavClick }: { onLogoClick?: () => void; onNavClick?: (id: string) => void }) {
+function Nav({ onLogoClick, onNavClick, showLogo = true }: { onLogoClick?: () => void; onNavClick?: (id: string) => void; showLogo?: boolean }) {
   const [scrolled, setScrolled] = useState(false);
   useEffect(() => {
     const handler = () => setScrolled(window.scrollY > 40);
@@ -295,7 +325,23 @@ function Nav({ onLogoClick, onNavClick }: { onLogoClick?: () => void; onNavClick
   const links = ["About", "System", "Work", "AI", "TR", "Writing", "Contact"];
   return (
     <nav className={`p12-nav${scrolled ? " scrolled" : ""}`} style={{ background: scrolled ? undefined : "#ffffff" }}>
-      <a href="#hero" className="p12-nav-logo" onClick={(e) => { e.preventDefault(); onLogoClick?.(); }}>PSM</a>
+      {showLogo && (
+        <a
+          href="#contact"
+          className="p12-nav-logo"
+          onClick={(e) => {
+            e.preventDefault();
+            if (onLogoClick) {
+              onLogoClick();
+              return;
+            }
+            scrollToId("contact");
+            onNavClick?.("contact");
+          }}
+        >
+          PSM
+        </a>
+      )}
       <div className="p12-nav-links">
         {links.map((l) => (
           <a key={l} href={`#${l.toLowerCase()}`} className="p12-nav-link"
@@ -322,7 +368,7 @@ function Hero() {
     <section id="hero" className="p12-hero" style={{ background: "#ffffff" }}>
       <div style={{ maxWidth: 1200, margin: "0 auto", width: "100%" }}>
         <motion.p className="p12-hero-badge" initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 0.8, delay: 0.2 }}>
-          Portfolio 2026
+          PORTFOLIO
         </motion.p>
         <h1 className="p12-h1" style={{ color: "#111111" }}>
           {heroWords.map((word, i) => (
@@ -348,7 +394,7 @@ function Hero() {
 
 // ── Main ─────────────────────────────────────────────────────────
 export default function Page12() {
-  const [activeWork, setActiveWork] = useState<WorkKey | null>(null);
+  const [activeWork, setActiveWork] = useState<WorkKey | null>(() => getWorkFromLocation());
   const { parsedWork, heroSubtitle } = useWorkDetail(activeWork);
 
   const [tocExpanded, setTocExpanded] = useState<Set<string>>(new Set(["about", "system", "work", "tr", "writing"]));
@@ -369,13 +415,74 @@ export default function Page12() {
     "work-pmcc":        "pmcc",
   };
 
+  const syncWorkHistory = useCallback(
+    (work: WorkKey | null, mode: "push" | "replace", state: Record<string, unknown>) => {
+      if (typeof window === "undefined") return;
+      const nextUrl = getUrlWithWork(work);
+      if (mode === "push") {
+        window.history.pushState(state, "", nextUrl);
+      } else {
+        window.history.replaceState(state, "", nextUrl);
+      }
+    },
+    [],
+  );
+
+  const openWorkDetail = useCallback((workKey: WorkKey) => {
+    if (typeof window === "undefined") {
+      setActiveWork(workKey);
+      return;
+    }
+
+    if (activeWork === workKey) return;
+
+    if (!activeWork) {
+      syncWorkHistory(null, "replace", {
+        ...(window.history.state ?? {}),
+        view: "list",
+        scrollY: window.scrollY,
+      });
+    }
+
+    syncWorkHistory(workKey, "push", { view: "detail", work: workKey });
+    setActiveWork(workKey);
+  }, [activeWork, syncWorkHistory]);
+
+  const closeWorkDetail = useCallback((targetId?: string) => {
+    if (typeof window !== "undefined") {
+      syncWorkHistory(null, "replace", {
+        ...(window.history.state ?? {}),
+        view: "list",
+        scrollY: window.scrollY,
+      });
+    }
+    setActiveWork(null);
+    if (targetId) {
+      setTimeout(() => scrollToId(targetId), 100);
+    }
+  }, [syncWorkHistory]);
+
+  const handleWorkBack = useCallback(() => {
+    if (typeof window === "undefined") {
+      closeWorkDetail("work");
+      return;
+    }
+
+    if (window.history.length > 1) {
+      window.history.back();
+      return;
+    }
+
+    closeWorkDetail("work");
+  }, [closeWorkDetail]);
+
   const handleTocItemClick = useCallback((id: string) => {
     if (WORK_KEY_MAP[id]) {
-      setActiveWork(WORK_KEY_MAP[id]);
+      openWorkDetail(WORK_KEY_MAP[id]);
     } else {
       scrollToId(id);
     }
-  }, []);
+  }, [openWorkDetail]);
 
   const handleNavClick = useCallback((id: string) => {
     const group = P12_TOC.find((g) => g.id === id || g.items.some((item) => item.id === id));
@@ -410,8 +517,25 @@ export default function Page12() {
   }, [activeWork]);
 
   useEffect(() => {
+    if (!activeWork) return;
     window.scrollTo({ top: 0, behavior: "instant" });
   }, [activeWork]);
+
+  useEffect(() => {
+    const handlePopState = (event: PopStateEvent) => {
+      const nextWork = getWorkFromLocation();
+      setActiveWork(nextWork);
+
+      if (!nextWork && typeof event.state?.scrollY === "number") {
+        window.requestAnimationFrame(() => {
+          window.scrollTo({ top: event.state.scrollY as number, behavior: "instant" });
+        });
+      }
+    };
+
+    window.addEventListener("popstate", handlePopState);
+    return () => window.removeEventListener("popstate", handlePopState);
+  }, []);
 
   useEffect(() => {
     const id = "page-12-fonts";
@@ -427,7 +551,11 @@ export default function Page12() {
   if (activeWork) {
     return (
       <div className="p12-root" style={{ background: "#ffffff", minHeight: "100vh" }}>
-        <Nav onLogoClick={() => setActiveWork(null)} />
+        <Nav
+          onLogoClick={() => {
+            closeWorkDetail("contact");
+          }}
+        />
         <AnimatePresence mode="wait">
           <motion.div key={activeWork}
             initial={{ opacity: 0, x: 30 }} animate={{ opacity: 1, x: 0 }}
@@ -437,7 +565,7 @@ export default function Page12() {
               title={getWorkTitle(activeWork)}
               heroSubtitle={heroSubtitle}
               parsedWork={parsedWork}
-              onBack={() => { setActiveWork(null); setTimeout(() => document.getElementById("work")?.scrollIntoView({ behavior: "smooth" }), 100); }}
+              onBack={handleWorkBack}
             />
           </motion.div>
         </AnimatePresence>
@@ -454,7 +582,7 @@ export default function Page12() {
         activeItem={activeItem}
         onItemClick={handleTocItemClick}
       />
-      <div style={{ marginLeft: 200 }}>
+      <div style={{ marginLeft: TOC_SIDEBAR_WIDTH }}>
       <Nav onNavClick={handleNavClick} />
 
       {/* ── Hero ── */}
@@ -510,19 +638,19 @@ export default function Page12() {
                   flex: 1,
                 }}>
                   <p style={{ fontFamily: "'Inter',sans-serif", fontSize: 11, fontWeight: 600, letterSpacing: "0.14em", textTransform: "uppercase", marginBottom: 12 }}>
-                    <mark style={{ background: "rgba(37, 99, 235, 0.14)", color: "#1d4ed8", borderRadius: 2, padding: "2px 6px" }}>{item.label}</mark>
+                    <span style={{ color: "#666" }}>{item.label}</span>
                   </p>
                   {item.type === "list" ? (
                     <ol style={{ paddingLeft: 0, margin: 0, listStylePosition: "inside", fontFamily: "'Inter','Noto Sans KR',sans-serif", fontSize: 14, color: "#555", lineHeight: 1.75 }}>
                       {item.flowItems?.map((fi, j) => (
                         <li key={j} style={{ marginBottom: j < (item.flowItems?.length ?? 0) - 1 ? 8 : 0 }}>
-                          {renderBold(fi)}
+                          {renderBoldPlain(fi)}
                         </li>
                       ))}
                     </ol>
                   ) : (
                     <p style={{ fontFamily: "'Inter','Noto Sans KR',sans-serif", fontSize: 14, color: "#555", lineHeight: 1.75, margin: 0 }}>
-                      {renderBold(item.body)}
+                      {renderBoldPlain(item.body)}
                     </p>
                   )}
                 </div>
@@ -534,7 +662,7 @@ export default function Page12() {
             <div id="ai" style={{ marginTop: 64, paddingTop: 48, borderTop: "1px solid #e8e8e8" }}>
               <SectionLabel>AI System</SectionLabel>
               <h2 className="p12-h2" style={{ color: "#111", marginTop: 8, marginBottom: 8 }}>
-                AI Native Orchestration
+                HOW I AI
               </h2>
               <p style={{ fontFamily: "'Inter','Noto Sans KR',sans-serif", fontSize: 15, color: "#666", lineHeight: 1.7, maxWidth: 600, marginBottom: 32 }}>
                 Claude Code를 운영체제처럼 쓴다.<br />
@@ -547,7 +675,7 @@ export default function Page12() {
                 { value: "3", label: "MCP Servers" },
               ]} />
               <div style={{ marginTop: 32 }}>
-                <SectionFlowGrid sections={aiSections} cols={3} />
+                <SectionFlowGrid sections={aiSections} cols={3} disableHighlight />
               </div>
               <div style={{ paddingTop: 48, borderTop: "1px solid #e8e8e8", marginTop: 2 }}>
                 <AiWorkflowSection raw={aiRaw} />
@@ -565,12 +693,12 @@ export default function Page12() {
             <h2 className="p12-h2" style={{ color: "#111", marginBottom: 48, marginTop: 8 }}>Selected Work</h2>
           </FadeIn>
           <FadeIn delay={0.1}>
-            <FeaturedCard work={workItems[0]} onSelect={() => setActiveWork(workItems[0].workKey)} />
+            <FeaturedCard work={workItems[0]} onSelect={() => openWorkDetail(workItems[0].workKey)} />
           </FadeIn>
           <FadeIn delay={0.15}>
             <div className="p12-work-grid">
               {workItems.slice(1).map((work) => (
-                <GridCard key={work.id} work={work} onSelect={() => setActiveWork(work.workKey)} />
+                <GridCard key={work.id} work={work} onSelect={() => openWorkDetail(work.workKey)} />
               ))}
             </div>
           </FadeIn>

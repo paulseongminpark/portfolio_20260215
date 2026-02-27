@@ -1,4 +1,4 @@
-import { useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import { type WorkKey } from "../content/work";
 import { type WorkSection } from "../parseWorkDetail";
 import { WorkDetailBlocks } from "./WorkDetailBlocks";
@@ -55,17 +55,17 @@ const WORK_META: Record<string, {
 };
 
 const HERO_SLIDES = [
-  "/work/pmcc/hero_run2.webp",
-  "/work/pmcc/hero_cafe2.webp",
+  "/work/pmcc/hero_run2.jpg",
+  "/work/pmcc/hero_cafe2.jpg",
   "/work/pmcc/hero_cafe_video_web.mp4",
-  "/work/pmcc/hero_run3.webp",
-  "/work/pmcc/hero_gather2.webp",
+  "/work/pmcc/hero_run3.jpg",
+  "/work/pmcc/hero_gather2.jpg",
   "/work/pmcc/hero_run5_web.mp4",
-  "/work/pmcc/hero_run4.webp",
-  "/work/pmcc/hero_run6.webp",
-  "/work/pmcc/hero_cafe.webp",
+  "/work/pmcc/hero_run4.jpg",
+  "/work/pmcc/hero_run6.JPG",
+  "/work/pmcc/hero_cafe.jpg",
   "/work/pmcc/hero_gather_web.mp4",
-  "/work/pmcc/hero_gather.webp",
+  "/work/pmcc/hero_gather.jpg",
 ];
 
 function HeroSlider() {
