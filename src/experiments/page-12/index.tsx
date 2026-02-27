@@ -157,6 +157,28 @@ function getWorkTitle(key: WorkKey) {
   return "PMCC";
 }
 
+const WORK_KEY_SET = new Set<WorkKey>(["empty-house", "skin-diary", "pmcc"]);
+
+function parseWorkFromSearch(search: string): WorkKey | null {
+  const params = new URLSearchParams(search);
+  const work = params.get("work");
+  if (!work) return null;
+  return WORK_KEY_SET.has(work as WorkKey) ? (work as WorkKey) : null;
+}
+
+function getWorkFromLocation(): WorkKey | null {
+  if (typeof window === "undefined") return null;
+  return parseWorkFromSearch(window.location.search);
+}
+
+function getUrlWithWork(work: WorkKey | null): string {
+  if (typeof window === "undefined") return "";
+  const url = new URL(window.location.href);
+  if (work) url.searchParams.set("work", work);
+  else url.searchParams.delete("work");
+  return `${url.pathname}${url.search}${url.hash}`;
+}
+
 const SYSTEM_ITEMS = [
   { id: "product-1", label: "Operating Principles", title: "", body: "사람의 의지에 기대지 않고, 행동이 나오게 만드는 '조건'을 설계합니다.", type: "text" as const },
   { id: "product-2", label: "Flow", title: "", body: "", flowItems: sys.flowItems, type: "list" as const },
@@ -372,7 +394,7 @@ function Hero() {
 
 // ── Main ─────────────────────────────────────────────────────────
 export default function Page12() {
-  const [activeWork, setActiveWork] = useState<WorkKey | null>(null);
+  const [activeWork, setActiveWork] = useState<WorkKey | null>(() => getWorkFromLocation());
   const { parsedWork, heroSubtitle } = useWorkDetail(activeWork);
 
   const [tocExpanded, setTocExpanded] = useState<Set<string>>(new Set(["about", "system", "work", "tr", "writing"]));
@@ -393,13 +415,74 @@ export default function Page12() {
     "work-pmcc":        "pmcc",
   };
 
+  const syncWorkHistory = useCallback(
+    (work: WorkKey | null, mode: "push" | "replace", state: Record<string, unknown>) => {
+      if (typeof window === "undefined") return;
+      const nextUrl = getUrlWithWork(work);
+      if (mode === "push") {
+        window.history.pushState(state, "", nextUrl);
+      } else {
+        window.history.replaceState(state, "", nextUrl);
+      }
+    },
+    [],
+  );
+
+  const openWorkDetail = useCallback((workKey: WorkKey) => {
+    if (typeof window === "undefined") {
+      setActiveWork(workKey);
+      return;
+    }
+
+    if (activeWork === workKey) return;
+
+    if (!activeWork) {
+      syncWorkHistory(null, "replace", {
+        ...(window.history.state ?? {}),
+        view: "list",
+        scrollY: window.scrollY,
+      });
+    }
+
+    syncWorkHistory(workKey, "push", { view: "detail", work: workKey });
+    setActiveWork(workKey);
+  }, [activeWork, syncWorkHistory]);
+
+  const closeWorkDetail = useCallback((targetId?: string) => {
+    if (typeof window !== "undefined") {
+      syncWorkHistory(null, "replace", {
+        ...(window.history.state ?? {}),
+        view: "list",
+        scrollY: window.scrollY,
+      });
+    }
+    setActiveWork(null);
+    if (targetId) {
+      setTimeout(() => scrollToId(targetId), 100);
+    }
+  }, [syncWorkHistory]);
+
+  const handleWorkBack = useCallback(() => {
+    if (typeof window === "undefined") {
+      closeWorkDetail("work");
+      return;
+    }
+
+    if (window.history.length > 1) {
+      window.history.back();
+      return;
+    }
+
+    closeWorkDetail("work");
+  }, [closeWorkDetail]);
+
   const handleTocItemClick = useCallback((id: string) => {
     if (WORK_KEY_MAP[id]) {
-      setActiveWork(WORK_KEY_MAP[id]);
+      openWorkDetail(WORK_KEY_MAP[id]);
     } else {
       scrollToId(id);
     }
-  }, []);
+  }, [openWorkDetail]);
 
   const handleNavClick = useCallback((id: string) => {
     const group = P12_TOC.find((g) => g.id === id || g.items.some((item) => item.id === id));
@@ -434,8 +517,25 @@ export default function Page12() {
   }, [activeWork]);
 
   useEffect(() => {
+    if (!activeWork) return;
     window.scrollTo({ top: 0, behavior: "instant" });
   }, [activeWork]);
+
+  useEffect(() => {
+    const handlePopState = (event: PopStateEvent) => {
+      const nextWork = getWorkFromLocation();
+      setActiveWork(nextWork);
+
+      if (!nextWork && typeof event.state?.scrollY === "number") {
+        window.requestAnimationFrame(() => {
+          window.scrollTo({ top: event.state.scrollY as number, behavior: "instant" });
+        });
+      }
+    };
+
+    window.addEventListener("popstate", handlePopState);
+    return () => window.removeEventListener("popstate", handlePopState);
+  }, []);
 
   useEffect(() => {
     const id = "page-12-fonts";
@@ -453,8 +553,7 @@ export default function Page12() {
       <div className="p12-root" style={{ background: "#ffffff", minHeight: "100vh" }}>
         <Nav
           onLogoClick={() => {
-            setActiveWork(null);
-            setTimeout(() => scrollToId("contact"), 100);
+            closeWorkDetail("contact");
           }}
         />
         <AnimatePresence mode="wait">
@@ -466,7 +565,7 @@ export default function Page12() {
               title={getWorkTitle(activeWork)}
               heroSubtitle={heroSubtitle}
               parsedWork={parsedWork}
-              onBack={() => { setActiveWork(null); setTimeout(() => document.getElementById("work")?.scrollIntoView({ behavior: "smooth" }), 100); }}
+              onBack={handleWorkBack}
             />
           </motion.div>
         </AnimatePresence>
@@ -594,12 +693,12 @@ export default function Page12() {
             <h2 className="p12-h2" style={{ color: "#111", marginBottom: 48, marginTop: 8 }}>Selected Work</h2>
           </FadeIn>
           <FadeIn delay={0.1}>
-            <FeaturedCard work={workItems[0]} onSelect={() => setActiveWork(workItems[0].workKey)} />
+            <FeaturedCard work={workItems[0]} onSelect={() => openWorkDetail(workItems[0].workKey)} />
           </FadeIn>
           <FadeIn delay={0.15}>
             <div className="p12-work-grid">
               {workItems.slice(1).map((work) => (
-                <GridCard key={work.id} work={work} onSelect={() => setActiveWork(work.workKey)} />
+                <GridCard key={work.id} work={work} onSelect={() => openWorkDetail(work.workKey)} />
               ))}
             </div>
           </FadeIn>
