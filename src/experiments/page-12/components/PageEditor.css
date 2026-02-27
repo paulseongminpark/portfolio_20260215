@@ -1,0 +1,295 @@
+/* ── Page Editor ── */
+
+/* Block wrapper */
+.pe-block {
+  position: relative;
+  outline: 1px dashed transparent;
+  outline-offset: 2px;
+  cursor: pointer;
+  transition: outline-color 0.1s;
+}
+.pe-block:hover {
+  outline-color: rgba(212, 99, 45, 0.35);
+}
+.pe-selected {
+  outline-color: #D4632D !important;
+  outline-width: 2px;
+}
+
+/* Block badge */
+.pe-block-badge {
+  position: absolute;
+  top: -10px;
+  left: 8px;
+  font-size: 9px;
+  font-weight: 700;
+  color: #D4632D;
+  background: rgba(255,255,255,0.92);
+  padding: 1px 6px;
+  border-radius: 2px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  opacity: 0;
+  transition: opacity 0.1s;
+  pointer-events: none;
+  font-family: 'Inter', monospace;
+  z-index: 50;
+}
+.pe-block:hover .pe-block-badge,
+.pe-selected .pe-block-badge {
+  opacity: 1;
+}
+
+/* Hidden block placeholder */
+.pe-hidden {
+  padding: 8px 16px;
+  background: repeating-linear-gradient(45deg, #faf9f7, #faf9f7 8px, #f3f2ef 8px, #f3f2ef 16px);
+  border-radius: 4px;
+  min-height: 24px;
+  outline-color: rgba(212, 99, 45, 0.2) !important;
+}
+.pe-hidden-label {
+  font-size: 11px;
+  color: #bbb;
+  font-style: italic;
+  font-family: 'Inter', sans-serif;
+}
+
+/* ── Side Panel ── */
+.pe-panel {
+  position: fixed;
+  top: 0;
+  right: 0;
+  width: 280px;
+  height: 100vh;
+  background: rgba(255,255,255,0.97);
+  backdrop-filter: blur(12px);
+  border-left: 1px solid #e8e8e8;
+  z-index: 9999;
+  overflow-y: auto;
+  font-family: 'Inter', 'Noto Sans KR', sans-serif;
+  box-shadow: -4px 0 24px rgba(0,0,0,0.06);
+}
+
+.pe-panel-header {
+  padding: 12px 14px;
+  border-bottom: 1px solid #eee;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  position: sticky;
+  top: 0;
+  background: rgba(255,255,255,0.97);
+  z-index: 1;
+}
+.pe-panel-title {
+  font-size: 12px;
+  font-weight: 700;
+  color: #D4632D;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+.pe-panel-actions {
+  display: flex;
+  gap: 4px;
+}
+
+/* Properties */
+.pe-props {
+  padding: 14px;
+}
+.pe-block-info {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  margin-bottom: 16px;
+  padding-bottom: 10px;
+  border-bottom: 1px solid #eee;
+}
+.pe-block-type {
+  font-size: 12px;
+  font-weight: 700;
+  color: #D4632D;
+  background: rgba(212, 99, 45, 0.08);
+  padding: 2px 8px;
+  border-radius: 3px;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+.pe-block-idx {
+  font-size: 11px;
+  color: #aaa;
+  font-family: 'SF Mono', monospace;
+}
+
+/* Field */
+.pe-field {
+  margin-bottom: 14px;
+}
+.pe-label {
+  display: block;
+  font-size: 10px;
+  font-weight: 600;
+  color: #999;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  margin-bottom: 5px;
+}
+.pe-field-row {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+.pe-slider {
+  flex: 1;
+  height: 3px;
+  accent-color: #D4632D;
+}
+.pe-num {
+  width: 56px;
+  padding: 3px 6px;
+  font-size: 11px;
+  border: 1px solid #e0e0e0;
+  border-radius: 3px;
+  text-align: right;
+  font-family: 'SF Mono', monospace;
+}
+.pe-num:focus {
+  outline: none;
+  border-color: #D4632D;
+}
+
+/* Toggle */
+.pe-toggle {
+  font-size: 11px;
+  font-weight: 600;
+  padding: 4px 12px;
+  border-radius: 4px;
+  border: 1px solid #e0e0e0;
+  cursor: pointer;
+  font-family: 'Inter', sans-serif;
+  transition: all 0.12s;
+}
+.pe-toggle-on { background: #e8f5e9; color: #2e7d32; border-color: #a5d6a7; }
+.pe-toggle-off { background: #fbe9e7; color: #D4632D; border-color: #ffccbc; }
+
+/* CSS editor */
+.pe-css-editor {
+  width: 100%;
+  font-size: 11px;
+  font-family: 'SF Mono', 'Fira Code', monospace;
+  border: 1px solid #e0e0e0;
+  border-radius: 4px;
+  padding: 8px;
+  resize: vertical;
+  line-height: 1.6;
+  color: #333;
+  background: #faf9f7;
+}
+.pe-css-editor:focus {
+  outline: none;
+  border-color: #D4632D;
+}
+
+/* Empty state */
+.pe-empty {
+  padding: 40px 14px;
+  color: #bbb;
+  font-size: 13px;
+  text-align: center;
+  font-style: italic;
+}
+
+/* Export */
+.pe-export {
+  padding: 14px;
+  border-top: 1px solid #eee;
+}
+.pe-export-code {
+  font-size: 11px;
+  line-height: 1.6;
+  background: #f8f8f6;
+  padding: 10px;
+  border-radius: 4px;
+  overflow-x: auto;
+  white-space: pre;
+  font-family: 'SF Mono', monospace;
+  color: #333;
+  margin-bottom: 8px;
+  border: 1px solid #eee;
+  max-height: 200px;
+}
+
+/* Buttons */
+.pe-btn {
+  font-size: 10px;
+  font-weight: 600;
+  padding: 4px 10px;
+  border-radius: 3px;
+  border: 1px solid #e0e0e0;
+  background: white;
+  cursor: pointer;
+  font-family: 'Inter', sans-serif;
+  transition: all 0.1s;
+}
+.pe-btn:hover { background: #f5f5f5; }
+.pe-btn-primary { background: #D4632D; color: white; border-color: #D4632D; }
+.pe-btn-primary:hover { background: #b5521f; }
+.pe-btn-danger { color: #D4632D; border-color: rgba(212, 99, 45, 0.3); }
+.pe-btn-danger:hover { background: rgba(212, 99, 45, 0.05); }
+.pe-btn-sm { font-size: 10px; padding: 3px 8px; }
+
+/* Highlight tools */
+.pe-highlight-bar {
+  padding: 10px 14px;
+  border-bottom: 1px solid #eee;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.pe-highlight-btns { display: flex; gap: 6px; align-items: center; }
+.pe-hl-btn {
+  width: 24px; height: 24px;
+  border-radius: 4px;
+  border: 2px solid transparent;
+  cursor: pointer;
+  transition: all 0.1s;
+}
+.pe-hl-blue { background: rgba(96,165,250,0.4); }
+.pe-hl-blue:hover { background: rgba(96,165,250,0.6); }
+.pe-hl-orange { background: rgba(251,191,36,0.4); }
+.pe-hl-orange:hover { background: rgba(251,191,36,0.6); }
+.pe-hl-active { border-color: #333; transform: scale(1.15); }
+
+/* Highlight mode cursor */
+.pe-highlight-mode { cursor: crosshair !important; }
+.pe-highlight-mode:hover {
+  outline-color: rgba(96,165,250,0.5) !important;
+  outline-style: solid !important;
+}
+
+/* Edit mode toggle (floating) */
+.pe-toggle-edit {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  z-index: 9998;
+  font-size: 11px;
+  font-weight: 700;
+  padding: 8px 16px;
+  border-radius: 6px;
+  border: 1px solid rgba(212, 99, 45, 0.4);
+  background: rgba(255,255,255,0.95);
+  color: #D4632D;
+  cursor: pointer;
+  font-family: 'Inter', sans-serif;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  box-shadow: 0 2px 12px rgba(0,0,0,0.08);
+  backdrop-filter: blur(8px);
+  transition: all 0.15s;
+}
+.pe-toggle-edit:hover {
+  background: #D4632D;
+  color: white;
+}

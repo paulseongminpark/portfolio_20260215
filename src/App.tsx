@@ -1,5 +1,5 @@
-import UI3Page from './ui3/Page';
+import Page12 from './experiments/page-12';
 
 export default function App() {
-  return <UI3Page />;
+  return <Page12 />;
 }
