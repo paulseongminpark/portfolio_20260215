@@ -1,4 +1,4 @@
-# AI Native Orchestration System
+# HOW I AI System
 
 **Claude Code를 운영체제처럼 쓴다. What만 정의하면 16개 에이전트가 How를 결정하고 실행한다.**
 
