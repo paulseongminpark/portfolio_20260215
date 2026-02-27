@@ -33,4 +33,5 @@ EXPORT_*.txt
 vite_err*.txt
 vite_out.txt
 nul
-public/work/
+.vercel
+public/work/_tmp/

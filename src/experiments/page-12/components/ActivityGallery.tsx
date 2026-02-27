@@ -34,7 +34,7 @@ export function ActivityGallery() {
           <video src={`${P}/pmcc_crossfit_web.mp4`} autoPlay muted loop playsInline />
         </div>
         <div className="ag-item ag-volunteer">
-          <img src={`${P}/pmcc volunteer.JPG`} alt="" loading="lazy" />
+          <img src={`${P}/pmcc volunteer.webp`} alt="" loading="lazy" />
         </div>
       </div>
       {IS_DEV && (

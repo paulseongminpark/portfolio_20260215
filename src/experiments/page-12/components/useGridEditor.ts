@@ -34,7 +34,7 @@ export const GALLERY_ITEMS: Omit<GalleryItem, 'area'>[] = [
   { id: 'hyrox',     src: `${P}/pmcc_hyrox_web.mp4`,     type: 'video' },
   { id: 'yoga',      src: `${P}/pmcc_yoga_web.mp4`,      type: 'video' },
   { id: 'crossfit',  src: `${P}/pmcc_crossfit_web.mp4`,  type: 'video' },
-  { id: 'volunteer', src: `${P}/pmcc volunteer.JPG`,      type: 'image' },
+  { id: 'volunteer', src: `${P}/pmcc volunteer.webp`,      type: 'image' },
 ];
 
 const INITIAL_AREAS: Record<string, GridArea> = {
