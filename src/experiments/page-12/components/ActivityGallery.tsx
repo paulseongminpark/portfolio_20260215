@@ -1,6 +1,6 @@
 import { lazy, Suspense, useState } from 'react';
 
-const P = '/work/pmcc';
+const P = `${import.meta.env.BASE_URL}work/pmcc`;
 const IS_DEV = import.meta.env.DEV;
 
 const EditorLazy = IS_DEV

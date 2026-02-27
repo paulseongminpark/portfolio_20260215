@@ -58,8 +58,8 @@ export function SurveyTable() {
 
   useEffect(() => {
     Promise.all([
-      fetch('/work/pmcc/pmcc_survey.csv').then(r => r.text()),
-      fetch('/work/pmcc/pmcc_survey2.csv').then(r => r.text()),
+      fetch(`${import.meta.env.BASE_URL}work/pmcc/pmcc_survey.csv`).then(r => r.text()),
+      fetch(`${import.meta.env.BASE_URL}work/pmcc/pmcc_survey2.csv`).then(r => r.text()),
     ]).then(([text1, text2]) => {
       // Survey 1: rating=col5, q1=col3, q1sub=col4, q21=col6, q3=col9
       const rows1 = parseCSV(text1).slice(1).filter(r => r.length >= 4 && r.some(f => f));

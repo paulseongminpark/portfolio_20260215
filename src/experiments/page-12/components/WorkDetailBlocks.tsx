@@ -24,19 +24,20 @@ export function renderBold(text: string) {
 }
 
 function resolveAssetSrc(raw: string, activeWork: string) {
+  const baseUrl = import.meta.env.BASE_URL;
   let s = (raw ?? '').trim();
   if (!s) return '';
   if (s.startsWith('http://') || s.startsWith('https://')) return s;
   if (s.startsWith('public/')) s = s.slice('public/'.length);
-  if (s.startsWith('/work/')) return s;
-  if (s.startsWith('work/')) return `/${s}`;
-  if (s.startsWith('/')) return s;
+  if (s.startsWith('/work/')) return `${baseUrl}${s.slice(1)}`;
+  if (s.startsWith('work/')) return `${baseUrl}${s}`;
+  if (s.startsWith('/')) return `${baseUrl}${s.slice(1)}`;
   const base = s.split(/[/\\]/).pop() ?? s;
   const folder =
     activeWork === 'empty-house' ? 'empty-house-cps'
     : activeWork === 'skin-diary' ? 'skin-diary-ai'
     : 'pmcc';
-  return `/work/${folder}/${base}`;
+  return `${baseUrl}work/${folder}/${base}`;
 }
 
 function isVideoSrc(src: string) {

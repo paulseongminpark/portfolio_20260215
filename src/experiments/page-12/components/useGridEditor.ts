@@ -28,7 +28,7 @@ interface DragState {
 const STORAGE_KEY = 'ag-editor-layout';
 
 /* ── Initial layout (matches current CSS) ── */
-const P = '/work/pmcc';
+const P = `${import.meta.env.BASE_URL}work/pmcc`;
 export const GALLERY_ITEMS: Omit<GalleryItem, 'area'>[] = [
   { id: 'jujitsu',   src: `${P}/pmcc_jujitsu_web.mp4`,  type: 'video' },
   { id: 'hyrox',     src: `${P}/pmcc_hyrox_web.mp4`,     type: 'video' },

@@ -1,4 +1,4 @@
-const P = '/work/pmcc';
+const P = `${import.meta.env.BASE_URL}work/pmcc`;
 const F = "'Inter', 'Noto Sans KR', sans-serif";
 
 export function VisualCuesGallery() {
