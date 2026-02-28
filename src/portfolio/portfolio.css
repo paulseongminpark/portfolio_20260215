@@ -592,14 +592,14 @@
 /* Lv.3 — 섹션 부제목 (title 바로 아래 설명문) */
 .wd-lede {
   font-family: 'Inter', 'Noto Sans KR', sans-serif;
-  font-size: 17px; font-weight: 400; color: #555; line-height: 1.85; margin: 0 0 28px;
+  font-size: 15px; font-weight: 400; color: #555; line-height: 1.85; margin: 0 0 28px;
 }
 .wd-lede strong { color: #333; font-weight: 600; }
 
 /* Lv.4 — 하위 소제목 (H2) */
 .wd-heading {
   font-family: 'Inter', 'Noto Sans KR', sans-serif;
-  font-size: 19px; font-weight: 600; color: #333;
+  font-size: 17px; font-weight: 600; color: #333;
   line-height: 1.4; letter-spacing: -0.01em;
   margin-top: 28px; margin-bottom: 12px;
 }
@@ -607,7 +607,7 @@
 /* Lv.5 — 본문 단락 */
 .wd-paragraph {
   font-family: 'Inter', 'Noto Sans KR', sans-serif;
-  font-size: 16px; font-weight: 400; color: #555; line-height: 1.9; margin-top: 0; margin-bottom: 14px;
+  font-size: 15px; font-weight: 400; color: #555; line-height: 1.85; margin-top: 0; margin-bottom: 14px;
 }
 .wd-paragraph strong { color: #222; font-weight: 600; }
 .wd-hl-orange {

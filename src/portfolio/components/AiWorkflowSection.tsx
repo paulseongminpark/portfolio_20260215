@@ -438,94 +438,112 @@ export function AiWorkflowSection({ raw: _raw }: { raw?: string }) {
           <strong> 자유를 제한하는 것이 아니라, 토큰 폭발을 막는 것이다.</strong>
         </p>
 
-        {/* 체인 */}
-        <h3 className="wd-heading">5개 체인</h3>
-        {CHAINS.map((c) => (
-          <div key={c.name} style={{
-            marginBottom: 20,
-            maxWidth: 860,
-            marginLeft: 'auto',
-            marginRight: 'auto',
-          }}>
-            <div style={{
-              fontFamily: "'Inter', 'Noto Sans KR', sans-serif",
-              fontSize: 14,
-              fontWeight: 600,
-              color: C.text,
-              marginBottom: 8,
+        {/* 5개 체인 다이어그램 */}
+        <div style={{
+          maxWidth: 860,
+          marginLeft: 'auto',
+          marginRight: 'auto',
+          border: `1px solid ${C.border}`,
+          borderRadius: 8,
+          overflow: 'hidden',
+          marginBottom: 40,
+        }}>
+          {CHAINS.map((c, i) => (
+            <div key={c.name} style={{
+              display: 'grid',
+              gridTemplateColumns: '68px 1fr',
+              borderBottom: i < CHAINS.length - 1 ? `1px solid ${C.border}` : 'none',
             }}>
-              {c.name}
-            </div>
-            <div style={{
-              display: 'flex',
-              alignItems: 'center',
-              gap: 0,
-              flexWrap: 'wrap',
-              marginBottom: 6,
-            }}>
-              {c.steps.map((s, i) => (
-                <React.Fragment key={i}>
-                  <span style={{
-                    fontFamily: "'Inter', 'Noto Sans KR', sans-serif",
-                    fontSize: 13,
-                    color: C.bg,
-                    background: i === 0 ? C.accent : C.text,
-                    padding: '4px 12px',
-                    borderRadius: 4,
-                    whiteSpace: 'nowrap',
-                  }}>
-                    {s}
-                  </span>
-                  {i < c.steps.length - 1 && (
+              <div style={{
+                padding: '12px 14px',
+                borderRight: `1px solid ${C.border}`,
+                fontFamily: "'Inter', 'Noto Sans KR', sans-serif",
+                fontSize: 12,
+                fontWeight: 700,
+                color: C.textSub,
+                display: 'flex',
+                alignItems: 'center',
+                background: C.bgAlt,
+              }}>
+                {c.name}
+              </div>
+              <div style={{
+                padding: '10px 14px',
+                display: 'flex',
+                alignItems: 'center',
+                gap: 4,
+                flexWrap: 'wrap',
+              }}>
+                {c.steps.map((s, si) => (
+                  <React.Fragment key={si}>
                     <span style={{
-                      fontFamily: "'Inter', sans-serif",
-                      fontSize: 14,
-                      color: C.textMuted,
-                      padding: '0 6px',
+                      fontFamily: "'Inter', 'Noto Sans KR', sans-serif",
+                      fontSize: 12,
+                      color: si === 0 ? C.bg : C.text,
+                      background: si === 0 ? C.accent : C.bgAlt,
+                      border: si === 0 ? 'none' : `1px solid ${C.border}`,
+                      padding: '3px 10px',
+                      borderRadius: 4,
+                      whiteSpace: 'nowrap',
                     }}>
-                      →
+                      {s}
                     </span>
-                  )}
-                </React.Fragment>
-              ))}
+                    {si < c.steps.length - 1 && (
+                      <span style={{ fontSize: 12, color: C.textMuted }}>→</span>
+                    )}
+                  </React.Fragment>
+                ))}
+              </div>
             </div>
-            <div style={{
-              fontFamily: "'Inter', 'Noto Sans KR', sans-serif",
-              fontSize: 13,
-              color: C.textSub,
-              lineHeight: 1.6,
+          ))}
+        </div>
+
+        {/* 8종 Hook 카드 */}
+        <h3 className="wd-heading">8종 Hook</h3>
+        <div style={{
+          maxWidth: 860,
+          marginLeft: 'auto',
+          marginRight: 'auto',
+          display: 'grid',
+          gridTemplateColumns: 'repeat(2, 1fr)',
+          gap: 10,
+        }}>
+          {HOOKS.map((h) => (
+            <div key={h.name} style={{
+              border: `1px solid ${C.border}`,
+              borderRadius: 6,
+              padding: '12px 16px',
             }}>
-              {c.desc}
+              <div style={{
+                fontFamily: "'Inter', sans-serif",
+                fontSize: 10,
+                fontWeight: 600,
+                letterSpacing: '0.07em',
+                textTransform: 'uppercase',
+                color: C.accent,
+                marginBottom: 3,
+              }}>
+                {h.trigger}
+              </div>
+              <div style={{
+                fontFamily: "'Inter', 'Noto Sans KR', sans-serif",
+                fontSize: 13,
+                fontWeight: 700,
+                color: C.text,
+                marginBottom: 5,
+              }}>
+                {h.name}
+              </div>
+              <div style={{
+                fontFamily: "'Inter', 'Noto Sans KR', sans-serif",
+                fontSize: 12,
+                color: C.textSub,
+                lineHeight: 1.6,
+              }}>
+                {h.role}
+              </div>
             </div>
-          </div>
-        ))}
-
-        {/* Hooks */}
-        <h3 className="wd-heading" style={{ marginTop: 40 }}>8종 Hook</h3>
-        <p className="wd-paragraph">
-          Hook은 이벤트에 반응하는 자동화 트리거다. 세션이 시작되면 미커밋을 알려주고,
-          파일이 수정되면 live-context를 갱신하고, 위험한 명령이 실행되려 하면 차단한다.
-        </p>
-
-        <div className="wd-table-wrap">
-          <table className="wd-table">
-            <thead>
-              <tr>
-                <th>Hook</th>
-                <th>트리거</th>
-                <th>역할</th>
-              </tr>
-            </thead>
-            <tbody>
-              {HOOKS.map((h) => (
-                <tr key={h.name}>
-                  <td>{h.name}</td>
-                  <td style={{ color: C.textSub, fontWeight: 400 }}>{h.trigger}</td>
-                  <td style={{ color: C.textSub, fontWeight: 400 }}>{h.role}</td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
+          ))}
         </div>
       </section>
 
@@ -543,62 +561,102 @@ export function AiWorkflowSection({ raw: _raw }: { raw?: string }) {
           중간의 하루가 전환점이었다 — <strong>"이 시스템이 너무 무거워졌다"</strong>고 느낀 순간.
         </p>
 
-        {/* 타임라인 */}
-        <div style={{
-          maxWidth: 860,
-          marginLeft: 'auto',
-          marginRight: 'auto',
-          marginTop: 32,
-        }}>
-          {TIMELINE.map((t, i) => (
-            <div key={t.version} style={{
-              display: 'grid',
-              gridTemplateColumns: '80px 1fr',
-              gap: 20,
-              paddingBottom: i < TIMELINE.length - 1 ? 24 : 0,
-              marginBottom: i < TIMELINE.length - 1 ? 24 : 0,
-              borderBottom: i < TIMELINE.length - 1 ? `1px solid ${C.border}` : 'none',
-            }}>
-              <div>
+        {/* 수평 타임라인 */}
+        <div style={{ overflowX: 'auto', paddingBottom: 8, marginTop: 32 }}>
+          <div style={{
+            display: 'grid',
+            gridTemplateRows: 'auto 28px auto',
+            gridTemplateColumns: `repeat(${TIMELINE.length}, 1fr)`,
+            minWidth: 680,
+            maxWidth: 860,
+            marginLeft: 'auto',
+            marginRight: 'auto',
+          }}>
+            {/* Row 1: 버전 + 날짜 */}
+            {TIMELINE.map((t) => (
+              <div key={`top-${t.version}`} style={{
+                textAlign: 'center',
+                paddingBottom: 10,
+                paddingLeft: 4,
+                paddingRight: 4,
+              }}>
                 <div style={{
                   fontFamily: "'Inter', sans-serif",
-                  fontSize: 18,
-                  fontWeight: 600,
+                  fontSize: 14,
+                  fontWeight: 700,
                   color: t.version === 'v4.0' ? C.accent : C.text,
-                  lineHeight: 1,
                 }}>
                   {t.version}
                 </div>
                 <div style={{
                   fontFamily: "'Inter', sans-serif",
-                  fontSize: 11,
+                  fontSize: 10,
                   color: C.textMuted,
-                  marginTop: 4,
+                  marginTop: 2,
                 }}>
                   {t.date.slice(5)}
                 </div>
               </div>
-              <div>
+            ))}
+
+            {/* Row 2: 가로선 + 점들 */}
+            <div style={{
+              gridColumn: `1 / ${TIMELINE.length + 1}`,
+              position: 'relative',
+              height: 28,
+            }}>
+              <div style={{
+                position: 'absolute',
+                left: 0,
+                right: 0,
+                top: '50%',
+                height: 1,
+                background: C.border,
+                transform: 'translateY(-50%)',
+              }} />
+              {TIMELINE.map((t, i) => (
+                <div key={t.version} style={{
+                  position: 'absolute',
+                  left: `${(i + 0.5) / TIMELINE.length * 100}%`,
+                  top: '50%',
+                  transform: 'translate(-50%, -50%)',
+                  width: t.version === 'v4.0' ? 12 : 8,
+                  height: t.version === 'v4.0' ? 12 : 8,
+                  borderRadius: '50%',
+                  background: t.version === 'v4.0' ? C.accent : C.bg,
+                  border: `2px solid ${t.version === 'v4.0' ? C.accent : C.textSub}`,
+                }} />
+              ))}
+            </div>
+
+            {/* Row 3: 상세 */}
+            {TIMELINE.map((t) => (
+              <div key={`bottom-${t.version}`} style={{
+                textAlign: 'center',
+                paddingTop: 10,
+                paddingLeft: 4,
+                paddingRight: 4,
+              }}>
                 <div style={{
                   fontFamily: "'Inter', 'Noto Sans KR', sans-serif",
-                  fontSize: 15,
+                  fontSize: 12,
                   fontWeight: 600,
-                  color: C.text,
+                  color: t.version === 'v4.0' ? C.accent : C.text,
                   marginBottom: 4,
                 }}>
-                  {t.title} — {t.highlight}
+                  {t.highlight}
                 </div>
                 <div style={{
                   fontFamily: "'Inter', 'Noto Sans KR', sans-serif",
-                  fontSize: 14,
+                  fontSize: 11,
                   color: C.textSub,
-                  lineHeight: 1.7,
+                  lineHeight: 1.5,
                 }}>
                   {t.detail}
                 </div>
               </div>
-            </div>
-          ))}
+            ))}
+          </div>
         </div>
       </section>
 
