@@ -275,69 +275,80 @@ function AsIsToBeTab({ src, caption, activeWork }: { src: string; caption?: stri
 }
 
 function PmccFlowchart() {
+  // Fixed column widths: [step1, arr1, step2, arr2, diamond, yes+arr, retention]
+  const W = [120, 34, 138, 34, 92, 46, 100] as const;
+  const captionStyle: React.CSSProperties = { fontSize: 10, fontStyle: 'italic', color: '#888', textAlign: 'center', lineHeight: 1.4, padding: '0 4px' };
+
   return (
     <div style={{ background: '#ffffff', borderRadius: 8, padding: '28px 20px', margin: '24px 0', overflowX: 'auto' }}>
-      <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'center', minWidth: 600, gap: 0 }}>
+      <div style={{ display: 'flex', justifyContent: 'center' }}>
+        <div style={{ display: 'flex', flexDirection: 'column' }}>
 
-        {/* STEP 1 */}
-        <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', width: 124 }}>
-          <div style={{ border: '1px solid #d0d0d0', borderRadius: 10, background: '#ffffff', padding: '14px 12px', width: '100%', textAlign: 'center', boxSizing: 'border-box' }}>
-            <div style={{ fontSize: 9, fontWeight: 700, letterSpacing: '0.08em', color: '#999', marginBottom: 6, textTransform: 'uppercase' }}>STEP 1</div>
-            <div style={{ fontSize: 12, fontWeight: 600, color: '#111', lineHeight: 1.4 }}>Running<br />Physical Load</div>
-            <div style={{ fontSize: 11, color: '#666', marginTop: 4 }}>Heart rate ↑</div>
-          </div>
-          <div style={{ width: 1, height: 20, borderLeft: '1px dashed #ccc', margin: '4px 0 0' }} />
-          <div style={{ fontSize: 10, fontStyle: 'italic', color: '#888', textAlign: 'center', lineHeight: 1.4, padding: '0 4px' }}>Input: Controlled Stress</div>
-        </div>
-
-        {/* Arrow */}
-        <div style={{ flexShrink: 0, display: 'flex', alignItems: 'flex-start', padding: '28px 6px 0' }}>
-          <span style={{ color: '#c0c0c0', fontSize: 18 }}>→</span>
-        </div>
-
-        {/* STEP 2 */}
-        <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', width: 144 }}>
-          <div style={{ border: '2px solid #6aad6a', borderRadius: 10, background: '#f0f7f0', padding: '14px 12px', width: '100%', textAlign: 'center', boxSizing: 'border-box' }}>
-            <div style={{ fontSize: 9, fontWeight: 700, letterSpacing: '0.08em', color: '#5a9d5a', marginBottom: 6, textTransform: 'uppercase' }}>STEP 2</div>
-            <div style={{ fontSize: 12, fontWeight: 600, color: '#111', lineHeight: 1.4 }}>De-escalation<br />Defense Shield ↓</div>
-            <div style={{ fontSize: 11, color: '#4a9a4a', marginTop: 4 }}>Ego removal</div>
-          </div>
-          <div style={{ width: 1, height: 20, borderLeft: '1px dashed #ccc', margin: '4px 0 0' }} />
-          <div style={{ fontSize: 10, fontStyle: 'italic', color: '#888', textAlign: 'center', lineHeight: 1.4, padding: '0 4px' }}>Process: Psychological Safety</div>
-        </div>
-
-        {/* Arrow */}
-        <div style={{ flexShrink: 0, display: 'flex', alignItems: 'flex-start', padding: '28px 6px 0' }}>
-          <span style={{ color: '#c0c0c0', fontSize: 18 }}>→</span>
-        </div>
-
-        {/* Diamond */}
-        <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', width: 100 }}>
-          <div style={{ position: 'relative', width: 84, height: 84, flexShrink: 0 }}>
-            <div style={{ position: 'absolute', top: 8, left: 8, right: 8, bottom: 8, border: '1px solid #d0d0d0', background: '#ffffff', transform: 'rotate(45deg)', borderRadius: 3 }} />
-            <div style={{ position: 'absolute', inset: 0, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-              <div style={{ fontSize: 10, fontWeight: 600, color: '#333', textAlign: 'center', lineHeight: 1.3 }}>Safe State<br />Formed?</div>
+          {/* Row 1: Boxes + Arrows — alignItems: center ensures arrows align to box midpoints */}
+          <div style={{ display: 'flex', alignItems: 'center' }}>
+            {/* STEP 1 */}
+            <div style={{ width: W[0], flexShrink: 0, border: '1px solid #d0d0d0', borderRadius: 10, background: '#ffffff', padding: '14px 10px', textAlign: 'center', boxSizing: 'border-box' }}>
+              <div style={{ fontSize: 9, fontWeight: 700, letterSpacing: '0.08em', color: '#999', marginBottom: 6, textTransform: 'uppercase' }}>STEP 1</div>
+              <div style={{ fontSize: 12, fontWeight: 600, color: '#111', lineHeight: 1.4 }}>Running<br />Physical Load</div>
+              <div style={{ fontSize: 11, color: '#666', marginTop: 4 }}>Heart rate ↑</div>
+            </div>
+            {/* Arrow 1 */}
+            <div style={{ width: W[1], flexShrink: 0, display: 'flex', justifyContent: 'center' }}>
+              <span style={{ color: '#c0c0c0', fontSize: 18 }}>→</span>
+            </div>
+            {/* STEP 2 */}
+            <div style={{ width: W[2], flexShrink: 0, border: '2px solid #6aad6a', borderRadius: 10, background: '#f0f7f0', padding: '14px 10px', textAlign: 'center', boxSizing: 'border-box' }}>
+              <div style={{ fontSize: 9, fontWeight: 700, letterSpacing: '0.08em', color: '#5a9d5a', marginBottom: 6, textTransform: 'uppercase' }}>STEP 2</div>
+              <div style={{ fontSize: 12, fontWeight: 600, color: '#111', lineHeight: 1.4 }}>De-escalation<br />Defense Shield ↓</div>
+              <div style={{ fontSize: 11, color: '#4a9a4a', marginTop: 4 }}>Ego removal</div>
+            </div>
+            {/* Arrow 2 */}
+            <div style={{ width: W[3], flexShrink: 0, display: 'flex', justifyContent: 'center' }}>
+              <span style={{ color: '#c0c0c0', fontSize: 18 }}>→</span>
+            </div>
+            {/* Diamond */}
+            <div style={{ width: W[4], flexShrink: 0, display: 'flex', justifyContent: 'center' }}>
+              <div style={{ position: 'relative', width: 82, height: 82, flexShrink: 0 }}>
+                <div style={{ position: 'absolute', top: 8, left: 8, right: 8, bottom: 8, border: '1px solid #d0d0d0', background: '#ffffff', transform: 'rotate(45deg)', borderRadius: 3 }} />
+                <div style={{ position: 'absolute', inset: 0, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                  <div style={{ fontSize: 10, fontWeight: 600, color: '#333', textAlign: 'center', lineHeight: 1.3 }}>Safe State<br />Formed?</div>
+                </div>
+              </div>
+            </div>
+            {/* YES + Arrow */}
+            <div style={{ width: W[5], flexShrink: 0, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}>
+              <div style={{ fontSize: 9, fontWeight: 700, letterSpacing: '0.05em', color: '#888', marginBottom: 2 }}>YES</div>
+              <span style={{ color: '#c0c0c0', fontSize: 18 }}>→</span>
+            </div>
+            {/* Retention */}
+            <div style={{ width: W[6], flexShrink: 0, border: '2px solid #3B82F6', borderRadius: 10, background: '#eaf4fb', padding: '14px 10px', textAlign: 'center', boxSizing: 'border-box', minHeight: 82, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+              <div style={{ fontSize: 14, fontWeight: 700, color: '#111' }}>Retention</div>
             </div>
           </div>
-          <div style={{ width: 1, height: 20, borderLeft: '1px dashed #ccc', margin: '4px 0 0' }} />
-          <div style={{ fontSize: 10, fontStyle: 'italic', color: '#888', textAlign: 'center', lineHeight: 1.4, padding: '0 4px' }}>Condition: Openness</div>
-        </div>
 
-        {/* YES + Arrow */}
-        <div style={{ flexShrink: 0, display: 'flex', flexDirection: 'column', alignItems: 'center', padding: '22px 4px 0' }}>
-          <div style={{ fontSize: 9, fontWeight: 700, letterSpacing: '0.05em', color: '#888', marginBottom: 2 }}>YES</div>
-          <span style={{ color: '#c0c0c0', fontSize: 18 }}>→</span>
-        </div>
-
-        {/* Retention */}
-        <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', width: 100 }}>
-          <div style={{ border: '2px solid #3B82F6', borderRadius: 10, background: '#eaf4fb', padding: '14px 12px', width: '100%', textAlign: 'center', boxSizing: 'border-box', display: 'flex', alignItems: 'center', justifyContent: 'center', minHeight: 84 }}>
-            <div style={{ fontSize: 14, fontWeight: 700, color: '#3B82F6' }}>Retention</div>
+          {/* Row 2: Dashed lines under box columns only */}
+          <div style={{ display: 'flex' }}>
+            <div style={{ width: W[0], flexShrink: 0, display: 'flex', justifyContent: 'center' }}><div style={{ width: 1, height: 14, borderLeft: '1px dashed #ccc' }} /></div>
+            <div style={{ width: W[1], flexShrink: 0 }} />
+            <div style={{ width: W[2], flexShrink: 0, display: 'flex', justifyContent: 'center' }}><div style={{ width: 1, height: 14, borderLeft: '1px dashed #ccc' }} /></div>
+            <div style={{ width: W[3], flexShrink: 0 }} />
+            <div style={{ width: W[4], flexShrink: 0, display: 'flex', justifyContent: 'center' }}><div style={{ width: 1, height: 14, borderLeft: '1px dashed #ccc' }} /></div>
+            <div style={{ width: W[5], flexShrink: 0 }} />
+            <div style={{ width: W[6], flexShrink: 0, display: 'flex', justifyContent: 'center' }}><div style={{ width: 1, height: 14, borderLeft: '1px dashed #ccc' }} /></div>
           </div>
-          <div style={{ width: 1, height: 20, borderLeft: '1px dashed #ccc', margin: '4px 0 0' }} />
-          <div style={{ fontSize: 10, fontStyle: 'italic', color: '#3B82F6', textAlign: 'center', lineHeight: 1.4, padding: '0 4px' }}>Output: Behavior Change</div>
-        </div>
 
+          {/* Row 3: Captions */}
+          <div style={{ display: 'flex' }}>
+            <div style={{ width: W[0], flexShrink: 0, ...captionStyle }}>Input: Controlled Stress</div>
+            <div style={{ width: W[1], flexShrink: 0 }} />
+            <div style={{ width: W[2], flexShrink: 0, ...captionStyle }}>Process: Psychological Safety</div>
+            <div style={{ width: W[3], flexShrink: 0 }} />
+            <div style={{ width: W[4], flexShrink: 0, ...captionStyle }}>Condition: Openness</div>
+            <div style={{ width: W[5], flexShrink: 0 }} />
+            <div style={{ width: W[6], flexShrink: 0, ...captionStyle, color: '#3B82F6' }}>Output: Behavior Change</div>
+          </div>
+
+        </div>
       </div>
     </div>
   );
