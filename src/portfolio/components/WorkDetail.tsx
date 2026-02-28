@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useRef } from "react";
 import { type WorkKey } from "../content/work";
 import { type WorkSection } from "../parseWorkDetail";
 import { WorkDetailBlocks } from "./WorkDetailBlocks";
