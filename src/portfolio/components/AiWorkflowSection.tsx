@@ -136,54 +136,97 @@ export function AiWorkflowSection({ raw: _raw }: { raw?: string }) {
           <strong> 계층이 아니라 리좀 — 필요한 팀이 필요한 순간에 깨어난다.</strong>
         </p>
 
-        {/* 팀 카드 */}
-        <div style={{
-          display: 'grid',
-          gridTemplateColumns: 'repeat(2, 1fr)',
-          gap: 16,
-          margin: '32px auto',
-          maxWidth: 860,
-        }}>
-          {TEAMS.map((t) => (
-            <div key={t.name} style={{
+        {/* 팀 트리 다이어그램 — hub 맨 위, 3팀 아래 */}
+        <div style={{ maxWidth: 860, margin: '32px auto' }}>
+          {/* Hub — meta-orchestrator */}
+          <div style={{ textAlign: 'center' }}>
+            <div style={{
+              display: 'inline-block',
               border: `1px solid ${C.border}`,
+              borderTop: `3px solid #F59E0B`,
               borderRadius: 8,
-              padding: '20px 24px',
-              borderLeft: `3px solid ${t.color}`,
+              padding: '16px 32px',
+              background: C.bgAlt,
             }}>
               <div style={{
                 fontFamily: "'Inter', sans-serif",
-                fontSize: 11,
+                fontSize: 10,
                 fontWeight: 700,
-                color: t.color,
+                color: '#F59E0B',
                 letterSpacing: '0.1em',
                 textTransform: 'uppercase' as const,
-                marginBottom: 4,
-              }}>
-                {t.name}
-              </div>
+              }}>HUB</div>
               <div style={{
                 fontFamily: "'Inter', 'Noto Sans KR', sans-serif",
                 fontSize: 15,
                 fontWeight: 600,
                 color: C.text,
-                marginBottom: 8,
-              }}>
-                {t.label}
-              </div>
+                marginTop: 4,
+              }}>meta-orchestrator</div>
               <div style={{
-                fontFamily: "'Inter', 'Noto Sans KR', sans-serif",
-                fontSize: 13,
-                color: C.textSub,
-                lineHeight: 1.6,
+                fontFamily: "'Inter', sans-serif",
+                fontSize: 12,
+                color: C.textMuted,
+                marginTop: 3,
+              }}>Opus · 전체 팀 디스패치</div>
+            </div>
+          </div>
+
+          {/* 연결선 — 허브에서 3팀으로 */}
+          <div style={{ position: 'relative', height: 36 }}>
+            <div style={{ position: 'absolute', left: '50%', top: 0, height: 18, width: 1, background: C.border, transform: 'translateX(-50%)' }} />
+            <div style={{ position: 'absolute', left: '16.66%', right: '16.66%', top: 18, height: 1, background: C.border }} />
+            <div style={{ position: 'absolute', left: '16.66%', top: 18, bottom: 0, width: 1, background: C.border, transform: 'translateX(-50%)' }} />
+            <div style={{ position: 'absolute', left: '50%', top: 18, bottom: 0, width: 1, background: C.border, transform: 'translateX(-50%)' }} />
+            <div style={{ position: 'absolute', left: '83.33%', top: 18, bottom: 0, width: 1, background: C.border, transform: 'translateX(-50%)' }} />
+          </div>
+
+          {/* 3팀 */}
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 16 }}>
+            {TEAMS.filter((t) => t.name !== 'hub').map((t) => (
+              <div key={t.name} style={{
+                border: `1px solid ${C.border}`,
+                borderRadius: 8,
+                padding: '16px 20px',
+                borderTop: `3px solid ${t.color}`,
               }}>
-                <strong style={{ color: C.text }}>리드:</strong> {t.lead}
+                <div style={{
+                  fontFamily: "'Inter', sans-serif",
+                  fontSize: 10,
+                  fontWeight: 700,
+                  color: t.color,
+                  letterSpacing: '0.1em',
+                  textTransform: 'uppercase' as const,
+                  marginBottom: 4,
+                }}>{t.name}</div>
+                <div style={{
+                  fontFamily: "'Inter', 'Noto Sans KR', sans-serif",
+                  fontSize: 14,
+                  fontWeight: 600,
+                  color: C.text,
+                  marginBottom: 8,
+                }}>{t.label}</div>
+                <div style={{
+                  fontFamily: "'Inter', 'Noto Sans KR', sans-serif",
+                  fontSize: 12,
+                  color: C.textSub,
+                }}>
+                  <span style={{ color: C.text, fontWeight: 600 }}>리드:</span> {t.lead}
+                </div>
                 {t.members.length > 0 && (
-                  <span> · {t.members.join(', ')}</span>
+                  <div style={{
+                    fontFamily: "'Inter', sans-serif",
+                    fontSize: 11,
+                    color: C.textMuted,
+                    marginTop: 6,
+                    lineHeight: 1.6,
+                  }}>
+                    {t.members.join(' · ')}
+                  </div>
                 )}
               </div>
-            </div>
-          ))}
+            ))}
+          </div>
         </div>
 
         <p className="wd-paragraph" style={{ marginTop: 8 }}>
@@ -199,34 +242,67 @@ export function AiWorkflowSection({ raw: _raw }: { raw?: string }) {
           작은 모델이 제 역할을 하면 큰 모델이 진짜 중요한 일에 집중할 수 있다.
         </p>
 
-        <div className="wd-table-wrap">
-          <table className="wd-table">
-            <thead>
-              <tr>
-                <th>에이전트</th>
-                <th>팀</th>
-                <th>모델</th>
-                <th>역할</th>
-              </tr>
-            </thead>
-            <tbody>
-              {AGENTS.map((a) => (
-                <tr key={a.name}>
-                  <td>{a.name}</td>
-                  <td>{a.team}</td>
-                  <td>{a.model}</td>
-                  <td style={{ color: C.textSub, fontWeight: 400 }}>
-                    {a.role}
-                    {a.note && (
-                      <span style={{ color: C.accent, fontSize: 12, marginLeft: 6 }}>
-                        {a.note}
-                      </span>
-                    )}
-                  </td>
-                </tr>
+        {/* 모델 배치 스펙트럼 다이어그램 */}
+        <div style={{ maxWidth: 860, margin: '32px auto' }}>
+          {/* 레이블 — 경량 / 강력 */}
+          <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 8 }}>
+            <span style={{ fontFamily: "'Inter', sans-serif", fontSize: 11, color: C.textMuted }}>경량 · 빠름</span>
+            <span style={{ fontFamily: "'Inter', sans-serif", fontSize: 11, color: C.textMuted }}>강력 · 깊이</span>
+          </div>
+
+          {/* 수평 선 + 3개 점 */}
+          <div style={{ position: 'relative', height: 20 }}>
+            <div style={{ position: 'absolute', left: 0, right: 0, top: '50%', height: 1, background: C.border, transform: 'translateY(-50%)' }} />
+            {[
+              { left: '12.5%', color: '#10B981' },
+              { left: '50%', color: C.textSub },
+              { left: '87.5%', color: C.accent },
+            ].map((m, i) => (
+              <div key={i} style={{
+                position: 'absolute',
+                left: m.left,
+                top: '50%',
+                transform: 'translate(-50%, -50%)',
+                width: 10,
+                height: 10,
+                borderRadius: '50%',
+                background: m.color,
+              }} />
+            ))}
+          </div>
+
+          {/* 모델 이름 행 */}
+          <div style={{ display: 'grid', gridTemplateColumns: '1fr 2fr 1fr', gap: 12, marginTop: 10, marginBottom: 14 }}>
+            {[
+              { name: 'Haiku', color: '#10B981', role: '요약 · 연결' },
+              { name: 'Sonnet', color: C.textSub, role: '분석 · 실행' },
+              { name: 'Opus', color: C.accent, role: '설계 · 검증' },
+            ].map((m) => (
+              <div key={m.name} style={{ textAlign: 'center' }}>
+                <div style={{ fontFamily: "'Inter', sans-serif", fontSize: 12, fontWeight: 700, color: m.color }}>{m.name}</div>
+                <div style={{ fontFamily: "'Inter', 'Noto Sans KR', sans-serif", fontSize: 11, color: C.textMuted, marginTop: 2, fontStyle: 'italic' }}>{m.role}</div>
+              </div>
+            ))}
+          </div>
+
+          {/* 에이전트 박스 */}
+          <div style={{ display: 'grid', gridTemplateColumns: '1fr 2fr 1fr', gap: 12 }}>
+            <div style={{ border: `1px solid ${C.border}`, borderRadius: 6, padding: '12px 16px', borderTop: `2px solid #10B981` }}>
+              {AGENTS.filter((a) => a.model === 'Haiku').map((a) => (
+                <div key={a.name} style={{ fontFamily: "'Inter', sans-serif", fontSize: 11, color: C.text, padding: '3px 0' }}>{a.name}</div>
               ))}
-            </tbody>
-          </table>
+            </div>
+            <div style={{ border: `1px solid ${C.border}`, borderRadius: 6, padding: '12px 16px', borderTop: `2px solid ${C.textSub}` }}>
+              {AGENTS.filter((a) => a.model === 'Sonnet').map((a) => (
+                <div key={a.name} style={{ fontFamily: "'Inter', sans-serif", fontSize: 11, color: C.text, padding: '3px 0' }}>{a.name}</div>
+              ))}
+            </div>
+            <div style={{ border: `1px solid ${C.border}`, borderRadius: 6, padding: '12px 16px', borderTop: `2px solid ${C.accent}` }}>
+              {AGENTS.filter((a) => a.model === 'Opus').map((a) => (
+                <div key={a.name} style={{ fontFamily: "'Inter', sans-serif", fontSize: 11, color: C.text, padding: '3px 0' }}>{a.name}</div>
+              ))}
+            </div>
+          </div>
         </div>
       </section>
 
@@ -438,7 +514,7 @@ export function AiWorkflowSection({ raw: _raw }: { raw?: string }) {
           <strong> 자유를 제한하는 것이 아니라, 토큰 폭발을 막는 것이다.</strong>
         </p>
 
-        {/* 5개 체인 다이어그램 */}
+        {/* 5개 체인 — ref 스타일 수평 타임라인 */}
         <div style={{
           maxWidth: 860,
           marginLeft: 'auto',
@@ -453,7 +529,9 @@ export function AiWorkflowSection({ raw: _raw }: { raw?: string }) {
               display: 'grid',
               gridTemplateColumns: '68px 1fr',
               borderBottom: i < CHAINS.length - 1 ? `1px solid ${C.border}` : 'none',
+              minHeight: 72,
             }}>
+              {/* 왼쪽: 체인명 */}
               <div style={{
                 padding: '12px 14px',
                 borderRight: `1px solid ${C.border}`,
@@ -467,32 +545,54 @@ export function AiWorkflowSection({ raw: _raw }: { raw?: string }) {
               }}>
                 {c.name}
               </div>
-              <div style={{
-                padding: '10px 14px',
-                display: 'flex',
-                alignItems: 'center',
-                gap: 4,
-                flexWrap: 'wrap',
-              }}>
-                {c.steps.map((s, si) => (
-                  <React.Fragment key={si}>
-                    <span style={{
-                      fontFamily: "'Inter', 'Noto Sans KR', sans-serif",
-                      fontSize: 12,
-                      color: si === 0 ? C.bg : C.text,
-                      background: si === 0 ? C.accent : C.bgAlt,
-                      border: si === 0 ? 'none' : `1px solid ${C.border}`,
-                      padding: '3px 10px',
-                      borderRadius: 4,
-                      whiteSpace: 'nowrap',
+              {/* 오른쪽: 수평 타임라인 */}
+              <div style={{ padding: '10px 24px 14px', position: 'relative' }}>
+                {/* 수평 선 */}
+                <div style={{
+                  position: 'absolute',
+                  left: 24,
+                  right: 24,
+                  top: 22,
+                  height: 1,
+                  background: C.border,
+                }} />
+                {/* 스텝들 — 균등 배치 */}
+                <div style={{
+                  display: 'flex',
+                  justifyContent: 'space-between',
+                  position: 'relative',
+                  zIndex: 1,
+                }}>
+                  {c.steps.map((s, si) => (
+                    <div key={si} style={{
+                      display: 'flex',
+                      flexDirection: 'column',
+                      alignItems: 'center',
+                      gap: 7,
                     }}>
-                      {s}
-                    </span>
-                    {si < c.steps.length - 1 && (
-                      <span style={{ fontSize: 12, color: C.textMuted }}>→</span>
-                    )}
-                  </React.Fragment>
-                ))}
+                      <div style={{
+                        width: si === 0 ? 11 : 9,
+                        height: si === 0 ? 11 : 9,
+                        borderRadius: '50%',
+                        background: si === 0 ? C.accent : C.bg,
+                        border: `2px solid ${si === 0 ? C.accent : C.border}`,
+                        flexShrink: 0,
+                      }} />
+                      <div style={{
+                        fontFamily: "'Inter', 'Noto Sans KR', sans-serif",
+                        fontSize: 11,
+                        color: si === 0 ? C.accent : C.textSub,
+                        fontWeight: si === 0 ? 600 : 400,
+                        whiteSpace: 'nowrap',
+                        textAlign: 'center',
+                        maxWidth: 90,
+                        lineHeight: 1.4,
+                      }}>
+                        {s}
+                      </div>
+                    </div>
+                  ))}
+                </div>
               </div>
             </div>
           ))}
@@ -729,9 +829,8 @@ export function AiWorkflowSection({ raw: _raw }: { raw?: string }) {
           marginLeft: 'auto',
           marginRight: 'auto',
           marginTop: 40,
-          padding: '28px 32px',
-          background: C.bgAlt,
-          borderRadius: 8,
+          paddingTop: 28,
+          borderTop: `1px solid ${C.border}`,
         }}>
           <p className="wd-eyebrow" style={{ marginBottom: 12 }}>What's Next</p>
           <p className="wd-paragraph" style={{ marginBottom: 0 }}>
