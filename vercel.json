@@ -1,0 +1,13 @@
+{
+  "framework": "vite",
+  "buildCommand": "npm run build",
+  "outputDirectory": "dist",
+  "git": {
+    "deploymentEnabled": {
+      "gh-pages": false
+    }
+  },
+  "rewrites": [
+    { "source": "/((?!work/)(?!assets/).*)", "destination": "/index.html" }
+  ]
+}
