@@ -136,106 +136,105 @@ export function AiWorkflowSection({ raw: _raw }: { raw?: string }) {
           <strong> 계층이 아니라 리좀 — 필요한 팀이 필요한 순간에 깨어난다.</strong>
         </p>
 
-        {/* 팀 트리 다이어그램 — hub 맨 위, 3팀 아래 */}
-        <div style={{ maxWidth: 860, margin: '32px auto', background: C.bgAlt, borderRadius: 8, padding: '32px 40px' }}>
+        {/* 팀 트리 다이어그램 — PNG 디자인 매칭 */}
+        <div style={{ maxWidth: 720, margin: '24px auto', padding: '16px 8px' }}>
           {/* Hub — meta-orchestrator */}
           <div style={{ textAlign: 'center' }}>
             <div style={{
               display: 'inline-block',
-              border: `1px solid ${C.border}`,
-              borderTop: `3px solid #F59E0B`,
-              borderRadius: 8,
-              padding: '16px 32px',
-              background: C.bg,
+              borderTop: '3px solid #F97316',
+              borderRadius: 10,
+              padding: '12px 32px',
+              background: '#FEF3E7',
+              minWidth: 200,
             }}>
               <div style={{
                 fontFamily: "'Inter', sans-serif",
                 fontSize: 10,
                 fontWeight: 700,
-                color: '#F59E0B',
+                color: '#F97316',
                 letterSpacing: '0.1em',
                 textTransform: 'uppercase' as const,
               }}>HUB</div>
               <div style={{
                 fontFamily: "'Inter', 'Noto Sans KR', sans-serif",
-                fontSize: 15,
-                fontWeight: 600,
+                fontSize: 12,
+                fontWeight: 700,
                 color: C.text,
                 marginTop: 4,
               }}>meta-orchestrator</div>
               <div style={{
-                fontFamily: "'Inter', sans-serif",
-                fontSize: 12,
-                color: C.textMuted,
-                marginTop: 3,
+                fontFamily: "'Inter', 'Noto Sans KR', sans-serif",
+                fontSize: 11,
+                color: '#9CA3AF',
+                marginTop: 4,
               }}>Opus · 전체 팀 디스패치</div>
             </div>
           </div>
 
-          {/* 연결선 — 허브에서 3팀으로 (dot 포함) */}
-          <div style={{ position: 'relative', height: 44 }}>
+          {/* 연결선 — 허브에서 3팀으로 */}
+          <div style={{ position: 'relative', height: 36 }}>
             {/* hub 아래 수직선 */}
-            <div style={{ position: 'absolute', left: '50%', top: 0, height: 22, width: 1, background: C.border, transform: 'translateX(-50%)' }} />
-            {/* hub 아래 dot */}
-            <div style={{ position: 'absolute', left: '50%', top: 22, transform: 'translate(-50%, -50%)', width: 6, height: 6, borderRadius: '50%', background: C.textMuted }} />
+            <div style={{ position: 'absolute', left: '50%', top: 0, height: 18, width: 1, background: '#D1D5DB', transform: 'translateX(-50%)' }} />
             {/* 수평선 */}
-            <div style={{ position: 'absolute', left: '16.66%', right: '16.66%', top: 22, height: 1, background: C.border }} />
+            <div style={{ position: 'absolute', left: '16.66%', right: '16.66%', top: 18, height: 1, background: '#D1D5DB' }} />
             {/* 각 팀 수직선 */}
-            <div style={{ position: 'absolute', left: '16.66%', top: 22, bottom: 0, width: 1, background: C.border, transform: 'translateX(-50%)' }} />
-            <div style={{ position: 'absolute', left: '50%', top: 22, bottom: 0, width: 1, background: C.border, transform: 'translateX(-50%)' }} />
-            <div style={{ position: 'absolute', left: '83.33%', top: 22, bottom: 0, width: 1, background: C.border, transform: 'translateX(-50%)' }} />
-            {/* 각 팀 위 dot */}
-            <div style={{ position: 'absolute', left: '16.66%', bottom: 0, transform: 'translate(-50%, 50%)', width: 6, height: 6, borderRadius: '50%', background: C.textMuted }} />
-            <div style={{ position: 'absolute', left: '50%', bottom: 0, transform: 'translate(-50%, 50%)', width: 6, height: 6, borderRadius: '50%', background: C.textMuted }} />
-            <div style={{ position: 'absolute', left: '83.33%', bottom: 0, transform: 'translate(-50%, 50%)', width: 6, height: 6, borderRadius: '50%', background: C.textMuted }} />
+            <div style={{ position: 'absolute', left: '16.66%', top: 18, bottom: 0, width: 1, background: '#D1D5DB', transform: 'translateX(-50%)' }} />
+            <div style={{ position: 'absolute', left: '50%', top: 18, bottom: 0, width: 1, background: '#D1D5DB', transform: 'translateX(-50%)' }} />
+            <div style={{ position: 'absolute', left: '83.33%', top: 18, bottom: 0, width: 1, background: '#D1D5DB', transform: 'translateX(-50%)' }} />
           </div>
 
           {/* 3팀 */}
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 16 }}>
-            {TEAMS.filter((t) => t.name !== 'hub').map((t) => (
-              <div key={t.name} style={{
-                border: `1px solid ${C.border}`,
-                borderRadius: 8,
-                padding: '16px 20px',
-                borderTop: `3px solid ${t.color}`,
-                background: C.bg,
-              }}>
-                <div style={{
-                  fontFamily: "'Inter', sans-serif",
-                  fontSize: 10,
-                  fontWeight: 700,
-                  color: t.color,
-                  letterSpacing: '0.1em',
-                  textTransform: 'uppercase' as const,
-                  marginBottom: 4,
-                }}>{t.name}</div>
-                <div style={{
-                  fontFamily: "'Inter', 'Noto Sans KR', sans-serif",
-                  fontSize: 14,
-                  fontWeight: 600,
-                  color: C.text,
-                  marginBottom: 8,
-                }}>{t.label}</div>
-                <div style={{
-                  fontFamily: "'Inter', 'Noto Sans KR', sans-serif",
-                  fontSize: 12,
-                  color: C.textSub,
+            {TEAMS.filter((t) => t.name !== 'hub').map((t) => {
+              const bgMap: Record<string, string> = {
+                build: '#C9D4C3',
+                verify: '#DCD6EA',
+                maintain: '#95A4BF',
+              };
+              return (
+                <div key={t.name} style={{
+                  borderRadius: 8,
+                  padding: '12px 16px',
+                  background: bgMap[t.name] || '#eee',
                 }}>
-                  <span style={{ color: C.text, fontWeight: 600 }}>리드:</span> {t.lead}
-                </div>
-                {t.members.length > 0 && (
                   <div style={{
                     fontFamily: "'Inter', sans-serif",
+                    fontSize: 9,
+                    fontWeight: 700,
+                    color: '#374151',
+                    letterSpacing: '0.08em',
+                    textTransform: 'uppercase' as const,
+                    marginBottom: 8,
+                  }}>{t.name}</div>
+                  <div style={{
+                    fontFamily: "'Noto Sans KR', sans-serif",
                     fontSize: 11,
-                    color: C.textMuted,
-                    marginTop: 6,
-                    lineHeight: 1.6,
+                    fontWeight: 700,
+                    color: '#1F2937',
+                    marginBottom: 10,
+                  }}>{t.label}</div>
+                  <div style={{
+                    fontFamily: "'Inter', 'Noto Sans KR', sans-serif",
+                    fontSize: 12,
+                    color: '#374151',
+                    marginBottom: 8,
                   }}>
-                    {t.members.join(' · ')}
+                    리드: <strong>{t.lead}</strong>
                   </div>
-                )}
-              </div>
-            ))}
+                  {t.members.length > 0 && (
+                    <div style={{
+                      fontFamily: "'Inter', sans-serif",
+                      fontSize: 11,
+                      color: '#6B7280',
+                      lineHeight: 1.6,
+                    }}>
+                      {t.members.join(' · ')}
+                    </div>
+                  )}
+                </div>
+              );
+            })}
           </div>
         </div>
 
@@ -332,6 +331,142 @@ export function AiWorkflowSection({ raw: _raw }: { raw?: string }) {
               <p style={{ fontFamily: "'Inter', 'Noto Sans KR', sans-serif", fontSize: 11, color: C.textMuted, textAlign: 'center', fontStyle: 'italic', margin: '8px 0 0' }}>설계 · 검증 · 깊이</p>
             </div>
           </div>
+        </div>
+
+        {/* 체인 × 팀 상호작용 다이어그램 */}
+        <h3 className="wd-heading">체인 — 팀을 잇는 고정 경로</h3>
+        <p className="wd-paragraph">
+          체인은 에이전트가 거치는 고정 경로다. 구현 체인은 build에서 시작해 maintain의 linker로 끝나고,
+          디스패치 체인은 maintain에서 hub를 거쳐 전체 팀을 깨운다.
+          <strong> 체인이 팀 경계를 넘는 방식이 시스템의 성격을 결정한다.</strong>
+        </p>
+
+        <div style={{ maxWidth: 860, margin: '32px auto', background: '#F5F5F5', borderRadius: 12, padding: '32px 24px' }}>
+          {CHAINS.map((chain, ci) => {
+            const stepTeamMap: Record<string, string> = {
+              'code-reviewer': 'build', 'commit-writer': 'build',
+              'pf-ops': 'build', 'security-auditor': 'build',
+              'ai-synthesizer verify': 'verify', 'verify': 'verify',
+              'linker': 'maintain', 'compressor 9단계': 'maintain', 'doc-ops': 'maintain',
+              'meta-orchestrator': 'hub', '팀 활성화': 'hub',
+              'implement': 'trigger', '/dispatch': 'trigger', '/compact': 'trigger',
+              '사용자 확인': 'trigger', 'Gemini/Codex 추출': 'external',
+              'push': 'system', '사용': 'system',
+            };
+            const teamBgMap: Record<string, string> = {
+              build: '#C9D4C3', verify: '#DCD6EA', maintain: '#95A4BF',
+              hub: '#FCEBD4', trigger: '#DBEAFE', external: '#FECACA', system: '#FEF3C7',
+            };
+            return (
+              <div key={chain.name} style={{
+                display: 'grid',
+                gridTemplateColumns: '72px 1fr',
+                borderBottom: ci < CHAINS.length - 1 ? '1px solid #E5E7EB' : 'none',
+                padding: '16px 0',
+                alignItems: 'center',
+              }}>
+                <div style={{
+                  fontFamily: "'Noto Sans KR', sans-serif",
+                  fontSize: 13,
+                  fontWeight: 700,
+                  color: '#374151',
+                }}>{chain.name}</div>
+                <div style={{ display: 'flex', alignItems: 'center', gap: 8, flexWrap: 'wrap' }}>
+                  {chain.steps.map((step, si) => {
+                    const team = stepTeamMap[step] || 'trigger';
+                    const bg = teamBgMap[team] || '#F3F4F6';
+                    return (
+                      <React.Fragment key={si}>
+                        {si > 0 && (
+                          <span style={{ color: '#9CA3AF', fontSize: 13, lineHeight: 1 }}>→</span>
+                        )}
+                        <span style={{
+                          display: 'inline-block',
+                          padding: '5px 14px',
+                          borderRadius: 20,
+                          background: bg,
+                          fontFamily: "'Inter', 'Noto Sans KR', sans-serif",
+                          fontSize: 12,
+                          color: '#374151',
+                          fontWeight: 500,
+                          whiteSpace: 'nowrap',
+                        }}>{step}</span>
+                      </React.Fragment>
+                    );
+                  })}
+                </div>
+              </div>
+            );
+          })}
+
+          {/* 범례 */}
+          <div style={{
+            display: 'flex', gap: 16, justifyContent: 'center',
+            paddingTop: 20, borderTop: '1px solid #E5E7EB', marginTop: 8, flexWrap: 'wrap',
+          }}>
+            {[
+              { label: 'Build', bg: '#C9D4C3' },
+              { label: 'Verify', bg: '#DCD6EA' },
+              { label: 'Maintain', bg: '#95A4BF' },
+              { label: 'Hub', bg: '#FEF3E7' },
+              { label: 'Trigger', bg: '#DBEAFE' },
+              { label: 'System', bg: '#FEF3C7' },
+              { label: 'External', bg: '#FECACA' },
+            ].map((l) => (
+              <div key={l.label} style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
+                <div style={{ width: 10, height: 10, borderRadius: '50%', background: l.bg, border: '1px solid #D1D5DB' }} />
+                <span style={{ fontFamily: "'Inter', sans-serif", fontSize: 10, color: '#6B7280' }}>{l.label}</span>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        {/* 8종 Hook */}
+        <h3 className="wd-heading">8종 Hook — 체인을 깨우는 트리거</h3>
+        <div style={{
+          maxWidth: 860,
+          marginLeft: 'auto',
+          marginRight: 'auto',
+          display: 'grid',
+          gridTemplateColumns: 'repeat(2, 1fr)',
+          gap: 10,
+        }}>
+          {HOOKS.map((h) => (
+            <div key={h.name} style={{
+              border: `1px solid ${C.border}`,
+              borderRadius: 6,
+              padding: '12px 16px',
+            }}>
+              <div style={{
+                fontFamily: "'Inter', sans-serif",
+                fontSize: 10,
+                fontWeight: 600,
+                letterSpacing: '0.07em',
+                textTransform: 'uppercase' as const,
+                color: C.accent,
+                marginBottom: 3,
+              }}>
+                {h.trigger}
+              </div>
+              <div style={{
+                fontFamily: "'Inter', 'Noto Sans KR', sans-serif",
+                fontSize: 13,
+                fontWeight: 700,
+                color: C.text,
+                marginBottom: 5,
+              }}>
+                {h.name}
+              </div>
+              <div style={{
+                fontFamily: "'Inter', 'Noto Sans KR', sans-serif",
+                fontSize: 12,
+                color: C.textSub,
+                lineHeight: 1.6,
+              }}>
+                {h.role}
+              </div>
+            </div>
+          ))}
         </div>
       </section>
 
@@ -461,59 +596,115 @@ export function AiWorkflowSection({ raw: _raw }: { raw?: string }) {
           Codex는 정밀 검증, Gemini는 벌크 추출, Perplexity는 리서치.
           해석과 판단은 오직 Claude만 한다.
         </p>
-        <p className="wd-paragraph">
-          비용은 월 $60 — Claude Pro $20 + Codex Plus $20 + Gemini AI Pro $20.
-          Perplexity Pro $20을 더하면 월 $80. 각 도구의 한계를 알고 쓰는 것이 핵심이다.
-        </p>
 
-        {/* AI 역할 카드 */}
+        {/* Model Capability Benchmarks 테이블 */}
         <div style={{
-          display: 'grid',
-          gridTemplateColumns: 'repeat(2, 1fr)',
-          gap: 16,
+          background: C.bgAlt,
+          borderRadius: 12,
+          padding: '48px 40px',
           margin: '32px auto',
-          maxWidth: 860,
+          maxWidth: 920,
         }}>
+          <h3 style={{
+            fontFamily: "'Inter', sans-serif",
+            fontSize: 18,
+            fontWeight: 600,
+            letterSpacing: '0.12em',
+            textTransform: 'uppercase' as const,
+            color: C.text,
+            textAlign: 'center',
+            marginBottom: 40,
+          }}>
+            Model Capability Benchmarks
+          </h3>
+
+          {/* 헤더 */}
+          <div style={{
+            display: 'grid',
+            gridTemplateColumns: '140px 180px 1fr 200px',
+            gap: '0 24px',
+            paddingBottom: 16,
+            borderBottom: `1px solid ${C.border}`,
+            marginBottom: 8,
+          }}>
+            {['Agent Interface', 'Model Engine', 'Core Competency', 'Constraints / Cost'].map((h) => (
+              <div key={h} style={{
+                fontFamily: "'Inter', sans-serif",
+                fontSize: 11,
+                fontWeight: 600,
+                letterSpacing: '0.08em',
+                textTransform: 'uppercase' as const,
+                color: C.textMuted,
+              }}>
+                {h}
+              </div>
+            ))}
+          </div>
+
+          {/* 행 */}
           {AI_ROLES.map((r) => (
             <div key={r.name} style={{
-              border: `1px solid ${C.border}`,
-              borderRadius: 8,
-              padding: '20px 24px',
-              borderTop: `3px solid ${r.color}`,
+              display: 'grid',
+              gridTemplateColumns: '140px 180px 1fr 200px',
+              gap: '0 24px',
+              padding: '24px 0',
+              borderBottom: `1px solid ${C.border}`,
+              alignItems: 'start',
             }}>
               <div style={{
                 fontFamily: "'Inter', 'Noto Sans KR', sans-serif",
-                fontSize: 16,
-                fontWeight: 600,
+                fontSize: 15,
+                fontWeight: 500,
                 color: C.text,
-                marginBottom: 2,
               }}>
                 {r.name}
-              </div>
-              <div style={{
-                fontFamily: "'Inter', sans-serif",
-                fontSize: 12,
-                color: C.textMuted,
-                marginBottom: 12,
-              }}>
-                {r.model} · {r.role}
               </div>
               <div style={{
                 fontFamily: "'Inter', 'Noto Sans KR', sans-serif",
                 fontSize: 14,
                 color: C.textSub,
-                lineHeight: 1.7,
-                marginBottom: 8,
               }}>
-                {r.strength}
+                {r.model}{r.role ? ` · ${r.role}` : ''}
               </div>
-              <div style={{
-                fontFamily: "'Inter', 'Noto Sans KR', sans-serif",
-                fontSize: 13,
-                color: C.textMuted,
-                lineHeight: 1.6,
-              }}>
-                {r.limit}
+              <div>
+                <div style={{
+                  fontFamily: "'Inter', 'Noto Sans KR', sans-serif",
+                  fontSize: 14,
+                  fontWeight: 500,
+                  color: C.text,
+                  marginBottom: r.strengthSub ? 4 : 0,
+                }}>
+                  {r.strength}
+                </div>
+                {r.strengthSub && (
+                  <div style={{
+                    fontFamily: "'Inter', 'Noto Sans KR', sans-serif",
+                    fontSize: 13,
+                    color: C.textMuted,
+                  }}>
+                    {r.strengthSub}
+                  </div>
+                )}
+              </div>
+              <div>
+                <div style={{
+                  fontFamily: "'Inter', 'Noto Sans KR', sans-serif",
+                  fontSize: 14,
+                  fontWeight: 500,
+                  color: C.text,
+                  marginBottom: r.limitSub ? 4 : 0,
+                }}>
+                  {r.limit}
+                </div>
+                {r.limitSub && (
+                  <div style={{
+                    fontFamily: "'Inter', 'Noto Sans KR', sans-serif",
+                    fontSize: 13,
+                    color: C.textMuted,
+                  }}>
+                    {r.limitSub}
+                  </div>
+                )}
               </div>
             </div>
           ))}
@@ -530,155 +721,7 @@ export function AiWorkflowSection({ raw: _raw }: { raw?: string }) {
 
       <hr className="wd-section-divider" />
 
-      {/* ━━━ 6. 체인 & Hooks ━━━ */}
-      <section>
-        <div className="wd-section-header">
-          <p className="wd-eyebrow">Chains & Hooks</p>
-          <h2 className="wd-title">자동화 파이프라인</h2>
-        </div>
-
-        <p className="wd-paragraph">
-          체인은 에이전트가 거치는 고정 경로다. "구현하면 리뷰하고, 리뷰하면 커밋하고,
-          커밋하면 연결한다." 이 순서를 건너뛰는 것은 금지다.
-          <strong> 자유를 제한하는 것이 아니라, 토큰 폭발을 막는 것이다.</strong>
-        </p>
-
-        {/* 5개 체인 — ref 스타일 수평 타임라인 */}
-        <div style={{
-          maxWidth: 860,
-          marginLeft: 'auto',
-          marginRight: 'auto',
-          border: `1px solid ${C.border}`,
-          borderRadius: 8,
-          overflow: 'hidden',
-          marginBottom: 40,
-        }}>
-          {CHAINS.map((c, i) => (
-            <div key={c.name} style={{
-              display: 'grid',
-              gridTemplateColumns: '68px 1fr',
-              borderBottom: i < CHAINS.length - 1 ? `1px solid ${C.border}` : 'none',
-              minHeight: 72,
-            }}>
-              {/* 왼쪽: 체인명 */}
-              <div style={{
-                padding: '12px 14px',
-                borderRight: `1px solid ${C.border}`,
-                fontFamily: "'Inter', 'Noto Sans KR', sans-serif",
-                fontSize: 12,
-                fontWeight: 700,
-                color: C.textSub,
-                display: 'flex',
-                alignItems: 'center',
-                background: C.bgAlt,
-              }}>
-                {c.name}
-              </div>
-              {/* 오른쪽: 수평 타임라인 */}
-              <div style={{ padding: '10px 24px 14px', position: 'relative' }}>
-                {/* 수평 선 */}
-                <div style={{
-                  position: 'absolute',
-                  left: 24,
-                  right: 24,
-                  top: 22,
-                  height: 1,
-                  background: C.border,
-                }} />
-                {/* 스텝들 — 균등 배치 */}
-                <div style={{
-                  display: 'flex',
-                  justifyContent: 'space-between',
-                  position: 'relative',
-                  zIndex: 1,
-                }}>
-                  {c.steps.map((s, si) => (
-                    <div key={si} style={{
-                      display: 'flex',
-                      flexDirection: 'column',
-                      alignItems: 'center',
-                      gap: 7,
-                    }}>
-                      <div style={{
-                        width: si === 0 ? 11 : 9,
-                        height: si === 0 ? 11 : 9,
-                        borderRadius: '50%',
-                        background: si === 0 ? C.accent : C.bg,
-                        border: `2px solid ${si === 0 ? C.accent : C.border}`,
-                        flexShrink: 0,
-                      }} />
-                      <div style={{
-                        fontFamily: "'Inter', 'Noto Sans KR', sans-serif",
-                        fontSize: 11,
-                        color: si === 0 ? C.accent : C.textSub,
-                        fontWeight: si === 0 ? 600 : 400,
-                        whiteSpace: 'nowrap',
-                        textAlign: 'center',
-                        maxWidth: 90,
-                        lineHeight: 1.4,
-                      }}>
-                        {s}
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            </div>
-          ))}
-        </div>
-
-        {/* 8종 Hook 카드 */}
-        <h3 className="wd-heading">8종 Hook</h3>
-        <div style={{
-          maxWidth: 860,
-          marginLeft: 'auto',
-          marginRight: 'auto',
-          display: 'grid',
-          gridTemplateColumns: 'repeat(2, 1fr)',
-          gap: 10,
-        }}>
-          {HOOKS.map((h) => (
-            <div key={h.name} style={{
-              border: `1px solid ${C.border}`,
-              borderRadius: 6,
-              padding: '12px 16px',
-            }}>
-              <div style={{
-                fontFamily: "'Inter', sans-serif",
-                fontSize: 10,
-                fontWeight: 600,
-                letterSpacing: '0.07em',
-                textTransform: 'uppercase',
-                color: C.accent,
-                marginBottom: 3,
-              }}>
-                {h.trigger}
-              </div>
-              <div style={{
-                fontFamily: "'Inter', 'Noto Sans KR', sans-serif",
-                fontSize: 13,
-                fontWeight: 700,
-                color: C.text,
-                marginBottom: 5,
-              }}>
-                {h.name}
-              </div>
-              <div style={{
-                fontFamily: "'Inter', 'Noto Sans KR', sans-serif",
-                fontSize: 12,
-                color: C.textSub,
-                lineHeight: 1.6,
-              }}>
-                {h.role}
-              </div>
-            </div>
-          ))}
-        </div>
-      </section>
-
-      <hr className="wd-section-divider" />
-
-      {/* ━━━ 7. 진화 ━━━ */}
+      {/* ━━━ 6. 진화 ━━━ */}
       <section>
         <div className="wd-section-header">
           <p className="wd-eyebrow">Evolution</p>

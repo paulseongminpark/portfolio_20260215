@@ -44,7 +44,9 @@ export interface AiRole {
   model: string;
   role: string;
   strength: string;
+  strengthSub?: string;
   limit: string;
+  limitSub?: string;
   color: string;
 }
 
@@ -199,33 +201,40 @@ export const AI_ROLES: AiRole[] = [
   {
     name: 'Claude Code',
     model: 'Opus 4.6',
-    role: '설계자 · 결정권자 · 코드 작성자',
-    strength: '유일한 쓰기 권한. 에이전트 체인, 최종 판단, verify barrier.',
-    limit: '200K 컨텍스트. 토큰 = 예산.',
+    role: '설계자',
+    strength: '유일한 쓰기 권한',
+    strengthSub: '에이전트 체인 · 최종 판단 · verify barrier',
+    limit: '200K 컨텍스트',
+    limitSub: '토큰 = 예산',
     color: '#D4632D',
   },
   {
     name: 'Codex CLI',
     model: 'GPT-5.3',
-    role: '정밀 검증기',
-    strength: 'diff 리뷰, 포맷 QA, git 히스토리 추출. 세션당 3~5회.',
-    limit: '5시간 롤링 제한. Plus $20.',
+    role: '검증기',
+    strength: 'diff 리뷰',
+    strengthSub: '포맷 QA · git 히스토리 추출 · 세션당 3~5회',
+    limit: '5시간 롤링 제한',
+    limitSub: 'codex --bypass-approvals',
     color: '#10A37F',
   },
   {
     name: 'Gemini CLI',
     model: '3.1 Pro',
-    role: '벌크 추출기',
-    strength: '1M 컨텍스트로 대량 파일 구조화 추출. 웹 검색.',
-    limit: 'AI Pro $20. 절대 경로 필수.',
+    role: '추출기',
+    strength: '1M 컨텍스트로 대량 파일 구조화 추출',
+    strengthSub: '웹 검색',
+    limit: '절대 경로 필수',
+    limitSub: 'gemini --yolo --sandbox',
     color: '#4285F4',
   },
   {
     name: 'Perplexity',
     model: 'sonar-deep-research',
-    role: '리서치 엔진',
-    strength: 'tech-review 소스. deep research + sonar-pro 폴백.',
-    limit: 'Pro $20. API 기반.',
+    role: '',
+    strength: 'tech-review 소스',
+    strengthSub: 'deep research · sonar-pro 폴백',
+    limit: 'API 기반',
     color: '#7C3AED',
   },
 ];
