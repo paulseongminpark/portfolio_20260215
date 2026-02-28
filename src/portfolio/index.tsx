@@ -1,4 +1,4 @@
-import "./page-12.css";
+import "./portfolio.css";
 import { useState, useEffect, useCallback } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { type WorkKey } from "./content/work";
@@ -538,7 +538,7 @@ export default function Page12() {
   }, []);
 
   useEffect(() => {
-    const id = "page-12-fonts";
+    const id = "portfolio-fonts";
     if (!document.getElementById(id)) {
       const link = document.createElement("link");
       link.id = id; link.rel = "stylesheet";

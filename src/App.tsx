@@ -1,9 +1,9 @@
-import Page12 from "./experiments/page-12";
+import Portfolio from "./portfolio";
 
 function App() {
   return (
     <div style={{ minHeight: "100vh", background: "#ffffff" }}>
-      <Page12 />
+      <Portfolio />
     </div>
   );
 }
