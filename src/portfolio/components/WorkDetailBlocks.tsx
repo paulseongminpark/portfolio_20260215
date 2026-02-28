@@ -276,7 +276,7 @@ function AsIsToBeTab({ src, caption, activeWork }: { src: string; caption?: stri
 
 function PmccFlowchart() {
   return (
-    <div style={{ background: '#f7f7f5', borderRadius: 8, padding: '28px 20px', margin: '24px 0', overflowX: 'auto' }}>
+    <div style={{ background: '#ffffff', borderRadius: 8, padding: '28px 20px', margin: '24px 0', overflowX: 'auto' }}>
       <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'center', minWidth: 600, gap: 0 }}>
 
         {/* STEP 1 */}
