@@ -137,7 +137,7 @@ export function AiWorkflowSection({ raw: _raw }: { raw?: string }) {
         </p>
 
         {/* 팀 트리 다이어그램 — hub 맨 위, 3팀 아래 */}
-        <div style={{ maxWidth: 860, margin: '32px auto' }}>
+        <div style={{ maxWidth: 860, margin: '32px auto', background: C.bgAlt, borderRadius: 8, padding: '32px 40px' }}>
           {/* Hub — meta-orchestrator */}
           <div style={{ textAlign: 'center' }}>
             <div style={{
@@ -146,7 +146,7 @@ export function AiWorkflowSection({ raw: _raw }: { raw?: string }) {
               borderTop: `3px solid #F59E0B`,
               borderRadius: 8,
               padding: '16px 32px',
-              background: C.bgAlt,
+              background: C.bg,
             }}>
               <div style={{
                 fontFamily: "'Inter', sans-serif",
@@ -172,13 +172,22 @@ export function AiWorkflowSection({ raw: _raw }: { raw?: string }) {
             </div>
           </div>
 
-          {/* 연결선 — 허브에서 3팀으로 */}
-          <div style={{ position: 'relative', height: 36 }}>
-            <div style={{ position: 'absolute', left: '50%', top: 0, height: 18, width: 1, background: C.border, transform: 'translateX(-50%)' }} />
-            <div style={{ position: 'absolute', left: '16.66%', right: '16.66%', top: 18, height: 1, background: C.border }} />
-            <div style={{ position: 'absolute', left: '16.66%', top: 18, bottom: 0, width: 1, background: C.border, transform: 'translateX(-50%)' }} />
-            <div style={{ position: 'absolute', left: '50%', top: 18, bottom: 0, width: 1, background: C.border, transform: 'translateX(-50%)' }} />
-            <div style={{ position: 'absolute', left: '83.33%', top: 18, bottom: 0, width: 1, background: C.border, transform: 'translateX(-50%)' }} />
+          {/* 연결선 — 허브에서 3팀으로 (dot 포함) */}
+          <div style={{ position: 'relative', height: 44 }}>
+            {/* hub 아래 수직선 */}
+            <div style={{ position: 'absolute', left: '50%', top: 0, height: 22, width: 1, background: C.border, transform: 'translateX(-50%)' }} />
+            {/* hub 아래 dot */}
+            <div style={{ position: 'absolute', left: '50%', top: 22, transform: 'translate(-50%, -50%)', width: 6, height: 6, borderRadius: '50%', background: C.textMuted }} />
+            {/* 수평선 */}
+            <div style={{ position: 'absolute', left: '16.66%', right: '16.66%', top: 22, height: 1, background: C.border }} />
+            {/* 각 팀 수직선 */}
+            <div style={{ position: 'absolute', left: '16.66%', top: 22, bottom: 0, width: 1, background: C.border, transform: 'translateX(-50%)' }} />
+            <div style={{ position: 'absolute', left: '50%', top: 22, bottom: 0, width: 1, background: C.border, transform: 'translateX(-50%)' }} />
+            <div style={{ position: 'absolute', left: '83.33%', top: 22, bottom: 0, width: 1, background: C.border, transform: 'translateX(-50%)' }} />
+            {/* 각 팀 위 dot */}
+            <div style={{ position: 'absolute', left: '16.66%', bottom: 0, transform: 'translate(-50%, 50%)', width: 6, height: 6, borderRadius: '50%', background: C.textMuted }} />
+            <div style={{ position: 'absolute', left: '50%', bottom: 0, transform: 'translate(-50%, 50%)', width: 6, height: 6, borderRadius: '50%', background: C.textMuted }} />
+            <div style={{ position: 'absolute', left: '83.33%', bottom: 0, transform: 'translate(-50%, 50%)', width: 6, height: 6, borderRadius: '50%', background: C.textMuted }} />
           </div>
 
           {/* 3팀 */}
@@ -189,6 +198,7 @@ export function AiWorkflowSection({ raw: _raw }: { raw?: string }) {
                 borderRadius: 8,
                 padding: '16px 20px',
                 borderTop: `3px solid ${t.color}`,
+                background: C.bg,
               }}>
                 <div style={{
                   fontFamily: "'Inter', sans-serif",
@@ -242,65 +252,84 @@ export function AiWorkflowSection({ raw: _raw }: { raw?: string }) {
           작은 모델이 제 역할을 하면 큰 모델이 진짜 중요한 일에 집중할 수 있다.
         </p>
 
-        {/* 모델 배치 스펙트럼 다이어그램 */}
-        <div style={{ maxWidth: 860, margin: '32px auto' }}>
-          {/* 레이블 — 경량 / 강력 */}
-          <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 8 }}>
-            <span style={{ fontFamily: "'Inter', sans-serif", fontSize: 11, color: C.textMuted }}>경량 · 빠름</span>
-            <span style={{ fontFamily: "'Inter', sans-serif", fontSize: 11, color: C.textMuted }}>강력 · 깊이</span>
-          </div>
+        {/* 모델 배치 스펙트럼 다이어그램 — ref_diagram_1/3 스타일 */}
+        <div style={{ maxWidth: 860, margin: '32px auto', background: C.bgAlt, borderRadius: 8, padding: '32px 40px' }}>
+          {/* eyebrow */}
+          <p style={{
+            fontFamily: "'Inter', sans-serif",
+            fontSize: 10,
+            fontWeight: 700,
+            color: C.textMuted,
+            letterSpacing: '0.12em',
+            textTransform: 'uppercase' as const,
+            textAlign: 'center',
+            margin: '0 0 24px',
+          }}>Model Placement</p>
 
-          {/* 수평 선 + 3개 점 */}
-          <div style={{ position: 'relative', height: 20 }}>
-            <div style={{ position: 'absolute', left: 0, right: 0, top: '50%', height: 1, background: C.border, transform: 'translateY(-50%)' }} />
+          {/* 수평 화살표선 + 레이블 + outline dot */}
+          <div style={{ position: 'relative', height: 24, marginBottom: 0 }}>
+            {/* 수평선 */}
+            <div style={{ position: 'absolute', left: '8%', right: '8%', top: '50%', height: 1, background: C.border, transform: 'translateY(-50%)' }} />
+            {/* 양 끝 레이블 */}
+            <span style={{
+              position: 'absolute', left: 0, top: '50%', transform: 'translateY(-50%)',
+              fontFamily: "'Inter', sans-serif", fontSize: 10, color: C.textMuted,
+            }}>경량 · 빠름</span>
+            <span style={{
+              position: 'absolute', right: 0, top: '50%', transform: 'translateY(-50%)',
+              fontFamily: "'Inter', sans-serif", fontSize: 10, color: C.textMuted,
+            }}>강력 · 깊이</span>
+            {/* 3개 outline dot (중앙 더 크게) */}
             {[
-              { left: '12.5%', color: '#10B981' },
-              { left: '50%', color: C.textSub },
-              { left: '87.5%', color: C.accent },
+              { left: '20%', color: '#10B981', size: 10 },
+              { left: '50%', color: C.textSub, size: 14 },
+              { left: '80%', color: C.accent, size: 10 },
             ].map((m, i) => (
               <div key={i} style={{
                 position: 'absolute',
                 left: m.left,
                 top: '50%',
                 transform: 'translate(-50%, -50%)',
-                width: 10,
-                height: 10,
+                width: m.size,
+                height: m.size,
                 borderRadius: '50%',
-                background: m.color,
+                background: C.bgAlt,
+                border: `2px solid ${m.color}`,
               }} />
             ))}
           </div>
 
-          {/* 모델 이름 행 */}
-          <div style={{ display: 'grid', gridTemplateColumns: '1fr 2fr 1fr', gap: 12, marginTop: 10, marginBottom: 14 }}>
-            {[
-              { name: 'Haiku', color: '#10B981', role: '요약 · 연결' },
-              { name: 'Sonnet', color: C.textSub, role: '분석 · 실행' },
-              { name: 'Opus', color: C.accent, role: '설계 · 검증' },
-            ].map((m) => (
-              <div key={m.name} style={{ textAlign: 'center' }}>
-                <div style={{ fontFamily: "'Inter', sans-serif", fontSize: 12, fontWeight: 700, color: m.color }}>{m.name}</div>
-                <div style={{ fontFamily: "'Inter', 'Noto Sans KR', sans-serif", fontSize: 11, color: C.textMuted, marginTop: 2, fontStyle: 'italic' }}>{m.role}</div>
+          {/* 박스들 — 1fr 2fr 1fr */}
+          <div style={{ display: 'grid', gridTemplateColumns: '1fr 2fr 1fr', gap: 12, marginTop: 16 }}>
+            {/* Haiku */}
+            <div>
+              <div style={{ border: `1px solid ${C.border}`, borderRadius: 6, padding: '12px 16px', background: C.bg }}>
+                <div style={{ fontFamily: "'Inter', sans-serif", fontSize: 12, fontWeight: 700, color: '#10B981', marginBottom: 8 }}>Haiku</div>
+                {AGENTS.filter((a) => a.model === 'Haiku').map((a) => (
+                  <div key={a.name} style={{ fontFamily: "'Inter', sans-serif", fontSize: 11, color: C.text, padding: '3px 0' }}>{a.name}</div>
+                ))}
               </div>
-            ))}
-          </div>
-
-          {/* 에이전트 박스 */}
-          <div style={{ display: 'grid', gridTemplateColumns: '1fr 2fr 1fr', gap: 12 }}>
-            <div style={{ border: `1px solid ${C.border}`, borderRadius: 6, padding: '12px 16px', borderTop: `2px solid #10B981` }}>
-              {AGENTS.filter((a) => a.model === 'Haiku').map((a) => (
-                <div key={a.name} style={{ fontFamily: "'Inter', sans-serif", fontSize: 11, color: C.text, padding: '3px 0' }}>{a.name}</div>
-              ))}
+              <p style={{ fontFamily: "'Inter', 'Noto Sans KR', sans-serif", fontSize: 11, color: C.textMuted, textAlign: 'center', fontStyle: 'italic', margin: '8px 0 0' }}>요약 · 연결 · 빠름</p>
             </div>
-            <div style={{ border: `1px solid ${C.border}`, borderRadius: 6, padding: '12px 16px', borderTop: `2px solid ${C.textSub}` }}>
-              {AGENTS.filter((a) => a.model === 'Sonnet').map((a) => (
-                <div key={a.name} style={{ fontFamily: "'Inter', sans-serif", fontSize: 11, color: C.text, padding: '3px 0' }}>{a.name}</div>
-              ))}
+            {/* Sonnet — 중앙 강조 */}
+            <div>
+              <div style={{ border: `2px solid ${C.textSub}`, borderRadius: 6, padding: '12px 16px', background: 'rgba(85,85,85,0.03)' }}>
+                <div style={{ fontFamily: "'Inter', sans-serif", fontSize: 12, fontWeight: 700, color: C.textSub, marginBottom: 8 }}>Sonnet</div>
+                {AGENTS.filter((a) => a.model === 'Sonnet').map((a) => (
+                  <div key={a.name} style={{ fontFamily: "'Inter', sans-serif", fontSize: 11, color: C.text, padding: '3px 0' }}>{a.name}</div>
+                ))}
+              </div>
+              <p style={{ fontFamily: "'Inter', 'Noto Sans KR', sans-serif", fontSize: 11, color: C.textMuted, textAlign: 'center', fontStyle: 'italic', margin: '8px 0 0' }}>분석 · 실행 · 주력</p>
             </div>
-            <div style={{ border: `1px solid ${C.border}`, borderRadius: 6, padding: '12px 16px', borderTop: `2px solid ${C.accent}` }}>
-              {AGENTS.filter((a) => a.model === 'Opus').map((a) => (
-                <div key={a.name} style={{ fontFamily: "'Inter', sans-serif", fontSize: 11, color: C.text, padding: '3px 0' }}>{a.name}</div>
-              ))}
+            {/* Opus */}
+            <div>
+              <div style={{ border: `1px solid ${C.border}`, borderRadius: 6, padding: '12px 16px', background: C.bg }}>
+                <div style={{ fontFamily: "'Inter', sans-serif", fontSize: 12, fontWeight: 700, color: C.accent, marginBottom: 8 }}>Opus</div>
+                {AGENTS.filter((a) => a.model === 'Opus').map((a) => (
+                  <div key={a.name} style={{ fontFamily: "'Inter', sans-serif", fontSize: 11, color: C.text, padding: '3px 0' }}>{a.name}</div>
+                ))}
+              </div>
+              <p style={{ fontFamily: "'Inter', 'Noto Sans KR', sans-serif", fontSize: 11, color: C.textMuted, textAlign: 'center', fontStyle: 'italic', margin: '8px 0 0' }}>설계 · 검증 · 깊이</p>
             </div>
           </div>
         </div>
