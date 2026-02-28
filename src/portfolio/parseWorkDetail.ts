@@ -10,7 +10,8 @@ export type Block =
   | { type: 'quote-image'; quote: string; image: string; attribution?: string }
   | { type: 'placeholder'; count: number }
   | { type: 'visual-cues-gallery' }
-  | { type: 'activity-gallery' };
+  | { type: 'activity-gallery' }
+  | { type: 'pmcc-flowchart' };
 
 export interface WorkSection {
   name: string;
@@ -268,6 +269,12 @@ export function parseWorkDetail(raw: string): WorkSection[] {
     // Activity gallery block
     if (trimmed === '**[activity-gallery]**') {
       currentSection.blocks.push({ type: 'activity-gallery' });
+      continue;
+    }
+
+    // PMCC flowchart block
+    if (trimmed === '**[pmcc-flowchart]**') {
+      currentSection.blocks.push({ type: 'pmcc-flowchart' });
       continue;
     }
 
