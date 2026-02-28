@@ -1,671 +1,382 @@
-// ── 색상 팔레트 참조 (AiWorkflowSection.tsx의 C 객체와 동기화) ──────
-const C = {
-  blue: "#2563eb",
-  blueBg: "#eff4ff",
-  blueBorder: "#c7d7fd",
-  text: "#1a1a1a",
-  muted: "#555",
-  dim: "#888",
-  dimmer: "#999",
-  border: "#e5e5e5",
-  bg: "#fafafa",
-  white: "#fff",
-  purple: "#7c3aed",
-  purpleBg: "#f5f3ff",
-  purpleBorder: "#ddd6fe",
-  green: "#059669",
-  greenBg: "#ecfdf5",
-  greenBorder: "#a7f3d0",
-  amber: "#d97706",
-  amberBg: "#fffbeb",
-  amberBorder: "#fde68a",
-  rose: "#e11d48",
-  roseBg: "#fff1f2",
-  roseBorder: "#fecdd3",
-  teal: "#0d9488",
-  tealBg: "#f0fdfa",
-  tealBorder: "#99f6e4",
-};
+// ─── HOW I AI — v4.0 Context as Currency ───
+// 모든 데이터는 orchestration STATE.md + 설계문서 기준
 
-// ── 타입 정의 ─────────────────────────────────────────────────────
+// ─── 타입 정의 ───
+
 export interface StatBadge {
+  label: string;
   value: string;
-  desc: string;
-  color: string;
-  bg: string;
-  border: string;
+  sub?: string;
 }
 
-export interface AgentGroup {
+export interface Principle {
+  title: string;
+  desc: string;
+  icon: string;
+}
+
+export interface TeamInfo {
+  name: string;
   label: string;
-  agents: string[];
+  lead: string;
+  members: string[];
   color: string;
-  bg: string;
-  border: string;
+}
+
+export interface AgentRow {
+  name: string;
+  team: string;
+  model: string;
+  role: string;
+  note?: string;
+}
+
+export interface KeyDecision {
+  id: string;
+  title: string;
+  before: string;
+  after: string;
+  why: string;
 }
 
 export interface AiRole {
   name: string;
+  model: string;
   role: string;
-  detail: string;
+  strength: string;
+  limit: string;
   color: string;
-  bg: string;
-  border: string;
+}
+
+export interface ChainStep {
+  name: string;
+  steps: string[];
+  desc: string;
 }
 
 export interface Hook {
   name: string;
-  desc: string;
-}
-
-export interface Skill {
-  name: string;
-  desc: string;
-}
-
-export interface SkillGroup {
-  label: string;
-  skills: Skill[];
-}
-
-export interface Automation {
-  label: string;
-  desc: string;
-}
-
-export interface ContextLayer {
-  path: string;
-  desc: string;
-  level: number;
-}
-
-export interface FlowStep {
-  label: string;
-  agent: string;
-}
-
-export interface ModelGroup {
-  model: string;
+  trigger: string;
   role: string;
-  agents: string[];
-  color: string;
-  bg: string;
-  border: string;
-  desc: string;
-}
-
-export interface DesignPrinciple {
-  icon: string;
-  title: string;
-  desc: string;
 }
 
 export interface TimelineItem {
-  v: string;
+  version: string;
   date: string;
-  desc: string;
-}
-
-export interface DailyPattern {
-  label: string;
   title: string;
-  flow: string[];
-  desc: string;
-  color: string;
-  bg: string;
-  border: string;
+  highlight: string;
+  detail: string;
 }
 
-export interface LivingDoc {
-  label: string;
-  desc: string;
-  color: string;
-  bg: string;
-  border: string;
-}
-
-export interface ConfigLayer {
-  indent: number;
-  path: string;
-  desc: string;
-  badge: string;
-}
-
-export interface Adr {
-  id: string;
+export interface Lesson {
+  num: string;
   title: string;
-  problem: string;
-  solution: string;
-  impact: string;
+  body: string;
 }
 
-// ── 헤드라인 배지 ─────────────────────────────────────────────────
-export const BADGES: StatBadge[] = [
+// ─── 데이터 ───
+
+export const STAT_BADGES: StatBadge[] = [
+  { label: 'Agents', value: '15', sub: '24에서 축소' },
+  { label: 'Skills', value: '9', sub: '14에서 축소' },
+  { label: 'AI Tools', value: '4', sub: 'Claude · Codex · Gemini · Perplexity' },
+  { label: 'Hooks', value: '8', sub: '자동화 파이프라인' },
+];
+
+export const PRINCIPLES: Principle[] = [
   {
-    value: "16",
-    desc: "Agents",
-    color: C.blue,
-    bg: C.blueBg,
-    border: C.blueBorder,
+    title: '1 토큰 = 1 화폐',
+    desc: '200K 컨텍스트 윈도우가 세션 예산. 모든 읽기·쓰기·에이전트 호출이 비용. 남은 토큰이 곧 남은 가능성.',
+    icon: '💰',
   },
   {
-    value: "19",
-    desc: "Skills",
-    color: C.purple,
-    bg: C.purpleBg,
-    border: C.purpleBorder,
+    title: 'Baseline 최소화',
+    desc: '세션 시작 시 고정 소비를 42K 이하로. CLAUDE.md 74→38줄, 에이전트 24→15, 스킬 14→9. 쓸 수 있는 예산을 최대로.',
+    icon: '📐',
   },
   {
-    value: "9",
-    desc: "Hooks",
-    color: C.green,
-    bg: C.greenBg,
-    border: C.greenBorder,
-  },
-  {
-    value: "3",
-    desc: "MCP Servers",
-    color: C.teal,
-    bg: C.tealBg,
-    border: C.tealBorder,
-  },
-  {
-    value: "3+",
-    desc: "AI Tools",
-    color: C.amber,
-    bg: C.amberBg,
-    border: C.amberBorder,
+    title: '체인으로 예산 통제',
+    desc: '에이전트가 자유롭게 뛰면 토큰이 폭발. 체인이 경로를 고정하고, .chain-temp가 중간 결과를 오프로딩. 메인 컨텍스트엔 1줄 요약만.',
+    icon: '⛓️',
   },
 ];
 
-// ── 에이전트 계층 ──────────────────────────────────────────────────
-export const AGENT_GROUPS: AgentGroup[] = [
+export const TEAMS: TeamInfo[] = [
   {
-    label: "PROACTIVELY",
-    agents: ["code-reviewer", "commit-writer", "orch-state", "compressor"],
-    color: C.blue,
-    bg: C.blueBg,
-    border: C.blueBorder,
+    name: 'build',
+    label: '구현/배포',
+    lead: 'code-reviewer',
+    members: ['commit-writer', 'pf-ops', 'security-auditor'],
+    color: '#3B82F6',
   },
   {
-    label: "Portfolio",
-    agents: ["pf-context", "pf-reviewer", "pf-deployer", "pf-orchestrator"],
-    color: C.purple,
-    bg: C.purpleBg,
-    border: C.purpleBorder,
+    name: 'verify',
+    label: '분석/검증',
+    lead: 'ai-synthesizer',
+    members: ['gemini-analyzer', 'codex-reviewer'],
+    color: '#8B5CF6',
   },
   {
-    label: "Orchestration",
-    agents: ["orch-doc-writer", "orch-skill-builder"],
-    color: C.green,
-    bg: C.greenBg,
-    border: C.greenBorder,
+    name: 'maintain',
+    label: '문서/시스템',
+    lead: 'compressor',
+    members: ['doc-ops', 'linker', 'daily-ops', 'tr-ops'],
+    color: '#10B981',
   },
   {
-    label: "Analysis",
-    agents: ["gemini-analyzer (1M)", "security-auditor"],
-    color: C.amber,
-    bg: C.amberBg,
-    border: C.amberBorder,
-  },
-  {
-    label: "Monet-lab",
-    agents: ["ml-experimenter", "ml-porter"],
-    color: C.teal,
-    bg: C.tealBg,
-    border: C.tealBorder,
-  },
-  {
-    label: "Content",
-    agents: ["morning-briefer", "content-writer"],
-    color: C.rose,
-    bg: C.roseBg,
-    border: C.roseBorder,
+    name: 'hub',
+    label: '디스패치 허브',
+    lead: 'meta-orchestrator',
+    members: [],
+    color: '#F59E0B',
   },
 ];
 
-// ── 워크플로우 스텝 ───────────────────────────────────────────────
-export const FLOW_STEPS: FlowStep[] = [
-  { label: "brainstorm", agent: "gemini-analyzer" },
-  { label: "plan", agent: "orch-doc-writer" },
-  { label: "implement", agent: "Claude Code" },
-  { label: "review", agent: "code-reviewer" },
-  { label: "deploy", agent: "pf-deployer" },
+export const AGENTS: AgentRow[] = [
+  { name: 'code-reviewer', team: 'build', model: 'Opus', role: '코드 리뷰 + 품질 게이트', note: 'memory:user' },
+  { name: 'commit-writer', team: 'build', model: 'Haiku', role: '커밋 메시지 생성' },
+  { name: 'pf-ops', team: 'build', model: 'Sonnet', role: 'portfolio 리뷰+배포 통합' },
+  { name: 'security-auditor', team: 'build', model: 'Sonnet', role: '배포 전 보안 점검' },
+  { name: 'ai-synthesizer', team: 'verify', model: 'Opus', role: 'Verify Barrier — adversarial 검증', note: '3단계 검증' },
+  { name: 'gemini-analyzer', team: 'verify', model: 'Sonnet', role: '벌크 추출 (Gemini CLI)' },
+  { name: 'codex-reviewer', team: 'verify', model: 'Sonnet', role: '정밀 검증 (Codex CLI)' },
+  { name: 'compressor', team: 'maintain', model: 'Opus', role: '9단계 세션 압축', note: 'memory:user' },
+  { name: 'doc-ops', team: 'maintain', model: 'Sonnet', role: 'Living Docs 검증+작성' },
+  { name: 'linker', team: 'maintain', model: 'Haiku', role: '크로스 프로젝트·세션·CLI 연결' },
+  { name: 'daily-ops', team: 'maintain', model: 'Haiku', role: '모닝 브리핑+인박스 처리' },
+  { name: 'tr-ops', team: 'maintain', model: 'Sonnet', role: 'tech-review 모니터+업데이트' },
+  { name: 'orch-state', team: 'maintain', model: 'Sonnet', role: '방향 파악 + 다음 3액션 제안' },
+  { name: 'project-context', team: 'maintain', model: 'Sonnet', role: '프로젝트별 깊은 컨텍스트 수집' },
+  { name: 'meta-orchestrator', team: 'hub', model: 'Opus', role: '전체 팀 디스패치', note: 'memory:user' },
 ];
 
-// ── CLAUDE.md 계층 ────────────────────────────────────────────────
-export const CONTEXT_LAYERS: ContextLayer[] = [
+export const KEY_DECISIONS: KeyDecision[] = [
   {
-    path: "~/.claude/",
-    desc: "글로벌 규칙 · 공통 실수 패턴 · 워크플로우",
-    level: 0,
+    id: 'D-019',
+    title: '빼기의 미학 — 에이전트 24→15',
+    before: '24개 에이전트, 각자 독립. 기능 중복, baseline 토큰 폭발.',
+    after: '유사 기능 병합 (5쌍→5개), 순수 삭제 4개. 15개로 축소.',
+    why: '에이전트 하나가 ~1.5K 토큰. 9개 줄이면 ~13.5K 절감. 그 예산으로 실제 작업 2~3턴 추가.',
   },
-  { path: "C:/dev/", desc: "볼트 허브 · 프로젝트 공통 설정", level: 1 },
-  { path: "./project/", desc: "프로젝트별 CLAUDE.md · rules/ 폴더", level: 2 },
+  {
+    id: 'D-020',
+    title: 'Verify Barrier — 외부 AI 해석 금지',
+    before: 'Gemini/Codex 출력을 그대로 신뢰. 할루시네이션 전파 위험.',
+    after: 'ai-synthesizer가 3단계 검증 (구조→스팟체크→반박). GO/NO-GO 판정.',
+    why: '외부 AI는 추출기. 해석은 Claude만. "trust but verify"의 기술적 구현.',
+  },
+  {
+    id: 'D-021',
+    title: '.chain-temp 오프로딩',
+    before: '체인 에이전트 결과가 메인 컨텍스트에 전부 올라옴. 토큰 폭발.',
+    after: '결과를 .chain-temp/ 파일로 저장, 메인엔 1줄 요약만.',
+    why: '코드 리뷰 결과만 ~5K 토큰. 1줄 요약이면 ~50 토큰. 100배 절감.',
+  },
+  {
+    id: 'D-022',
+    title: 'rulesync — 규칙 단일 소스',
+    before: 'CLAUDE.md, GEMINI.md, AGENTS.md를 각각 수동 관리. 불일치.',
+    after: '.rulesync/rules/ SoT에서 모든 CLI 규칙 파일을 자동 생성.',
+    why: '3개 CLI × 수십 개 규칙 = 수동 동기화 불가. 생성이 편집을 이긴다.',
+  },
+  {
+    id: 'D-023',
+    title: '.ctx/ Cross-CLI 공유 메모리',
+    before: 'Claude/Gemini/Codex가 서로의 작업을 모름. 중복·충돌.',
+    after: '.ctx/shared-context.md 공유 상태 + provenance.log 출처 추적.',
+    why: 'CLI 간 작업 위임 시 컨텍스트 유실 방지. /handoff로 구조화된 전환.',
+  },
+  {
+    id: 'D-024',
+    title: 'Context as Currency 예산 체계',
+    before: '토큰 소비를 직관에 의존. compact 시점 판단 어려움.',
+    after: '200K = Baseline 42K + 작업 58K + compact 후 50K + 체인 25K + 방어선 25K.',
+    why: '예산을 숫자로 관리하면 "언제 compact?"가 즉답 가능.',
+  },
 ];
 
-// ── 멀티 AI 역할 분담 ─────────────────────────────────────────────
 export const AI_ROLES: AiRole[] = [
   {
-    name: "Claude Code",
-    role: "실행 허브",
-    detail: "유일한 Write 권한 · 에이전트 오케스트레이션",
-    color: C.blue,
-    bg: C.blueBg,
-    border: C.blueBorder,
+    name: 'Claude Code',
+    model: 'Opus 4.6',
+    role: '설계자 · 결정권자 · 코드 작성자',
+    strength: '유일한 쓰기 권한. 에이전트 체인, 최종 판단, verify barrier.',
+    limit: '200K 컨텍스트. 토큰 = 예산.',
+    color: '#D4632D',
   },
   {
-    name: "Gemini CLI",
-    role: "대규모 분석",
-    detail: "1M 토큰 컨텍스트 · 코드베이스 전체 탐색",
-    color: C.purple,
-    bg: C.purpleBg,
-    border: C.purpleBorder,
+    name: 'Codex CLI',
+    model: 'GPT-5.3',
+    role: '정밀 검증기',
+    strength: 'diff 리뷰, 포맷 QA, git 히스토리 추출. 세션당 3~5회.',
+    limit: '5시간 롤링 제한. Plus $20.',
+    color: '#10A37F',
   },
   {
-    name: "GPT (Codex xhigh)",
-    role: "비판적 검토",
-    detail: "/gpt-review 스킬 · 설계 크로스 검증",
-    color: C.green,
-    bg: C.greenBg,
-    border: C.greenBorder,
+    name: 'Gemini CLI',
+    model: '3.1 Pro',
+    role: '벌크 추출기',
+    strength: '1M 컨텍스트로 대량 파일 구조화 추출. 웹 검색.',
+    limit: 'AI Pro $20. 절대 경로 필수.',
+    color: '#4285F4',
   },
   {
-    name: "Perplexity",
-    role: "실시간 검색",
-    detail: "웹 기반 최신 정보 수집 · 리서치 지원",
-    color: C.amber,
-    bg: C.amberBg,
-    border: C.amberBorder,
+    name: 'Perplexity',
+    model: 'sonar-deep-research',
+    role: '리서치 엔진',
+    strength: 'tech-review 소스. deep research + sonar-pro 폴백.',
+    limit: 'Pro $20. API 기반.',
+    color: '#7C3AED',
   },
 ];
 
-// ── 훅 목록 ──────────────────────────────────────────────────────
+export const CHAINS: ChainStep[] = [
+  {
+    name: '구현',
+    steps: ['implement', 'code-reviewer', 'commit-writer', 'linker'],
+    desc: '코드 → 리뷰 → 커밋 → 크로스 연결. 건너뛰기 금지.',
+  },
+  {
+    name: '배포',
+    steps: ['pf-ops', 'security-auditor', '사용자 확인', 'push'],
+    desc: '보안 점검 + 사용자 승인. 자동 배포 없음.',
+  },
+  {
+    name: '검증',
+    steps: ['Gemini/Codex 추출', 'ai-synthesizer verify', '사용'],
+    desc: '외부 AI 출력은 반드시 verify barrier 통과.',
+  },
+  {
+    name: '디스패치',
+    steps: ['/dispatch', 'linker', 'meta-orchestrator', '팀 활성화'],
+    desc: '세션 목표 → 연결 → 팀 활성화.',
+  },
+  {
+    name: '압축',
+    steps: ['/compact', 'compressor 9단계', 'doc-ops', 'verify'],
+    desc: '압축 시 Living Docs 자동 갱신 + 검증.',
+  },
+];
+
 export const HOOKS: Hook[] = [
-  { name: "Stop Hook", desc: "미커밋 파일 감지 → 완료 선언 차단" },
-  { name: "SessionStart", desc: "작업 로그 + git status 자동 출력" },
-  { name: "SessionEnd", desc: "세션 종료 시 /sync 권장 알림" },
-  { name: "PreToolUse", desc: "rm -rf, git push --force 자동 차단" },
-  { name: "PostToolUse", desc: "Write/Edit 후 context 파일 변경 감지" },
-  { name: "PreCompact", desc: "compact 전 /verify 권장 알림" },
-  { name: "Notification", desc: "비동기 알림 처리" },
-  { name: "TeammateIdle", desc: "Agent Teams 팀원 유휴 알림" },
-  { name: "TaskCompleted", desc: "작업 완료 감지 알림" },
+  { name: 'SessionStart', trigger: '세션 시작', role: '미커밋 + 미반영 결정 + live-context + .ctx/ 공유 상태' },
+  { name: 'SessionEnd', trigger: '세션 종료', role: '미커밋 경고 + MEMORY.md 줄 수 체크' },
+  { name: 'PreToolUse', trigger: 'Bash 실행 전', role: '위험 명령 차단 (rm -rf, force push)' },
+  { name: 'PostToolUse', trigger: 'Write/Edit 후', role: 'live-context.md auto-append + auto-trim' },
+  { name: 'PreCompact', trigger: 'compact 전', role: '스냅샷 생성 + 미커밋 경고' },
+  { name: 'TaskCompleted', trigger: '태스크 완료', role: '.ctx/shared-context.md 갱신 + provenance.log' },
+  { name: 'TeammateIdle', trigger: '팀원 유휴', role: '유휴 알림' },
+  { name: 'Notification', trigger: '시스템 알림', role: '범용 알림' },
 ];
 
-// ── 스킬 목록 (5그룹) ─────────────────────────────────────────────
-export const SKILL_GROUPS: SkillGroup[] = [
-  {
-    label: "세션 관리",
-    skills: [
-      { name: "/morning", desc: "모든 프로젝트 현황 + TODO 통합 브리핑" },
-      { name: "/catchup", desc: "새 세션 시작 시 5초 만에 이전 작업 복구" },
-      { name: "/sync-all", desc: "전체 프로젝트 STATE 갱신 + git push" },
-      { name: "/todo", desc: "daily-memo Inbox 동기화 + 할 일 관리" },
-      { name: "/session-insights", desc: "현재 세션 토큰 소비 + 비용 분석" },
-      { name: "/token-check", desc: "현재 토큰 사용량 확인 + 권장 액션" },
-    ],
-  },
-  {
-    label: "문서·리서치",
-    skills: [
-      { name: "/research", desc: "코드베이스 + 웹 딥 리서치 워크플로우" },
-      {
-        name: "/gpt-review",
-        desc: "설계·플랜을 GPT 비판적 리뷰용 프롬프트로 포맷",
-      },
-      { name: "/docs-review", desc: "stale 문서 감지 + 업데이트 방향 제안" },
-      { name: "/write", desc: "글쓰기 프로세스 — 질문 → 구조화 → 초안 → 퇴고" },
-    ],
-  },
-  {
-    label: "배포·검증",
-    skills: [
-      { name: "/commit-push-pr", desc: "커밋·푸시·PR 생성을 한 번에" },
-      { name: "/verify", desc: "모든 프로젝트 규칙 검증 (커밋 전 실행)" },
-      {
-        name: "/verify-project-rules",
-        desc: "브랜치·커밋 메시지·STATE 형식 검증",
-      },
-      { name: "/verify-log-format", desc: "LOG 파일 형식 및 태그 일관성 검증" },
-    ],
-  },
-  {
-    label: "시스템 구축",
-    skills: [
-      { name: "/skill-creator", desc: "새 스킬 파일 구조화 + 패키징 가이드" },
-      {
-        name: "/subagent-creator",
-        desc: "전문 에이전트 설계 + 시스템 프롬프트 작성",
-      },
-      { name: "/hook-creator", desc: "Claude Code 훅 이벤트 설정 + 레퍼런스" },
-    ],
-  },
-  {
-    label: "유지·관리",
-    skills: [
-      { name: "/memory-review", desc: "MEMORY.md 주간 정리 및 품질 관리" },
-      {
-        name: "/token-mode",
-        desc: "토큰 효율 모드 활성화 (간결 응답, 서브에이전트 우선)",
-      },
-    ],
-  },
-];
-
-// ── 자동화 연동 ───────────────────────────────────────────────────
-export const AUTOMATIONS: Automation[] = [
-  { label: "gh CLI", desc: "PR 생성·이슈 관리 (GitHub MCP 불필요)" },
-  { label: "Jekyll Blog", desc: "tech-review → GitHub Pages 자동 빌드" },
-  { label: "Obsidian Git", desc: "dev-vault 10분마다 자동 커밋 동기화" },
-  { label: "daily-memo", desc: "모바일 Claude Code → 브랜치 → /todo 동기화" },
-];
-
-// ── 에이전트 모델 선택 전략 ──────────────────────────────────────
-export const MODEL_GROUPS: ModelGroup[] = [
-  {
-    model: "Haiku",
-    role: "수집·확인·포맷",
-    agents: ["commit-writer", "morning-briefer"],
-    color: "#059669",
-    bg: "#ecfdf5",
-    border: "#a7f3d0",
-    desc: "빠르고 저렴. 반복 작업에 최적.",
-  },
-  {
-    model: "Sonnet",
-    role: "분석·검색·중간 복잡도",
-    agents: [
-      "orch-state",
-      "compressor",
-      "pf-context",
-      "pf-deployer",
-      "gemini-analyzer",
-      "pf-orchestrator",
-      "ml-porter",
-    ],
-    color: "#2563eb",
-    bg: "#eff4ff",
-    border: "#c7d7fd",
-    desc: "속도와 품질의 균형. 기본값.",
-  },
-  {
-    model: "Opus",
-    role: "설계·리뷰·복잡한 실행",
-    agents: [
-      "code-reviewer",
-      "pf-reviewer",
-      "orch-doc-writer",
-      "security-auditor",
-      "content-writer",
-      "ml-experimenter",
-      "orch-skill-builder",
-    ],
-    color: "#7c3aed",
-    bg: "#f5f3ff",
-    border: "#ddd6fe",
-    desc: "품질이 중요할 때. 핵심 결정에만.",
-  },
-];
-
-// ── 설계 철학 ─────────────────────────────────────────────────────
-export const DESIGN_PRINCIPLES: DesignPrinciple[] = [
-  {
-    icon: "①",
-    title: "단일 진실 소스",
-    desc: "STATE.md가 유일한 진실. 다른 경로는 읽기만 한다.",
-  },
-  {
-    icon: "②",
-    title: "쓰기 권한 분리",
-    desc: "Claude Code만 파일을 쓴다. 나머지 AI는 읽기만 한다.",
-  },
-  {
-    icon: "③",
-    title: "사고는 휘발, 기록은 남는다",
-    desc: "GPT 사고 → 파일 기록 → Claude 실행 → Git 영구 보존",
-  },
-  {
-    icon: "④",
-    title: "토큰은 자원",
-    desc: "CLAUDE.md 146줄 → 4줄로 압축. 매 턴 38,000토큰 절감. (초기 버전 기준)",
-  },
-  {
-    icon: "⑤",
-    title: "구조가 규율을 강제한다",
-    desc: "규칙이 단순할수록 일관성은 올라간다. 복잡한 규칙은 깨진다.",
-  },
-  {
-    icon: "⑥",
-    title: "자동화는 최소한으로",
-    desc: "자동화가 늘수록 통제 밖의 일이 생긴다. 핵심만 자동화한다.",
-  },
-  {
-    icon: "⑦",
-    title: "세션 간 기억",
-    desc: "Auto Memory 3단계: 감지 → 검증 → 정리. 세션이 끊겨도 기억한다.",
-  },
-];
-
-// ── 시스템 진화 타임라인 ──────────────────────────────────────────
 export const TIMELINE: TimelineItem[] = [
   {
-    v: "v1.0",
-    date: "2026-02-21",
-    desc: "Skills 11개, Scripts 5개, Auto-Memory 3단계",
+    version: 'v1.0',
+    date: '2026-02-18',
+    title: '시작',
+    highlight: 'CLAUDE.md 하나로 출발',
+    detail: '에이전트 5개, 수동 운영.',
   },
   {
-    v: "v2.0",
-    date: "2026-02-21",
-    desc: "에이전트 14개, 훅 5종, MCP 3개, Gemini CLI 연동 (초기)",
+    version: 'v2.0',
+    date: '2026-02-20',
+    title: '확장',
+    highlight: '16 에이전트 + 19 스킬',
+    detail: '가능성을 전부 실험. 기능 추가의 쾌감.',
   },
   {
-    v: "v2.1",
-    date: "2026-02-22",
-    desc: "SOT METRICS 추가, pf-orchestrator, content-writer, 훅 9종, 에이전트 16개",
+    version: 'v2.1',
+    date: '2026-02-22',
+    title: '자동화',
+    highlight: 'Hooks + 멀티 AI',
+    detail: 'SessionStart 자동화. Gemini/Codex 연동.',
+  },
+  {
+    version: 'v3.2',
+    date: '2026-02-24',
+    title: '구조화',
+    highlight: 'SoT 확립 + 4팀',
+    detail: 'STATE.md 유일한 진실 소스. 팀 구조 확립.',
+  },
+  {
+    version: 'v3.3',
+    date: '2026-02-25',
+    title: '검증',
+    highlight: 'Verify Barrier + e2e',
+    detail: '외부 AI 3단계 검증. 23/23 테스트 통과.',
+  },
+  {
+    version: 'v3.3.1',
+    date: '2026-02-26',
+    title: '경량화',
+    highlight: '200K 최적화',
+    detail: 'Baseline 축소, .chain-temp, compact 전략.',
+  },
+  {
+    version: 'v4.0',
+    date: '2026-02-27',
+    title: 'Context as Currency',
+    highlight: '24→15, 14→9',
+    detail: '빼기의 미학. rulesync, .ctx/, worktree. 토큰=화폐.',
   },
 ];
 
-// ── 일일 작업 패턴 ────────────────────────────────────────────────
-export const DAILY_PATTERNS: DailyPattern[] = [
+export const LESSONS: Lesson[] = [
   {
-    label: "패턴 A",
-    title: "단순 실행",
-    flow: ["Claude Code", "→ /sync"],
-    desc: "명확한 태스크. 직접 실행 후 커밋.",
-    color: "#2563eb",
-    bg: "#eff4ff",
-    border: "#c7d7fd",
+    num: '01',
+    title: '빼는 것이 더 어렵다',
+    body: '에이전트를 추가하는 건 30분. 9개를 줄이는 데 이틀. 추가는 결정이고, 삭제는 이해.',
   },
   {
-    label: "패턴 B",
-    title: "설계 + 실행",
-    flow: ["GPT (전략)", "→ 파일 기록", "→ Claude 실행", "→ /sync"],
-    desc: "복잡한 결정이 필요할 때. GPT가 방향을 잡으면 Claude가 실행한다.",
-    color: "#7c3aed",
-    bg: "#f5f3ff",
-    border: "#ddd6fe",
+    num: '02',
+    title: '토큰은 정말로 화폐다',
+    body: '200K가 무한해 보이지만, baseline + 체인 + 여유를 빼면 실제 작업 예산은 ~108K. 에이전트 하나 줄이면 턴 2~3개가 생긴다.',
   },
   {
-    label: "패턴 C",
-    title: "리서치 + 실행",
-    flow: ["Perplexity (검색)", "→ Claude 실행", "→ /sync"],
-    desc: "최신 정보가 필요할 때. Perplexity가 찾으면 Claude가 적용한다.",
-    color: "#d97706",
-    bg: "#fffbeb",
-    border: "#fde68a",
+    num: '03',
+    title: 'Claude는 설계자여야 한다',
+    body: '외부 AI에 판단을 위임하면 할루시네이션이 전파된다. 추출은 외부, 해석은 Claude.',
   },
   {
-    label: "패턴 D",
-    title: "검증 + 수정",
-    flow: ["Gemini (전체 분석)", "→ Claude 수정", "→ /sync"],
-    desc: "코드베이스 전체 검토 필요 시. Gemini 1M 토큰으로 전체를 보고 Claude가 수정한다.",
-    color: "#059669",
-    bg: "#ecfdf5",
-    border: "#a7f3d0",
-  },
-];
-
-// ── Obsidian Living Doc ───────────────────────────────────────────
-export const LIVING_DOCS: LivingDoc[] = [
-  {
-    label: "HOME.md",
-    desc: "중앙 허브 (MOC). 모든 프로젝트 현황 + 미결 사항 + 오늘 세션 링크.",
-    color: "#2563eb",
-    bg: "#eff4ff",
-    border: "#c7d7fd",
+    num: '04',
+    title: '체인은 자유를 제한하지 않는다',
+    body: '"에이전트가 알아서 하면 되지"라고 생각했다. 토큰이 3배 소비되고 나서야 경로 고정의 가치를 깨달았다.',
   },
   {
-    label: "STATE.md",
-    desc: "프로젝트별 단일 상태 파일. 현재 진행 중인 것 · 완료 · 다음 단계.",
-    color: "#7c3aed",
-    bg: "#f5f3ff",
-    border: "#ddd6fe",
+    num: '05',
+    title: '문서가 곧 코드다',
+    body: 'STATE.md가 틀리면 에이전트가 틀린 판단을 한다. Living Docs는 선언이 아니라 런타임 설정.',
   },
   {
-    label: "PLANNING.md",
-    desc: "아키텍처 결정 기록 (ADR). 왜 그 결정을 했는가.",
-    color: "#059669",
-    bg: "#ecfdf5",
-    border: "#a7f3d0",
+    num: '06',
+    title: '작은 모델의 가치',
+    body: 'Haiku로 충분한 일에 Opus를 쓰면 예산 낭비. 작은 모델이 제 역할을 하면 큰 모델이 설계에 집중.',
   },
   {
-    label: "KNOWLEDGE.md",
-    desc: "모범 사례 + 패턴 누적. 같은 판단을 반복하지 않기 위한 참조.",
-    color: "#d97706",
-    bg: "#fffbeb",
-    border: "#fde68a",
+    num: '07',
+    title: 'Opus의 진짜 가치는 발견',
+    body: '지시한 것을 실행하는 건 어떤 모델이든 한다. Opus가 다른 건 숨겨진 문제를 자발적으로 찾아내는 것.',
+  },
+  {
+    num: '08',
+    title: '7일이면 충분하다',
+    body: 'v1.0에서 v4.0까지 7일. 매일 운영하면서 개선. 일단 돌리고, 느끼고, 고치기.',
+  },
+  {
+    num: '09',
+    title: '시스템은 거울이다',
+    body: '설계자가 정리를 좋아하면 시스템도 정리된다. AI 오케스트레이션은 자기 자신의 작업 방식을 코드로 옮기는 일.',
   },
 ];
 
-// ── 설정 계층 구조 ────────────────────────────────────────────────
-export const CONFIG_LAYERS: ConfigLayer[] = [
-  {
-    indent: 0,
-    path: "~/.claude/CLAUDE.md",
-    desc: "전역 원칙 (4줄)",
-    badge: "항상 로드",
-  },
-  {
-    indent: 0,
-    path: "~/.claude/rules/",
-    desc: "공통 규칙 모듈",
-    badge: "항상 로드",
-  },
-  {
-    indent: 0,
-    path: "~/.claude/agents/",
-    desc: "에이전트 16개 정의",
-    badge: "호출 시 로드",
-  },
-  {
-    indent: 0,
-    path: "~/.claude/skills/",
-    desc: "스킬 19개 정의",
-    badge: "호출 시 로드",
-  },
-  {
-    indent: 1,
-    path: "C:/dev/CLAUDE.md",
-    desc: "볼트 전역 설정",
-    badge: "프로젝트 진입 시",
-  },
-  {
-    indent: 2,
-    path: "./project/.claude/CLAUDE.md",
-    desc: "프로젝트별 규칙",
-    badge: "해당 프로젝트만",
-  },
-  {
-    indent: 2,
-    path: "./project/.claude/rules/",
-    desc: "경로별 조건부 규칙",
-    badge: "파일 작업 시",
-  },
-  {
-    indent: 2,
-    path: "./project/.claude/context/",
-    desc: "컨텍스트 라이브러리",
-    badge: "필요 시 로드",
-  },
-];
-
-// ── AI 역할 매트릭스 ──────────────────────────────────────────────
-export const AI_MATRIX_ROWS = [
-  {
-    ai: "Claude Code",
-    role: "실행 + 기록",
-    write: "✅ 유일",
-    spec: "파일 수정 · 커밋 · 에이전트 오케스트레이션",
-  },
-  {
-    ai: "GPT (Codex xhigh)",
-    role: "전략 · 비판 검토",
-    write: "❌",
-    spec: "설계 크로스 검증 · Canvas 시각화 · /gpt-review",
-  },
-  {
-    ai: "Gemini CLI",
-    role: "대규모 분석",
-    write: "❌",
-    spec: "1M 토큰 컨텍스트 · 코드베이스 전체 탐색",
-  },
-  {
-    ai: "Perplexity",
-    role: "실시간 리서치",
-    write: "❌",
-    spec: "최신 정보 · 소스 URL 포함 검색",
-  },
-];
-
-// ── MCP 서버 ─────────────────────────────────────────────────────
-export interface McpServer {
-  name: string;
-  desc: string;
-}
-
-export const MCP_SERVERS: McpServer[] = [
-  { name: "sequential-thinking", desc: "복잡한 설계 단계별 분해" },
-  { name: "memory", desc: "세션 간 knowledge graph" },
-  { name: "desktop-commander", desc: "터미널 + 파일시스템 제어" },
-];
-
-// ── ADR ───────────────────────────────────────────────────────────
-export const ADRS: Adr[] = [
-  {
-    id: "D-001",
-    title: "SoT를 Git으로 전환",
-    problem: "Obsidian만으로는 다른 AI가 접근 불가",
-    solution: "Git STATE.md → GitHub Pages URL로 모든 AI 공유",
-    impact: "AI 간 정보 동기화 해결",
-  },
-  {
-    id: "D-003",
-    title: "Jeff Su 폴더 방법론 채택",
-    problem: "파일이 늘수록 구조가 무너짐",
-    solution: "5레벨 MAX, 2자리 넘버링, 99=Archive 규칙",
-    impact: "자동 정렬 + 명확성",
-  },
-  {
-    id: "D-005",
-    title: "CLAUDE.md 대폭 축소",
-    problem: "146줄 CLAUDE.md로 매 턴 38K 토큰 낭비",
-    solution: "4줄 핵심 + rules/ 온디맨드 로드",
-    impact: "세션당 38,000토큰 절감",
-  },
-  {
-    id: "D-014",
-    title: "Orchestrator Agent 삭제",
-    problem:
-      "중간 레이어가 맥락 희석 + 속도 저하 (구 버전에서 존재하던 별도 Orchestrator 에이전트)",
-    solution: "Claude가 직접 라우팅, 에이전트 직접 호출",
-    impact: "응답 속도 향상 + 맥락 보존",
-  },
-  {
-    id: "D-018",
-    title: "Auto Memory 3단계 구축",
-    problem: "세션 간 컨텍스트 완전 소실",
-    solution: "SessionEnd→pending.md→검증→MEMORY.md",
-    impact: "세션 재시작 시 5초 내 맥락 복구",
-  },
-];
+export const C = {
+  bg: '#ffffff',
+  bgAlt: '#f7f7f5',
+  bgDark: '#111111',
+  text: '#111111',
+  textSub: '#555555',
+  textMuted: '#999999',
+  border: '#e4e0da',
+  accent: '#D4632D',
+  accentSub: 'rgba(212, 99, 45, 0.12)',
+} as const;

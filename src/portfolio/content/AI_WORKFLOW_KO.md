@@ -1,74 +1,50 @@
-# HOW I AI System
+# AI Native Orchestration System v4.0
 
-**Claude Code를 운영체제처럼 쓴다. What만 정의하면 16개 에이전트가 How를 결정하고 실행한다.**
+**Context as Currency — 토큰이 화폐다. 200K 컨텍스트 안에서 가장 비싼 토큰은 '아직 안 틀린 결정'이다.**
 
-## 시스템 진화
+What만 정의하면 15개 에이전트가 How를 결정하고 실행한다.
 
-- v1.0 (2026-02-21): Skills 11개, Scripts 5개, Auto-Memory 3단계
-- v2.0 (2026-02-21): 에이전트 14개, 훅 5종, MCP 3개, Gemini CLI 연동
-- v2.1 (2026-02-22): SOT METRICS 추가, pf-orchestrator, 컨텍스트 라이브러리
+## 설계 철학
 
-## 에이전트 아키텍처 (16개)
+v4.0의 핵심은 빼기. 24개였던 에이전트를 15개로, 14개였던 스킬을 9개로 줄였다. 남은 것들은 각자 명확한 이유가 있다. baseline CLAUDE.md를 300줄 이하로 유지하고, 나머지는 @import와 rules/로 온디맨드 로드한다.
 
-- **PROACTIVELY**: code-reviewer, commit-writer, orch-state, compressor
-- **Portfolio**: pf-context, pf-reviewer, pf-deployer, pf-orchestrator
-- **Orchestration**: orch-doc-writer, orch-skill-builder
-- **Analysis**: gemini-analyzer (1M 토큰), security-auditor
-- **Monet-lab**: ml-experimenter, ml-porter
-- **Content**: morning-briefer, content-writer
+세 가지 원칙:
+- **Baseline Minimalism** — CLAUDE.md 300줄 이하, 나머지는 온디맨드
+- **Verify Before Trust** — 외부 AI 출력은 반드시 ai-synthesizer barrier 통과
+- **Single Writer** — Claude Code만 설계·결정·쓰기. 나머지 AI는 추출·검증만
 
-## 자동화 워크플로우
+## 리좀형 토폴로지 (3팀 + 허브)
 
-brainstorm → plan → implement → review → deploy
-
-각 단계가 전문 에이전트로 분리, 자동 연결
-
-## CLAUDE.md & 컨텍스트 엔지니어링
-
-- **계층 구조**: ~/.claude/ → C:/dev/ → 프로젝트
-- **rules/ 폴더**: 경로별 조건부 규칙 (TypeScript, 보안, 워크플로우)
-- **@import로 모듈화**: 필요할 때만 온디맨드 로드
-- **common-mistakes.md**: 반복 실수 패턴 누적 → 자동 방지
-
-## 훅 시스템 (9종)
-
-- **Stop Hook**: 미커밋 파일 감지 → 완료 선언 차단
-- **SessionStart**: 세션 시작 시 작업 로그 + git status 자동 출력
-- **SessionEnd**: 세션 종료 시 /sync 권장 알림
-- **PreToolUse**: rm -rf, git push --force 자동 차단
-- **PostToolUse**: Write/Edit 후 context 파일 변경 감지
-- **PreCompact**: compact 전 /verify 권장 알림
-- **Notification**: 비동기 알림 처리
-- **TeammateIdle**: Agent Teams 팀원 유휴 알림
-- **TaskCompleted**: 작업 완료 감지 알림
-
-## 스킬 시스템 (17개)
-
-- **운영**: /morning, /todo, /sync-all, /catchup, /session-insights
-- **문서**: /docs-review, /research, /write, /gpt-review
-- **배포**: /commit-push-pr, /verify, /verify-project-rules
-- **생성**: /skill-creator, /subagent-creator, /hook-creator
+- **build**: code-reviewer, commit-writer, pf-ops, security-auditor (구현→리뷰→배포)
+- **verify**: ai-synthesizer, gemini-analyzer, codex-reviewer (검증·추출·정밀검증)
+- **maintain**: compressor, doc-ops, linker, daily-ops, tr-ops, orch-state, project-context (압축·문서·연결·운영)
+- **허브**: meta-orchestrator — /dispatch 한 줄로 팀 활성화
 
 ## 멀티 AI 오케스트레이션
 
-- **Claude Code**: 실행 (유일한 Write 권한)
-- **Gemini CLI**: 1M 토큰 코드베이스 전체 분석
-- **GPT-4o**: 설계 비판적 검토 (/gpt-review)
-- **Perplexity**: 실시간 웹 검색
+- **Claude Code**: 유일한 설계·결정·실행권자
+- **Codex CLI**: 5시간 롤링 제한 내 정밀 검증 (diff 리뷰, 포맷 QA)
+- **Gemini CLI**: 1M 토큰 벌크 추출 (코드베이스 전체 분석)
+- **Perplexity**: 실시간 웹 리서치
+- **Cross-CLI**: .ctx/shared-context.md로 모든 CLI가 같은 맥락 공유
 
-## GitHub & 자동화 연동
+## 체인 시스템
 
-- **gh CLI**: PR 생성, 이슈 관리 (GitHub MCP 불필요)
-- **tech-review blog**: Jekyll + GitHub Pages 자동 빌드
-- **dev-vault**: Obsidian Git으로 10분마다 자동 커밋
-- **daily-memo**: 모바일 Claude Code → 브랜치 → /todo 동기화
+implement → code-reviewer → commit-writer → project-linker
+배포: pf-deployer → security-auditor → 사용자 확인 → push
+추출: Gemini/Codex → ai-synthesizer verify barrier → 사용
+압축: /compact → compressor 9단계 → doc-syncer verify
 
-## MCP 서버 (3개)
+## 진화 타임라인
 
-- **sequential-thinking**: 복잡한 설계 단계별 분해
-- **memory**: 세션 간 knowledge graph
-- **desktop-commander**: 터미널 + 파일시스템 제어
+- v1.0 (02-21): Skills 11개, Scripts 5개
+- v2.0 (02-21): 에이전트 14개, 훅 5종, Gemini 연동
+- v2.1 (02-22): SOT Metrics, pf-orchestrator
+- v3.0 (02-23): 24개 에이전트, 체인 시스템
+- v3.3.1 (02-25): Living Docs, 마무리 체크리스트
+- v3.5 (02-26): Codex CLI, ai-synthesizer
+- v4.0 (02-27): Context as Currency — 에이전트 15개, 스킬 9개, rulesync, .ctx/, worktree
 
 ## 핵심 숫자
 
-16 Agents · 17 Skills · 9 Hooks · 3 MCP Servers · 2 AI Tools · 1 Automation Hub
+15 Agents · 9 Skills · 8 Hooks · 3 Teams + 1 Hub · 4 AI Tools
