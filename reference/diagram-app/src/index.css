@@ -1,0 +1,32 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:ital,wght@0,400;0,500;0,600;0,700;1,400&display=swap');
+
+:root {
+  --bg-color: #FAFAF8;
+  --text-primary: #333333;
+  --text-secondary: #666666;
+  --text-accent: #888888;
+  --box-bg: #F0F2EE;
+  --box-border: #D1D5CE;
+  --box-bg-active: #E8EFE5;
+  --box-border-active: #4F6C4E;
+  --black-node: #1A1A1A;
+  --sky-bg: #F0F9FF;
+  --sky-border: #BAE6FD;
+  --sky-text: #075985;
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  font-family: 'Inter', sans-serif;
+  background-color: var(--bg-color);
+  color: var(--text-primary);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+}
+
+* {
+  box-sizing: border-box;
+}
