@@ -40,32 +40,35 @@ const labelStyle: React.CSSProperties = {
 
 // ── 볼트 구조 트리 ──────────────────────────────────────────────────
 const VAULT_TREE = [
-  { path: "HOME.md", indent: 0, desc: "MOC — 중앙 허브" },
-  { path: "CLAUDE.md", indent: 0, desc: "전역 AI 규칙" },
+  { path: "HOME.md", indent: 0, desc: "볼트 허브 — 프로젝트 대시보드" },
+  { path: "CLAUDE.md", indent: 0, desc: "Claude Code 전역 규칙" },
+  { path: "GEMINI.md", indent: 0, desc: "Gemini CLI 설정 (rulesync 생성)" },
+  { path: ".ctx/", indent: 0, desc: "Cross-CLI 공유 메모리" },
   { path: "01_projects/", indent: 0, desc: "" },
-  { path: "orchestration/", indent: 1, desc: "시스템 운영" },
-  { path: "portfolio/", indent: 1, desc: "포트폴리오" },
-  { path: "tech-review/", indent: 1, desc: "AI 뉴스 큐레이션" },
-  { path: "monet-lab/", indent: 1, desc: "UI 실험" },
+  { path: "orchestration/", indent: 1, desc: "시스템 운영 + Living Docs" },
+  { path: "portfolio/", indent: 1, desc: "포트폴리오 (React + Vite)" },
+  { path: "tech-review/", indent: 1, desc: "AI 뉴스 자동 큐레이션" },
+  { path: "monet-lab/", indent: 1, desc: "UI 실험 (archived)" },
   { path: "daily-memo/", indent: 1, desc: "모바일 INBOX" },
-  { path: "03_evidence/", indent: 0, desc: "스크린샷, 로그" },
+  { path: "scripts/", indent: 0, desc: "worktree, 자동화 셸" },
+  { path: "99_archive/", indent: 0, desc: "아카이브" },
 ];
 
 // ── Living Docs 카드 ────────────────────────────────────────────────
 const LIVING_DOCS = [
   {
-    label: "HOME.md",
-    desc: "중앙 허브(MOC). 모든 프로젝트 링크 + 오늘의 세션 + 미결 사항.",
-    color: C.blue,
-    bg: C.blueBg,
-    border: C.blueBorder,
-  },
-  {
     label: "STATE.md",
-    desc: "프로젝트별 단일 진실. 현재 진행 중 / 완료 / 다음 단계.",
+    desc: "시스템 인벤토리. 에이전트, 스킬, 팀, 플러그인의 단일 진실.",
     color: C.purple,
     bg: C.purpleBg,
     border: C.purpleBorder,
+  },
+  {
+    label: "KNOWLEDGE.md",
+    desc: "패턴과 규칙 누적. 같은 실수를 반복하지 않기 위한 참조.",
+    color: C.amber,
+    bg: C.amberBg,
+    border: C.amberBorder,
   },
   {
     label: "PLANNING.md",
@@ -75,11 +78,11 @@ const LIVING_DOCS = [
     border: C.greenBorder,
   },
   {
-    label: "KNOWLEDGE.md",
-    desc: "모범 사례 + 패턴 누적. 같은 판단을 반복하지 않기 위한 참조.",
-    color: C.amber,
-    bg: C.amberBg,
-    border: C.amberBorder,
+    label: "CHANGELOG.md",
+    desc: "버전 히스토리. v0부터 v4.0까지 모든 변경의 이력.",
+    color: C.teal,
+    bg: C.tealBg,
+    border: C.tealBorder,
   },
 ];
 
@@ -119,7 +122,7 @@ const PIPELINE = [
   },
 ];
 
-// ── 진화 타임라인 (핵심 5단계로 압축) ──────────────────────────────
+// ── 진화 타임라인 (v0→v4.0, 8단계) ──────────────────────────────
 const EVOLUTION = [
   {
     version: "v0",
@@ -135,7 +138,7 @@ const EVOLUTION = [
     version: "v1.0",
     date: "Feb 15–17",
     title: "Git SoT + Orchestration",
-    desc: "Jeff Su 폴더 방법론 도입, Git을 단일 SoT로 결정. Skills 11개, Scripts 5개, 문서 3분화(STATE/PLANNING/KNOWLEDGE) 구축.",
+    desc: "마크다운을 Git으로 관리하는 첫 구조. 스킬 11개, 스크립트 5개, 문서 3분화(STATE/PLANNING/KNOWLEDGE).",
     color: C.blue,
     bg: C.blueBg,
     border: C.blueBorder,
@@ -145,7 +148,7 @@ const EVOLUTION = [
     version: "v2.0",
     date: "Feb 19–21",
     title: "dev-vault + Obsidian Git",
-    desc: "C:\\dev 전체를 단일 Git repo로 초기화. HOME.md 중앙 MOC 신설. Obsidian Git 플러그인으로 10분 자동 동기화.",
+    desc: "C:\\dev 전체를 단일 Git repo(dev-vault)로 초기화. HOME.md 중앙 MOC 신설. Obsidian Git 플러그인으로 자동 동기화.",
     color: C.purple,
     bg: C.purpleBg,
     border: C.purpleBorder,
@@ -155,7 +158,7 @@ const EVOLUTION = [
     version: "v3.0",
     date: "Feb 22–23",
     title: "Living Docs 규칙화",
-    desc: "문서 자동 갱신 원칙 공식화. 에이전트/스킬/hook 변경 시 6개 문서 필수 업데이트 — CLAUDE.md 체인 규칙으로 강제.",
+    desc: "문서 자동 갱신 원칙 공식화. 에이전트/스킬/hook 변경 시 Living Docs 필수 업데이트 — CLAUDE.md 체인 규칙으로 강제.",
     color: C.teal,
     bg: C.tealBg,
     border: C.tealBorder,
@@ -165,10 +168,30 @@ const EVOLUTION = [
     version: "v3.1",
     date: "Feb 23",
     title: "Agent Teams + live-context",
-    desc: "에이전트 23개, 팀 3개. live-context.md로 세션 간 실시간 맥락 공유. project-linker로 프로젝트 간 변경 감지.",
+    desc: "에이전트 23개, 팀 3개. live-context.md로 세션 간 실시간 맥락 공유. 프로젝트 간 변경 감지 시작.",
     color: C.green,
     bg: C.greenBg,
     border: C.greenBorder,
+    deprecated: false,
+  },
+  {
+    version: "v3.3",
+    date: "Feb 25–26",
+    title: "복잡도 정점",
+    desc: "에이전트 24개, 스킬 14개, hooks 8개. 구현 후 Living Docs 갱신 누락 2회 — 체크리스트가 사람을 따라가지 못했다.",
+    color: C.amber,
+    bg: C.amberBg,
+    border: C.amberBorder,
+    deprecated: false,
+  },
+  {
+    version: "v4.0",
+    date: "Feb 27",
+    title: "Context as Currency",
+    desc: "에이전트 24→15, 스킬 14→9로 정리. rulesync로 규칙 자동 동기화. Cross-CLI(.ctx/) 공유 메모리 도입. Claude/Gemini/Codex가 같은 진실을 읽는다.",
+    color: C.rose,
+    bg: C.roseBg,
+    border: C.roseBorder,
     deprecated: false,
   },
 ];
@@ -186,7 +209,8 @@ type FileKey =
   | "tr/README.md"
   | "monet/README.md"
   | "daily/Inbox.md"
-  | "evidence/README.md";
+  | "evidence/README.md"
+  | "ctx/shared-context.md";
 
 // flat 리스트: folder는 folderId, 파일은 fileKey, parent로 접기 제어
 interface SidebarEntry {
@@ -200,6 +224,8 @@ interface SidebarEntry {
 const SIDEBAR: SidebarEntry[] = [
   { name: "HOME.md", indent: 0, fileKey: "HOME.md" },
   { name: "CLAUDE.md", indent: 0, fileKey: "CLAUDE.md" },
+  { name: ".ctx", indent: 0, folderId: "ctx" },
+  { name: "shared-context.md", indent: 1, fileKey: "ctx/shared-context.md", parent: "ctx" },
   { name: "01_projects", indent: 0, folderId: "projects" },
   { name: "orchestration", indent: 1, folderId: "orch", parent: "projects" },
   { name: "STATE.md", indent: 2, fileKey: "orch/STATE.md", parent: "orch" },
@@ -218,7 +244,7 @@ const SIDEBAR: SidebarEntry[] = [
   { name: "README.md", indent: 1, fileKey: "evidence/README.md", parent: "evidence" },
 ];
 
-const DEFAULT_OPEN = new Set(["projects", "orch", "pf", "tr", "monet", "daily", "evidence"]);
+const DEFAULT_OPEN = new Set(["projects", "orch", "pf", "tr", "monet", "daily", "evidence", "ctx"]);
 
 // 공통 렌더 헬퍼
 const H = (text: string) => (
@@ -253,17 +279,17 @@ const FILE_CONTENT: Record<FileKey, React.ReactNode> = {
         <span style={{ fontWeight: 600, color: C.dim }}>Project</span>
         <span style={{ fontWeight: 600, color: C.dim }}>Status</span>
         <span style={{ fontWeight: 600, color: C.dim }}>Branch</span>
-        <span>orchestration</span><span style={{ color: C.green, fontWeight: 600 }}>v3.1 active</span><span>main</span>
+        <span>orchestration</span><span style={{ color: C.green, fontWeight: 600 }}>v4.0 active</span><span>main</span>
         <span>portfolio</span><span style={{ color: C.amber, fontWeight: 600 }}>building</span><span>master</span>
-        <span>tech-review</span><span style={{ color: C.purple, fontWeight: 600 }}>22 uncommitted</span><span>main</span>
+        <span>tech-review</span><span style={{ color: C.purple, fontWeight: 600 }}>tracking</span><span>main</span>
       </div>
       {H("Today's Session")}
-      {B("Obsidian 섹션 추가 (portfolio)", "23:00")}
-      {B("Agent Teams 설계 완료 (orchestration)", "22:00")}
-      {H("Open Decisions")}
+      {B("Obsidian 섹션 재작성 (portfolio)", "01:00")}
+      {B("v4.0 Phase 8 완료 (orchestration)", "23:00")}
+      {H("System")}
       <div style={{ paddingLeft: 4, fontSize: 10, lineHeight: 1.7 }}>
-        <div>{L("D-023")} Phase E 파일럿 테스트</div>
-        <div>{L("D-024")} TR 프롬프트 Smart Brevity 전환</div>
+        <div>에이전트 15개 · 스킬 9개 · 팀 3+Hub</div>
+        <div>rulesync v7.9.0 · hooks 8개 · Cross-CLI</div>
       </div>
     </>
   ),
@@ -294,19 +320,16 @@ const FILE_CONTENT: Record<FileKey, React.ReactNode> = {
       {Title("STATE.md — Orchestration")}
       {H("Current")}
       <div style={{ paddingLeft: 4, fontSize: 10, lineHeight: 1.7 }}>
-        <div><span style={{ color: C.green, fontWeight: 600 }}>v3.1</span> Agent Teams & Linker System</div>
-        <div>에이전트 23개, 팀 3개, hooks 7개</div>
+        <div><span style={{ color: C.green, fontWeight: 600 }}>v4.0</span> Context as Currency</div>
+        <div>에이전트 15개, 스킬 9개, 팀 3+Hub, hooks 8개</div>
       </div>
-      {H("In Progress")}
-      {B("tech-review 미커밋 22개 정리")}
-      {B("inbox-processor 실전: 8건 새 항목")}
+      {H("Core Infra")}
+      {B("rulesync v7.9.0 — .rulesync/rules/ → CLAUDE.md/GEMINI.md")}
+      {B("Cross-CLI — .ctx/shared-context.md, provenance.log")}
+      {B("Worktree — scripts/worktree-create.sh")}
       {H("Completed (recent)")}
-      {Dim("v3.0 에이전틱 워크플로우")}
-      {Dim("v2.2 시스템 오버홀")}
-      {Dim("v2.0 dev-vault Git 초기화")}
-      {H("Next")}
-      {B("Phase E 파일럿 (Agent Teams + worktree 병렬)")}
-      {B("ai-synthesizer 실전 테스트")}
+      {Dim("v4.0 Phase 1-8 구현 완료")}
+      {Dim("v3.3 복잡도 정점 → 정리")}
     </>
   ),
 
@@ -316,13 +339,15 @@ const FILE_CONTENT: Record<FileKey, React.ReactNode> = {
       {H("D-001: SoT를 Git으로 전환")}
       {Label("문제", "Obsidian만으로는 다른 AI가 접근 불가")}
       {Label("해결", "Git STATE.md + GitHub Pages URL")}
-      {Label("효과", "AI 4종 동기화 해결")}
-      {H("D-003: Jeff Su 폴더 방법론")}
+      {H("D-003: Flat Hierarchy")}
       {Label("문제", "파일이 늘수록 구조가 무너짐")}
       {Label("해결", "5레벨 MAX, 2자리 넘버링, 99=Archive")}
       {H("D-019: Obsidian = 뷰어 전용")}
       {Label("문제", "Obsidian 편집과 AI 편집이 충돌")}
       {Label("해결", "읽기 전용 + Claude Code 단일 쓰기")}
+      {H("D-031: Context as Currency")}
+      {Label("문제", "24개 에이전트, 14개 스킬 — 복잡도 폭발")}
+      {Label("해결", "24→15 에이전트, rulesync, Cross-CLI 통합")}
     </>
   ),
 
@@ -330,33 +355,32 @@ const FILE_CONTENT: Record<FileKey, React.ReactNode> = {
     <>
       {Title("KNOWLEDGE.md — Patterns & Rules")}
       {H("반복 실수 패턴")}
+      {B("구현 완료 ≠ DONE — Living Docs + 커밋 + push까지가 완료")}
       {B("파일 재읽기 금지 — 이미 읽은 파일은 다시 읽지 않는다")}
-      {B("Write 전 Read 필수 — 기존 파일 수정 전 반드시 Read 먼저")}
-      {B("병렬 Write 금지 — 같은 파일을 동시에 수정하지 않는다")}
       {H("에이전트 운영 규칙")}
       {B("Haiku: 상태 확인, 브리핑, 요약")}
       {B("Sonnet: 탐색, 검색, 코드 분석")}
       {B("Opus: 설계 결정, 크로스 검증, 복잡한 실행")}
       {H("교훈")}
-      {B("gemini-analyzer 분석 결과는 크로스 검증 필수")}
-      {B("100만 토큰 광역 분석은 개별 항목의 실제 사용 이력을 놓칠 수 있음")}
+      {B("Claude = 유일한 설계/결정권자. 외부 CLI는 추출만.")}
+      {B("더하기는 쉽고, 빼기가 설계다. (24→15)")}
     </>
   ),
 
   "orch/CHANGELOG.md": (
     <>
       {Title("CHANGELOG.md — Version History")}
+      {H("v4.0 — 2026-02-27")}
+      {B("Context as Currency")}
+      {B("에이전트 24→15, 스킬 14→9, rulesync v7.9.0")}
+      {B("Cross-CLI .ctx/ 공유 메모리, worktree 인프라")}
+      {H("v3.3 — 2026-02-25")}
+      {B("복잡도 정점 — 에이전트 24개, hooks 8개")}
       {H("v3.1 — 2026-02-23")}
       {B("Agent Teams & Linker System")}
-      {B("에이전트 7개 추가 (16→23), 팀 3개, live-context.md")}
-      {B("context-linker + project-linker 프로젝트 간 연동")}
-      {H("v3.0 — 2026-02-23")}
-      {B("에이전틱 워크플로우 강화")}
-      {B("체인 규칙, agent.md 표준화, hooks 품질 게이트")}
-      {H("v2.2 — 2026-02-22")}
-      {B("시스템 오버홀 — 죽은 자동화 수리, stale 문서 정리")}
+      {B("에이전트 16→23, 팀 3개, live-context.md")}
       {H("v2.0 — 2026-02-21")}
-      {B("dev-vault git init, Obsidian Git 연동, agents 14개")}
+      {B("dev-vault git init, Obsidian Git 연동")}
       {H("v1.0 — 2026-02-17")}
       {B("skills 11개, scripts 5개, auto-memory 3-phase")}
     </>
@@ -431,6 +455,24 @@ const FILE_CONTENT: Record<FileKey, React.ReactNode> = {
       {B("날짜 프리픽스: 2026-02-23_screenshot.png")}
       {B(".gitignore에서 제외 — dev-vault에는 포함 안 됨")}
       {B("로컬 전용, 필요 시 수동으로 공유")}
+    </>
+  ),
+
+  "ctx/shared-context.md": (
+    <>
+      {Title(".ctx/shared-context.md")}
+      {H("Cross-CLI Shared Memory")}
+      {B("모든 CLI(Claude, Gemini, Codex)가 읽고 쓰는 공유 상태")}
+      {H("Current Focus")}
+      {B("portfolio Obsidian 섹션 v4.0 재작성")}
+      {H("Recent Entries")}
+      <div style={{ paddingLeft: 4, fontSize: 10, lineHeight: 1.7 }}>
+        <div><span style={{ color: C.dim }}>[claude]</span> v4.0 Phase 1-8 완료</div>
+        <div><span style={{ color: C.dim }}>[gemini]</span> 코드베이스 구조 분석</div>
+        <div><span style={{ color: C.dim }}>[codex]</span> diff 리뷰 + QA</div>
+      </div>
+      {H("Provenance")}
+      {Dim("각 항목에 출처 CLI 태그. 해석은 Claude만.")}
     </>
   ),
 
@@ -661,17 +703,19 @@ const GRAPH_NODES: GNode[] = [
   // 허브 (중앙)
   { id: "HOME.md", label: "HOME.md", x: 300, y: 140, color: C.purple, r: 12 },
   { id: "CLAUDE.md", label: "CLAUDE.md", x: 300, y: 30, color: C.purple, r: 9 },
+  // Cross-CLI (중앙 우측)
+  { id: "ctx/shared-context.md", label: ".ctx", x: 420, y: 30, color: C.rose, r: 8 },
   // orchestration 클러스터 (좌측)
   { id: "orch/STATE.md", label: "STATE", x: 120, y: 120, color: C.blue, r: 9 },
   { id: "orch/PLANNING.md", label: "PLANNING", x: 60, y: 200, color: C.green, r: 7 },
   { id: "orch/KNOWLEDGE.md", label: "KNOWLEDGE", x: 160, y: 240, color: C.amber, r: 7 },
   { id: "orch/CHANGELOG.md", label: "CHANGELOG", x: 40, y: 80, color: C.teal, r: 6 },
   // portfolio (우측 상단)
-  { id: "pf/STATE.md", label: "PF STATE", x: 480, y: 80, color: C.blue, r: 7 },
+  { id: "pf/STATE.md", label: "PF STATE", x: 480, y: 100, color: C.blue, r: 7 },
   // tech-review (우측)
-  { id: "tr/README.md", label: "TR README", x: 520, y: 180, color: C.rose, r: 7 },
+  { id: "tr/README.md", label: "TR README", x: 520, y: 190, color: C.rose, r: 7 },
   // monet (우측 하단)
-  { id: "monet/README.md", label: "monet", x: 460, y: 250, color: C.teal, r: 6 },
+  { id: "monet/README.md", label: "monet", x: 460, y: 260, color: C.teal, r: 6 },
   // daily (좌측 하단)
   { id: "daily/Inbox.md", label: "Inbox", x: 240, y: 270, color: C.amber, r: 6 },
 ];
@@ -705,6 +749,10 @@ const GRAPH_EDGES: GEdge[] = [
   { from: "pf/STATE.md", to: "tr/README.md" },
   // daily → HOME (/todo merge)
   { from: "daily/Inbox.md", to: "HOME.md" },
+  // Cross-CLI 연결
+  { from: "ctx/shared-context.md", to: "CLAUDE.md" },
+  { from: "ctx/shared-context.md", to: "orch/STATE.md" },
+  { from: "ctx/shared-context.md", to: "HOME.md" },
 ];
 
 function VaultGraph() {
@@ -810,175 +858,114 @@ function VaultGraph() {
   );
 }
 
+
 // ── 메인 컴포넌트 ───────────────────────────────────────────────────
 export function ObsidianSystemSection() {
   return (
     <div
       style={{ display: "flex", flexDirection: "column", gap: 56, marginTop: 8 }}
     >
-      {/* ① Why + Before/After */}
+      {/* ① Hook — 지금 이 시스템 */}
       <div>
-        <p style={labelStyle}>Why Obsidian</p>
-        <div
+        <p style={labelStyle}>The System</p>
+        <p
           style={{
-            background: C.bg,
-            border: `1px solid ${C.border}`,
-            borderRadius: 10,
-            padding: "20px 22px",
+            fontSize: 15,
+            color: C.text,
+            lineHeight: 1.75,
+            margin: "0 0 18px",
+            fontWeight: 500,
           }}
         >
-          <p
-            style={{
-              fontSize: 14,
-              color: C.text,
-              lineHeight: 1.75,
-              margin: "0 0 14px",
-            }}
-          >
-            문서가 죽으면 AI가 구정보로 판단한다. Notion이나 Google Docs는
-            API 없이 AI가 직접 읽고 쓸 수 없다. 로컬 마크다운이면 파일
-            시스템 접근만으로 편집이 가능하고, Git이면 버전 관리와 동기화가
-            해결된다. Obsidian은 그 마크다운을 보여주는 가장 좋은 뷰어다.
-          </p>
-          <p
-            style={{
-              fontSize: 14,
-              color: C.muted,
-              lineHeight: 1.75,
-              margin: 0,
-              borderLeft: `3px solid ${C.blue}`,
-              paddingLeft: 14,
-            }}
-          >
-            Living Docs — 문서는 작성 시점에 완성되는 게 아니라, 시스템이
-            매일 갱신해야 살아 있다. AI가 쓰고, Git이 기록하고, Obsidian이
-            보여준다.
-          </p>
-        </div>
-
-        {/* PIVOT: Ctrl+Alt+V 시대 에피소드 */}
+          마크다운 파일이 AI 에이전트들의 공유 통화가 됐다. Claude, Gemini,
+          Codex — 서로 다른 AI가 같은 STATE.md를 읽고, 같은 규칙을 따르고, 같은
+          진실 위에서 작업한다. 수동 동기화는 0이다.
+        </p>
         <div
           style={{
-            display: "flex",
+            display: "grid",
+            gridTemplateColumns: "repeat(auto-fill, minmax(140px, 1fr))",
             gap: 10,
-            marginTop: 14,
-            alignItems: "flex-start",
-            padding: "12px 14px",
-            background: "#fff7ed",
-            border: "1px solid #fed7aa",
-            borderRadius: 8,
           }}
         >
-          <span
-            style={{
-              fontSize: 10,
-              fontWeight: 700,
-              color: "#c2410c",
-              background: "#ffedd5",
-              border: "1px solid #fed7aa",
-              borderRadius: 3,
-              padding: "2px 6px",
-              flexShrink: 0,
-              marginTop: 1,
-            }}
-          >
-            PIVOT
-          </span>
-          <div>
+          {[
+            {
+              number: "3",
+              unit: "CLI",
+              desc: "Claude · Gemini · Codex가 같은 STATE.md를 공유한다",
+              color: C.blue,
+              bg: C.blueBg,
+              border: C.blueBorder,
+            },
+            {
+              number: "15",
+              unit: "에이전트",
+              desc: "24개에서 정리한 15개. 9개 스킬이 자동 디스패치",
+              color: C.purple,
+              bg: C.purpleBg,
+              border: C.purpleBorder,
+            },
+            {
+              number: "8",
+              unit: "Hooks",
+              desc: "SessionStart부터 PostToolUse까지 실시간 자동화",
+              color: C.teal,
+              bg: C.tealBg,
+              border: C.tealBorder,
+            },
+            {
+              number: "0",
+              unit: "수동 동기화",
+              desc: "Obsidian Git 자동 Pull + Claude 자동 Push",
+              color: C.green,
+              bg: C.greenBg,
+              border: C.greenBorder,
+            },
+          ].map((m) => (
             <div
+              key={m.unit}
               style={{
-                fontSize: 12,
-                fontWeight: 600,
-                color: C.text,
-                marginBottom: 4,
+                border: `1px solid ${m.border}`,
+                borderRadius: 10,
+                padding: "16px",
+                background: m.bg,
+                textAlign: "center",
               }}
             >
-              Ctrl+Alt+V — 매 세션마다 복붙하던 시절
-            </div>
-            <div style={{ fontSize: 11, color: C.muted, lineHeight: 1.6 }}>
-              초기에는 PowerShell로 STATE.md를 SNAPSHOT.txt로 변환하고,
-              AutoHotKey 단축키(Ctrl+Alt+V)로 ChatGPT에 붙여넣었다.
-              어느 날 STATE.md를 업데이트했는데 SNAPSHOT 변환을 빠뜨렸고,
-              AI가 이미 끝난 작업을 처음부터 다시 설계했다.
-              Obsidian에도 같은 파일이 있었지만 어느 쪽이 최신인지 알 수
-              없었다. bridge 스크립트 3개, 수동 단계 2개 — 유지할 수 없었다.
-            </div>
-          </div>
-        </div>
-
-        {/* Before → After */}
-        <div
-          style={{
-            display: "flex",
-            gap: 0,
-            marginTop: 10,
-            border: `1px solid ${C.border}`,
-            borderRadius: 8,
-            overflow: "hidden",
-          }}
-        >
-          <div style={{ flex: 1, padding: "12px 14px", background: "#fafafa" }}>
-            <div
-              style={{
-                display: "flex",
-                gap: 6,
-                alignItems: "center",
-                marginBottom: 6,
-              }}
-            >
-              <span
+              <div
+                style={{
+                  fontSize: 24,
+                  fontWeight: 800,
+                  color: m.color,
+                  lineHeight: 1,
+                  marginBottom: 2,
+                }}
+              >
+                {m.number}
+              </div>
+              <div
                 style={{
                   fontSize: 10,
                   fontWeight: 700,
-                  color: C.rose,
-                  background: C.roseBg,
-                  border: `1px solid ${C.roseBorder}`,
-                  borderRadius: 3,
-                  padding: "2px 6px",
+                  color: m.color,
+                  textTransform: "uppercase",
+                  letterSpacing: "0.4px",
+                  marginBottom: 6,
                 }}
               >
-                BEFORE
-              </span>
+                {m.unit}
+              </div>
+              <div style={{ fontSize: 11, color: C.muted, lineHeight: 1.5 }}>
+                {m.desc}
+              </div>
             </div>
-            <div style={{ fontSize: 11, color: C.muted, lineHeight: 1.6 }}>
-              PowerShell 변환 → AutoHotKey 복붙 → 수동 확인.
-              이중 SoT, 동기화 누락 상시 발생.
-            </div>
-          </div>
-          <div style={{ width: 1, background: C.border, flexShrink: 0 }} />
-          <div style={{ flex: 1, padding: "12px 14px", background: C.white }}>
-            <div
-              style={{
-                display: "flex",
-                gap: 6,
-                alignItems: "center",
-                marginBottom: 6,
-              }}
-            >
-              <span
-                style={{
-                  fontSize: 10,
-                  fontWeight: 700,
-                  color: C.blue,
-                  background: C.blueBg,
-                  border: `1px solid ${C.blueBorder}`,
-                  borderRadius: 3,
-                  padding: "2px 6px",
-                }}
-              >
-                AFTER
-              </span>
-            </div>
-            <div style={{ fontSize: 11, color: C.muted, lineHeight: 1.6 }}>
-              Claude Code가 직접 편집 → Git 커밋 → Obsidian 자동 Pull.
-              수동 단계 0개, SoT는 Git 하나.
-            </div>
-          </div>
+          ))}
         </div>
       </div>
 
-      {/* ② Vault Structure */}
+      {/* ② Architecture — 현재 시스템 전체 구조 */}
       <div>
+        {/* Vault Structure */}
         <p style={labelStyle}>Vault Structure</p>
         <p
           style={{
@@ -988,8 +975,8 @@ export function ObsidianSystemSection() {
             margin: "0 0 16px",
           }}
         >
-          Jeff Su 5레벨 폴더 방법론 기반. 2자리 넘버링으로 자동 정렬, 99는
-          Archive.
+          Flat Hierarchy 원칙. 5레벨 이하 폴더 깊이, 2자리 넘버링(Numeric
+          Taxonomy)으로 자동 정렬. 99=Archive.
         </p>
         <div
           style={{
@@ -1039,16 +1026,22 @@ export function ObsidianSystemSection() {
         >
           {[
             {
-              label: "Jeff Su 5레벨 MAX",
+              label: "Flat Hierarchy",
               color: C.blue,
               bg: C.blueBg,
               border: C.blueBorder,
             },
             {
-              label: "2자리 넘버링",
+              label: "Numeric Taxonomy",
               color: C.purple,
               bg: C.purpleBg,
               border: C.purpleBorder,
+            },
+            {
+              label: "5-Level MAX",
+              color: C.teal,
+              bg: C.tealBg,
+              border: C.tealBorder,
             },
             {
               label: "99=Archive",
@@ -1073,11 +1066,9 @@ export function ObsidianSystemSection() {
             </span>
           ))}
         </div>
-      </div>
 
-      {/* ③ Living Documents + HOME.md 미리보기 */}
-      <div>
-        <p style={labelStyle}>Living Documents</p>
+        {/* Living Documents */}
+        <p style={{ ...labelStyle, marginTop: 56 }}>Living Documents</p>
         <p
           style={{
             fontSize: 13,
@@ -1125,85 +1116,7 @@ export function ObsidianSystemSection() {
           ))}
         </div>
 
-        {/* /catchup 체감 스토리 */}
-        <div
-          style={{
-            display: "flex",
-            gap: 0,
-            marginTop: 14,
-            border: `1px solid ${C.border}`,
-            borderRadius: 8,
-            overflow: "hidden",
-          }}
-        >
-          <div style={{ flex: 1, padding: "12px 14px", background: "#fafafa" }}>
-            <div
-              style={{
-                display: "flex",
-                gap: 6,
-                alignItems: "center",
-                marginBottom: 6,
-              }}
-            >
-              <span
-                style={{
-                  fontSize: 10,
-                  fontWeight: 700,
-                  color: C.rose,
-                  background: C.roseBg,
-                  border: `1px solid ${C.roseBorder}`,
-                  borderRadius: 3,
-                  padding: "2px 6px",
-                }}
-              >
-                BEFORE
-              </span>
-              <span style={{ fontSize: 10, color: C.dimmer }}>
-                매 세션 시작
-              </span>
-            </div>
-            <div style={{ fontSize: 11, color: C.muted, lineHeight: 1.6 }}>
-              "어제 orchestration에서 에이전트 3개 만들었고, portfolio는
-              빌드 깨져 있고, tech-review는 프롬프트 수정 중이야..."
-              — 매번 5분간 컨텍스트를 직접 설명해야 했다.
-            </div>
-          </div>
-          <div style={{ width: 1, background: C.border, flexShrink: 0 }} />
-          <div style={{ flex: 1, padding: "12px 14px", background: C.white }}>
-            <div
-              style={{
-                display: "flex",
-                gap: 6,
-                alignItems: "center",
-                marginBottom: 6,
-              }}
-            >
-              <span
-                style={{
-                  fontSize: 10,
-                  fontWeight: 700,
-                  color: C.blue,
-                  background: C.blueBg,
-                  border: `1px solid ${C.blueBorder}`,
-                  borderRadius: 3,
-                  padding: "2px 6px",
-                }}
-              >
-                AFTER
-              </span>
-              <span style={{ fontSize: 10, color: C.dimmer }}>
-                /catchup 한 줄
-              </span>
-            </div>
-            <div style={{ fontSize: 11, color: C.muted, lineHeight: 1.6 }}>
-              AI가 STATE.md를 읽고 이미 알고 있다.
-              "orchestration v3.1, 다음은 tech-review 미커밋 22개 정리."
-              — 문서가 살아 있으면 설명할 필요가 없다.
-            </div>
-          </div>
-        </div>
-
-        {/* 현재 구성 타이틀 + Vault 목업 + Graph View */}
+        {/* 현재 Obsidian 구성 (Mockup + Graph) */}
         <p style={{ ...labelStyle, marginTop: 56 }}>
           현재 Obsidian 구성
         </p>
@@ -1221,11 +1134,9 @@ export function ObsidianSystemSection() {
             <VaultGraph />
           </div>
         </div>
-      </div>
 
-      {/* ⑤ How It Works (AI Integration + Git Sync 통합) */}
-      <div>
-        <p style={labelStyle}>How It Works</p>
+        {/* How It Works */}
+        <p style={{ ...labelStyle, marginTop: 56 }}>How It Works</p>
         <p
           style={{
             fontSize: 13,
@@ -1431,9 +1342,198 @@ export function ObsidianSystemSection() {
             </div>
           ))}
         </div>
+
+        {/* Cross-CLI */}
+        <div
+          style={{
+            display: "flex",
+            gap: 10,
+            marginTop: 14,
+            alignItems: "flex-start",
+            padding: "12px 14px",
+            background: C.roseBg,
+            border: `1px solid ${C.roseBorder}`,
+            borderRadius: 8,
+          }}
+        >
+          <span
+            style={{
+              fontSize: 10,
+              fontWeight: 700,
+              color: C.rose,
+              background: "#fff",
+              border: `1px solid ${C.roseBorder}`,
+              borderRadius: 3,
+              padding: "2px 6px",
+              flexShrink: 0,
+              marginTop: 1,
+            }}
+          >
+            v4.0
+          </span>
+          <div>
+            <div
+              style={{
+                fontSize: 12,
+                fontWeight: 600,
+                color: C.text,
+                marginBottom: 4,
+              }}
+            >
+              Cross-CLI — .ctx/ 공유 메모리
+            </div>
+            <div style={{ fontSize: 11, color: C.muted, lineHeight: 1.6 }}>
+              Claude Code가 작성한 컨텍스트를 Gemini CLI가 읽고, Codex가
+              검증한다. .ctx/shared-context.md에 모든 CLI의 현재 목표와 진행
+              상황이 기록되고, provenance.log가 각 항목의 출처를 추적한다.
+              rulesync가 .rulesync/rules/에서 CLAUDE.md, GEMINI.md를 자동
+              생성해 모든 CLI가 같은 규칙을 따르게 한다.
+            </div>
+          </div>
+        </div>
       </div>
 
-      {/* ⑤ Evolution */}
+      {/* ③ 문제의 시작 */}
+      <div>
+        <p style={labelStyle}>The Problem</p>
+        <p
+          style={{
+            fontSize: 14,
+            color: C.text,
+            lineHeight: 1.75,
+            margin: "0 0 14px",
+          }}
+        >
+          AI 도구들은 세션마다 기억을 잃는다. 어제 3시간 동안 설계한
+          아키텍처를 오늘은 처음부터 다시 설명해야 한다. 프로젝트가 커질수록
+          현재 상태를 전달하는 비용이 기하급수적으로 증가한다. Notion이나
+          Google Docs는 API 없이 AI가 직접 읽고 쓸 수 없다. 로컬
+          마크다운이면 파일 시스템 접근만으로 편집이 가능하고, Git이면 버전
+          관리와 동기화가 해결된다.
+        </p>
+
+        {/* PIVOT: Ctrl+Alt+V 시대 에피소드 */}
+        <div
+          style={{
+            display: "flex",
+            gap: 10,
+            marginTop: 14,
+            alignItems: "flex-start",
+            padding: "12px 14px",
+            background: "#fff7ed",
+            border: "1px solid #fed7aa",
+            borderRadius: 8,
+          }}
+        >
+          <span
+            style={{
+              fontSize: 10,
+              fontWeight: 700,
+              color: "#c2410c",
+              background: "#ffedd5",
+              border: "1px solid #fed7aa",
+              borderRadius: 3,
+              padding: "2px 6px",
+              flexShrink: 0,
+              marginTop: 1,
+            }}
+          >
+            PIVOT
+          </span>
+          <div>
+            <div
+              style={{
+                fontSize: 12,
+                fontWeight: 600,
+                color: C.text,
+                marginBottom: 4,
+              }}
+            >
+              Ctrl+Alt+V — 매 세션마다 복붙하던 시절
+            </div>
+            <div style={{ fontSize: 11, color: C.muted, lineHeight: 1.6 }}>
+              초기에는 PowerShell로 STATE.md를 SNAPSHOT.txt로 변환하고,
+              AutoHotKey 단축키(Ctrl+Alt+V)로 ChatGPT에 붙여넣었다.
+              어느 날 STATE.md를 업데이트했는데 SNAPSHOT 변환을 빠뜨렸고,
+              AI가 이미 끝난 작업을 처음부터 다시 설계했다.
+              Obsidian에도 같은 파일이 있었지만 어느 쪽이 최신인지 알 수
+              없었다. bridge 스크립트 3개, 수동 단계 2개 — 유지할 수 없었다.
+            </div>
+          </div>
+        </div>
+
+        {/* Before → After */}
+        <div
+          style={{
+            display: "flex",
+            gap: 0,
+            marginTop: 10,
+            border: `1px solid ${C.border}`,
+            borderRadius: 8,
+            overflow: "hidden",
+          }}
+        >
+          <div style={{ flex: 1, padding: "12px 14px", background: "#fafafa" }}>
+            <div
+              style={{
+                display: "flex",
+                gap: 6,
+                alignItems: "center",
+                marginBottom: 6,
+              }}
+            >
+              <span
+                style={{
+                  fontSize: 10,
+                  fontWeight: 700,
+                  color: C.rose,
+                  background: C.roseBg,
+                  border: `1px solid ${C.roseBorder}`,
+                  borderRadius: 3,
+                  padding: "2px 6px",
+                }}
+              >
+                BEFORE
+              </span>
+            </div>
+            <div style={{ fontSize: 11, color: C.muted, lineHeight: 1.6 }}>
+              PowerShell 변환 → AutoHotKey 복붙 → 수동 확인.
+              이중 SoT, 동기화 누락 상시 발생.
+            </div>
+          </div>
+          <div style={{ width: 1, background: C.border, flexShrink: 0 }} />
+          <div style={{ flex: 1, padding: "12px 14px", background: C.white }}>
+            <div
+              style={{
+                display: "flex",
+                gap: 6,
+                alignItems: "center",
+                marginBottom: 6,
+              }}
+            >
+              <span
+                style={{
+                  fontSize: 10,
+                  fontWeight: 700,
+                  color: C.blue,
+                  background: C.blueBg,
+                  border: `1px solid ${C.blueBorder}`,
+                  borderRadius: 3,
+                  padding: "2px 6px",
+                }}
+              >
+                AFTER
+              </span>
+            </div>
+            <div style={{ fontSize: 11, color: C.muted, lineHeight: 1.6 }}>
+              Claude Code가 직접 편집 → Git 커밋 → Obsidian 자동 Pull.
+              수동 단계 0개, SoT는 Git 하나.
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* ④ Evolution */}
       <div>
         <p style={labelStyle}>Evolution</p>
         <p
@@ -1444,8 +1544,9 @@ export function ObsidianSystemSection() {
             margin: "0 0 16px",
           }}
         >
-          2주 동안 5번의 구조 변경. bridge 스크립트에서 시작해 23개
-          에이전트가 자동 갱신하는 Living Docs 시스템까지.
+          2주 동안 8번의 구조 변경. bridge 스크립트에서 시작해 3개 CLI가
+          공유하는 Context as Currency 시스템까지. 더하기(v0→v3.3)와
+          빼기(v4.0) — 복잡도를 쌓다가 정리하는 순간이 진짜 설계였다.
         </p>
         <div
           style={{
@@ -1524,86 +1625,67 @@ export function ObsidianSystemSection() {
         </div>
       </div>
 
-      {/* ⑥ Impact */}
+      {/* ⑤ Lessons */}
       <div>
-        <p style={labelStyle}>Impact</p>
+        <p style={labelStyle}>Lessons</p>
         <div
           style={{
             display: "grid",
-            gridTemplateColumns: "repeat(auto-fill, minmax(140px, 1fr))",
+            gridTemplateColumns: "repeat(auto-fill, minmax(220px, 1fr))",
             gap: 10,
-            marginBottom: 16,
           }}
         >
           {[
             {
-              number: "4",
-              unit: "AI",
-              desc: "Claude · GPT · Gemini · Perplexity가 같은 STATE.md를 읽는다",
+              title: "SoT는 하나만",
+              desc: "같은 정보가 두 곳에 있으면 반드시 어긋난다. 하나만 진실이고 나머지는 읽기 전용. Git이 유일한 Source of Truth.",
               color: C.blue,
               bg: C.blueBg,
               border: C.blueBorder,
             },
             {
-              number: "38K",
-              unit: "토큰/세션",
-              desc: "CLAUDE.md 4줄 축소로 매 턴 절감",
+              title: "도구는 역할을 분리해야",
+              desc: "Writer(Claude Code), Source of Truth(Git), Viewer(Obsidian). 하나의 도구가 모든 역할을 하면 충돌한다.",
               color: C.purple,
               bg: C.purpleBg,
               border: C.purpleBorder,
             },
             {
-              number: "6",
-              unit: "Living Docs",
-              desc: "에이전트가 변경 시 자동 업데이트하는 문서 수",
+              title: "빼기가 설계다",
+              desc: "24개 에이전트를 15개로 줄인 v4.0이 v3.3보다 강력하다. 더하기는 쉽고, 빼기가 설계다.",
               color: C.teal,
               bg: C.tealBg,
               border: C.tealBorder,
             },
             {
-              number: "0",
-              unit: "수동 동기화",
-              desc: "Obsidian Git 자동 Pull + Claude 자동 Push",
-              color: C.green,
-              bg: C.greenBg,
-              border: C.greenBorder,
+              title: "자동화의 경계",
+              desc: "수동 0을 목표로 하되, 자동화 자체가 새로운 복잡도를 만들면 멈춰야 한다. v3.3이 그 경계였다.",
+              color: C.amber,
+              bg: C.amberBg,
+              border: C.amberBorder,
             },
-          ].map((m) => (
+          ].map((lesson) => (
             <div
-              key={m.unit}
+              key={lesson.title}
               style={{
-                border: `1px solid ${m.border}`,
+                border: `1px solid ${lesson.border}`,
                 borderRadius: 10,
-                padding: "16px",
-                background: m.bg,
-                textAlign: "center",
+                padding: "16px 18px",
+                background: lesson.bg,
               }}
             >
               <div
                 style={{
-                  fontSize: 24,
-                  fontWeight: 800,
-                  color: m.color,
-                  lineHeight: 1,
-                  marginBottom: 2,
-                }}
-              >
-                {m.number}
-              </div>
-              <div
-                style={{
-                  fontSize: 10,
+                  fontSize: 13,
                   fontWeight: 700,
-                  color: m.color,
-                  textTransform: "uppercase",
-                  letterSpacing: "0.4px",
-                  marginBottom: 6,
+                  color: lesson.color,
+                  marginBottom: 8,
                 }}
               >
-                {m.unit}
+                {lesson.title}
               </div>
-              <div style={{ fontSize: 11, color: C.muted, lineHeight: 1.5 }}>
-                {m.desc}
+              <div style={{ fontSize: 12, color: C.muted, lineHeight: 1.6 }}>
+                {lesson.desc}
               </div>
             </div>
           ))}
@@ -1613,14 +1695,14 @@ export function ObsidianSystemSection() {
             fontSize: 13,
             color: C.muted,
             lineHeight: 1.65,
-            margin: 0,
-            borderLeft: `3px solid ${C.blue}`,
+            margin: "16px 0 0",
+            borderLeft: `3px solid ${C.purple}`,
             paddingLeft: 14,
           }}
         >
-          bridge 스크립트를 폐기하고 역할을 셋으로 분리한 것이 가장 큰
-          전환점이었다. Writer, Source of Truth, Viewer — 각각 하나의
-          도구만 담당하면 충돌이 사라진다.
+          이 시스템의 핵심은 도구가 아니라 원칙이다. 마크다운 파일 하나가
+          여러 AI의 공유 자원이 되려면, 누가 쓰고 누가 읽는지가 명확해야
+          한다. 2주간의 8번의 반복이 그 명확함을 만들었다.
         </p>
       </div>
     </div>
