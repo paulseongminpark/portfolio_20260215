@@ -282,7 +282,7 @@ export function AiWorkflowSection({ raw: _raw }: { raw?: string }) {
             {/* 3개 outline dot (중앙 더 크게) */}
             {[
               { left: '20%', color: '#10B981', size: 10 },
-              { left: '50%', color: C.textSub, size: 14 },
+              { left: '50%', color: '#3B82F6', size: 14 },
               { left: '80%', color: C.accent, size: 10 },
             ].map((m, i) => (
               <div key={i} style={{
@@ -313,8 +313,8 @@ export function AiWorkflowSection({ raw: _raw }: { raw?: string }) {
             </div>
             {/* Sonnet — 중앙 강조 */}
             <div>
-              <div style={{ border: `2px solid ${C.textSub}`, borderRadius: 6, padding: '12px 16px', background: 'rgba(85,85,85,0.03)' }}>
-                <div style={{ fontFamily: "'Inter', sans-serif", fontSize: 12, fontWeight: 700, color: C.textSub, marginBottom: 8 }}>Sonnet</div>
+              <div style={{ border: `2px solid #3B82F6`, borderRadius: 6, padding: '12px 16px', background: 'rgba(59,130,246,0.03)' }}>
+                <div style={{ fontFamily: "'Inter', sans-serif", fontSize: 12, fontWeight: 700, color: '#3B82F6', marginBottom: 8 }}>Sonnet</div>
                 {AGENTS.filter((a) => a.model === 'Sonnet').map((a) => (
                   <div key={a.name} style={{ fontFamily: "'Inter', sans-serif", fontSize: 11, color: C.text, padding: '3px 0' }}>{a.name}</div>
                 ))}
