@@ -276,7 +276,7 @@ function AsIsToBeTab({ src, caption, activeWork }: { src: string; caption?: stri
 
 function PmccFlowchart() {
   // Fixed column widths: [step1, arr1, step2, arr2, diamond, yes+arr, retention]
-  const W = [120, 34, 138, 34, 92, 46, 100] as const;
+  const W = [120, 48, 138, 48, 92, 52, 120] as const;
   const captionStyle: React.CSSProperties = { fontSize: 10, fontStyle: 'italic', color: '#888', textAlign: 'center', lineHeight: 1.4, padding: '0 4px' };
 
   return (
@@ -284,8 +284,8 @@ function PmccFlowchart() {
       <div style={{ display: 'flex', justifyContent: 'center' }}>
         <div style={{ display: 'flex', flexDirection: 'column' }}>
 
-          {/* Row 1: Boxes + Arrows — alignItems: center ensures arrows align to box midpoints */}
-          <div style={{ display: 'flex', alignItems: 'center' }}>
+          {/* Row 1: alignItems stretch → Retention matches STEP1/STEP2 height */}
+          <div style={{ display: 'flex', alignItems: 'stretch' }}>
             {/* STEP 1 */}
             <div style={{ width: W[0], flexShrink: 0, border: '1px solid #d0d0d0', borderRadius: 10, background: '#ffffff', padding: '14px 10px', textAlign: 'center', boxSizing: 'border-box' }}>
               <div style={{ fontSize: 9, fontWeight: 700, letterSpacing: '0.08em', color: '#999', marginBottom: 6, textTransform: 'uppercase' }}>STEP 1</div>
@@ -293,7 +293,7 @@ function PmccFlowchart() {
               <div style={{ fontSize: 11, color: '#666', marginTop: 4 }}>Heart rate ↑</div>
             </div>
             {/* Arrow 1 */}
-            <div style={{ width: W[1], flexShrink: 0, display: 'flex', justifyContent: 'center' }}>
+            <div style={{ width: W[1], flexShrink: 0, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
               <span style={{ color: '#c0c0c0', fontSize: 18 }}>→</span>
             </div>
             {/* STEP 2 */}
@@ -303,11 +303,11 @@ function PmccFlowchart() {
               <div style={{ fontSize: 11, color: '#4a9a4a', marginTop: 4 }}>Ego removal</div>
             </div>
             {/* Arrow 2 */}
-            <div style={{ width: W[3], flexShrink: 0, display: 'flex', justifyContent: 'center' }}>
+            <div style={{ width: W[3], flexShrink: 0, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
               <span style={{ color: '#c0c0c0', fontSize: 18 }}>→</span>
             </div>
             {/* Diamond */}
-            <div style={{ width: W[4], flexShrink: 0, display: 'flex', justifyContent: 'center' }}>
+            <div style={{ width: W[4], flexShrink: 0, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
               <div style={{ position: 'relative', width: 82, height: 82, flexShrink: 0 }}>
                 <div style={{ position: 'absolute', top: 8, left: 8, right: 8, bottom: 8, border: '1px solid #d0d0d0', background: '#ffffff', transform: 'rotate(45deg)', borderRadius: 3 }} />
                 <div style={{ position: 'absolute', inset: 0, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
@@ -315,13 +315,13 @@ function PmccFlowchart() {
                 </div>
               </div>
             </div>
-            {/* YES + Arrow */}
-            <div style={{ width: W[5], flexShrink: 0, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}>
-              <div style={{ fontSize: 9, fontWeight: 700, letterSpacing: '0.05em', color: '#888', marginBottom: 2 }}>YES</div>
+            {/* YES + Arrow: arrow at center, YES label floats above via absolute */}
+            <div style={{ width: W[5], flexShrink: 0, position: 'relative', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+              <div style={{ position: 'absolute', bottom: '50%', marginBottom: 4, fontSize: 9, fontWeight: 700, letterSpacing: '0.05em', color: '#888', whiteSpace: 'nowrap' }}>YES</div>
               <span style={{ color: '#c0c0c0', fontSize: 18 }}>→</span>
             </div>
-            {/* Retention */}
-            <div style={{ width: W[6], flexShrink: 0, border: '2px solid #3B82F6', borderRadius: 10, background: '#eaf4fb', padding: '14px 10px', textAlign: 'center', boxSizing: 'border-box', minHeight: 82, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+            {/* Retention: stretches to match STEP1/STEP2 height */}
+            <div style={{ width: W[6], flexShrink: 0, border: '2px solid #3B82F6', borderRadius: 10, background: '#eaf4fb', padding: '14px 10px', textAlign: 'center', boxSizing: 'border-box', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
               <div style={{ fontSize: 14, fontWeight: 700, color: '#111' }}>Retention</div>
             </div>
           </div>
