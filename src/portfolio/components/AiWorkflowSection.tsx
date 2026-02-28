@@ -313,7 +313,7 @@ export function AiWorkflowSection({ raw: _raw }: { raw?: string }) {
             </div>
             {/* Sonnet — 중앙 강조 */}
             <div>
-              <div style={{ border: `1px solid ${C.border}`, borderRadius: 6, padding: '12px 16px', background: 'rgba(59,130,246,0.03)' }}>
+              <div style={{ border: `1px solid ${C.border}`, borderRadius: 6, padding: '12px 16px', background: C.bg }}>
                 <div style={{ fontFamily: "'Inter', sans-serif", fontSize: 12, fontWeight: 700, color: '#3B82F6', marginBottom: 8 }}>Sonnet</div>
                 {AGENTS.filter((a) => a.model === 'Sonnet').map((a) => (
                   <div key={a.name} style={{ fontFamily: "'Inter', sans-serif", fontSize: 11, color: C.text, padding: '3px 0' }}>{a.name}</div>
