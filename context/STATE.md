@@ -1,5 +1,5 @@
 # portfolio STATE
-_Updated: 2026-02-28_
+_Updated: 2026-03-01_
 
 ## 목적
 개인 포트폴리오 웹사이트 (React + Vite, vanilla CSS, hash routing)
@@ -25,9 +25,14 @@ _Updated: 2026-02-28_
   - monet-lab v4.0 → portfolio 전면 이식 (4개 파일)
   - 16섹션 대시보드 → 8섹션 내러티브 ("Context as Currency")
   - 에이전트 16→15, 스킬 17→9, 훅 9→8, MCP→4 AI Tools
+- **완료: Obsidian 섹션 v4.0 재작성** (2026-03-01)
+  - 5섹션 역순 공개 구조: Hook → Architecture → Problem → Evolution → Lessons
+  - EVOLUTION v4.0까지 확장, Cross-CLI 그래프 노드/엣지 추가
+  - Impact을 Hook으로 이동, /catchup Before/After 제거
 - 진행중: W6 준비 (레이아웃 후보 선정)
 
 ## 최근 결정
+- 2026-03-01: Obsidian 섹션 v4.0 재작성 — 5섹션 역순 공개, Cross-CLI 블록 신규, Jeff Su 용어 제거
 - 2026-02-28: AI System v4.0 이식 — monet-lab 코드 기반, 내러티브 케이스스터디 구조
 - 2026-02-28: v1.0-clean 구조 정리
   - page-12 → portfolio 리네이밍, 미사용 파일 전면 삭제
