@@ -21,9 +21,14 @@ _Updated: 2026-02-28_
   - 미사용 파일 76건 삭제 (lab/, _archive/, App.css 등, CSS 32→25KB)
   - deploy.yml: vercel.json을 gh-pages에 포함하여 Vercel 빌드 차단 해결
   - 태그 `v1.0-clean` (3eac345) — 롤백 고정점
+- **완료: AI System v4.0 이식** (2026-02-28)
+  - monet-lab v4.0 → portfolio 전면 이식 (4개 파일)
+  - 16섹션 대시보드 → 8섹션 내러티브 ("Context as Currency")
+  - 에이전트 16→15, 스킬 17→9, 훅 9→8, MCP→4 AI Tools
 - 진행중: W6 준비 (레이아웃 후보 선정)
 
 ## 최근 결정
+- 2026-02-28: AI System v4.0 이식 — monet-lab 코드 기반, 내러티브 케이스스터디 구조
 - 2026-02-28: v1.0-clean 구조 정리
   - page-12 → portfolio 리네이밍, 미사용 파일 전면 삭제
   - deploy.yml에서 vercel.json → dist/ 복사 (gh-pages Vercel 빌드 차단)
