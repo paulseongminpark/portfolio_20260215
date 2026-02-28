@@ -331,7 +331,7 @@ function PmccFlowchart() {
 
         {/* Retention */}
         <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', width: 100 }}>
-          <div style={{ border: '1px solid #a0c4e8', borderRadius: 10, background: '#eaf4fb', padding: '14px 12px', width: '100%', textAlign: 'center', boxSizing: 'border-box', display: 'flex', alignItems: 'center', justifyContent: 'center', minHeight: 84 }}>
+          <div style={{ border: '2px solid #3B82F6', borderRadius: 10, background: '#eaf4fb', padding: '14px 12px', width: '100%', textAlign: 'center', boxSizing: 'border-box', display: 'flex', alignItems: 'center', justifyContent: 'center', minHeight: 84 }}>
             <div style={{ fontSize: 14, fontWeight: 700, color: '#3B82F6' }}>Retention</div>
           </div>
           <div style={{ width: 1, height: 20, borderLeft: '1px dashed #ccc', margin: '4px 0 0' }} />
