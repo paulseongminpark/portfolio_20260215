@@ -141,6 +141,8 @@ export function parseWorkDetail(raw: string): WorkSection[] {
         if (cl.match(/^\*\*카드\s*\d+\s*[—\-]/)) break;
         if (cl.match(/^## \d/)) break;
         if (cl.match(/^### /)) break;
+        // Custom block markers → break out of card body
+        if (cl.match(/^\*\*\[(?!배치)[^\]]+\]\*\*$/)) break;
         // Image inside card → treat as card body text
         if (cl.match(/^\*\*\[?배치\s*[:：]/)) {
           // skip image placeholders inside cards
