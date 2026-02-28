@@ -32,6 +32,9 @@ jobs:
           mkdir -p dist/context
           cp context/STATE.md dist/context/
 
+      - name: Copy vercel.json to dist
+        run: cp vercel.json dist/
+
       - name: Deploy to GitHub Pages
         uses: peaceiris/actions-gh-pages@v4
         with:
