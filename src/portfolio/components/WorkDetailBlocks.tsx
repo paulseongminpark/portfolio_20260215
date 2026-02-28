@@ -280,7 +280,7 @@ function PmccFlowchart() {
   const captionStyle: React.CSSProperties = { fontSize: 10, fontStyle: 'italic', color: '#888', textAlign: 'center', lineHeight: 1.4, padding: '0 4px' };
 
   return (
-    <div style={{ background: '#ffffff', borderRadius: 8, padding: '28px 20px', margin: '40px 0 24px', overflowX: 'auto' }}>
+    <div style={{ background: '#ffffff', borderRadius: 8, padding: '28px 20px', margin: '56px 0 0', overflowX: 'auto' }}>
       <div style={{ display: 'flex', justifyContent: 'center' }}>
         <div style={{ display: 'flex', flexDirection: 'column' }}>
 
