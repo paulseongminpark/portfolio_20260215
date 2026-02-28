@@ -863,10 +863,9 @@ export function AiWorkflowSection({ raw: _raw }: { raw?: string }) {
         }}>
           <p className="wd-eyebrow" style={{ marginBottom: 12 }}>What's Next</p>
           <p className="wd-paragraph" style={{ marginBottom: 0 }}>
-            시스템은 계속 진화한다. v4.0이 끝이 아니라 "빼기를 마스터한 시작점"이다.
-            다음 목표는 이 시스템 위에서 실제 프로젝트를 더 빠르게, 더 깊이 만드는 것.
-            portfolio, tech-review, 그리고 아직 시작하지 않은 것들까지.
-            <strong> 도구는 충분하다. 이제 쓸 차례다.</strong>
+            v4.0은 끝이 아니라 "빼기를 마스터한 시작점"이다. 시스템이 안정된 지금부터가 진짜 시작이고,
+            다음 목표는 이 오케스트레이션 위에서 실제 프로덕트를 더 빠르게, 더 깊이 만드는 것이다.
+            portfolio, tech-review, 그리고 아직 이름도 없는 것들까지 — <strong>도구는 이미 충분하다. 이제 쓸 차례다.</strong>
           </p>
         </div>
       </section>
