@@ -29,6 +29,12 @@ _Updated: 2026-03-04_
   - 5섹션 역순 공개 구조: Hook → Architecture → Problem → Evolution → Lessons
   - EVOLUTION v4.0까지 확장, Cross-CLI 그래프 노드/엣지 추가
   - Impact을 Hook으로 이동, /catchup Before/After 제거
+- **완료: Multi-AI Orchestration 섹션 테이블 리팩토링** (2026-03-02)
+  - 2x2 카드 레이아웃 → 4컬럼 테이블 레이아웃으로 전환
+  - PNG "Model Capability Benchmarks" 이미지를 코드(테이블)로 변환
+  - aiWorkflowData.ts: AiRole 인터페이스에 strengthSub, limitSub 필드 추가
+  - .gitignore: _sandbox/ 추가, git 추적 파일 정리 (git rm --cached)
+  - Perplexity role: '' → '리서치 엔진' 명시
 - **완료: PMCC_DETAIL_KO.md 콘텐츠 개정** (2026-03-02)
   - 논리 흐름 전면 재검토 — 13개 수정 지시 반영
   - flowchart Overview → Approach 뒤로 이동, Design Principle 헤딩 제거
@@ -49,6 +55,7 @@ _Updated: 2026-03-04_
 
 ## 최근 결정
 - 2026-03-04: E2EWorkflow 헤더/파란배경 분리, Key Decisions sandbox 3종 (V1투톤/V2아코디언/V3내러티브)
+- 2026-03-02: Multi-AI Orchestration 테이블 리팩토링 — 2x2 카드→4컬럼 테이블, PNG→코드 변환, AiRole 인터페이스 확장, _sandbox/ gitignore
 - 2026-03-02: 포트폴리오 섹션 전면 리라이트 — Obsidian 10→5, E2E 8→10 Phase, 타이포그래피 위계
 - 2026-03-02: PMCC_DETAIL_KO.md 개정 — 논리 흐름 재구성, 13개 지시 반영, 표현 평이화
 - 2026-03-01: Obsidian 섹션 v4.0 재작성 — 5섹션 역순 공개, Cross-CLI 블록 신규, Jeff Su 용어 제거
