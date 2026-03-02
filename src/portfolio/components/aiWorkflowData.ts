@@ -231,7 +231,7 @@ export const AI_ROLES: AiRole[] = [
   {
     name: 'Perplexity',
     model: 'sonar-deep-research',
-    role: '',
+    role: '리서치 엔진',
     strength: 'tech-review 소스',
     strengthSub: 'deep research · sonar-pro 폴백',
     limit: 'API 기반',
