@@ -12,6 +12,7 @@ import {
   LESSONS,
   C,
 } from "./aiWorkflowData";
+import { E2EWorkflowSection } from "./E2EWorkflowSection";
 
 // ─── AiWorkflowSection — HOW I AI v4.0 ───
 // 내러티브 케이스스터디 스타일. wd-* CSS 체계 사용.
@@ -131,9 +132,9 @@ export function AiWorkflowSection({ raw: _raw }: { raw?: string }) {
         </div>
 
         <p className="wd-paragraph">
-          모든 에이전트는 팀에 속한다. 팀에는 리드가 있고, 리드가 팀 내 조율을 담당한다.
-          meta-orchestrator가 디스패치 허브로서 어떤 팀을 활성화할지 결정한다.
-          <strong> 계층이 아니라 리좀 — 필요한 팀이 필요한 순간에 깨어난다.</strong>
+          에이전트가 10개를 넘어가자 어떤 순서로 부를지, 지금 누가 일하고 있는지 직접 추적하는 게 불가능해졌다.
+          팀 구조를 만든 건 그 때부터다. 각 팀에는 리드가 있고, meta-orchestrator가 어떤 팀을 깨울지 결정한다.
+          <strong> 지금 필요한 팀만 깨어난다. 나머지는 자고 있다.</strong>
         </p>
 
         {/* 팀 트리 다이어그램 — PNG 디자인 매칭 */}
@@ -246,9 +247,9 @@ export function AiWorkflowSection({ raw: _raw }: { raw?: string }) {
         {/* 에이전트 모델 배치 */}
         <h3 className="wd-heading">모델 배치 전략</h3>
         <p className="wd-paragraph">
-          모든 에이전트가 같은 모델을 쓰지 않는다.
-          <strong> Opus는 설계·검증, Sonnet은 분석·실행, Haiku는 요약·연결.</strong>{' '}
-          작은 모델이 제 역할을 하면 큰 모델이 진짜 중요한 일에 집중할 수 있다.
+          처음엔 전부 Opus로 돌렸다. "제일 좋은 걸 쓰자"는 생각이었는데, 요약이나 상태 기록 같은 단순한 일에도
+          무거운 모델을 쓰는 건 낭비였다. 모델 선택은 "더 좋은 것"의 문제가 아니라 역할 분리의 문제였다.
+          <strong> Haiku가 빠르게 처리할 수 있는 일을 끝내야, Opus가 진짜 복잡한 판단에만 집중할 수 있다.</strong>
         </p>
 
         {/* 모델 배치 스펙트럼 다이어그램 — ref_diagram_1/3 스타일 */}
@@ -336,9 +337,9 @@ export function AiWorkflowSection({ raw: _raw }: { raw?: string }) {
         {/* 체인 × 팀 상호작용 다이어그램 */}
         <h3 className="wd-heading">체인 — 팀을 잇는 고정 경로</h3>
         <p className="wd-paragraph">
-          체인은 에이전트가 거치는 고정 경로다. 구현 체인은 build에서 시작해 maintain의 linker로 끝나고,
-          디스패치 체인은 maintain에서 hub를 거쳐 전체 팀을 깨운다.
-          <strong> 체인이 팀 경계를 넘는 방식이 시스템의 성격을 결정한다.</strong>
+          에이전트를 자유롭게 두면 매번 다른 경로로 일했다. 같은 작업에 드는 토큰이 3배씩 달랐고, 결과도 일관성이 없었다.
+          체인은 이미 검증된 경로를 고정해두는 것이다.
+          <strong> 경로를 고정하고 나서야 결과가 예측 가능해졌다.</strong>
         </p>
 
         <div style={{ maxWidth: 860, margin: '32px auto', background: '#F5F5F5', borderRadius: 12, padding: '32px 24px' }}>
@@ -469,6 +470,11 @@ export function AiWorkflowSection({ raw: _raw }: { raw?: string }) {
           ))}
         </div>
       </section>
+
+      <hr className="wd-section-divider" />
+
+      {/* ━━━ E2E Workflow ━━━ */}
+      <E2EWorkflowSection />
 
       <hr className="wd-section-divider" />
 

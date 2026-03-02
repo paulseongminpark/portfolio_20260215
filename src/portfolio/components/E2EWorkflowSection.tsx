@@ -74,16 +74,16 @@ const CAT: Record<string, { color: string; label: string }> = {
   maintain: { color: C.blue,   label: 'Maintain'  },
 }
 
-/* ─── Zigzag positions ─── */
+/* ─── Zigzag positions (compact) ─── */
 const POS = [
-  { x: 40,  y: 0   },
-  { x: 320, y: 110 },
-  { x: 40,  y: 220 },
-  { x: 320, y: 330 },
-  { x: 40,  y: 440 },
-  { x: 320, y: 550 },
-  { x: 40,  y: 660 },
-  { x: 320, y: 770 },
+  { x: 20,  y: 0   },
+  { x: 250, y: 80  },
+  { x: 20,  y: 160 },
+  { x: 250, y: 240 },
+  { x: 20,  y: 320 },
+  { x: 250, y: 400 },
+  { x: 20,  y: 480 },
+  { x: 250, y: 560 },
 ]
 
 /* ─── Custom Node ─── */
@@ -96,44 +96,42 @@ function PhaseNode({ data }: NodeProps<PhaseNodeType>) {
 
   return (
     <div style={{
-      display: 'flex', alignItems: 'center', gap: 10,
-      padding: '10px 20px', borderRadius: 100,
+      display: 'flex', alignItems: 'center', gap: 8,
+      padding: '8px 16px', borderRadius: 100,
       background: isSelected
         ? `linear-gradient(135deg, ${color}18, ${color}06)`
         : C.card,
       border: `1.5px solid ${isSelected ? color : C.line}`,
       boxShadow: isSelected
-        ? `0 4px 24px ${color}25, 0 0 0 4px ${color}08`
-        : '0 2px 8px rgba(0,0,0,0.05)',
+        ? `0 4px 20px ${color}22, 0 0 0 3px ${color}08`
+        : '0 2px 6px rgba(0,0,0,0.05)',
       cursor: 'pointer',
       transition: `all 0.35s ${EASE}`,
       whiteSpace: 'nowrap',
       fontFamily: "'Inter', 'Noto Sans KR', system-ui, sans-serif",
-      minWidth: 168,
+      minWidth: 148,
       userSelect: 'none',
     }}>
       <Handle type="target" position={Position.Top}
         style={{ opacity: 0, pointerEvents: 'none', width: 0, height: 0, minWidth: 0, minHeight: 0 }} />
 
-      {/* Number badge */}
       <span style={{
-        width: 28, height: 28, borderRadius: '50%',
+        width: 24, height: 24, borderRadius: '50%',
         background: isSelected ? color : `${color}18`,
         color: isSelected ? '#fff' : color,
         display: 'flex', alignItems: 'center', justifyContent: 'center',
-        fontSize: 12, fontWeight: 700, flexShrink: 0,
+        fontSize: 11, fontWeight: 700, flexShrink: 0,
         transition: `all 0.35s ${EASE}`,
       }}>{phase.id}</span>
 
-      {/* Label */}
       <div>
-        <div style={{ fontSize: 13, fontWeight: 600, color: C.text, letterSpacing: '-0.01em' }}>
+        <div style={{ fontSize: 12, fontWeight: 600, color: C.text, letterSpacing: '-0.01em' }}>
           {phase.name}
         </div>
         <div style={{
-          fontSize: 10, fontWeight: 600, color,
+          fontSize: 9, fontWeight: 600, color,
           letterSpacing: '0.07em', textTransform: 'uppercase',
-          opacity: 0.7, marginTop: 2,
+          opacity: 0.7, marginTop: 1,
         }}>{label}</div>
       </div>
 
@@ -143,10 +141,8 @@ function PhaseNode({ data }: NodeProps<PhaseNodeType>) {
   )
 }
 
-/* ─── nodeTypes — MUST be outside component ─── */
 const nodeTypes = { phaseNode: PhaseNode }
 
-/* ─── Factories ─── */
 const makeNodes = (): PhaseNodeType[] =>
   PHASES.map((phase, i) => ({
     id: String(phase.id),
@@ -162,8 +158,8 @@ const makeEdges = () =>
     target: String(phase.id + 1),
     type: 'smoothstep',
     animated: true,
-    style: { stroke: C.accent, strokeWidth: 1.5, opacity: 0.45 },
-    markerEnd: { type: MarkerType.ArrowClosed, width: 16, height: 16, color: C.accent },
+    style: { stroke: C.accent, strokeWidth: 1.5, opacity: 0.4 },
+    markerEnd: { type: MarkerType.ArrowClosed, width: 14, height: 14, color: C.accent },
   }))
 
 /* ─── Detail Panel ─── */
@@ -171,62 +167,59 @@ function DetailPanel({ phase }: { phase: Phase }) {
   const { color } = CAT[phase.cat]
   return (
     <div style={{
-      padding: 28,
-      background: C.card, borderRadius: 20,
+      padding: 20,
+      background: C.card, borderRadius: 16,
       border: `1px solid ${C.line}`,
-      boxShadow: '0 4px 24px rgba(0,0,0,0.06)',
-      animation: `v3FadeIn 0.35s ${EASE}`,
+      boxShadow: '0 4px 20px rgba(0,0,0,0.05)',
+      animation: `e2eFadeIn 0.3s ${EASE}`,
     }}>
-      {/* Title */}
-      <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 12 }}>
+      <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 10 }}>
         <span style={{
-          width: 32, height: 32, borderRadius: '50%',
+          width: 28, height: 28, borderRadius: '50%',
           background: color, color: '#fff',
           display: 'flex', alignItems: 'center', justifyContent: 'center',
-          fontSize: 14, fontWeight: 700, flexShrink: 0,
+          fontSize: 13, fontWeight: 700, flexShrink: 0,
         }}>{phase.id}</span>
-        <span style={{ fontSize: 18, fontWeight: 700, color: C.text }}>{phase.name}</span>
+        <span style={{ fontSize: 15, fontWeight: 700, color: C.text }}>{phase.name}</span>
       </div>
-      <p style={{ fontSize: 14, lineHeight: 1.7, color: C.text, margin: '0 0 20px' }}>
+      <p style={{ fontSize: 13, lineHeight: 1.7, color: C.muted, margin: '0 0 16px' }}>
         {phase.desc}
       </p>
 
-      {/* Actors */}
-      <div style={{ marginBottom: 20 }}>
+      <div style={{ marginBottom: 14 }}>
         <div style={{
-          fontSize: 10, fontWeight: 700, color: C.muted,
-          letterSpacing: '0.08em', marginBottom: 8,
-        }}>ACTORS</div>
-        <div style={{ display: 'flex', flexWrap: 'wrap', gap: 6 }}>
+          fontSize: 9, fontWeight: 700, color: C.muted,
+          letterSpacing: '0.08em', marginBottom: 6, textTransform: 'uppercase' as const,
+        }}>Actors</div>
+        <div style={{ display: 'flex', flexWrap: 'wrap', gap: 4 }}>
           {phase.actors.map((a, ai) => (
             <span key={a} style={{
-              padding: '4px 12px', borderRadius: 100, fontSize: 12,
+              padding: '3px 10px', borderRadius: 100, fontSize: 11,
               fontWeight: ai === 0 ? 600 : 500,
               background: ai === 0 ? `${color}18` : `${color}08`,
               color,
-              border: `1px solid ${color}${ai === 0 ? '30' : '15'}`,
+              border: `1px solid ${color}${ai === 0 ? '28' : '12'}`,
             }}>{a}</span>
           ))}
         </div>
       </div>
 
-      {/* I/O */}
-      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 16 }}>
+      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12 }}>
         {[{ l: 'INPUT', d: phase.inputs }, { l: 'OUTPUT', d: phase.outputs }].map(g => (
           <div key={g.l}>
             <div style={{
-              fontSize: 10, fontWeight: 700, color: C.muted,
-              letterSpacing: '0.08em', marginBottom: 8,
+              fontSize: 9, fontWeight: 700, color: C.muted,
+              letterSpacing: '0.08em', marginBottom: 6, textTransform: 'uppercase' as const,
             }}>{g.l}</div>
             {g.d.map(item => (
               <div key={item} style={{
-                fontSize: 12, color: C.text, lineHeight: 1.8,
-                paddingLeft: 12, position: 'relative',
+                fontSize: 11, color: C.text, lineHeight: 1.8,
+                paddingLeft: 10, position: 'relative',
               }}>
                 <span style={{
                   position: 'absolute', left: 0, top: '50%',
                   transform: 'translateY(-50%)',
-                  width: 4, height: 4, borderRadius: '50%',
+                  width: 3, height: 3, borderRadius: '50%',
                   background: color, opacity: 0.5,
                 }} />
                 {item}
@@ -239,34 +232,32 @@ function DetailPanel({ phase }: { phase: Phase }) {
   )
 }
 
-/* ─── Empty State ─── */
 function EmptyState() {
   return (
     <div style={{
       display: 'flex', flexDirection: 'column', alignItems: 'center',
-      justifyContent: 'center', padding: '80px 24px',
+      justifyContent: 'center', padding: '60px 20px',
       color: C.muted, textAlign: 'center',
     }}>
       <div style={{
-        width: 40, height: 40, borderRadius: '50%',
+        width: 32, height: 32, borderRadius: '50%',
         border: `1.5px dashed ${C.line}`,
         display: 'flex', alignItems: 'center', justifyContent: 'center',
-        fontSize: 18, marginBottom: 14, color: C.line,
+        fontSize: 16, marginBottom: 12, color: C.line,
       }}>→</div>
-      <p style={{ fontSize: 13, lineHeight: 1.7, maxWidth: 180, margin: 0 }}>
+      <p style={{ fontSize: 12, lineHeight: 1.7, maxWidth: 160, margin: 0, color: C.muted }}>
         노드를 클릭하면<br />상세 정보가 표시됩니다
       </p>
     </div>
   )
 }
 
-/* ─── Main Component ─── */
-export default function E2EWorkflowV3() {
-  const [selectedId, setSelectedId] = useState<number | null>(null)
+/* ─── Main Export ─── */
+export function E2EWorkflowSection() {
+  const [selectedId, setSelectedId] = useState<number | null>(1)
   const [nodes, setNodes, onNodesChange] = useNodesState<PhaseNodeType>(makeNodes())
   const [edges, , onEdgesChange] = useEdgesState(makeEdges())
 
-  /* Sync isSelected into node data */
   useEffect(() => {
     setNodes(ns =>
       ns.map(n => ({
@@ -288,53 +279,33 @@ export default function E2EWorkflowV3() {
     : null
 
   return (
-    <div style={{
-      background: C.bg, minHeight: '100vh',
-      fontFamily: "'Inter', 'Noto Sans KR', system-ui, sans-serif",
-      padding: '64px 0 80px',
-    }}>
+    <section>
       <style>{`
-        @keyframes v3FadeIn {
-          from { opacity: 0; transform: translateY(6px); }
+        @keyframes e2eFadeIn {
+          from { opacity: 0; transform: translateY(4px); }
           to   { opacity: 1; transform: translateY(0);   }
         }
-        .react-flow__attribution { display: none !important; }
-        .react-flow__node { padding: 0 !important; border: none !important; background: transparent !important; box-shadow: none !important; border-radius: 0 !important; }
-        .react-flow__node.selected { box-shadow: none !important; }
+        .e2e-flow .react-flow__attribution { display: none !important; }
+        .e2e-flow .react-flow__node { padding: 0 !important; border: none !important; background: transparent !important; box-shadow: none !important; border-radius: 0 !important; }
+        .e2e-flow .react-flow__node.selected { box-shadow: none !important; }
       `}</style>
 
-      {/* ── Header ── */}
-      <div style={{ textAlign: 'center', marginBottom: 48, padding: '0 24px' }}>
-        <div style={{
-          display: 'inline-flex', alignItems: 'center', gap: 8,
-          padding: '6px 16px', borderRadius: 100,
-          background: `${C.accent}10`, color: C.accent,
-          fontSize: 12, fontWeight: 600, letterSpacing: '0.05em',
-          marginBottom: 16,
-        }}>
-          <span style={{ width: 6, height: 6, borderRadius: '50%', background: C.accent }} />
-          CONTEXT FLOW
-        </div>
-        <h2 style={{ fontSize: 32, fontWeight: 700, color: C.text, lineHeight: 1.3, margin: 0 }}>
-          End-to-End Workflow
-        </h2>
-        <p style={{
-          fontSize: 15, color: C.muted, marginTop: 8,
-          maxWidth: 480, marginInline: 'auto', lineHeight: 1.6,
-        }}>
-          하나의 세션 안에서 context가 흘러가는 여정
-        </p>
+      <div className="wd-section-header">
+        <p className="wd-eyebrow">Context Flow</p>
+        <h2 className="wd-title">End-to-End Workflow</h2>
       </div>
+      <p className="wd-paragraph">
+        하나의 세션 안에서 context가 흘러가는 여정. 각 Phase를 클릭하면 관여하는 에이전트와 I/O를 확인할 수 있다.
+      </p>
 
-      {/* ── Flow + Sidebar ── */}
       <div style={{
-        display: 'flex', gap: 40, alignItems: 'flex-start',
-        maxWidth: 1080, margin: '0 auto', padding: '0 32px',
+        display: 'flex', gap: 28, alignItems: 'flex-start',
+        maxWidth: 860, margin: '0 auto',
       }}>
         {/* ReactFlow canvas */}
-        <div style={{
-          width: 560, height: 900, flexShrink: 0,
-          borderRadius: 20, overflow: 'hidden',
+        <div className="e2e-flow" style={{
+          width: 400, height: 680, flexShrink: 0,
+          borderRadius: 16, overflow: 'hidden',
           border: `1px solid ${C.line}`,
         }}>
           <ReactFlow
@@ -346,7 +317,7 @@ export default function E2EWorkflowV3() {
             onPaneClick={onPaneClick}
             nodeTypes={nodeTypes}
             fitView
-            fitViewOptions={{ padding: 0.12 }}
+            fitViewOptions={{ padding: 0.1 }}
             nodesDraggable={false}
             panOnDrag={false}
             zoomOnScroll={false}
@@ -356,17 +327,26 @@ export default function E2EWorkflowV3() {
           >
             <Background
               variant={BackgroundVariant.Dots}
-              gap={24} size={1}
+              gap={20} size={1}
               color={C.line}
             />
           </ReactFlow>
         </div>
 
         {/* Detail sidebar */}
-        <div style={{ flex: 1, minWidth: 0, paddingTop: 16, position: 'sticky', top: 24, alignSelf: 'flex-start' }}>
+        <div style={{
+          flex: 1, minWidth: 0, paddingTop: 48,
+          position: 'sticky', top: 24, alignSelf: 'flex-start',
+        }}>
           {selected ? <DetailPanel phase={selected} /> : <EmptyState />}
+          <p style={{
+            fontSize: 11, color: C.muted, textAlign: 'center',
+            marginTop: 10, opacity: 0.5, letterSpacing: '0.01em',
+          }}>
+            노드를 클릭하면 상세 정보가 표시됩니다
+          </p>
         </div>
       </div>
-    </div>
+    </section>
   )
 }
