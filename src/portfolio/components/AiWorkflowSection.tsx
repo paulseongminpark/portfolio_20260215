@@ -19,58 +19,73 @@ const TXT_SUB = 'rgba(255,255,255,0.5)';
 
 const font = "'Inter','Noto Sans KR',sans-serif";
 
+// ─── 웨이브 배경 (E2E와 동일 스타일) ───
+function WaveSvg() {
+  return (
+    <svg
+      style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', pointerEvents: 'none' }}
+      xmlns="http://www.w3.org/2000/svg"
+      preserveAspectRatio="none"
+      viewBox="0 0 1200 500"
+    >
+      <path d="M-80,100 C200,30 450,200 720,110 C990,30 1100,150 1320,90"
+        stroke="rgba(255,255,255,0.22)" strokeWidth="2" fill="none" />
+      <path d="M-80,260 C160,200 380,340 660,255 C940,170 1080,300 1320,240"
+        stroke="rgba(255,255,255,0.13)" strokeWidth="1.5" fill="none" />
+      <path d="M-80,420 C180,360 420,470 700,415 C980,360 1100,450 1320,400"
+        stroke="rgba(255,255,255,0.06)" strokeWidth="1" fill="none" />
+    </svg>
+  );
+}
+
 // ─── 다이어그램 1: 5노드 선형 흐름 ───
 
 function HowDiagram() {
   const nodes = ['나', 'Claude Code', 'Living Docs', 'Obsidian', '나'];
-  const w = 720;
-  const h = 120;
-  const nodeW = 110;
-  const nodeH = 40;
+  const w = 460;
+  const h = 72;
+  const nodeW = 82;
+  const nodeH = 32;
   const gap = (w - nodeW * nodes.length) / (nodes.length - 1);
 
   return (
-    <svg viewBox={`0 0 ${w} ${h}`} width="100%" style={{ display: 'block' }}>
+    <svg viewBox={`0 0 ${w} ${h}`} width="100%" style={{ display: 'block', maxHeight: 72 }}>
+      <defs>
+        <marker id="arrowW" markerWidth="6" markerHeight="6" refX="5" refY="3" orient="auto">
+          <path d="M0,0 L6,3 L0,6" fill="none" stroke={CONNECTOR} strokeWidth={1} />
+        </marker>
+      </defs>
       {nodes.map((label, i) => {
         const x = i * (nodeW + gap);
-        const y = 20;
+        const y = (h - nodeH) / 2;
         const isMe = i === 0 || i === nodes.length - 1;
         return (
           <React.Fragment key={i}>
-            {/* connector arrow */}
             {i > 0 && (
-              <path
-                d={`M${x - gap + 4},${y + nodeH / 2} C${x - gap / 2},${y + nodeH / 2 - 8} ${x - gap / 2},${y + nodeH / 2 + 8} ${x - 4},${y + nodeH / 2}`}
-                stroke={CONNECTOR}
-                strokeWidth={1.5}
-                fill="none"
+              <line
+                x1={x - gap + 2} y1={h / 2}
+                x2={x - 2} y2={h / 2}
+                stroke={CONNECTOR} strokeWidth={1.2}
                 markerEnd="url(#arrowW)"
               />
             )}
-            {/* node */}
             <rect
-              x={x} y={y} width={nodeW} height={nodeH} rx={8}
-              fill={isMe ? 'rgba(212,99,45,0.15)' : NODE_BG}
-              stroke={isMe ? 'rgba(212,99,45,0.35)' : NODE_BORDER}
+              x={x} y={y} width={nodeW} height={nodeH} rx={6}
+              fill={isMe ? 'rgba(212,99,45,0.18)' : NODE_BG}
+              stroke={isMe ? 'rgba(212,99,45,0.4)' : NODE_BORDER}
               strokeWidth={1}
             />
             <text
-              x={x + nodeW / 2} y={y + nodeH / 2 + 1}
+              x={x + nodeW / 2} y={h / 2}
               textAnchor="middle" dominantBaseline="central"
               fill={isMe ? '#D4632D' : TXT}
-              fontSize={11} fontWeight={600} fontFamily={font}
+              fontSize={10} fontWeight={600} fontFamily={font}
             >
               {label}
             </text>
           </React.Fragment>
         );
       })}
-      {/* arrow marker */}
-      <defs>
-        <marker id="arrowW" markerWidth="6" markerHeight="6" refX="5" refY="3" orient="auto">
-          <path d="M0,0 L6,3 L0,6" fill="none" stroke={CONNECTOR} strokeWidth={1} />
-        </marker>
-      </defs>
     </svg>
   );
 }
@@ -78,16 +93,15 @@ function HowDiagram() {
 // ─── 다이어그램 2: 순환 루프 (pentagon) ───
 
 function CycleDiagram() {
-  const w = 520;
-  const h = 400;
+  const w = 380;
+  const h = 300;
   const cx = w / 2;
-  const cy = 190;
-  const rx = 200;
-  const ry = 150;
-  const nodeW = 120;
-  const nodeH = 50;
+  const cy = 148;
+  const rx = 148;
+  const ry = 112;
+  const nodeW = 96;
+  const nodeH = 40;
 
-  // pentagon positions (top center start, clockwise)
   const angles = CYCLE.map((_, i) => -Math.PI / 2 + (2 * Math.PI * i) / CYCLE.length);
   const positions = angles.map(a => ({
     x: cx + rx * Math.cos(a),
@@ -95,34 +109,29 @@ function CycleDiagram() {
   }));
 
   return (
-    <svg viewBox={`0 0 ${w} ${h}`} width="100%" style={{ display: 'block' }}>
+    <svg viewBox={`0 0 ${w} ${h}`} width="100%" style={{ display: 'block', maxHeight: 300 }}>
       <defs>
         <marker id="arrowC" markerWidth="6" markerHeight="6" refX="5" refY="3" orient="auto">
           <path d="M0,0 L6,3 L0,6" fill="none" stroke={CONNECTOR} strokeWidth={1} />
         </marker>
       </defs>
 
-      {/* curved connectors */}
       {positions.map((from, i) => {
         const to = positions[(i + 1) % positions.length];
         const midX = (from.x + to.x) / 2;
         const midY = (from.y + to.y) / 2;
-        // pull control point toward center
-        const cpX = midX + (cx - midX) * 0.3;
-        const cpY = midY + (cy - midY) * 0.3;
+        const cpX = midX + (cx - midX) * 0.25;
+        const cpY = midY + (cy - midY) * 0.25;
         return (
           <path
             key={`c${i}`}
             d={`M${from.x},${from.y} Q${cpX},${cpY} ${to.x},${to.y}`}
-            stroke={CONNECTOR}
-            strokeWidth={1.5}
-            fill="none"
+            stroke={CONNECTOR} strokeWidth={1.2} fill="none"
             markerEnd="url(#arrowC)"
           />
         );
       })}
 
-      {/* nodes */}
       {positions.map((pos, i) => {
         const step = CYCLE[i];
         const isFirst = i === 0;
@@ -130,25 +139,17 @@ function CycleDiagram() {
           <React.Fragment key={i}>
             <rect
               x={pos.x - nodeW / 2} y={pos.y - nodeH / 2}
-              width={nodeW} height={nodeH} rx={8}
-              fill={isFirst ? 'rgba(212,99,45,0.15)' : NODE_BG}
-              stroke={isFirst ? 'rgba(212,99,45,0.35)' : NODE_BORDER}
+              width={nodeW} height={nodeH} rx={6}
+              fill={isFirst ? 'rgba(212,99,45,0.18)' : NODE_BG}
+              stroke={isFirst ? 'rgba(212,99,45,0.4)' : NODE_BORDER}
               strokeWidth={1}
             />
-            <text
-              x={pos.x} y={pos.y - 4}
-              textAnchor="middle" dominantBaseline="central"
-              fill={isFirst ? '#D4632D' : TXT}
-              fontSize={11} fontWeight={600} fontFamily={font}
-            >
+            <text x={pos.x} y={pos.y - 5} textAnchor="middle" dominantBaseline="central"
+              fill={isFirst ? '#D4632D' : TXT} fontSize={10} fontWeight={600} fontFamily={font}>
               {step.step}
             </text>
-            <text
-              x={pos.x} y={pos.y + 12}
-              textAnchor="middle" dominantBaseline="central"
-              fill={TXT_SUB}
-              fontSize={9} fontFamily={font}
-            >
+            <text x={pos.x} y={pos.y + 10} textAnchor="middle" dominantBaseline="central"
+              fill={TXT_SUB} fontSize={8} fontFamily={font}>
               {step.sub}
             </text>
           </React.Fragment>
@@ -161,26 +162,26 @@ function CycleDiagram() {
 // ─── 다이어그램 3: 시스템 아키텍처 ───
 
 function SystemDiagram() {
-  const w = 720;
-  const h = 480;
+  const w = 480;
+  const h = 340;
   const arch = SYSTEM_ARCH;
 
-  // Orchestrator position
   const ocX = w / 2;
-  const ocY = 60;
-  const ocW = 160;
-  const ocH = 42;
+  const ocY = 36;
+  const ocW = 130;
+  const ocH = 34;
 
-  // Team positions
-  const teamY = 170;
-  const teamW = 200;
-  const teamXs = [80, w / 2 - teamW / 2, w - 80 - teamW];
+  const teamY = 110;
+  const teamW = 142;
+  const teamGap = (w - teamW * 3) / 4;
+  const teamXs = [teamGap, teamGap * 2 + teamW, teamGap * 3 + teamW * 2];
 
-  // Skills & Hooks
-  const bottomY = 370;
+  const bottomY = 262;
+  const skillW = 56;
+  const hookW = 62;
 
   return (
-    <svg viewBox={`0 0 ${w} ${h}`} width="100%" style={{ display: 'block' }}>
+    <svg viewBox={`0 0 ${w} ${h}`} width="100%" style={{ display: 'block', maxHeight: 340 }}>
       <defs>
         <marker id="arrowS" markerWidth="6" markerHeight="6" refX="5" refY="3" orient="auto">
           <path d="M0,0 L6,3 L0,6" fill="none" stroke={CONNECTOR} strokeWidth={1} />
@@ -188,70 +189,44 @@ function SystemDiagram() {
       </defs>
 
       {/* Orchestrator */}
-      <rect
-        x={ocX - ocW / 2} y={ocY - ocH / 2}
-        width={ocW} height={ocH} rx={8}
-        fill="rgba(212,99,45,0.18)" stroke="rgba(212,99,45,0.4)" strokeWidth={1.5}
-      />
-      <text
-        x={ocX} y={ocY + 1}
-        textAnchor="middle" dominantBaseline="central"
-        fill="#D4632D" fontSize={13} fontWeight={700} fontFamily={font}
-      >
+      <rect x={ocX - ocW / 2} y={ocY - ocH / 2} width={ocW} height={ocH} rx={6}
+        fill="rgba(212,99,45,0.18)" stroke="rgba(212,99,45,0.4)" strokeWidth={1.2} />
+      <text x={ocX} y={ocY} textAnchor="middle" dominantBaseline="central"
+        fill="#D4632D" fontSize={11} fontWeight={700} fontFamily={font}>
         {arch.orchestrator}
       </text>
 
       {/* Connectors: orchestrator → teams */}
       {teamXs.map((tx, i) => {
         const toX = tx + teamW / 2;
-        const toY = teamY;
-        const cpY = (ocY + ocH / 2 + toY) / 2;
+        const cpY = (ocY + ocH / 2 + teamY) / 2;
         return (
-          <path
-            key={`ot${i}`}
-            d={`M${ocX},${ocY + ocH / 2} C${ocX},${cpY} ${toX},${cpY} ${toX},${toY}`}
-            stroke={CONNECTOR} strokeWidth={1.2} fill="none"
-            markerEnd="url(#arrowS)"
-          />
+          <path key={`ot${i}`}
+            d={`M${ocX},${ocY + ocH / 2} C${ocX},${cpY} ${toX},${cpY} ${toX},${teamY}`}
+            stroke={CONNECTOR} strokeWidth={1} fill="none" markerEnd="url(#arrowS)" />
         );
       })}
 
       {/* Teams */}
       {arch.teams.map((team, i) => {
         const tx = teamXs[i];
-        const memberH = team.members.length * 18 + 40;
+        const memberH = team.members.length * 15 + 38;
         return (
           <React.Fragment key={team.name}>
-            {/* team box */}
-            <rect
-              x={tx} y={teamY}
-              width={teamW} height={memberH} rx={8}
-              fill={NODE_BG} stroke={NODE_BORDER} strokeWidth={1}
-            />
-            {/* team label */}
-            <text
-              x={tx + teamW / 2} y={teamY + 18}
-              textAnchor="middle" dominantBaseline="central"
-              fill={team.color} fontSize={10} fontWeight={700} fontFamily={font}
-              letterSpacing="0.08em"
-            >
+            <rect x={tx} y={teamY} width={teamW} height={memberH} rx={6}
+              fill={NODE_BG} stroke={NODE_BORDER} strokeWidth={1} />
+            <text x={tx + teamW / 2} y={teamY + 14} textAnchor="middle" dominantBaseline="central"
+              fill={team.color} fontSize={9} fontWeight={700} fontFamily={font} letterSpacing="0.08em">
               {team.name.toUpperCase()}
             </text>
-            <text
-              x={tx + teamW / 2} y={teamY + 32}
-              textAnchor="middle" dominantBaseline="central"
-              fill={TXT_SUB} fontSize={9} fontFamily={font}
-            >
+            <text x={tx + teamW / 2} y={teamY + 26} textAnchor="middle" dominantBaseline="central"
+              fill={TXT_SUB} fontSize={8} fontFamily={font}>
               {team.label}
             </text>
-            {/* members */}
             {team.members.map((m, mi) => (
-              <text
-                key={m}
-                x={tx + teamW / 2} y={teamY + 50 + mi * 18}
+              <text key={m} x={tx + teamW / 2} y={teamY + 40 + mi * 15}
                 textAnchor="middle" dominantBaseline="central"
-                fill="rgba(255,255,255,0.7)" fontSize={10} fontFamily={font}
-              >
+                fill="rgba(255,255,255,0.65)" fontSize={9} fontFamily={font}>
                 {m}
               </text>
             ))}
@@ -259,77 +234,41 @@ function SystemDiagram() {
         );
       })}
 
-      {/* Skills row */}
-      <text
-        x={w / 4} y={bottomY}
-        textAnchor="middle" dominantBaseline="central"
-        fill={TXT_SUB} fontSize={9} fontWeight={700} fontFamily={font}
-        letterSpacing="0.1em"
-      >
+      {/* Skills label + pills */}
+      <text x={w / 4} y={bottomY - 2} textAnchor="middle" dominantBaseline="central"
+        fill={TXT_SUB} fontSize={8} fontWeight={700} fontFamily={font} letterSpacing="0.1em">
         SKILLS
       </text>
       {arch.skills.map((s, i) => {
-        const sx = 40 + i * 72;
+        const sx = 8 + i * (skillW + 4);
         return (
           <React.Fragment key={s.name}>
-            <rect
-              x={sx} y={bottomY + 14}
-              width={64} height={26} rx={4}
-              fill={NODE_BG} stroke={NODE_BORDER} strokeWidth={0.8}
-            />
-            <text
-              x={sx + 32} y={bottomY + 27}
-              textAnchor="middle" dominantBaseline="central"
-              fill="rgba(255,255,255,0.65)" fontSize={9} fontFamily={font}
-            >
+            <rect x={sx} y={bottomY + 10} width={skillW} height={22} rx={4}
+              fill={NODE_BG} stroke={NODE_BORDER} strokeWidth={0.8} />
+            <text x={sx + skillW / 2} y={bottomY + 21} textAnchor="middle" dominantBaseline="central"
+              fill="rgba(255,255,255,0.6)" fontSize={8} fontFamily={font}>
               {s.name}
             </text>
           </React.Fragment>
         );
       })}
 
-      {/* Hooks row */}
-      <text
-        x={w * 3 / 4} y={bottomY}
-        textAnchor="middle" dominantBaseline="central"
-        fill={TXT_SUB} fontSize={9} fontWeight={700} fontFamily={font}
-        letterSpacing="0.1em"
-      >
+      {/* Hooks label + pills */}
+      <text x={w * 3 / 4} y={bottomY - 2} textAnchor="middle" dominantBaseline="central"
+        fill={TXT_SUB} fontSize={8} fontWeight={700} fontFamily={font} letterSpacing="0.1em">
         HOOKS
       </text>
       {arch.hooks.map((h, i) => {
-        const hx = w / 2 + 40 + i * 80;
+        const hx = w / 2 + 8 + i * (hookW + 4);
         return (
           <React.Fragment key={h.name}>
-            <rect
-              x={hx} y={bottomY + 14}
-              width={72} height={26} rx={4}
-              fill={NODE_BG} stroke={NODE_BORDER} strokeWidth={0.8}
-            />
-            <text
-              x={hx + 36} y={bottomY + 27}
-              textAnchor="middle" dominantBaseline="central"
-              fill="rgba(255,255,255,0.65)" fontSize={9} fontFamily={font}
-            >
+            <rect x={hx} y={bottomY + 10} width={hookW} height={22} rx={4}
+              fill={NODE_BG} stroke={NODE_BORDER} strokeWidth={0.8} />
+            <text x={hx + hookW / 2} y={bottomY + 21} textAnchor="middle" dominantBaseline="central"
+              fill="rgba(255,255,255,0.6)" fontSize={8} fontFamily={font}>
               {h.name}
             </text>
           </React.Fragment>
-        );
-      })}
-
-      {/* Connectors: teams → skills/hooks area */}
-      {teamXs.map((tx, i) => {
-        const fromX = tx + teamW / 2;
-        const teamHeight = arch.teams[i].members.length * 18 + 40;
-        const fromY = teamY + teamHeight;
-        const toY = bottomY + 14;
-        return (
-          <line
-            key={`tb${i}`}
-            x1={fromX} y1={fromY}
-            x2={fromX} y2={toY}
-            stroke="rgba(255,255,255,0.08)" strokeWidth={1} strokeDasharray="3,4"
-          />
         );
       })}
     </svg>
@@ -380,7 +319,8 @@ export function AiWorkflowSection({ raw: _raw }: { raw?: string }) {
         </p>
 
         <div className="wd-diagram-bg-1">
-          <div className="wd-dark-card">
+          <WaveSvg />
+          <div className="wd-dark-card" style={{ position: 'relative', zIndex: 1 }}>
             <HowDiagram />
           </div>
         </div>
@@ -428,7 +368,8 @@ export function AiWorkflowSection({ raw: _raw }: { raw?: string }) {
         </p>
 
         <div className="wd-diagram-bg-2">
-          <div className="wd-dark-card">
+          <WaveSvg />
+          <div className="wd-dark-card" style={{ position: 'relative', zIndex: 1 }}>
             <CycleDiagram />
           </div>
         </div>
@@ -439,25 +380,22 @@ export function AiWorkflowSection({ raw: _raw }: { raw?: string }) {
       {/* ━━━ 6. System — 다이어그램 3 ━━━ */}
       <section>
         <p className="wd-paragraph" style={{ maxWidth: 680 }}>
+          {NARRATIVE.cycleToSystem}
+        </p>
+        <p className="wd-paragraph" style={{ maxWidth: 680 }}>
           {NARRATIVE.systemIntro}
         </p>
 
         <div className="wd-diagram-bg-3">
-          {/* subtle wave SVG background */}
-          <svg
-            style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', pointerEvents: 'none', opacity: 0.15 }}
-            xmlns="http://www.w3.org/2000/svg"
-            preserveAspectRatio="none"
-            viewBox="0 0 800 600"
-          >
-            <path d="M-40,100 C120,40 300,180 500,100 C700,20 750,140 840,80" stroke="#999" strokeWidth="1" fill="none" />
-            <path d="M-40,300 C100,240 280,360 480,280 C680,200 740,320 840,260" stroke="#999" strokeWidth="0.8" fill="none" />
-          </svg>
-
+          <WaveSvg />
           <div className="wd-dark-card" style={{ position: 'relative', zIndex: 1 }}>
             <SystemDiagram />
           </div>
         </div>
+
+        <p className="wd-paragraph" style={{ maxWidth: 680, marginTop: 24 }}>
+          {NARRATIVE.systemDetail}
+        </p>
       </section>
 
       <hr className="wd-section-divider" />
