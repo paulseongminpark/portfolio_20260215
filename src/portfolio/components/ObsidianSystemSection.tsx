@@ -30,28 +30,33 @@ const C = {
 };
 
 const labelStyle: React.CSSProperties = {
-  fontSize: 10,
+  fontSize: 13,
   fontWeight: 700,
   color: C.dimmer,
   textTransform: "uppercase",
-  letterSpacing: "0.55px",
+  letterSpacing: "0.08em",
   marginBottom: 14,
 };
 
-// ── 볼트 구조 트리 ──────────────────────────────────────────────────
+// ── 볼트 구조 트리 (Bedford-style dark) ──────────────────────────────
 const VAULT_TREE = [
-  { path: "HOME.md", indent: 0, desc: "볼트 허브 — 프로젝트 대시보드" },
-  { path: "CLAUDE.md", indent: 0, desc: "Claude Code 전역 규칙" },
-  { path: "GEMINI.md", indent: 0, desc: "Gemini CLI 설정 (rulesync 생성)" },
-  { path: ".ctx/", indent: 0, desc: "Cross-CLI 공유 메모리" },
-  { path: "01_projects/", indent: 0, desc: "" },
-  { path: "orchestration/", indent: 1, desc: "시스템 운영 + Living Docs" },
-  { path: "portfolio/", indent: 1, desc: "포트폴리오 (React + Vite)" },
-  { path: "tech-review/", indent: 1, desc: "AI 뉴스 자동 큐레이션" },
-  { path: "monet-lab/", indent: 1, desc: "UI 실험 (archived)" },
-  { path: "daily-memo/", indent: 1, desc: "모바일 INBOX" },
-  { path: "scripts/", indent: 0, desc: "worktree, 자동화 셸" },
-  { path: "99_archive/", indent: 0, desc: "아카이브" },
+  { name: "HOME.md", indent: 0, folder: false, desc: "볼트 허브" },
+  { name: "CLAUDE.md", indent: 0, folder: false, desc: "전역 규칙" },
+  { name: "GEMINI.md", indent: 0, folder: false, desc: "rulesync" },
+  { name: ".ctx", indent: 0, folder: true, desc: "Cross-CLI 공유" },
+  { name: "shared-context.md", indent: 1, folder: false },
+  { name: "01_projects", indent: 0, folder: true },
+  { name: "orchestration", indent: 1, folder: true, desc: "시스템 운영" },
+  { name: "STATE.md", indent: 2, folder: false },
+  { name: "KNOWLEDGE.md", indent: 2, folder: false },
+  { name: "PLANNING.md", indent: 2, folder: false },
+  { name: "CHANGELOG.md", indent: 2, folder: false },
+  { name: "portfolio", indent: 1, folder: true, desc: "React + Vite" },
+  { name: "tech-review", indent: 1, folder: true, desc: "AI 큐레이션" },
+  { name: "monet-lab", indent: 1, folder: true, desc: "archived" },
+  { name: "daily-memo", indent: 1, folder: true, desc: "모바일 INBOX" },
+  { name: "scripts", indent: 0, folder: true, desc: "자동화" },
+  { name: "99_archive", indent: 0, folder: true },
 ];
 
 // ── Living Docs 카드 ────────────────────────────────────────────────
@@ -877,9 +882,11 @@ export function ObsidianSystemSection() {
             margin: "0 0 14px",
           }}
         >
-          AI 도구들은 세션마다 기억을 잃는다. 어제 3시간 동안 설계한
-          아키텍처를 오늘은 처음부터 다시 설명해야 한다. 프로젝트가 커질수록
-          현재 상태를 전달하는 비용이 기하급수적으로 증가한다.
+          Claude Code는 메인 오케스트레이터로서 프로젝트의 모든 맥락을
+          알고 있다. 문제는 그 지식이 AI 안에만 있으면 내가 조율할 수
+          없다는 것이었다. 프로젝트 5개, CLI 3개, 에이전트 팀이
+          동시에 도는 상황에서 "지금 전체적으로 뭐가 어떻게 돌아가고
+          있지?"를 내가 볼 수 없었다.
         </p>
 
         {/* PIVOT: Ctrl+Alt+V 시대 에피소드 */}
@@ -922,12 +929,12 @@ export function ObsidianSystemSection() {
               Ctrl+Alt+V — 매 세션마다 복붙하던 시절
             </div>
             <div style={{ fontSize: 11, color: C.muted, lineHeight: 1.6 }}>
-              초기에는 PowerShell로 STATE.md를 SNAPSHOT.txt로 변환하고,
-              AutoHotKey 단축키(Ctrl+Alt+V)로 ChatGPT에 붙여넣었다.
-              어느 날 STATE.md를 업데이트했는데 SNAPSHOT 변환을 빠뜨렸고,
-              AI가 이미 끝난 작업을 처음부터 다시 설계했다.
-              Obsidian에도 같은 파일이 있었지만 어느 쪽이 최신인지 알 수
-              없었다. bridge 스크립트 3개, 수동 단계 2개 — 유지할 수 없었다.
+              초기 해결책은 무식했다. PowerShell로 STATE.md를
+              SNAPSHOT.txt로 변환하고, AutoHotKey 단축키(Ctrl+Alt+V)로
+              ChatGPT 창에 붙여넣었다. 어느 날 STATE.md를 업데이트하고
+              SNAPSHOT 변환을 빠뜨렸다. AI가 이미 끝난 작업을 처음부터
+              다시 설계하는 걸 보고서야 알았다. Obsidian에도 같은 파일이
+              있었는데, 어느 쪽이 최신인지 확인할 방법이 없었다.
             </div>
           </div>
         </div>
@@ -968,7 +975,7 @@ export function ObsidianSystemSection() {
             </div>
             <div style={{ fontSize: 11, color: C.muted, lineHeight: 1.6 }}>
               PowerShell 변환 → AutoHotKey 복붙 → 수동 확인.
-              이중 SoT, 동기화 누락 상시 발생.
+              같은 정보가 두 곳에 있었고, 항상 어긋났다.
             </div>
           </div>
           <div style={{ width: 1, background: C.border, flexShrink: 0 }} />
@@ -996,94 +1003,17 @@ export function ObsidianSystemSection() {
               </span>
             </div>
             <div style={{ fontSize: 11, color: C.muted, lineHeight: 1.6 }}>
-              Claude Code가 직접 편집 → Git 커밋 → Obsidian 자동 Pull.
-              수동 단계 0개, SoT는 로컬 마크다운 하나.
+              Claude Code가 직접 편집 → Git 커밋 → Obsidian 자동 반영.
+              손대는 단계가 없다. 진실은 로컬 파일 하나.
             </div>
           </div>
         </div>
 
-        {/* Why Obsidian */}
-        <p style={{ ...labelStyle, marginTop: 32 }}>Why Obsidian</p>
-        <p
-          style={{
-            fontSize: 13,
-            color: C.muted,
-            lineHeight: 1.65,
-            margin: "0 0 14px",
-          }}
-        >
-          Notion이나 Google Docs는 API 없이 AI가 직접 읽고 쓸 수 없다.
-          로컬 마크다운이면 파일 시스템 접근만으로 해결되는데, 그중에서
-          Obsidian을 선택한 이유가 있다.
-        </p>
-        <div
-          style={{
-            display: "grid",
-            gridTemplateColumns: "repeat(auto-fill, minmax(160px, 1fr))",
-            gap: 10,
-          }}
-        >
-          {[
-            {
-              title: "로컬 마크다운",
-              desc: "파일 시스템 접근만으로 AI가 직접 읽고 쓴다. 별도 API나 인증이 필요 없다.",
-              color: C.blue,
-              bg: C.blueBg,
-              border: C.blueBorder,
-            },
-            {
-              title: "Obsidian Git",
-              desc: "플러그인 하나로 자동 Pull/Push. 수동 동기화가 사라진다.",
-              color: C.purple,
-              bg: C.purpleBg,
-              border: C.purpleBorder,
-            },
-            {
-              title: "Graph View",
-              desc: "파일 간 링크 관계를 시각화한다. 컨텍스트 구조를 한눈에 파악할 수 있다.",
-              color: C.teal,
-              bg: C.tealBg,
-              border: C.tealBorder,
-            },
-            {
-              title: "읽기 전용 운용",
-              desc: "Obsidian을 뷰어로만 쓰고 편집은 AI에 맡긴다. 역할 분리가 자연스럽다.",
-              color: C.green,
-              bg: C.greenBg,
-              border: C.greenBorder,
-            },
-          ].map((item) => (
-            <div
-              key={item.title}
-              style={{
-                border: `1px solid ${item.border}`,
-                borderRadius: 10,
-                padding: "14px 16px",
-                background: item.bg,
-              }}
-            >
-              <div
-                style={{
-                  fontSize: 12,
-                  fontWeight: 700,
-                  color: item.color,
-                  marginBottom: 6,
-                }}
-              >
-                {item.title}
-              </div>
-              <div style={{ fontSize: 11, color: C.muted, lineHeight: 1.55 }}>
-                {item.desc}
-              </div>
-            </div>
-          ))}
-        </div>
       </div>
 
-      {/* ② Architecture — 어떻게 구성했나 */}
+      {/* ② File Structure */}
       <div>
-        {/* Vault Structure */}
-        <p style={labelStyle}>Vault Structure</p>
+        <p style={labelStyle}>File Structure</p>
         <p
           style={{
             fontSize: 13,
@@ -1092,169 +1022,166 @@ export function ObsidianSystemSection() {
             margin: "0 0 16px",
           }}
         >
-          이 선택을 기반으로 만든 볼트 구조다. Flat Hierarchy 원칙 — 5레벨
-          이하 폴더 깊이, 2자리 넘버링(Numeric Taxonomy)으로 자동 정렬.
-          99=Archive.
+          AI가 쓰는 문서를 내가 볼 수 있어야 했다. Notion이나 Google
+          Docs는 AI가 직접 읽고 쓸 수 없다. 로컬 마크다운이면 AI가
+          파일을 직접 고치고, Obsidian으로 바로 본다. 구조는 단순하게
+          — 폴더 깊이 5레벨 이하, 넘버링 정렬, 99번은 Archive.
         </p>
         <div
           style={{
-            background: C.bg,
-            border: `1px solid ${C.border}`,
-            borderRadius: 10,
-            padding: "16px 18px",
-            fontFamily: "'SF Mono', 'Cascadia Code', 'Consolas', monospace",
-            fontSize: 12,
-            lineHeight: 1.8,
-            color: C.text,
+            background: "#1a1a1a",
+            borderRadius: 16,
+            padding: "40px 28px 36px",
           }}
         >
-          {VAULT_TREE.map((item) => (
+          {/* Top node */}
+          <div style={{ display: "flex", justifyContent: "center" }}>
             <div
-              key={item.path}
               style={{
-                display: "flex",
+                display: "inline-flex",
                 alignItems: "center",
-                gap: 12,
-                paddingLeft: item.indent * 24,
+                gap: 8,
+                padding: "8px 20px",
+                border: "1px solid #333",
+                borderRadius: 8,
+                background: "#252525",
               }}
             >
+              <span style={{ fontSize: 12, color: "#888" }}>📁</span>
               <span
                 style={{
-                  color: item.path.endsWith("/") ? C.blue : C.purple,
+                  fontSize: 13,
+                  color: "#fff",
                   fontWeight: 600,
+                  fontFamily: "'SF Mono','Cascadia Code','Consolas',monospace",
+                  letterSpacing: "0.04em",
                 }}
               >
-                {item.path}
+                DEV-VAULT
               </span>
-              {item.desc && (
-                <span style={{ fontSize: 10, color: C.dim }}>
-                  {item.desc}
-                </span>
-              )}
             </div>
-          ))}
-        </div>
-        <div
-          style={{
-            display: "flex",
-            gap: 8,
-            flexWrap: "wrap",
-            marginTop: 12,
-          }}
-        >
-          {[
-            {
-              label: "Flat Hierarchy",
-              color: C.blue,
-              bg: C.blueBg,
-              border: C.blueBorder,
-            },
-            {
-              label: "Numeric Taxonomy",
-              color: C.purple,
-              bg: C.purpleBg,
-              border: C.purpleBorder,
-            },
-            {
-              label: "5-Level MAX",
-              color: C.teal,
-              bg: C.tealBg,
-              border: C.tealBorder,
-            },
-            {
-              label: "99=Archive",
-              color: C.amber,
-              bg: C.amberBg,
-              border: C.amberBorder,
-            },
-          ].map((b) => (
-            <span
-              key={b.label}
-              style={{
-                fontSize: 11,
-                fontWeight: 600,
-                color: b.color,
-                background: b.bg,
-                border: `1px solid ${b.border}`,
-                borderRadius: 4,
-                padding: "3px 8px",
-              }}
-            >
-              {b.label}
-            </span>
-          ))}
-        </div>
+          </div>
 
-        {/* Living Documents */}
-        <p style={{ ...labelStyle, marginTop: 56 }}>Living Documents</p>
-        <p
-          style={{
-            fontSize: 13,
-            color: C.muted,
-            lineHeight: 1.65,
-            margin: "0 0 16px",
-          }}
-        >
-          STATE.md가 단일 진실(Source of Truth). /sync 명령으로 갱신하고,
-          모든 AI가 같은 상태를 읽는다.
-        </p>
-        <div
-          style={{
-            display: "grid",
-            gridTemplateColumns: "repeat(auto-fill, minmax(160px, 1fr))",
-            gap: 10,
-          }}
-        >
-          {LIVING_DOCS.map((doc) => (
-            <div
-              key={doc.label}
-              style={{
-                border: `1px solid ${doc.border}`,
-                borderRadius: 10,
-                padding: "14px 16px",
-                background: doc.bg,
-              }}
-            >
+          {/* SVG connector curves */}
+          <svg
+            viewBox="0 0 400 50"
+            style={{ width: "100%", height: 50, display: "block" }}
+            preserveAspectRatio="none"
+          >
+            <path d="M200,0 C200,28 56,22 56,50" stroke="#333" strokeWidth="1.2" fill="none" />
+            <path d="M200,0 C200,28 163,22 163,50" stroke="#333" strokeWidth="1.2" fill="none" />
+            <path d="M200,0 C200,28 270,22 270,50" stroke="#333" strokeWidth="1.2" fill="none" />
+            <path d="M200,0 C200,28 344,22 344,50" stroke="#333" strokeWidth="1.2" fill="none" />
+          </svg>
+
+          {/* Child nodes — 4 columns */}
+          <div
+            style={{
+              display: "grid",
+              gridTemplateColumns: "repeat(4, 1fr)",
+              gap: 14,
+              alignItems: "start",
+              fontFamily: "'SF Mono','Cascadia Code','Consolas',monospace",
+            }}
+          >
+            {/* 01_projects */}
+            <div>
               <div
                 style={{
-                  fontSize: 12,
-                  fontWeight: 700,
-                  color: doc.color,
-                  marginBottom: 6,
-                  fontFamily:
-                    "'SF Mono', 'Cascadia Code', 'Consolas', monospace",
+                  display: "flex",
+                  alignItems: "center",
+                  gap: 6,
+                  padding: "8px 12px",
+                  border: "1px solid #333",
+                  borderRadius: 6,
+                  background: "#252525",
+                  marginBottom: 12,
                 }}
               >
-                {doc.label}
+                <span style={{ fontSize: 11, color: "#888" }}>📁</span>
+                <span style={{ fontSize: 12, color: "#fff", fontWeight: 500 }}>
+                  01_projects
+                </span>
               </div>
-              <div style={{ fontSize: 11, color: C.muted, lineHeight: 1.55 }}>
-                {doc.desc}
+              <div style={{ fontSize: 12, color: "#888", lineHeight: 2.1, paddingLeft: 6 }}>
+                <div>· orchestration</div>
+                <div>· portfolio</div>
+                <div>· tech-review</div>
+                <div>· daily-memo</div>
               </div>
             </div>
-          ))}
+
+            {/* .ctx */}
+            <div>
+              <div
+                style={{
+                  display: "flex",
+                  alignItems: "center",
+                  gap: 6,
+                  padding: "8px 12px",
+                  border: "1px solid #333",
+                  borderRadius: 6,
+                  background: "#252525",
+                  marginBottom: 12,
+                }}
+              >
+                <span style={{ fontSize: 11, color: "#888" }}>📁</span>
+                <span style={{ fontSize: 12, color: "#fff", fontWeight: 500 }}>
+                  .ctx
+                </span>
+              </div>
+              <div style={{ fontSize: 12, color: "#888", lineHeight: 2.1, paddingLeft: 6 }}>
+                <div>· shared-context.md</div>
+              </div>
+            </div>
+
+            {/* HOME.md */}
+            <div>
+              <div
+                style={{
+                  display: "flex",
+                  alignItems: "center",
+                  gap: 6,
+                  padding: "8px 12px",
+                  border: "1px solid #333",
+                  borderRadius: 6,
+                  background: "#252525",
+                }}
+              >
+                <span style={{ fontSize: 11, color: "#888" }}>📄</span>
+                <span style={{ fontSize: 12, color: "#fff", fontWeight: 500 }}>
+                  HOME.md
+                </span>
+              </div>
+            </div>
+
+            {/* CLAUDE.md */}
+            <div>
+              <div
+                style={{
+                  display: "flex",
+                  alignItems: "center",
+                  gap: 6,
+                  padding: "8px 12px",
+                  border: "1px solid #333",
+                  borderRadius: 6,
+                  background: "#252525",
+                }}
+              >
+                <span style={{ fontSize: 11, color: "#888" }}>📄</span>
+                <span style={{ fontSize: 12, color: "#fff", fontWeight: 500 }}>
+                  CLAUDE.md
+                </span>
+              </div>
+            </div>
+          </div>
         </div>
 
-        {/* 현재 Obsidian 구성 (Mockup + Graph) */}
-        <p style={{ ...labelStyle, marginTop: 56 }}>
-          현재 Obsidian 구성
-        </p>
-        <div
-          style={{
-            display: "flex",
-            gap: 14,
-            alignItems: "stretch",
-          }}
-        >
-          <div style={{ flex: 1, minWidth: 0 }}>
-            <ObsidianMockup />
-          </div>
-          <div style={{ flex: 1, minWidth: 0, display: "flex" }}>
-            <VaultGraph />
-          </div>
-        </div>
+      </div>
 
-        {/* How It Works */}
-        <p style={{ ...labelStyle, marginTop: 56 }}>How It Works</p>
+      {/* ③ How It Works */}
+      <div>
+        <p style={labelStyle}>How It Works</p>
         <p
           style={{
             fontSize: 13,
@@ -1263,9 +1190,10 @@ export function ObsidianSystemSection() {
             margin: "0 0 16px",
           }}
         >
-          역할은 명확하게 분리했다. 쓰기 권한은 Claude Code에만 있고,
-          Obsidian은 읽기 전용 뷰어. SoT는 로컬 파일 그 자체이고,
-          Git은 버전 히스토리이자 동기화 채널.
+          누가 쓰고, 누가 읽고, 누가 기록하는지 — 이걸 나누는 데
+          2주가 걸렸다. 나는 HOME.md에서 전체 현황을 보고, 각 AI는
+          자기 프로젝트의 STATE.md만 읽는다. 같은 볼트 안에 있지만
+          관심사가 다르다.
         </p>
 
         {/* 파이프라인 */}
@@ -1378,12 +1306,11 @@ export function ObsidianSystemSection() {
               Obsidian에서 편집하면 안 된다
             </div>
             <div style={{ fontSize: 11, color: C.muted, lineHeight: 1.6 }}>
-              Obsidian에서 PLANNING.md를 직접 고쳤는데, 같은 시간에
-              Claude Code도 같은 파일을 수정하고 커밋했다. Git 충돌이
-              발생했고, 어느 쪽 변경이 맞는지 판단하는 데 시간을 낭비했다.
-              이후 규칙을 만들었다 — 쓰기 권한은 하나에만.
-              Obsidian은 보는 도구, Claude는 쓰는 도구, Git은 기록.
-              역할을 나누니 충돌이 사라졌다.
+              PLANNING.md를 Obsidian에서 직접 고쳤다. 같은 시간에
+              Claude Code도 같은 파일을 수정하고 커밋해버렸다. Git 충돌.
+              어느 쪽이 맞는 건지 판단하는 데 30분을 썼다. 그날 규칙을
+              만들었다 — 쓰기는 Claude Code만, 보기는 Obsidian만,
+              기록은 Git만. 나눈 뒤로 충돌이 0이 됐다.
             </div>
           </div>
         </div>
@@ -1409,7 +1336,7 @@ export function ObsidianSystemSection() {
               role: "Persistence",
               who: "Git + GitHub",
               detail:
-                "dev-vault 단일 repo. 버전 히스토리 + GitHub Pages로 퍼블릭 URL 노출",
+                "dev-vault 단일 repo. 모든 변경을 기록하고, GitHub Pages로 STATE.md를 퍼블릭 URL로 노출한다",
               color: C.teal,
               bg: C.tealBg,
               border: C.tealBorder,
@@ -1502,17 +1429,17 @@ export function ObsidianSystemSection() {
               Cross-CLI — .ctx/ 공유 메모리
             </div>
             <div style={{ fontSize: 11, color: C.muted, lineHeight: 1.6 }}>
-              Claude Code가 작성한 컨텍스트를 Gemini CLI가 읽고, Codex가
-              검증한다. .ctx/shared-context.md에 모든 CLI의 현재 목표와 진행
-              상황이 기록되고, provenance.log가 각 항목의 출처를 추적한다.
-              rulesync가 .rulesync/rules/에서 CLAUDE.md, GEMINI.md를 자동
-              생성해 모든 CLI가 같은 규칙을 따르게 한다.
+              v4.0에서 CLI가 3개로 늘었다. Claude Code가 쓴 컨텍스트를
+              Gemini가 읽고, Codex가 검증한다. 문제는 각 CLI가 다른 설정
+              파일을 쓴다는 것이었다. .ctx/shared-context.md에 공유 상태를
+              두고, rulesync로 CLAUDE.md와 GEMINI.md를 자동 생성하게
+              만들었다. 같은 규칙, 같은 상태, 다른 역할.
             </div>
           </div>
         </div>
       </div>
 
-      {/* ③ Evolution */}
+      {/* ④ Evolution */}
       <div>
         <p style={labelStyle}>Evolution</p>
         <p
@@ -1523,10 +1450,10 @@ export function ObsidianSystemSection() {
             margin: "0 0 16px",
           }}
         >
-          이 구조가 처음부터 이랬던 건 아니다. 2주 동안 8번의 구조 변경 —
-          bridge 스크립트에서 시작해 3개 CLI가 공유하는 Context as Currency
-          시스템까지. 더하기(v0→v3.3)와 빼기(v4.0) — 복잡도를 쌓다가
-          정리하는 순간이 진짜 설계였다.
+          이 구조는 처음부터 있던 게 아니다. 2주 동안 8번 뒤집었다.
+          처음에는 기능을 계속 더했다 — 에이전트 24개, 스크립트 수십 개.
+          v3.3에서 더 이상 관리가 안 됐다. 그때 깨달았다.
+          진짜 설계는 빼는 순간에 일어난다.
         </p>
         <div
           style={{
@@ -1605,9 +1532,9 @@ export function ObsidianSystemSection() {
         </div>
       </div>
 
-      {/* ④ Impact & Lessons */}
+      {/* ⑤ What I Learned */}
       <div>
-        <p style={labelStyle}>Impact</p>
+        <p style={labelStyle}>What I Learned</p>
         <p
           style={{
             fontSize: 13,
@@ -1616,7 +1543,7 @@ export function ObsidianSystemSection() {
             margin: "0 0 14px",
           }}
         >
-          2주간의 반복이 만든 결과다.
+          2주간의 시행착오를 숫자 네 개로 요약한다.
         </p>
         <div
           style={{
@@ -1630,7 +1557,7 @@ export function ObsidianSystemSection() {
             {
               number: "3",
               unit: "CLI",
-              desc: "Claude · Gemini · Codex가 같은 STATE.md를 공유한다",
+              desc: "Claude, Gemini, Codex가 같은 STATE.md를 읽는다. 컨텍스트 전달 비용이 0이 됐다",
               color: C.blue,
               bg: C.blueBg,
               border: C.blueBorder,
@@ -1638,7 +1565,7 @@ export function ObsidianSystemSection() {
             {
               number: "15",
               unit: "에이전트",
-              desc: "24개에서 정리한 15개. 9개 스킬이 자동 디스패치",
+              desc: "24개에서 15개로 줄였다. 줄이고 나서 오히려 더 강력해졌다",
               color: C.purple,
               bg: C.purpleBg,
               border: C.purpleBorder,
@@ -1646,7 +1573,7 @@ export function ObsidianSystemSection() {
             {
               number: "8",
               unit: "Hooks",
-              desc: "SessionStart부터 PostToolUse까지 실시간 자동화",
+              desc: "세션 시작부터 도구 실행 후까지. 수동으로 기억할 단계가 없다",
               color: C.teal,
               bg: C.tealBg,
               border: C.tealBorder,
@@ -1654,7 +1581,7 @@ export function ObsidianSystemSection() {
             {
               number: "0",
               unit: "수동 동기화",
-              desc: "Obsidian Git 자동 Pull + Claude 자동 Push",
+              desc: "Claude가 쓰면 Git이 기록하고, Obsidian이 가져온다. 동기화 버튼을 누른 적이 없다",
               color: C.green,
               bg: C.greenBg,
               border: C.greenBorder,
@@ -1700,83 +1627,6 @@ export function ObsidianSystemSection() {
           ))}
         </div>
 
-        <p style={labelStyle}>Lessons</p>
-        <div
-          style={{
-            display: "grid",
-            gridTemplateColumns: "repeat(auto-fill, minmax(220px, 1fr))",
-            gap: 10,
-          }}
-        >
-          {[
-            {
-              title: "SoT는 하나만",
-              desc: "같은 정보가 두 곳에 있으면 반드시 어긋난다. 하나만 진실이고 나머지는 읽기 전용. 로컬 마크다운이 유일한 Source of Truth.",
-              color: C.blue,
-              bg: C.blueBg,
-              border: C.blueBorder,
-            },
-            {
-              title: "도구는 역할을 분리해야",
-              desc: "Writer(Claude Code), SoT(로컬 마크다운), Persistence(Git), Viewer(Obsidian). 역할이 겹치면 충돌한다.",
-              color: C.purple,
-              bg: C.purpleBg,
-              border: C.purpleBorder,
-            },
-            {
-              title: "빼기가 설계다",
-              desc: "24개 에이전트를 15개로 줄인 v4.0이 v3.3보다 강력하다. 더하기는 쉽고, 빼기가 설계다.",
-              color: C.teal,
-              bg: C.tealBg,
-              border: C.tealBorder,
-            },
-            {
-              title: "자동화의 경계",
-              desc: "수동 0을 목표로 하되, 자동화 자체가 새로운 복잡도를 만들면 멈춰야 한다. v3.3이 그 경계였다.",
-              color: C.amber,
-              bg: C.amberBg,
-              border: C.amberBorder,
-            },
-          ].map((lesson) => (
-            <div
-              key={lesson.title}
-              style={{
-                border: `1px solid ${lesson.border}`,
-                borderRadius: 10,
-                padding: "16px 18px",
-                background: lesson.bg,
-              }}
-            >
-              <div
-                style={{
-                  fontSize: 13,
-                  fontWeight: 700,
-                  color: lesson.color,
-                  marginBottom: 8,
-                }}
-              >
-                {lesson.title}
-              </div>
-              <div style={{ fontSize: 12, color: C.muted, lineHeight: 1.6 }}>
-                {lesson.desc}
-              </div>
-            </div>
-          ))}
-        </div>
-        <p
-          style={{
-            fontSize: 13,
-            color: C.muted,
-            lineHeight: 1.65,
-            margin: "16px 0 0",
-            borderLeft: `3px solid ${C.purple}`,
-            paddingLeft: 14,
-          }}
-        >
-          이 시스템의 핵심은 도구가 아니라 원칙이다. 마크다운 파일 하나가
-          여러 AI의 공유 자원이 되려면, 누가 쓰고 누가 읽는지가 명확해야
-          한다. 2주간의 8번의 반복이 그 명확함을 만들었다.
-        </p>
       </div>
     </div>
   );

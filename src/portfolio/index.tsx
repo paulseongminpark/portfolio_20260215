@@ -125,7 +125,7 @@ const P12_TOC: Array<{ id: string; label: string; mini: string; items: Array<{ i
     { id: "work-pmcc",        label: "PMCC" },
   ]},
   { id: "tr",      label: "Technical Writing System", mini: "TW", items: [
-    { id: "tr-posts",         label: "Tech Review" },
+    { id: "tr-tech-review",   label: "Tech Review" },
     { id: "tr-obsidian",      label: "Obsidian" },
   ]},
   { id: "writing", label: "Writing",                  mini: "WR", items: [
@@ -713,47 +713,59 @@ export default function Page12() {
             <h2 className="p12-h2" style={{ color: "#111", marginTop: 8, marginBottom: 8 }}>
               Technical Writing System
             </h2>
-            <p style={{ fontFamily: "'Inter','Noto Sans KR',sans-serif", fontSize: 15, color: "#666", lineHeight: 1.7, marginBottom: 32, whiteSpace: "nowrap" }}>
-              AI·빅테크·신기술 뉴스를 매일 추적하고, 산업·직무 관점 인사이트로 가공하는 개인 퍼블리싱 시스템.
+            <p style={{ fontFamily: "'Inter','Noto Sans KR',sans-serif", fontSize: 15, color: "#666", lineHeight: 1.7, marginBottom: 16 }}>
+              기술 트렌드를 추적하는 퍼블리싱 파이프라인과, AI 에이전트의 공유 메모리를 관리하는 문서 시스템.
             </p>
           </FadeIn>
-          {/* 최신 포스트 먼저 */}
-          <FadeIn delay={0.05}>
-            <div id="tr-posts">
+          {/* Tech Review sub-section — sticky h3 */}
+          <div id="tr-tech-review" style={{ marginTop: 48 }}>
+            <FadeIn delay={0.05}>
+              <div style={{ position: "sticky", top: 0, zIndex: 5, background: "#ffffff", paddingTop: 16, paddingBottom: 12, borderBottom: "1px solid #e8e8e8", marginBottom: 24 }}>
+                <h3 style={{ fontFamily: "'Inter','Noto Sans KR',sans-serif", fontSize: 28, fontWeight: 700, color: "#111", margin: "0 0 6px", letterSpacing: "-0.01em" }}>Tech Review</h3>
+                <p style={{ fontFamily: "'Inter','Noto Sans KR',sans-serif", fontSize: 14, color: "#666", lineHeight: 1.6, margin: 0 }}>
+                  AI·빅테크·신기술 뉴스를 매일 추적하고, 산업·직무 관점 인사이트로 가공하는 퍼블리싱 파이프라인.
+                </p>
+              </div>
+            </FadeIn>
+            <FadeIn delay={0.05}>
               <p style={{ fontFamily: "'Inter',sans-serif", fontSize: 11, fontWeight: 600, letterSpacing: "0.12em", textTransform: "uppercase", color: "#aaa", marginBottom: 20 }}>
                 Latest Posts
               </p>
               <TechReviewCards />
-            </div>
-          </FadeIn>
-          {/* 시스템 설명 아래 */}
-          <FadeIn delay={0.1}>
-            <div style={{ marginTop: 64, paddingTop: 48, borderTop: "1px solid #e8e8e8" }}>
-              <StatsBar stats={[
-                { value: "매일", label: "포스팅 주기" },
-                { value: "Jekyll", label: "정적 사이트" },
-                { value: "자동", label: "GitHub Actions 빌드" },
-                { value: "API", label: "feed.json 연동" },
-              ]} />
-            </div>
-          </FadeIn>
-          <FadeIn delay={0.12}>
-            <SectionFlowGrid sections={trSections} cols={3} />
-          </FadeIn>
-          <FadeIn delay={0.15}>
-            <div style={{ paddingTop: 48, borderTop: "1px solid #e8e8e8", marginTop: 2 }}>
-              <TechReviewSystemSection />
-            </div>
-          </FadeIn>
-          <FadeIn delay={0.18}>
-            <div id="tr-obsidian" style={{ marginTop: 64, paddingTop: 48, borderTop: "1px solid #e8e8e8" }}>
-              <h3 style={{ fontFamily: "'Inter','Noto Sans KR',sans-serif", fontSize: 22, fontWeight: 700, color: "#111", margin: "0 0 6px" }}>Obsidian</h3>
-              <p style={{ fontFamily: "'Inter','Noto Sans KR',sans-serif", fontSize: 15, color: "#666", lineHeight: 1.7, marginBottom: 28 }}>
-                AI 에이전트의 공유 메모리로 작동하는 로컬 마크다운 볼트.
-              </p>
+            </FadeIn>
+            <FadeIn delay={0.1}>
+              <div style={{ marginTop: 64, paddingTop: 48, borderTop: "1px solid #e8e8e8" }}>
+                <StatsBar stats={[
+                  { value: "매일", label: "포스팅 주기" },
+                  { value: "Jekyll", label: "정적 사이트" },
+                  { value: "자동", label: "GitHub Actions 빌드" },
+                  { value: "API", label: "feed.json 연동" },
+                ]} />
+              </div>
+            </FadeIn>
+            <FadeIn delay={0.12}>
+              <SectionFlowGrid sections={trSections} cols={3} />
+            </FadeIn>
+            <FadeIn delay={0.15}>
+              <div style={{ paddingTop: 48, borderTop: "1px solid #e8e8e8", marginTop: 2 }}>
+                <TechReviewSystemSection />
+              </div>
+            </FadeIn>
+          </div>
+          {/* Obsidian sub-section — sticky h3 */}
+          <div id="tr-obsidian" style={{ marginTop: 64, paddingTop: 48, borderTop: "1px solid #e8e8e8" }}>
+            <FadeIn delay={0.18}>
+              <div style={{ position: "sticky", top: 0, zIndex: 5, background: "#ffffff", paddingTop: 16, paddingBottom: 12, borderBottom: "1px solid #e8e8e8", marginBottom: 24 }}>
+                <h3 style={{ fontFamily: "'Inter','Noto Sans KR',sans-serif", fontSize: 28, fontWeight: 700, color: "#111", margin: "0 0 6px", letterSpacing: "-0.01em" }}>Obsidian</h3>
+                <p style={{ fontFamily: "'Inter','Noto Sans KR',sans-serif", fontSize: 14, color: "#666", lineHeight: 1.6, margin: 0 }}>
+                  AI 오케스트레이터가 아는 것을 내가 함께 볼 수 있게 만든 로컬 문서 시스템.
+                </p>
+              </div>
+            </FadeIn>
+            <FadeIn delay={0.18}>
               <ObsidianSystemSection />
-            </div>
-          </FadeIn>
+            </FadeIn>
+          </div>
         </div>
       </section>
 
