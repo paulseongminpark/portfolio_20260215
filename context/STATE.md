@@ -1,5 +1,5 @@
 # portfolio STATE
-_Updated: 2026-03-02_
+_Updated: 2026-03-03_
 
 ## 목적
 개인 포트폴리오 웹사이트 (React + Vite, vanilla CSS, hash routing)
@@ -34,9 +34,14 @@ _Updated: 2026-03-02_
   - flowchart Overview → Approach 뒤로 이동, Design Principle 헤딩 제거
   - Gallery Dataset 뒤로 재배치
   - 전체 표현 평이화 (물리적/심리적→몸/마음, 수평적→편한, 분해→들여다봤습니다 등)
+- **완료: 포트폴리오 섹션 전면 리라이트** (2026-03-02)
+  - Obsidian: 10→5 섹션 구조 재편, Bedford 스타일 파일 구조 다이어그램, 텍스트 품질 재작성
+  - E2E Workflow: 8→10 Phase 확장, React Flow→vanilla 전환, 자연어 리라이트
+  - index.tsx: 타이포그래피 위계 정리, sticky 헤더, TOC 업데이트
 - 진행중: W6 준비 (레이아웃 후보 선정)
 
 ## 최근 결정
+- 2026-03-02: 포트폴리오 섹션 전면 리라이트 — Obsidian 10→5, E2E 8→10 Phase, 타이포그래피 위계
 - 2026-03-02: PMCC_DETAIL_KO.md 개정 — 논리 흐름 재구성, 13개 지시 반영, 표현 평이화
 - 2026-03-01: Obsidian 섹션 v4.0 재작성 — 5섹션 역순 공개, Cross-CLI 블록 신규, Jeff Su 용어 제거
 - 2026-02-28: AI System v4.0 이식 — monet-lab 코드 기반, 내러티브 케이스스터디 구조
