@@ -747,6 +747,10 @@ export default function Page12() {
           </FadeIn>
           <FadeIn delay={0.18}>
             <div id="tr-obsidian" style={{ marginTop: 64, paddingTop: 48, borderTop: "1px solid #e8e8e8" }}>
+              <h3 style={{ fontFamily: "'Inter','Noto Sans KR',sans-serif", fontSize: 22, fontWeight: 700, color: "#111", margin: "0 0 6px" }}>Obsidian</h3>
+              <p style={{ fontFamily: "'Inter','Noto Sans KR',sans-serif", fontSize: 15, color: "#666", lineHeight: 1.7, marginBottom: 28 }}>
+                AI 에이전트의 공유 메모리로 작동하는 로컬 마크다운 볼트.
+              </p>
               <ObsidianSystemSection />
             </div>
           </FadeIn>

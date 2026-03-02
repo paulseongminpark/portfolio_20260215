@@ -1,9 +1,10 @@
 import { useState } from 'react'
 import E2EWorkflowV1 from './E2EWorkflow_v1'
 import E2EWorkflowV2 from './E2EWorkflow_v2'
+import E2EWorkflowV3 from './E2EWorkflow_v3'
 
 function App() {
-  const [version, setVersion] = useState<'v1' | 'v2'>('v2')
+  const [version, setVersion] = useState<'v1' | 'v2' | 'v3'>('v3')
   return (
     <div>
       <div style={{
@@ -13,7 +14,7 @@ function App() {
         border: '1px solid #e8e6dc',
         boxShadow: '0 2px 12px rgba(0,0,0,0.06)',
       }}>
-        {(['v1', 'v2'] as const).map(v => (
+        {(['v1', 'v2', 'v3'] as const).map(v => (
           <button key={v} onClick={() => setVersion(v)} style={{
             padding: '6px 18px', borderRadius: 100, border: 'none',
             fontSize: 13, fontWeight: version === v ? 700 : 500,
@@ -27,7 +28,7 @@ function App() {
           </button>
         ))}
       </div>
-      {version === 'v1' ? <E2EWorkflowV1 /> : <E2EWorkflowV2 />}
+      {version === 'v1' ? <E2EWorkflowV1 /> : version === 'v2' ? <E2EWorkflowV2 /> : <E2EWorkflowV3 />}
     </div>
   )
 }

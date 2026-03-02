@@ -137,7 +137,7 @@ const EVOLUTION = [
   {
     version: "v1.0",
     date: "Feb 15–17",
-    title: "Git SoT + Orchestration",
+    title: "Local SoT + Orchestration",
     desc: "마크다운을 Git으로 관리하는 첫 구조. 스킬 11개, 스크립트 5개, 문서 3분화(STATE/PLANNING/KNOWLEDGE).",
     color: C.blue,
     bg: C.blueBg,
@@ -336,7 +336,7 @@ const FILE_CONTENT: Record<FileKey, React.ReactNode> = {
   "orch/PLANNING.md": (
     <>
       {Title("PLANNING.md — Architecture Decisions")}
-      {H("D-001: SoT를 Git으로 전환")}
+      {H("D-001: SoT를 로컬 마크다운으로 전환")}
       {Label("문제", "Obsidian만으로는 다른 AI가 접근 불가")}
       {Label("해결", "Git STATE.md + GitHub Pages URL")}
       {H("D-003: Flat Hierarchy")}
@@ -859,111 +859,228 @@ function VaultGraph() {
 }
 
 
+
 // ── 메인 컴포넌트 ───────────────────────────────────────────────────
 export function ObsidianSystemSection() {
   return (
     <div
       style={{ display: "flex", flexDirection: "column", gap: 56, marginTop: 8 }}
     >
-      {/* ① Hook — 지금 이 시스템 */}
+      {/* ① The Problem — 왜 필요한가 */}
       <div>
-        <p style={labelStyle}>The System</p>
+        <p style={labelStyle}>The Problem</p>
         <p
           style={{
-            fontSize: 15,
+            fontSize: 14,
             color: C.text,
             lineHeight: 1.75,
-            margin: "0 0 18px",
-            fontWeight: 500,
+            margin: "0 0 14px",
           }}
         >
-          마크다운 파일이 AI 에이전트들의 공유 통화가 됐다. Claude, Gemini,
-          Codex — 서로 다른 AI가 같은 STATE.md를 읽고, 같은 규칙을 따르고, 같은
-          진실 위에서 작업한다. 수동 동기화는 0이다.
+          AI 도구들은 세션마다 기억을 잃는다. 어제 3시간 동안 설계한
+          아키텍처를 오늘은 처음부터 다시 설명해야 한다. 프로젝트가 커질수록
+          현재 상태를 전달하는 비용이 기하급수적으로 증가한다.
+        </p>
+
+        {/* PIVOT: Ctrl+Alt+V 시대 에피소드 */}
+        <div
+          style={{
+            display: "flex",
+            gap: 10,
+            marginTop: 14,
+            alignItems: "flex-start",
+            padding: "12px 14px",
+            background: "#fff7ed",
+            border: "1px solid #fed7aa",
+            borderRadius: 8,
+          }}
+        >
+          <span
+            style={{
+              fontSize: 10,
+              fontWeight: 700,
+              color: "#c2410c",
+              background: "#ffedd5",
+              border: "1px solid #fed7aa",
+              borderRadius: 3,
+              padding: "2px 6px",
+              flexShrink: 0,
+              marginTop: 1,
+            }}
+          >
+            PIVOT
+          </span>
+          <div>
+            <div
+              style={{
+                fontSize: 12,
+                fontWeight: 600,
+                color: C.text,
+                marginBottom: 4,
+              }}
+            >
+              Ctrl+Alt+V — 매 세션마다 복붙하던 시절
+            </div>
+            <div style={{ fontSize: 11, color: C.muted, lineHeight: 1.6 }}>
+              초기에는 PowerShell로 STATE.md를 SNAPSHOT.txt로 변환하고,
+              AutoHotKey 단축키(Ctrl+Alt+V)로 ChatGPT에 붙여넣었다.
+              어느 날 STATE.md를 업데이트했는데 SNAPSHOT 변환을 빠뜨렸고,
+              AI가 이미 끝난 작업을 처음부터 다시 설계했다.
+              Obsidian에도 같은 파일이 있었지만 어느 쪽이 최신인지 알 수
+              없었다. bridge 스크립트 3개, 수동 단계 2개 — 유지할 수 없었다.
+            </div>
+          </div>
+        </div>
+
+        {/* Before → After */}
+        <div
+          style={{
+            display: "flex",
+            gap: 0,
+            marginTop: 10,
+            border: `1px solid ${C.border}`,
+            borderRadius: 8,
+            overflow: "hidden",
+          }}
+        >
+          <div style={{ flex: 1, padding: "12px 14px", background: "#fafafa" }}>
+            <div
+              style={{
+                display: "flex",
+                gap: 6,
+                alignItems: "center",
+                marginBottom: 6,
+              }}
+            >
+              <span
+                style={{
+                  fontSize: 10,
+                  fontWeight: 700,
+                  color: C.rose,
+                  background: C.roseBg,
+                  border: `1px solid ${C.roseBorder}`,
+                  borderRadius: 3,
+                  padding: "2px 6px",
+                }}
+              >
+                BEFORE
+              </span>
+            </div>
+            <div style={{ fontSize: 11, color: C.muted, lineHeight: 1.6 }}>
+              PowerShell 변환 → AutoHotKey 복붙 → 수동 확인.
+              이중 SoT, 동기화 누락 상시 발생.
+            </div>
+          </div>
+          <div style={{ width: 1, background: C.border, flexShrink: 0 }} />
+          <div style={{ flex: 1, padding: "12px 14px", background: C.white }}>
+            <div
+              style={{
+                display: "flex",
+                gap: 6,
+                alignItems: "center",
+                marginBottom: 6,
+              }}
+            >
+              <span
+                style={{
+                  fontSize: 10,
+                  fontWeight: 700,
+                  color: C.blue,
+                  background: C.blueBg,
+                  border: `1px solid ${C.blueBorder}`,
+                  borderRadius: 3,
+                  padding: "2px 6px",
+                }}
+              >
+                AFTER
+              </span>
+            </div>
+            <div style={{ fontSize: 11, color: C.muted, lineHeight: 1.6 }}>
+              Claude Code가 직접 편집 → Git 커밋 → Obsidian 자동 Pull.
+              수동 단계 0개, SoT는 로컬 마크다운 하나.
+            </div>
+          </div>
+        </div>
+
+        {/* Why Obsidian */}
+        <p style={{ ...labelStyle, marginTop: 32 }}>Why Obsidian</p>
+        <p
+          style={{
+            fontSize: 13,
+            color: C.muted,
+            lineHeight: 1.65,
+            margin: "0 0 14px",
+          }}
+        >
+          Notion이나 Google Docs는 API 없이 AI가 직접 읽고 쓸 수 없다.
+          로컬 마크다운이면 파일 시스템 접근만으로 해결되는데, 그중에서
+          Obsidian을 선택한 이유가 있다.
         </p>
         <div
           style={{
             display: "grid",
-            gridTemplateColumns: "repeat(auto-fill, minmax(140px, 1fr))",
+            gridTemplateColumns: "repeat(auto-fill, minmax(160px, 1fr))",
             gap: 10,
           }}
         >
           {[
             {
-              number: "3",
-              unit: "CLI",
-              desc: "Claude · Gemini · Codex가 같은 STATE.md를 공유한다",
+              title: "로컬 마크다운",
+              desc: "파일 시스템 접근만으로 AI가 직접 읽고 쓴다. 별도 API나 인증이 필요 없다.",
               color: C.blue,
               bg: C.blueBg,
               border: C.blueBorder,
             },
             {
-              number: "15",
-              unit: "에이전트",
-              desc: "24개에서 정리한 15개. 9개 스킬이 자동 디스패치",
+              title: "Obsidian Git",
+              desc: "플러그인 하나로 자동 Pull/Push. 수동 동기화가 사라진다.",
               color: C.purple,
               bg: C.purpleBg,
               border: C.purpleBorder,
             },
             {
-              number: "8",
-              unit: "Hooks",
-              desc: "SessionStart부터 PostToolUse까지 실시간 자동화",
+              title: "Graph View",
+              desc: "파일 간 링크 관계를 시각화한다. 컨텍스트 구조를 한눈에 파악할 수 있다.",
               color: C.teal,
               bg: C.tealBg,
               border: C.tealBorder,
             },
             {
-              number: "0",
-              unit: "수동 동기화",
-              desc: "Obsidian Git 자동 Pull + Claude 자동 Push",
+              title: "읽기 전용 운용",
+              desc: "Obsidian을 뷰어로만 쓰고 편집은 AI에 맡긴다. 역할 분리가 자연스럽다.",
               color: C.green,
               bg: C.greenBg,
               border: C.greenBorder,
             },
-          ].map((m) => (
+          ].map((item) => (
             <div
-              key={m.unit}
+              key={item.title}
               style={{
-                border: `1px solid ${m.border}`,
+                border: `1px solid ${item.border}`,
                 borderRadius: 10,
-                padding: "16px",
-                background: m.bg,
-                textAlign: "center",
+                padding: "14px 16px",
+                background: item.bg,
               }}
             >
               <div
                 style={{
-                  fontSize: 24,
-                  fontWeight: 800,
-                  color: m.color,
-                  lineHeight: 1,
-                  marginBottom: 2,
-                }}
-              >
-                {m.number}
-              </div>
-              <div
-                style={{
-                  fontSize: 10,
+                  fontSize: 12,
                   fontWeight: 700,
-                  color: m.color,
-                  textTransform: "uppercase",
-                  letterSpacing: "0.4px",
+                  color: item.color,
                   marginBottom: 6,
                 }}
               >
-                {m.unit}
+                {item.title}
               </div>
-              <div style={{ fontSize: 11, color: C.muted, lineHeight: 1.5 }}>
-                {m.desc}
+              <div style={{ fontSize: 11, color: C.muted, lineHeight: 1.55 }}>
+                {item.desc}
               </div>
             </div>
           ))}
         </div>
       </div>
 
-      {/* ② Architecture — 현재 시스템 전체 구조 */}
+      {/* ② Architecture — 어떻게 구성했나 */}
       <div>
         {/* Vault Structure */}
         <p style={labelStyle}>Vault Structure</p>
@@ -975,8 +1092,9 @@ export function ObsidianSystemSection() {
             margin: "0 0 16px",
           }}
         >
-          Flat Hierarchy 원칙. 5레벨 이하 폴더 깊이, 2자리 넘버링(Numeric
-          Taxonomy)으로 자동 정렬. 99=Archive.
+          이 선택을 기반으로 만든 볼트 구조다. Flat Hierarchy 원칙 — 5레벨
+          이하 폴더 깊이, 2자리 넘버링(Numeric Taxonomy)으로 자동 정렬.
+          99=Archive.
         </p>
         <div
           style={{
@@ -1145,8 +1263,9 @@ export function ObsidianSystemSection() {
             margin: "0 0 16px",
           }}
         >
-          쓰기 권한은 Claude Code에만 있다. Obsidian은 읽기 전용 뷰어.
-          Git이 유일한 동기화 채널이자 Source of Truth.
+          역할은 명확하게 분리했다. 쓰기 권한은 Claude Code에만 있고,
+          Obsidian은 읽기 전용 뷰어. SoT는 로컬 파일 그 자체이고,
+          Git은 버전 히스토리이자 동기화 채널.
         </p>
 
         {/* 파이프라인 */}
@@ -1287,10 +1406,10 @@ export function ObsidianSystemSection() {
               border: C.purpleBorder,
             },
             {
-              role: "Source of Truth",
+              role: "Persistence",
               who: "Git + GitHub",
               detail:
-                "dev-vault 단일 repo. GitHub Pages로 STATE.md 퍼블릭 URL 노출",
+                "dev-vault 단일 repo. 버전 히스토리 + GitHub Pages로 퍼블릭 URL 노출",
               color: C.teal,
               bg: C.tealBg,
               border: C.tealBorder,
@@ -1393,147 +1512,7 @@ export function ObsidianSystemSection() {
         </div>
       </div>
 
-      {/* ③ 문제의 시작 */}
-      <div>
-        <p style={labelStyle}>The Problem</p>
-        <p
-          style={{
-            fontSize: 14,
-            color: C.text,
-            lineHeight: 1.75,
-            margin: "0 0 14px",
-          }}
-        >
-          AI 도구들은 세션마다 기억을 잃는다. 어제 3시간 동안 설계한
-          아키텍처를 오늘은 처음부터 다시 설명해야 한다. 프로젝트가 커질수록
-          현재 상태를 전달하는 비용이 기하급수적으로 증가한다. Notion이나
-          Google Docs는 API 없이 AI가 직접 읽고 쓸 수 없다. 로컬
-          마크다운이면 파일 시스템 접근만으로 편집이 가능하고, Git이면 버전
-          관리와 동기화가 해결된다.
-        </p>
-
-        {/* PIVOT: Ctrl+Alt+V 시대 에피소드 */}
-        <div
-          style={{
-            display: "flex",
-            gap: 10,
-            marginTop: 14,
-            alignItems: "flex-start",
-            padding: "12px 14px",
-            background: "#fff7ed",
-            border: "1px solid #fed7aa",
-            borderRadius: 8,
-          }}
-        >
-          <span
-            style={{
-              fontSize: 10,
-              fontWeight: 700,
-              color: "#c2410c",
-              background: "#ffedd5",
-              border: "1px solid #fed7aa",
-              borderRadius: 3,
-              padding: "2px 6px",
-              flexShrink: 0,
-              marginTop: 1,
-            }}
-          >
-            PIVOT
-          </span>
-          <div>
-            <div
-              style={{
-                fontSize: 12,
-                fontWeight: 600,
-                color: C.text,
-                marginBottom: 4,
-              }}
-            >
-              Ctrl+Alt+V — 매 세션마다 복붙하던 시절
-            </div>
-            <div style={{ fontSize: 11, color: C.muted, lineHeight: 1.6 }}>
-              초기에는 PowerShell로 STATE.md를 SNAPSHOT.txt로 변환하고,
-              AutoHotKey 단축키(Ctrl+Alt+V)로 ChatGPT에 붙여넣었다.
-              어느 날 STATE.md를 업데이트했는데 SNAPSHOT 변환을 빠뜨렸고,
-              AI가 이미 끝난 작업을 처음부터 다시 설계했다.
-              Obsidian에도 같은 파일이 있었지만 어느 쪽이 최신인지 알 수
-              없었다. bridge 스크립트 3개, 수동 단계 2개 — 유지할 수 없었다.
-            </div>
-          </div>
-        </div>
-
-        {/* Before → After */}
-        <div
-          style={{
-            display: "flex",
-            gap: 0,
-            marginTop: 10,
-            border: `1px solid ${C.border}`,
-            borderRadius: 8,
-            overflow: "hidden",
-          }}
-        >
-          <div style={{ flex: 1, padding: "12px 14px", background: "#fafafa" }}>
-            <div
-              style={{
-                display: "flex",
-                gap: 6,
-                alignItems: "center",
-                marginBottom: 6,
-              }}
-            >
-              <span
-                style={{
-                  fontSize: 10,
-                  fontWeight: 700,
-                  color: C.rose,
-                  background: C.roseBg,
-                  border: `1px solid ${C.roseBorder}`,
-                  borderRadius: 3,
-                  padding: "2px 6px",
-                }}
-              >
-                BEFORE
-              </span>
-            </div>
-            <div style={{ fontSize: 11, color: C.muted, lineHeight: 1.6 }}>
-              PowerShell 변환 → AutoHotKey 복붙 → 수동 확인.
-              이중 SoT, 동기화 누락 상시 발생.
-            </div>
-          </div>
-          <div style={{ width: 1, background: C.border, flexShrink: 0 }} />
-          <div style={{ flex: 1, padding: "12px 14px", background: C.white }}>
-            <div
-              style={{
-                display: "flex",
-                gap: 6,
-                alignItems: "center",
-                marginBottom: 6,
-              }}
-            >
-              <span
-                style={{
-                  fontSize: 10,
-                  fontWeight: 700,
-                  color: C.blue,
-                  background: C.blueBg,
-                  border: `1px solid ${C.blueBorder}`,
-                  borderRadius: 3,
-                  padding: "2px 6px",
-                }}
-              >
-                AFTER
-              </span>
-            </div>
-            <div style={{ fontSize: 11, color: C.muted, lineHeight: 1.6 }}>
-              Claude Code가 직접 편집 → Git 커밋 → Obsidian 자동 Pull.
-              수동 단계 0개, SoT는 Git 하나.
-            </div>
-          </div>
-        </div>
-      </div>
-
-      {/* ④ Evolution */}
+      {/* ③ Evolution */}
       <div>
         <p style={labelStyle}>Evolution</p>
         <p
@@ -1544,9 +1523,10 @@ export function ObsidianSystemSection() {
             margin: "0 0 16px",
           }}
         >
-          2주 동안 8번의 구조 변경. bridge 스크립트에서 시작해 3개 CLI가
-          공유하는 Context as Currency 시스템까지. 더하기(v0→v3.3)와
-          빼기(v4.0) — 복잡도를 쌓다가 정리하는 순간이 진짜 설계였다.
+          이 구조가 처음부터 이랬던 건 아니다. 2주 동안 8번의 구조 변경 —
+          bridge 스크립트에서 시작해 3개 CLI가 공유하는 Context as Currency
+          시스템까지. 더하기(v0→v3.3)와 빼기(v4.0) — 복잡도를 쌓다가
+          정리하는 순간이 진짜 설계였다.
         </p>
         <div
           style={{
@@ -1625,8 +1605,101 @@ export function ObsidianSystemSection() {
         </div>
       </div>
 
-      {/* ⑤ Lessons */}
+      {/* ④ Impact & Lessons */}
       <div>
+        <p style={labelStyle}>Impact</p>
+        <p
+          style={{
+            fontSize: 13,
+            color: C.muted,
+            lineHeight: 1.65,
+            margin: "0 0 14px",
+          }}
+        >
+          2주간의 반복이 만든 결과다.
+        </p>
+        <div
+          style={{
+            display: "grid",
+            gridTemplateColumns: "repeat(auto-fill, minmax(140px, 1fr))",
+            gap: 10,
+            marginBottom: 32,
+          }}
+        >
+          {[
+            {
+              number: "3",
+              unit: "CLI",
+              desc: "Claude · Gemini · Codex가 같은 STATE.md를 공유한다",
+              color: C.blue,
+              bg: C.blueBg,
+              border: C.blueBorder,
+            },
+            {
+              number: "15",
+              unit: "에이전트",
+              desc: "24개에서 정리한 15개. 9개 스킬이 자동 디스패치",
+              color: C.purple,
+              bg: C.purpleBg,
+              border: C.purpleBorder,
+            },
+            {
+              number: "8",
+              unit: "Hooks",
+              desc: "SessionStart부터 PostToolUse까지 실시간 자동화",
+              color: C.teal,
+              bg: C.tealBg,
+              border: C.tealBorder,
+            },
+            {
+              number: "0",
+              unit: "수동 동기화",
+              desc: "Obsidian Git 자동 Pull + Claude 자동 Push",
+              color: C.green,
+              bg: C.greenBg,
+              border: C.greenBorder,
+            },
+          ].map((m) => (
+            <div
+              key={m.unit}
+              style={{
+                border: `1px solid ${m.border}`,
+                borderRadius: 10,
+                padding: "16px",
+                background: m.bg,
+                textAlign: "center",
+              }}
+            >
+              <div
+                style={{
+                  fontSize: 24,
+                  fontWeight: 800,
+                  color: m.color,
+                  lineHeight: 1,
+                  marginBottom: 2,
+                }}
+              >
+                {m.number}
+              </div>
+              <div
+                style={{
+                  fontSize: 10,
+                  fontWeight: 700,
+                  color: m.color,
+                  textTransform: "uppercase",
+                  letterSpacing: "0.4px",
+                  marginBottom: 6,
+                }}
+              >
+                {m.unit}
+              </div>
+              <div style={{ fontSize: 11, color: C.muted, lineHeight: 1.5 }}>
+                {m.desc}
+              </div>
+            </div>
+          ))}
+        </div>
+
         <p style={labelStyle}>Lessons</p>
         <div
           style={{
@@ -1638,14 +1711,14 @@ export function ObsidianSystemSection() {
           {[
             {
               title: "SoT는 하나만",
-              desc: "같은 정보가 두 곳에 있으면 반드시 어긋난다. 하나만 진실이고 나머지는 읽기 전용. Git이 유일한 Source of Truth.",
+              desc: "같은 정보가 두 곳에 있으면 반드시 어긋난다. 하나만 진실이고 나머지는 읽기 전용. 로컬 마크다운이 유일한 Source of Truth.",
               color: C.blue,
               bg: C.blueBg,
               border: C.blueBorder,
             },
             {
               title: "도구는 역할을 분리해야",
-              desc: "Writer(Claude Code), Source of Truth(Git), Viewer(Obsidian). 하나의 도구가 모든 역할을 하면 충돌한다.",
+              desc: "Writer(Claude Code), SoT(로컬 마크다운), Persistence(Git), Viewer(Obsidian). 역할이 겹치면 충돌한다.",
               color: C.purple,
               bg: C.purpleBg,
               border: C.purpleBorder,
