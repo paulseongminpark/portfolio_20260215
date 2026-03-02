@@ -809,6 +809,12 @@
 .wd-asistobe-btn.active { background: #111; color: #fff; }
 .wd-asistobe-frame { border-radius: 8px; overflow: hidden; background: #f7f5f2; }
 .wd-asistobe-img { width: 100%; height: auto; display: block; }
+/* ── HOW I AI 다이어그램 배경 ── */
+.wd-diagram-bg-1 { background: #f7f7f5; border-radius: 16px; padding: 32px; margin: 24px auto; max-width: 860px; }
+.wd-diagram-bg-2 { background: #f0ede8; border-radius: 16px; padding: 32px; margin: 24px auto; max-width: 860px; }
+.wd-diagram-bg-3 { background: #e8e4de; border-radius: 16px; padding: 32px; margin: 24px auto; max-width: 860px; position: relative; overflow: hidden; }
+.wd-dark-card { background: #141413; border-radius: 16px; padding: 32px 48px; }
+
 @media (max-width: 700px) {
   .wd-body { padding: 0 20px 80px; }
   .wd-callout { grid-template-columns: 1fr; gap: 8px; }
@@ -817,4 +823,6 @@
   .wd-quote-image.reverse .wd-qi-text { order: 0; }
   .wd-image-grid.cols-3 { grid-template-columns: 1fr 1fr; }
   .wd-placeholder-grid { grid-template-columns: 1fr 1fr; }
+  .wd-diagram-bg-1, .wd-diagram-bg-2, .wd-diagram-bg-3 { padding: 16px; }
+  .wd-dark-card { padding: 20px 16px; }
 }

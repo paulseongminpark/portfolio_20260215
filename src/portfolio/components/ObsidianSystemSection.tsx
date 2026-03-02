@@ -39,7 +39,7 @@ const labelStyle: React.CSSProperties = {
 };
 
 // ── 볼트 구조 트리 (Bedford-style dark) ──────────────────────────────
-const VAULT_TREE = [
+export const _VAULT_TREE = [
   { name: "HOME.md", indent: 0, folder: false, desc: "볼트 허브" },
   { name: "CLAUDE.md", indent: 0, folder: false, desc: "전역 규칙" },
   { name: "GEMINI.md", indent: 0, folder: false, desc: "rulesync" },
@@ -60,7 +60,7 @@ const VAULT_TREE = [
 ];
 
 // ── Living Docs 카드 ────────────────────────────────────────────────
-const LIVING_DOCS = [
+export const _LIVING_DOCS = [
   {
     label: "STATE.md",
     desc: "시스템 인벤토리. 에이전트, 스킬, 팀, 플러그인의 단일 진실.",
@@ -501,7 +501,7 @@ const FILE_CONTENT: Record<FileKey, React.ReactNode> = {
   ),
 };
 
-function ObsidianMockup() {
+export function _ObsidianMockup() {
   const [activeFile, setActiveFile] = useState<FileKey>("HOME.md");
   const [openFolders, setOpenFolders] = useState<Set<string>>(() => new Set(DEFAULT_OPEN));
 
@@ -760,7 +760,7 @@ const GRAPH_EDGES: GEdge[] = [
   { from: "ctx/shared-context.md", to: "HOME.md" },
 ];
 
-function VaultGraph() {
+export function _VaultGraph() {
   const [hovered, setHovered] = useState<GNode["id"] | null>(null);
 
   const connectedTo = (nodeId: GNode["id"]) => {

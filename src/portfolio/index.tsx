@@ -136,7 +136,6 @@ const P12_TOC: Array<{ id: string; label: string; mini: string; items: Array<{ i
 
 // ── 데이터 ──────────────────────────────────────────────────────
 const sys = parseSystemContent(homeRaw);
-const aiSections = parseSections(aiRaw);
 const trSections = parseSections(trRaw);
 
 const aboutItems = [
@@ -660,26 +659,7 @@ export default function Page12() {
           {/* ── AI System (System 섹션 마지막) ── */}
           <FadeIn delay={0.2}>
             <div id="ai" style={{ marginTop: 64, paddingTop: 48, borderTop: "1px solid #e8e8e8" }}>
-              <SectionLabel>AI System</SectionLabel>
-              <h2 className="p12-h2" style={{ color: "#111", marginTop: 8, marginBottom: 8 }}>
-                HOW I AI
-              </h2>
-              <p style={{ fontFamily: "'Inter','Noto Sans KR',sans-serif", fontSize: 15, color: "#666", lineHeight: 1.7, maxWidth: 600, marginBottom: 32 }}>
-                Claude Code를 운영체제처럼 쓴다.<br />
-                What만 정의하면 15개 에이전트가 How를 결정하고 실행한다.
-              </p>
-              <StatsBar stats={[
-                { value: "15", label: "Specialized Agents" },
-                { value: "9", label: "Skills" },
-                { value: "8", label: "Hooks" },
-                { value: "4", label: "AI Tools" },
-              ]} />
-              <div style={{ marginTop: 32 }}>
-                <SectionFlowGrid sections={aiSections} cols={3} disableHighlight />
-              </div>
-              <div style={{ paddingTop: 48, borderTop: "1px solid #e8e8e8", marginTop: 2 }}>
-                <AiWorkflowSection raw={aiRaw} />
-              </div>
+              <AiWorkflowSection raw={aiRaw} />
             </div>
           </FadeIn>
         </div>
