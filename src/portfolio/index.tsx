@@ -620,19 +620,9 @@ export default function Page12() {
                   <p style={{ fontFamily: "'Inter',sans-serif", fontSize: 11, fontWeight: 600, letterSpacing: "0.14em", textTransform: "uppercase", marginBottom: 12 }}>
                     <span style={{ color: "#666" }}>{item.label}</span>
                   </p>
-                  {item.type === "list" ? (
-                    <ol style={{ paddingLeft: 0, margin: 0, listStylePosition: "inside", fontFamily: "'Inter','Noto Sans KR',sans-serif", fontSize: 14, color: "#555", lineHeight: 1.75 }}>
-                      {item.flowItems?.map((fi, j) => (
-                        <li key={j} style={{ marginBottom: j < (item.flowItems?.length ?? 0) - 1 ? 8 : 0 }}>
-                          {renderBoldPlain(fi)}
-                        </li>
-                      ))}
-                    </ol>
-                  ) : (
-                    <p style={{ fontFamily: "'Inter','Noto Sans KR',sans-serif", fontSize: 14, color: "#555", lineHeight: 1.75, margin: 0 }}>
-                      {renderBoldPlain(item.body)}
-                    </p>
-                  )}
+                  <p style={{ fontFamily: "'Inter','Noto Sans KR',sans-serif", fontSize: 14, color: "#555", lineHeight: 1.75, margin: 0 }}>
+                    {renderBoldPlain(item.body)}
+                  </p>
                 </div>
               </FadeIn>
             ))}
