@@ -22,42 +22,6 @@ function extractBold(raw: string, marker: string): string {
   return m ? m[1].trim() : "";
 }
 
-function parseSystemContent(raw: string) {
-  const lines = raw.split("\n");
-  const secIdx = lines.findIndex((l) => l.startsWith("# 3) HOW I OPERATE"));
-  const sec = secIdx >= 0 ? lines.slice(secIdx + 1) : [];
-  const strip = (l: string) => l.replace(/^\*\*(.+)\*\*$/, "$1");
-  const nextBody = (arr: string[], from: number) => {
-    let i = from;
-    while (i < arr.length && arr[i].trim() === "") i++;
-    return arr[i] ?? "";
-  };
-  const pIdx = sec.findIndex((l) => l.startsWith("**Operating Principles"));
-  const fIdx = sec.findIndex((l) => l.startsWith("**Flow"));
-  const tIdx = sec.findIndex((l) => l.startsWith("**Time"));
-  const sIdx = sec.findIndex((l) => l.startsWith("**Sensation"));
-  const rIdx = sec.findIndex((l) => l.startsWith("**Relation"));
-  const flowItems: string[] = [];
-  if (fIdx >= 0) {
-    for (let i = fIdx + 1; i < sec.length; i++) {
-      const m = sec[i].match(/^\d+\.\s+(.+)/);
-      if (m) flowItems.push(m[1]);
-      else if (flowItems.length > 0 && sec[i].trim() !== "") break;
-    }
-  }
-  return {
-    principlesTitle: pIdx >= 0 ? strip(sec[pIdx]) : "",
-    principlesBody: pIdx >= 0 ? nextBody(sec, pIdx + 1) : "",
-    flowTitle: fIdx >= 0 ? strip(sec[fIdx]) : "",
-    flowItems,
-    timeTitle: tIdx >= 0 ? strip(sec[tIdx]) : "",
-    timeBody: tIdx >= 0 ? nextBody(sec, tIdx + 1) : "",
-    sensationTitle: sIdx >= 0 ? strip(sec[sIdx]) : "",
-    sensationBody: sIdx >= 0 ? nextBody(sec, sIdx + 1) : "",
-    relationTitle: rIdx >= 0 ? strip(sec[rIdx]) : "",
-    relationBody: rIdx >= 0 ? nextBody(sec, rIdx + 1) : "",
-  };
-}
 
 /** ## 헤딩 → { heading, items[] } 파싱 (공통) */
 function parseSections(raw: string): { heading: string; items: string[] }[] {
@@ -112,12 +76,11 @@ const P12_TOC: Array<{ id: string; label: string; mini: string; items: Array<{ i
     { id: "about-direction",  label: "Direction" },
   ]},
   { id: "system",  label: "System",                   mini: "SY", items: [
-    { id: "product-1",        label: "Principles" },
-    { id: "product-2",        label: "Flow" },
-    { id: "system-time",      label: "Time" },
-    { id: "system-sensation", label: "Sensation" },
-    { id: "system-relation",  label: "Relation" },
-    { id: "ai",               label: "AI System" },
+    { id: "system-connection", label: "Connection" },
+    { id: "system-currency",   label: "Context as Currency" },
+    { id: "system-structure",  label: "Structure" },
+    { id: "system-governance", label: "Governance" },
+    { id: "ai",                label: "AI System" },
   ]},
   { id: "work",    label: "Work",                     mini: "WK", items: [
     { id: "work-empty-house", label: "Empty House" },
@@ -135,7 +98,6 @@ const P12_TOC: Array<{ id: string; label: string; mini: string; items: Array<{ i
 ];
 
 // ── 데이터 ──────────────────────────────────────────────────────
-const sys = parseSystemContent(homeRaw);
 const trSections = parseSections(trRaw);
 
 const aboutItems = [
@@ -179,11 +141,30 @@ function getUrlWithWork(work: WorkKey | null): string {
 }
 
 const SYSTEM_ITEMS = [
-  { id: "product-1", label: "Operating Principles", title: "", body: "사람의 의지에 기대지 않고, 행동이 나오게 만드는 '조건'을 설계합니다.", type: "text" as const },
-  { id: "product-2", label: "Flow", title: "", body: "", flowItems: sys.flowItems, type: "list" as const },
-  { id: "system-time", label: "Framework / Time", title: "", body: sys.timeBody, type: "text" as const },
-  { id: "system-sensation", label: "Framework / Sensation", title: "", body: sys.sensationBody, type: "text" as const },
-  { id: "system-relation", label: "Framework / Relation", title: "", body: sys.relationBody, type: "text" as const },
+  {
+    id: "system-connection",
+    label: "Connection",
+    body: "리스트가 아닌 그래프로 생각한다. 26개 노드 타입, 33개 관계 타입으로 이루어진 온톨로지를 직접 만들었다. Decision, Failure, Insight, Metaphor, Connection — 이건 기억 시스템이 아니라 내 사고 구조의 외부화다. 뉴런이 연결로 기억하듯, 이 시스템은 연결로 안다.",
+    type: "text" as const,
+  },
+  {
+    id: "system-currency",
+    label: "Context as Currency",
+    body: "반복 설명은 낭비다. 세션마다 같은 맥락을 처음부터 설명해야 한다면, 생각이 아니라 기억에 에너지를 쓰게 된다. 원칙: 필요한 순간에 정확히 필요한 것만 꺼낸다. 이 구조가 세션 시작 비용을 88% 줄였다.",
+    type: "text" as const,
+  },
+  {
+    id: "system-structure",
+    label: "Structure over Willpower",
+    body: "세션이 끊겨도 기억이 단절되지 않도록 4중 안전망을 만들었다. Hook(자동) → 명시적 지시 → 수동 체크포인트 → 세션 마무리. 기억력에 기대지 않는다. 구조가 기억한다.",
+    type: "text" as const,
+  },
+  {
+    id: "system-governance",
+    label: "Governance",
+    body: "시스템은 고정되지 않는다. 타입이 진화하고, 새 도구가 붙고, 관계가 재정의된다. 중요한 건 무엇을 쓰느냐가 아니라 어떻게 통제할 것인가다. 도구보다 통제 구조가 먼저다.",
+    type: "text" as const,
+  },
 ];
 
 // ── 공통 섹션 흐름 카드 그리드 (portfolio_ui_test_v2 구조 기반) ──
@@ -623,7 +604,7 @@ export default function Page12() {
               How I Operate
             </h2>
             <p style={{ fontFamily: "'Inter','Noto Sans KR',sans-serif", fontSize: 15, color: "#666", lineHeight: 1.7, maxWidth: 560, marginBottom: 48 }}>
-              생각하고 실행하는 방식의 원칙. 시간·감각·관계를 어떻게 다루는지의 구조.
+              사고 구조를 외부화하는 방식.
             </p>
           </FadeIn>
           <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 2, alignItems: "stretch" }}>
