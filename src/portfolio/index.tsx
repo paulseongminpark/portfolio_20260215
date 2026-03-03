@@ -144,25 +144,25 @@ const SYSTEM_ITEMS = [
   {
     id: "system-connection",
     label: "Connection",
-    body: "리스트가 아닌 그래프로 생각한다. 26개 노드 타입, 33개 관계 타입으로 이루어진 온톨로지를 직접 만들었다. Decision, Failure, Insight, Metaphor, Connection — 이건 기억 시스템이 아니라 내 사고 구조의 외부화다. 뉴런이 연결로 기억하듯, 이 시스템은 연결로 안다.",
+    body: "무언가를 배울 때, 항목으로 기억하는 것보다 어디서 왜 나왔는지가 더 오래 남았다. 하나의 사건에도 여러 각도가 보인다 — 배경, 결정, 실패, 통찰. 이것들이 따로 저장되면 흩어진다. 아이디어 하나가 생기면, 어디서 왔는지, 무엇과 연결되는지를 먼저 본다. 이 습관을 시스템으로 옮겼다. 26개 노드 타입, 33개 관계 타입 — 무슨 일이 있었고, 어떤 판단을 했으며, 어디서 틀렸는지를 연결로 쌓는다. 기억이 아니라 사고 구조의 외부화다.",
     type: "text" as const,
   },
   {
     id: "system-currency",
     label: "Context as Currency",
-    body: "반복 설명은 낭비다. 세션마다 같은 맥락을 처음부터 설명해야 한다면, 생각이 아니라 기억에 에너지를 쓰게 된다. 원칙: 필요한 순간에 정확히 필요한 것만 꺼낸다. 이 구조가 세션 시작 비용을 88% 줄였다.",
+    body: "대화를 시작할 때마다 같은 맥락을 처음부터 설명해야 한다면, 생각이 아니라 기억에 에너지를 쓰게 된다. 그 낭비를 없애기 위해 맥락 자체를 구조화했다. 필요한 순간에 정확히 필요한 것만 꺼낸다 — 세션 시작 비용을 88% 줄였다.",
     type: "text" as const,
   },
   {
     id: "system-structure",
     label: "Structure over Willpower",
-    body: "세션이 끊겨도 기억이 단절되지 않도록 4중 안전망을 만들었다. Hook(자동) → 명시적 지시 → 수동 체크포인트 → 세션 마무리. 기억력에 기대지 않는다. 구조가 기억한다.",
+    body: "세션이 끊기면 기억도 끊길 수 있다는 걸 안다. 그래서 기억력에 기대지 않기로 했다. 자동 Hook부터 수동 체크포인트까지 4단계 안전망을 만들었다. 의지가 아니라 구조가 기억한다.",
     type: "text" as const,
   },
   {
     id: "system-governance",
     label: "Governance",
-    body: "시스템은 고정되지 않는다. 타입이 진화하고, 새 도구가 붙고, 관계가 재정의된다. 중요한 건 무엇을 쓰느냐가 아니라 어떻게 통제할 것인가다. 도구보다 통제 구조가 먼저다.",
+    body: "시스템을 만들었다고 끝이 아니다. 새 도구가 나오고, 더 나은 방식이 생기고, 기존 구조가 낡아진다. 중요한 건 무엇을 쓰느냐보다 어떻게 통제할 것인가 — 그래서 거버넌스가 먼저다. 시스템은 만드는 것, 거버넌스는 운영하는 것이다.",
     type: "text" as const,
   },
 ];
@@ -601,10 +601,10 @@ export default function Page12() {
           <FadeIn>
             <SectionLabel>02 · System</SectionLabel>
             <h2 className="p12-h2" style={{ color: "#111", marginTop: 8, marginBottom: 8 }}>
-              How I Operate
+              How I Work
             </h2>
             <p style={{ fontFamily: "'Inter','Noto Sans KR',sans-serif", fontSize: 15, color: "#666", lineHeight: 1.7, maxWidth: 560, marginBottom: 48 }}>
-              사고 구조를 외부화하는 방식.
+              그리고 왜 이 방식인가.
             </p>
           </FadeIn>
           <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 2, alignItems: "stretch" }}>
