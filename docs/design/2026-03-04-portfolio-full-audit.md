@@ -338,49 +338,46 @@ About / System / Work / AI / TR / Writing / Contact → PSM (로고, Contact로 
 
 ---
 
-## 6. 미구현 작업 목록 (우선순위)
+## 6. 미구현 작업 목록 (트래킹)
+> 마지막 업데이트: 2026-03-04
 
-### 구조 변경 (필수)
+### 구조 변경 — 완료 ✅
 
-**[P1] 02·System → 02·How I Think 분리**
-- `id="system"` → `id="how-i-think"`
-- SectionLabel "02 · System" → "02 · How I Think"
-- h2 "How I Work" 유지
-- AiWorkflowSection을 02 섹션에서 제거, 별도 03 섹션으로 이동
-- TOC 업데이트
+**[완료] P1: 02·How I Think + 03·How I Build 분리** — claude/portfolio 브랜치
+**[완료] P2: TR → 05·Writing 통합, ObsidianSystemSection 제거** — claude/portfolio 브랜치
+**[완료] P3: Nav (6항목) + TOC 업데이트** — claude/portfolio 브랜치
 
-**[P1] 03·How I Build 신규 생성**
-- `id="how-i-build"` 신규 섹션
-- SectionLabel "03 · How I Build"
-- AiWorkflowSection 이동 (현재 코드 그대로 사용)
-- 온톨로지 자리 확보 (placeholder 또는 "준비 중" 박스)
-- Obsidian 한 단락 추가 (내용 결정 필요)
-- 번호 밀기: Work → 04, Writing → 05
+---
 
-**[P2] TR → 05·Writing 통합**
-- TechReviewSystemSection + TechReviewCards를 Writing 섹션으로 이동
-- Obsidian 섹션: `ObsidianSystemSection` 제거 → 한 단락으로 대체
+### 미결 항목 (설계/콘텐츠)
 
-**[P3] Nav + TOC 업데이트**
-- "System" → "How I Think" / "AI" 별도 링크 제거 또는 "How I Build"로 변경
-- "TR" → "Writing" 통합
+**[A] 03·How I Build 섹션 헤더 없음**
+- 현재: AiWorkflowSection이 섹션 시작과 동시에 바로 나옴
+- SectionLabel "03 · How I Build" + h2 + intro 문장 필요
+- 상태: ❌ 미작업
 
-### 미결 설계 사항
-
-**[설계 미완] 온톨로지 섹션**
-- localhost:7676에서 빌드 중 (SQLite+FTS5+ChromaDB+NetworkX)
-- 26 노드타입, 33 관계타입
-- 현재: Datasette/pyvis/Obsidian Graph View로 임시 시각화
-- 목표: 실제 온톨로지 다이어그램으로 교체
-- **별도 brainstorming 세션 필요**
-
-**[설계 미완] Obsidian 한 단락**
+**[B] Obsidian 한 단락 텍스트**
 - 역할: 시각화 레이어 + Living Docs 소통창구
-- 텍스트 내용 미확정
+- 현재: "준비 중" placeholder
+- 상태: ❌ 텍스트 미확정 (별도 논의 필요)
 
-**[설계 미완] 05·Writing 섹션 콘텐츠**
-- 현재 에세이 1개, 링크 없음
-- TR 통합 후에도 얼마나 채울지 결정 필요
+**[C] TechReviewSystemSection 전체 텍스트 재작성**
+- 현재 Writing 섹션 하위에 있는 TR 시스템 상세 설명 전체
+- 방향: 미결 (논의 필요)
+- 상태: ❌ 미작업
+
+**[D] Ontology placeholder → 실제 콘텐츠**
+- localhost:7676 빌드 중 (SQLite+FTS5+ChromaDB+NetworkX, 26노드/33관계)
+- 현재: "준비 중" placeholder
+- 상태: ❌ 온톨로지 완성 후 교체 (별도 brainstorming 세션)
+
+**[E] Writing 에세이**
+- 현재: "시스템으로 생각하기" 텍스트만, 링크/실제 글 없음
+- 상태: ❌ 미작업
+
+**[F] master 머지 (배포 타이밍)**
+- claude/portfolio 브랜치 → master 머지 시점 결정
+- 상태: ❌ 보류
 
 ---
 
