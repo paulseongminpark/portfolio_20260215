@@ -1,5 +1,5 @@
 # portfolio STATE
-_Updated: 2026-03-04 (3차)_
+_Updated: 2026-03-04_
 
 ## 목적
 개인 포트폴리오 웹사이트 (React + Vite, vanilla CSS, hash routing)
@@ -51,6 +51,12 @@ _Updated: 2026-03-04 (3차)_
   - V1: Before/After 투톤 분할 카드 (→ 화살표)
   - V2: Accordion (클릭 시 펼침, + 회전 애니메이션)
   - V3: Narrative-first — Why가 주인공, Before→After 취소선+보조
+- **완료: 전체 섹션 구조 재편 설계** (2026-03-04)
+  - 6섹션 구조 확정: 01 About / 02 How I Think / 03 How I Build / 04 Work / 05 Writing / 06 Contact
+  - 4카드 타이틀 변경 (commit 392e724)
+  - audit 문서: docs/design/2026-03-04-portfolio-full-audit.md (416줄)
+  - mcp-memory checkpoint: node #4057~#4059
+- 진행중: 6섹션 구조 구현 (How I Think/How I Build 분리, TR→Writing, Obsidian 축소)
 - 진행중: Key Decisions 레이아웃 선택 + 실제 반영 (sandbox v1/v2/v3 중 선택)
 - **완료: HOW I AI 섹션 Evolution 전면 재작성** (2026-03-04)
   - 인터뷰 기반 3주 타임라인 재구성 (질문 중심: "뭘 더?"/​"이게 뭘?"/​"이건 결국?")
@@ -58,8 +64,16 @@ _Updated: 2026-03-04 (3차)_
   - UI: 3칸 수평 그리드 → 세로 스택 + 질문 강조(21px bold)
   - 시스템에 대하여: opencode 제거, 하네스 도구/agent engineering OS 맥락으로
   - 인터뷰 원본 저장: docs/evolution-interview-2026-03-03.md
+- **완료: How I Operate 섹션 전면 재작성** (2026-03-03)
+  - 기존 추상 프레임워크(Time/Sensation/Relation) 5카드 → 외부 메모리 시스템 기반 4원칙 카드
+  - 4원칙: Connection / Context as Currency / Structure over Willpower / Governance
+  - parseSystemContent 함수 제거, SYSTEM_ITEMS 하드코딩
+  - TOC 5→4, subtitle 교체
+  - "이색적인 접합" 4번 카드 제거 — show vs tell 원칙
 
 ## 최근 결정
+- 2026-03-04: 6섹션 구조 확정 — About/How I Think/How I Build/Work/Writing/Contact. TR→Writing 이동, Obsidian 축소, 온톨로지 자리 확보
+- 2026-03-03: How I Operate 전면 재작성 — 추상→원칙, 5→4카드, Direction B(원칙→구현 하나의 이야기)
 - 2026-03-04: HOW I AI Evolution 전면 재작성 — 인터뷰 기반 3주 타임라인, 질문 중심 UI, 인터뷰 원본 저장
 - 2026-03-04: E2EWorkflow 헤더/파란배경 분리, Key Decisions sandbox 3종 (V1투톤/V2아코디언/V3내러티브)
 - 2026-03-02: Multi-AI Orchestration 테이블 리팩토링 — 2x2 카드→4컬럼 테이블, PNG→코드 변환, AiRole 인터페이스 확장, _sandbox/ gitignore
