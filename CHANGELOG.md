@@ -1,5 +1,15 @@
 # Portfolio CHANGELOG
 
+## 2026-03-03
+
+### How I Operate 전면 재작성
+- 기존 추상 프레임워크(Time/Sensation/Relation) → 외부 메모리 시스템 기반 4원칙 카드
+- Connection / Context as Currency / Structure over Willpower / Governance
+- parseSystemContent 제거, SYSTEM_ITEMS 하드코딩, TOC 5→4개
+- 커밋: 6fab97d
+
+---
+
 ## 2026-03-04
 
 ### E2EWorkflow 헤더/배경 분리
