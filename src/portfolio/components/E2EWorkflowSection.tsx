@@ -14,71 +14,64 @@ type Phase = {
 /* ─── Data ─── */
 const PHASES: Phase[] = [
   {
-    id: 1, name: '세션 시작', cat: 'system',
-    desc: '새 세션을 열면 Claude는 이미 어제 어디까지 했는지 알고 있다. SessionStart hook이 자동으로 실행되어 git status, 미반영 결정 목록, 이전 세션 스냅샷을 수집하고 live-context.md를 생성한다. Claude/Gemini/Codex 세 CLI에 분산된 맥락은 context-linker가 하나로 병합한다. 세션 내내 PostToolUse hook이 작동하며 *.md 파일이 변경될 때마다 live-context.md를 자동 갱신한다. .ctx/shared-context.md가 현재 목표와 진행 상황을 어떤 CLI에서든 읽을 수 있게 공유한다. "어디까지 했더라?"가 아니라 "다음에 뭐 하면 되지?"가 열자마자 눈앞에 있다.',
+    id: 1, name: 'Start', cat: 'system',
+    desc: '새 세션을 열면 시스템이 이미 준비된 상태다. 어제 어떤 결정을 했는지, 어디서 멈췄는지, 아직 처리 못 한 게 뭔지 — 다시 꺼내서 설명할 필요 없이 자동으로 올라온다. 여러 도구에 흩어진 맥락도 하나로 모인다. 시작하자마자 다음 일로 들어갈 수 있다. 세션 내내 파일이 바뀔 때마다 맥락도 자동으로 갱신된다. 어떤 도구에서 작업하든 같은 프로젝트 상태를 보고 있다.',
     actors: ['SessionStart hook', 'context-linker', 'PostToolUse hook'],
     inputs: ['이전 세션 스냅샷', 'git status', 'decisions.md', '.ctx/shared-context.md'],
     outputs: ['live-context.md', '크로스세션 맥락', '작업 준비 완료'],
   },
   {
-    id: 2, name: '디스패치', cat: 'hub',
-    desc: '세션을 열고 제일 먼저 치는 명령어가 /dispatch다. linker가 먼저 자동으로 실행되어 크로스세션 맥락을 최신 상태로 업데이트한다. 그 다음 meta-orchestrator가 STATE.md, TODO.md, 미반영 결정을 교차 분석해 지금 이 시점에 가장 적합한 팀을 추천한다. 단순한 할 일 목록이 아니라 다음 3개의 구체적 액션과 그 이유가 함께 나온다. 세션 목표가 확정되면 status line에 🎯가 표시되고, 세션 종료 시 달성률이 자동 기록된다.',
+    id: 2, name: 'Dispatch', cat: 'hub',
+    desc: '/dispatch 하나로 오늘 세션의 방향이 잡힌다. 현재 상태, 미완료 항목, 결정을 기다리는 것들을 분석해서 지금 가장 중요한 일 세 가지를 이유와 함께 제안한다. 스스로 할 일을 정하는 게 아니라, 판단할 근거를 받고 내가 결정하는 구조다. 세션 목표가 확정되면 달성률이 마무리 시점에 자동으로 남는다. 우선순위가 어긋난 채로 하루를 시작하는 일이 없어진다. 방향을 확인하고 들어가는 것과 그냥 들어가는 것은 나중에 차이가 크다.',
     actors: ['linker', 'meta-orchestrator', '사용자'],
     inputs: ['사용자 의도', 'STATE.md', 'TODO.md', '미반영 결정'],
     outputs: ['팀 활성화', '세션 목표', '다음 3개 액션'],
   },
   {
-    id: 3, name: '팀 구조', cat: 'hub',
-    desc: '15개 에이전트는 3팀 + 허브로 구성된다. build 팀은 code-reviewer(리드), commit-writer, pf-ops, security-auditor로 구현부터 배포까지 담당한다. verify 팀은 ai-synthesizer(리드), gemini-analyzer, codex-reviewer로 외부 CLI 결과를 검증하고 반박한다. maintain 팀은 compressor(리드), doc-ops, linker, daily-ops, tr-ops로 문서화와 컨텍스트 관리를 맡는다. meta-orchestrator는 어느 팀에도 속하지 않는 허브로, /dispatch를 통해서만 호출된다. 같은 작업을 같은 팀이 반복하면서 역할 경계가 명확해진다.',
-    actors: ['meta-orchestrator', 'build 팀', 'verify 팀', 'maintain 팀'],
-    inputs: ['디스패치 요청', '현재 상태 분석'],
-    outputs: ['팀 활성화', '역할 분배', '병렬 실행'],
-  },
-  {
-    id: 4, name: '플래닝', cat: 'user',
-    desc: '코드를 한 줄 쓰기 전에 설계를 완성한다. brainstorming 스킬은 "무엇을 만들지"만 받고 나머지는 스스로 탐색한다. 요구사항을 질문 하나씩 정교하게 다듬고, 2~3가지 접근 방식을 트레이드오프와 함께 제안한다. 설계가 승인되면 writing-plans가 전체 작업을 2~5분짜리 단위로 쪼개 TDD 순서로 배열한다. 실패 테스트를 먼저 쓰고, 최소한의 코드로 통과시키고, 커밋. 이 순서를 지키면 나중에 처음으로 되돌아오는 일이 훨씬 줄어든다.',
+    id: 3, name: 'Plan', cat: 'user',
+    desc: '코드를 쓰기 전에 설계를 완성한다. 요구사항이 뭔지, 어떤 방식으로 접근할지, 트레이드오프가 뭔지 함께 정리하고, 승인이 나면 작업이 순서 있는 단위로 쪼개진다. 설계가 잡히면 한 번 더 돌아본다 — 방향이 맞는지, 빠진 게 없는지. 이 단계를 꼼꼼하게 할수록 구현 중에 되돌아오는 일이 줄어든다. 설계 단계에서 발견한 문제는 구현 단계보다 고치는 비용이 훨씬 싸다. 처음에 느리게 가는 게 결국 더 빠른 이유다.',
     actors: ['brainstorming', 'writing-plans', 'Claude'],
     inputs: ['요구사항', '기존 코드베이스', '설계 제약'],
-    outputs: ['설계 문서', '태스크별 구현 계획', '테스트 케이스'],
+    outputs: ['설계 문서', '태스크별 구현 계획', '검증 완료'],
   },
   {
-    id: 5, name: '구현', cat: 'build',
-    desc: '"만들었어"라고 말하는 순간 구현 체인이 자동으로 시작된다. code-reviewer가 버그, 보안 취약점, 성능 병목을 점검하고 수정이 필요한 라인과 대안 코드를 직접 제시한다. 리뷰가 통과되면 commit-writer가 컨벤션에 맞는 커밋 메시지를 생성한다. 마지막으로 linker가 이 변경이 다른 프로젝트에 영향을 주는지 감지하고 크로스프로젝트 알림을 보낸다. 구현부터 커밋, 링킹까지—사람이 개입하는 지점은 리뷰 결과를 확인하고 승인하는 것 하나뿐이다.',
+    id: 4, name: 'Prep', cat: 'maintain',
+    desc: '구현 들어가기 전에 지금까지 결정된 것들을 기록으로 남긴다. 작업이 길어질수록 맥락이 흐려지고, 흐릿한 상태에서 구현하면 방향을 잃는다. 정리해두고 시작하면 구현 중에도 흔들리지 않는다. 의도적으로 만든 습관이다. STATE.md와 CHANGELOG.md를 갱신하고, 필요하면 컨텍스트를 압축한다. 깔끔하게 정리된 상태에서 시작해야 구현 중 판단이 흔들리지 않는다.',
+    actors: ['doc-ops', 'compressor', '사용자'],
+    inputs: ['결정 사항', '현재 상태', '미반영 기록'],
+    outputs: ['STATE.md 갱신', 'CHANGELOG.md 갱신', '정리된 컨텍스트'],
+  },
+  {
+    id: 5, name: 'Build', cat: 'build',
+    desc: '설계대로 만든다. "만들었어"라고 하면 리뷰가 자동으로 시작된다. 버그, 보안, 성능이 점검되고 수정 방향이 제시된다. 리뷰가 통과되면 커밋이 만들어지고, 다른 프로젝트에 영향이 가는지까지 확인된다. 결과를 보고 승인하는 것만 남는다. 같은 작업을 같은 팀이 반복하면서 패턴이 쌓인다. 리뷰 기준이 높아지는 건 코드가 아니라 시스템이 축적한 경험 덕분이다.',
     actors: ['Claude', 'code-reviewer', 'commit-writer', 'linker'],
     inputs: ['구현 계획', '태스크 리스트'],
     outputs: ['코드 변경', '커밋 히스토리', '크로스프로젝트 알림'],
   },
   {
-    id: 6, name: '체인 자동화', cat: 'system',
-    desc: '6개 체인은 "건너뛰기 금지" 원칙으로 작동한다. 구현 체인: code-reviewer → commit-writer → linker. 배포 체인: pf-ops → security-auditor → 사용자 확인 → push. 검증 체인: Gemini/Codex 추출 → ai-synthesizer verify barrier. 디스패치 체인: linker → meta-orchestrator → 팀 활성화. 압축 체인: /compact → compressor 9단계 → doc-ops → doc-ops verify. 세션 전환 체인: /sync all → /compact → linker → 새 세션 준비. 체인은 단순한 자동화가 아니다. 각 단계를 순서대로 강제함으로써 리뷰 없는 커밋, 검증 없는 배포, 문서화 없는 마무리가 구조적으로 불가능해진다.',
-    actors: ['build 팀', 'verify 팀', 'maintain 팀', 'meta-orchestrator'],
-    inputs: ['트리거 이벤트', '이전 단계 출력'],
-    outputs: ['보장된 품질', '자동화된 흐름', '누락 방지'],
-  },
-  {
-    id: 7, name: '검증', cat: 'verify',
-    desc: '수백 개의 파일을 한 번에 분석해야 할 때는 외부 CLI에 위임한다. gemini-analyzer가 전체 코드베이스를 구조화된 JSON으로 추출하고, codex-reviewer가 diff 리뷰와 포맷 QA를 담당한다. ai-synthesizer가 이 결과를 받아 completeness check와 반박 검증을 수행한다—빠진 케이스, 데이터와 맞지 않는 결론, 놓친 리스크를 교차 검증한다. 외부 CLI는 추출 도구이고, 판단은 항상 Claude가 직접 내린다는 원칙이 흔들리는 순간 결과를 신뢰할 수 없다.',
+    id: 6, name: 'Verify', cat: 'verify',
+    desc: '구현이 끝나도 바로 배포하지 않는다. 코드베이스 전체를 직접 다 확인하는 건 불가능하니, 분석은 외부 AI에게 맡기고 판단은 직접 내린다. 빠진 케이스, 맞지 않는 결론, 놓친 리스크가 교차 검증된다. 외부 도구는 분석까지고, 판단은 항상 이쪽에서 한다. 외부 AI가 놓친 것을 Claude가 잡아내고, Claude가 놓친 걸 다시 교차 확인한다. 결과를 믿으려면 과정을 믿을 수 있어야 한다.',
     actors: ['gemini-analyzer', 'codex-reviewer', 'ai-synthesizer', 'Claude'],
     inputs: ['분석 요청', '코드/문서', '외부 CLI 결과'],
     outputs: ['검증된 결과', '정합성 리포트', '반박 포인트'],
   },
   {
-    id: 8, name: '배포', cat: 'build',
-    desc: '배포 버튼을 누르기 전까지 사람이 할 일은 아무것도 없다. pf-ops가 빌드 성공 여부, 환경변수 누락, 깨진 링크, 미커밋 파일을 확인한다. security-auditor가 XSS 취약점, .env 노출 가능성, CORS 설정, 인증 취약점을 검토한다. 두 에이전트가 모두 GO 판정을 내린 후에만 사용자에게 최종 확인을 요청하고, 승인이 떨어지면 push까지 자동으로 이어진다. 체크리스트 없이 배포하다 실수하는 상황을 구조적으로 막는 것이 목적이다.',
+    id: 7, name: 'Deploy', cat: 'build',
+    desc: '배포 전 확인은 시스템이 한다. 빌드 상태, 환경 설정, 보안 취약점이 순서대로 점검되고, 모두 통과하면 그제야 최종 확인을 요청한다. 승인이 나면 push까지 이어진다. 체크리스트를 직접 돌리다 하나 빠트리는 일을 구조적으로 없앤다. 사람이 직접 하면 반드시 빠트리는 단계가 생긴다. 그걸 구조로 막는다.',
     actors: ['pf-ops', 'security-auditor', '사용자'],
     inputs: ['빌드 결과', '환경 설정', '보안 체크리스트'],
     outputs: ['GO/NO-GO 판정', '배포 완료', 'push'],
   },
   {
-    id: 9, name: '문서화', cat: 'maintain',
-    desc: '코드가 바뀌면 문서도 자동으로 바뀐다. doc-ops가 변경 내역을 STATE.md(현재 인벤토리), CHANGELOG.md(변경 이력), KNOWLEDGE.md(발견된 패턴)에 반영한다. 반영이 끝나면 doc-ops verify가 실제 파일과 STATE.md가 일치하는지 3레이어로 검증한다. linker가 .ctx/shared-context.md를 동기화해 어떤 CLI에서든 같은 프로젝트 상태를 볼 수 있게 한다. 이 세 파일은 단순한 기록이 아니라 다음 세션이 시작될 때 Claude가 가장 먼저 읽는 컨텍스트다.',
+    id: 8, name: 'Archive', cat: 'maintain',
+    desc: '코드가 바뀌면 문서도 따라 바뀐다. 뭐가 바뀌었는지, 왜 바뀌었는지, 그 과정에서 발견한 게 뭔지 자동으로 기록된다. 이 기록이 다음 세션이 시작될 때 컨텍스트가 된다. 문서화가 별도 작업이 아니라 개발 흐름의 일부로 이어진다. 발견한 패턴, 실패한 시도, 결정의 이유까지 남긴다. 나중에 왜 이렇게 했는지 기억하지 못하는 일이 없어진다.',
     actors: ['doc-ops', 'doc-ops verify', 'linker'],
     inputs: ['변경 내역', '커밋 로그', '결정 사항'],
     outputs: ['STATE.md', 'CHANGELOG.md', 'KNOWLEDGE.md', 'shared-context.md'],
   },
   {
-    id: 10, name: '세션 마무리', cat: 'maintain',
-    desc: '세션이 끝나도 맥락은 사라지지 않는다. 세션 전환 체인이 순서대로 실행된다. /sync all이 모든 프로젝트의 STATE.md를 갱신하고 push한다. /compact가 실행되면 PreCompact hook이 먼저 스냅샷을 생성한다. compressor가 200K 컨텍스트를 200자 이내로 압축한다—완료 작업, 핵심 결정, 다음 할 일, 실패한 시도까지. doc-ops verify가 문서 정합성을 확인하고, linker가 다음 세션을 위한 크로스세션 맥락을 정리한다. SessionEnd hook이 스냅샷을 저장하면 다음 SessionStart로 전달된다. 이 루프가 끊기지 않는 한, 세션이 바뀌어도 흐름은 이어진다.',
+    id: 9, name: 'Close', cat: 'maintain',
+    desc: '세션이 끝나도 맥락은 남는다. 모든 프로젝트 상태가 갱신되고, 세션 전체가 핵심만 남겨 압축된다 — 완료한 것, 결정한 것, 다음에 할 것, 실패한 것까지. 이 스냅샷이 다음 세션의 시작점이 된다. 다음에 열면 오늘부터 이어진다. 200K 컨텍스트가 핵심만 남겨 압축된다. 이 루프가 끊기지 않는 한, 세션이 바뀌어도 흐름은 이어진다.',
     actors: ['/sync', 'compressor', 'doc-ops verify', 'linker', 'SessionEnd hook'],
     inputs: ['세션 전체 맥락', '달성률', '미완료 항목'],
     outputs: ['압축 스냅샷', 'STATE.md 갱신', '다음 세션 준비'],
@@ -155,7 +148,7 @@ function LargeBox({ phase }: { phase: Phase }) {
       borderRadius: 12,
       border: '1px solid rgba(255,255,255,0.07)',
       padding: '26px 30px',
-      minHeight: 420,
+      minHeight: 560,
       boxShadow: '0 8px 32px rgba(0,0,0,0.5)',
       animation: `e2eFadeIn 0.28s ${EASE}`,
     }}>
@@ -177,7 +170,7 @@ function LargeBox({ phase }: { phase: Phase }) {
       {/* Actors */}
       <div style={{ marginBottom: 18 }}>
         <div style={{
-          fontSize: 8, fontWeight: 700, color: 'rgba(255,255,255,0.35)',
+          fontSize: 8, fontWeight: 700, color: '#fff',
           letterSpacing: '0.1em', textTransform: 'uppercase' as const, marginBottom: 7,
         }}>Actors</div>
         <div style={{ display: 'flex', flexWrap: 'wrap' as const, gap: 5 }}>
@@ -186,7 +179,7 @@ function LargeBox({ phase }: { phase: Phase }) {
               padding: '3px 10px', borderRadius: 100, fontSize: 11,
               fontWeight: ai === 0 ? 600 : 400,
               background: ai === 0 ? `${color}1E` : 'rgba(255,255,255,0.05)',
-              color: ai === 0 ? color : 'rgba(255,255,255,0.62)',
+              color: ai === 0 ? color : 'rgba(255,255,255,0.95)',
               border: `1px solid ${ai === 0 ? color + '35' : 'rgba(255,255,255,0.08)'}`,
             }}>{a}</span>
           ))}
@@ -198,12 +191,12 @@ function LargeBox({ phase }: { phase: Phase }) {
         {[{ l: 'Input', d: phase.inputs }, { l: 'Output', d: phase.outputs }].map(g => (
           <div key={g.l}>
             <div style={{
-              fontSize: 8, fontWeight: 700, color: 'rgba(255,255,255,0.35)',
+              fontSize: 8, fontWeight: 700, color: '#fff',
               letterSpacing: '0.1em', textTransform: 'uppercase' as const, marginBottom: 7,
             }}>{g.l}</div>
             {g.d.map(item => (
               <div key={item} style={{
-                fontSize: 11, color: 'rgba(255,255,255,0.7)',
+                fontSize: 11, color: '#fff',
                 lineHeight: 1.85, paddingLeft: 11,
                 position: 'relative' as const,
               }}>
@@ -251,12 +244,14 @@ export function E2EWorkflowSection() {
         </div>
       </div>
 
-      {/* 파란 영역 — 01~10 phase only */}
+      {/* 파란 영역 — 01~09 phase only */}
       <div style={{
         background: SECTION_BG,
         borderRadius: 20,
         overflow: 'clip' as React.CSSProperties['overflow'],
         position: 'relative',
+        maxWidth: 860,
+        margin: '0 auto',
       }}>
         {/* decorative waves */}
         <svg
@@ -274,10 +269,9 @@ export function E2EWorkflowSection() {
         </svg>
 
         {/* main content */}
-        <div style={{ padding: '32px 48px 48px', position: 'relative', zIndex: 1 }}>
+        <div style={{ padding: '32px 36px 48px', position: 'relative', zIndex: 1 }}>
           <div style={{
-            display: 'flex', gap: 32, alignItems: 'flex-start',
-            maxWidth: 956, margin: '0 auto',
+            display: 'flex', gap: 28, alignItems: 'flex-start',
           }}>
             {/* left: phase nav list */}
             <div style={{ width: 148, flexShrink: 0, paddingTop: 20 }}>

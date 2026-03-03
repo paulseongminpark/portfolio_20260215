@@ -615,7 +615,7 @@ export default function Page12() {
       </section>
 
       {/* ── 02 · System (How I Operate) ── */}
-      <section id="system" className="p12-section" style={{ background: "#f7f7f5", borderTop: "1px solid #e8e8e8" }}>
+      <section id="system" className="p12-section" style={{ background: "#ffffff", borderTop: "1px solid #e8e8e8" }}>
         <div className="p12-container">
           <FadeIn>
             <SectionLabel>02 · System</SectionLabel>
@@ -656,13 +656,13 @@ export default function Page12() {
               </FadeIn>
             ))}
           </div>
-          {/* ── AI System (System 섹션 마지막) ── */}
-          <FadeIn delay={0.2}>
-            <div id="ai" style={{ marginTop: 64, paddingTop: 48, borderTop: "1px solid #e8e8e8" }}>
-              <AiWorkflowSection raw={aiRaw} />
-            </div>
-          </FadeIn>
         </div>
+        {/* ── AI System — p12-container 밖으로, wd-body가 직접 padding 관리 ── */}
+        <FadeIn delay={0.2}>
+          <div id="ai" style={{ borderTop: "1px solid #e8e8e8", marginTop: 80 }}>
+            <AiWorkflowSection raw={aiRaw} />
+          </div>
+        </FadeIn>
       </section>
 
       {/* ── 03 · Work ── */}

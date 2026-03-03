@@ -558,7 +558,7 @@
    ═══════════════════════════════════════════════════════ */
 
 /* ── 본문 외부 컨테이너 (넓은 폭) ── */
-.wd-body { max-width: 1540px; margin: 0 auto; padding: 0 48px 120px; }
+.wd-body { max-width: 1200px; margin: 0 auto; padding: 0 48px; }
 
 /* 프로즈 요소 — 텍스트는 좁은 컬럼 */
 .wd-section-header,
@@ -810,9 +810,9 @@
 .wd-asistobe-frame { border-radius: 8px; overflow: hidden; background: #f7f5f2; }
 .wd-asistobe-img { width: 100%; height: auto; display: block; }
 /* ── HOW I AI 다이어그램 배경 ── */
-.wd-diagram-bg-1 { background: #6A9BCC; border-radius: 16px; padding: 24px; margin: 24px auto; max-width: 600px; position: relative; overflow: hidden; }
-.wd-diagram-bg-2 { background: #85A87A; border-radius: 16px; padding: 24px; margin: 24px auto; max-width: 600px; position: relative; overflow: hidden; }
-.wd-diagram-bg-3 { background: #D46030; border-radius: 16px; padding: 24px; margin: 24px auto; max-width: 600px; position: relative; overflow: hidden; }
+.wd-diagram-bg-1 { background: transparent; border: none; border-radius: 0; padding: 8px 0; margin: 20px auto; max-width: 520px; position: relative; }
+.wd-diagram-bg-2 { background: #fafaf8; border: 1px solid #ebe7e0; border-radius: 16px; padding: 32px 28px; margin: 28px auto; max-width: 740px; position: relative; overflow: hidden; }
+.wd-diagram-bg-3 { background: #0d0d14; border-radius: 16px; padding: 0; margin: 28px auto; max-width: 740px; position: relative; overflow: hidden; min-height: 520px; }
 .wd-dark-card { background: #141413; border-radius: 12px; padding: 20px 28px; max-width: 520px; margin: 0 auto; }
 
 @media (max-width: 700px) {
@@ -823,6 +823,6 @@
   .wd-quote-image.reverse .wd-qi-text { order: 0; }
   .wd-image-grid.cols-3 { grid-template-columns: 1fr 1fr; }
   .wd-placeholder-grid { grid-template-columns: 1fr 1fr; }
-  .wd-diagram-bg-1, .wd-diagram-bg-2, .wd-diagram-bg-3 { padding: 16px; }
+  .wd-diagram-bg-1, .wd-diagram-bg-2 { padding: 20px 16px; }
   .wd-dark-card { padding: 20px 16px; }
 }
