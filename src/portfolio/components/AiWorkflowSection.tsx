@@ -249,7 +249,7 @@ export function AiWorkflowSection({ raw: _raw }: { raw?: string }) {
       if (res.ok) {
         iframeRef.current?.contentWindow?.location.reload();
       }
-    });
+    }).catch(() => {});
   };
 
   return (
@@ -384,7 +384,7 @@ export function AiWorkflowSection({ raw: _raw }: { raw?: string }) {
           </button>
         </div>
 
-        <p className="wd-paragraph" style={{ maxWidth: 680, marginTop: 24 }}>
+        <p className="wd-paragraph" style={{ maxWidth: 800, marginTop: 24 }}>
           {NARRATIVE.systemDetail}
         </p>
       </section>
