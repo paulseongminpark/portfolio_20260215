@@ -1,5 +1,29 @@
 # Portfolio CHANGELOG
 
+## 2026-03-04 (세션2)
+
+### GitHub Actions + Vercel 빌드 수정
+- SYSTEM_ITEMS list 데드코드 TS6133 에러 3개 제거
+- Vercel 빌드 성공 확인, GitHub Pages 배포 정상화
+- commit b0c3555
+
+### .worktrees 구조 재편
+- 03_claude (claude/portfolio 브랜치) 추가 — P1~P3 구조 실험 전용
+- 01_codex / 02_gemini: master 동기화 유지
+- _sandbox: node_modules 잠금 폴더만 남음 (정리 미완료, Windows cmd.exe 필요)
+
+### P1~P3 섹션 구조 변경 (claude/portfolio 브랜치)
+- 02·How I Think: 4카드만 (Governance 제거)
+- 03·How I Build: HOW I AI + Ontology placeholder + Obsidian placeholder
+- 04·Work / 05·Writing (TR 통합) / 06·Contact
+- Nav 6항목으로 정리, TOC 업데이트
+- PR 5174 검토 중
+
+### 미결 A~F 트래킹
+- docs/design/2026-03-04-portfolio-full-audit.md 섹션 6에 A~F 항목 명시
+
+---
+
 ## 2026-03-03
 
 ### How I Operate 전면 재작성
