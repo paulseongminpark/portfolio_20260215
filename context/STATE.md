@@ -1,5 +1,6 @@
 # portfolio STATE
 _Updated: 2026-03-04_
+_Last Session: 2026-03-04 — GitHub Actions/Vercel 빌드 수정, .worktrees 재편, P1~P3 구조변경 완료_
 
 ## 목적
 개인 포트폴리오 웹사이트 (React + Vite, vanilla CSS, hash routing)
@@ -15,6 +16,18 @@ _Updated: 2026-03-04_
 - 완료: AI System / Tech Review System / Obsidian Vault System 섹션
 - 완료: monet-lab UI 실험 (page-01~12), Lab 섹션
 - 완료: 이중 배포 체계 (2026-02-27)
+- **완료: GitHub Actions + Vercel 빌드 실패 수정** (2026-03-04)
+  - TS6133 데드코드 제거 (미사용 import/변수)
+  - Vercel 빌드 성공, GitHub Pages 배포 정상
+  - commit b0c3555
+- **완료: .worktrees 구조 재편** (2026-03-04)
+  - 03_claude (claude/portfolio) 브랜치 추가
+  - codex/gemini 마스터 동기화 (worktree 동일 유지)
+  - _sandbox 정리 (node_modules 잠금 폴더만 남음)
+- **완료: P1~P3 섹션 구조 변경** (2026-03-04)
+  - 6섹션 구조 구현 (About/How I Think/How I Build/Work/Writing/Contact)
+  - 이전 구조 비교 문서: docs/design/2026-03-04-portfolio-full-audit.md (416줄)
+  - claude/portfolio 브랜치에서 진행, 풀 리퀘스트 5174 검토 중
 - **완료: v1.0-clean 구조 정리** (2026-02-28)
   - experiments/page-12 → portfolio 구조 리네이밍
   - TS6133 빌드 에러 수정 (미사용 import/변수 제거)
@@ -56,8 +69,8 @@ _Updated: 2026-03-04_
   - 4카드 타이틀 변경 (commit 392e724)
   - audit 문서: docs/design/2026-03-04-portfolio-full-audit.md (416줄)
   - mcp-memory checkpoint: node #4057~#4059
-- 진행중: 6섹션 구조 구현 (How I Think/How I Build 분리, TR→Writing, Obsidian 축소)
-- 진행중: Key Decisions 레이아웃 선택 + 실제 반영 (sandbox v1/v2/v3 중 선택)
+- 진행중: PR 5174 검토 및 병합 (6섹션 구조 마지막 단계)
+- 진행중: 미결 A~F 목록 추적 (docs/design/2026-03-04-portfolio-full-audit.md 섹션 6)
 - **완료: HOW I AI 섹션 Evolution 전면 재작성** (2026-03-04)
   - 인터뷰 기반 3주 타임라인 재구성 (질문 중심: "뭘 더?"/​"이게 뭘?"/​"이건 결국?")
   - TimelineItem 타입 변경: phase/question/body[] 구조
@@ -72,6 +85,9 @@ _Updated: 2026-03-04_
   - "이색적인 접합" 4번 카드 제거 — show vs tell 원칙
 
 ## 최근 결정
+- 2026-03-04: GitHub Actions/Vercel 빌드 수정 — TS6133 데드코드 제거, b0c3555 커밋
+- 2026-03-04: .worktrees 구조 재편 — 03_claude 추가, codex/gemini 동기화, _sandbox 정리
+- 2026-03-04: P1~P3 섹션 구조 변경 완료 — 6섹션 구조 구현, PR 5174 검토 중, audit doc 기록
 - 2026-03-04: 6섹션 구조 확정 — About/How I Think/How I Build/Work/Writing/Contact. TR→Writing 이동, Obsidian 축소, 온톨로지 자리 확보
 - 2026-03-03: How I Operate 전면 재작성 — 추상→원칙, 5→4카드, Direction B(원칙→구현 하나의 이야기)
 - 2026-03-04: HOW I AI Evolution 전면 재작성 — 인터뷰 기반 3주 타임라인, 질문 중심 UI, 인터뷰 원본 저장
