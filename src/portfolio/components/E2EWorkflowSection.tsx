@@ -269,7 +269,7 @@ export function E2EWorkflowSection() {
         </svg>
 
         {/* main content */}
-        <div style={{ padding: '32px 36px 48px', position: 'relative', zIndex: 1 }}>
+        <div className="p12-e2e-wrapper" style={{ padding: '32px 36px 48px', position: 'relative', zIndex: 1 }}>
           <div className="p12-e2e-inner" style={{
             display: 'flex', gap: 28, alignItems: 'flex-start',
           }}>
