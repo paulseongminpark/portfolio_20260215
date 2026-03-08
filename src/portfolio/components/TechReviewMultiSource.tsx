@@ -61,17 +61,15 @@ const grid3: React.CSSProperties = {
 function BlogRow({ posts, lang }: { posts: BlogPost[]; lang: "ko" | "en" }) {
   return (
     <div>
-      <div style={{ display: "flex", alignItems: "baseline", justifyContent: "space-between", marginBottom: 14 }}>
-        <p style={{ ...rowLabel, marginBottom: 0 }}>Daily Post</p>
-        <a
-          href={`${BLOG_URL}/${lang}/`}
-          target="_blank"
-          rel="noopener noreferrer"
-          style={{ fontFamily: "'Inter',sans-serif", fontSize: 12, color: "#111", textDecoration: "none", borderBottom: "1px solid #111", paddingBottom: 1 }}
-        >
-          {lang === "ko" ? "전체보기 →" : "View all →"}
-        </a>
-      </div>
+      <p style={rowLabel}>Daily Post</p>
+      <a
+        href={`${BLOG_URL}/${lang}/`}
+        target="_blank"
+        rel="noopener noreferrer"
+        style={{ fontFamily: "'Inter',sans-serif", fontSize: 12, color: "#111", textDecoration: "none", borderBottom: "1px solid #111", paddingBottom: 1, display: "inline-block", marginBottom: 14 }}
+      >
+        {lang === "ko" ? "전체보기 →" : "View all →"}
+      </a>
       <div style={grid3}>
         {posts.slice(0, 3).map((post) => (
           <a
