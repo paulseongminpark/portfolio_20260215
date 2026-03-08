@@ -361,15 +361,11 @@ function Nav({ onLogoClick, onNavClick, showLogo = true }: { onLogoClick?: () =>
     return () => window.removeEventListener("scroll", handler);
   }, []);
 
-  const links = ["About", "System", "Work", "AI", "TR", "Writing", "Contact"];
-
-  const handleLinkClick = (l: string) => {
+  const handleLinkClick = (id: string) => {
     setMenuOpen(false);
-    const id = l.toLowerCase();
     document.getElementById(id)?.scrollIntoView({ behavior: "smooth" });
     onNavClick?.(id);
   };
-
 
   return (
     <nav className={`p12-nav${scrolled ? " scrolled" : ""}`} style={{ background: scrolled ? undefined : "#ffffff" }}>
@@ -387,10 +383,10 @@ function Nav({ onLogoClick, onNavClick, showLogo = true }: { onLogoClick?: () =>
       )}
       {/* 데스크톱 링크 */}
       <div className="p12-nav-links">
-        {links.map((l) => (
-          <a key={l} href={`#${l.toLowerCase()}`} className="p12-nav-link"
-            onClick={(e) => { e.preventDefault(); handleLinkClick(l); }}>
-            {l}
+        {NAV_LINKS.map((l) => (
+          <a key={l.id} href={`#${l.id}`} className="p12-nav-link"
+            onClick={(e) => { e.preventDefault(); handleLinkClick(l.id); }}>
+            {l.label}
           </a>
         ))}
         <a href="mailto:paulseongminpark@gmail.com" className="p12-nav-cta">Contact →</a>
@@ -408,10 +404,10 @@ function Nav({ onLogoClick, onNavClick, showLogo = true }: { onLogoClick?: () =>
       {/* 모바일 드롭다운 메뉴 */}
       {menuOpen && (
         <div className="p12-nav-mobile-menu">
-          {links.map((l) => (
-            <a key={l} href={`#${l.toLowerCase()}`} className="p12-nav-mobile-link"
-              onClick={(e) => { e.preventDefault(); handleLinkClick(l); }}>
-              {l}
+          {NAV_LINKS.map((l) => (
+            <a key={l.id} href={`#${l.id}`} className="p12-nav-mobile-link"
+              onClick={(e) => { e.preventDefault(); handleLinkClick(l.id); }}>
+              {l.label}
             </a>
           ))}
           <a href="mailto:paulseongminpark@gmail.com" className="p12-nav-mobile-cta">
