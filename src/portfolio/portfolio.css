@@ -614,6 +614,19 @@
     flex-wrap: nowrap !important;
     -webkit-overflow-scrolling: touch;
   }
+  .p12-e2e-nav > div {
+    flex-direction: row !important;
+    gap: 6px !important;
+    overflow-x: auto !important;
+    flex-wrap: nowrap !important;
+    -webkit-overflow-scrolling: touch;
+  }
+  .p12-e2e-nav button {
+    width: auto !important;
+    flex-shrink: 0 !important;
+    white-space: nowrap !important;
+    padding: 8px 10px !important;
+  }
   .p12-about-grid { grid-template-columns: 1fr; gap: 48px; }
   .p12-work-grid { grid-template-columns: 1fr; }
   .p12-stats-bar { grid-template-columns: 1fr; }
