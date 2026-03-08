@@ -67,7 +67,6 @@ function scrollToId(id: string) {
 }
 
 const ANTHROPIC = "#D4632D";
-const TOC_SIDEBAR_WIDTH = 220;
 
 const P12_TOC: Array<{ id: string; label: string; mini: string; items: Array<{ id: string; label: string }> }> = [
   { id: "about",   label: "About",                    mini: "AB", items: [
