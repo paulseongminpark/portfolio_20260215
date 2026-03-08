@@ -293,12 +293,22 @@ function P12TocSidebar({ expandedGroups, onToggleGroup, activeGroup, activeItem,
 // ── Nav ──────────────────────────────────────────────────────────
 function Nav({ onLogoClick, onNavClick, showLogo = true }: { onLogoClick?: () => void; onNavClick?: (id: string) => void; showLogo?: boolean }) {
   const [scrolled, setScrolled] = useState(false);
+  const [menuOpen, setMenuOpen] = useState(false);
   useEffect(() => {
     const handler = () => setScrolled(window.scrollY > 40);
     window.addEventListener("scroll", handler);
     return () => window.removeEventListener("scroll", handler);
   }, []);
+
   const links = ["About", "System", "Work", "AI", "TR", "Writing", "Contact"];
+
+  const handleLinkClick = (l: string) => {
+    setMenuOpen(false);
+    const id = l.toLowerCase();
+    document.getElementById(id)?.scrollIntoView({ behavior: "smooth" });
+    onNavClick?.(id);
+  };
+
   return (
     <nav className={`p12-nav${scrolled ? " scrolled" : ""}`} style={{ background: scrolled ? undefined : "#ffffff" }}>
       {showLogo && (
@@ -307,10 +317,8 @@ function Nav({ onLogoClick, onNavClick, showLogo = true }: { onLogoClick?: () =>
           className="p12-nav-logo"
           onClick={(e) => {
             e.preventDefault();
-            if (onLogoClick) {
-              onLogoClick();
-              return;
-            }
+            setMenuOpen(false);
+            if (onLogoClick) { onLogoClick(); return; }
             scrollToId("contact");
             onNavClick?.("contact");
           }}
@@ -318,20 +326,40 @@ function Nav({ onLogoClick, onNavClick, showLogo = true }: { onLogoClick?: () =>
           PSM
         </a>
       )}
+      {/* 데스크톱 링크 */}
       <div className="p12-nav-links">
         {links.map((l) => (
           <a key={l} href={`#${l.toLowerCase()}`} className="p12-nav-link"
-            onClick={(e) => {
-              e.preventDefault();
-              const id = l.toLowerCase();
-              document.getElementById(id)?.scrollIntoView({ behavior: "smooth" });
-              onNavClick?.(id);
-            }}>
+            onClick={(e) => { e.preventDefault(); handleLinkClick(l); }}>
             {l}
           </a>
         ))}
         <a href="mailto:paulseongminpark@gmail.com" className="p12-nav-cta">Contact →</a>
       </div>
+      {/* 모바일 햄버거 버튼 */}
+      <button
+        className="p12-nav-hamburger"
+        onClick={() => setMenuOpen((v) => !v)}
+        aria-label="메뉴"
+      >
+        <span className="p12-hamburger-bar" />
+        <span className="p12-hamburger-bar" />
+        <span className="p12-hamburger-bar" />
+      </button>
+      {/* 모바일 드롭다운 메뉴 */}
+      {menuOpen && (
+        <div className="p12-nav-mobile-menu">
+          {links.map((l) => (
+            <a key={l} href={`#${l.toLowerCase()}`} className="p12-nav-mobile-link"
+              onClick={(e) => { e.preventDefault(); handleLinkClick(l); }}>
+              {l}
+            </a>
+          ))}
+          <a href="mailto:paulseongminpark@gmail.com" className="p12-nav-mobile-cta">
+            Contact →
+          </a>
+        </div>
+      )}
     </nav>
   );
 }

@@ -134,6 +134,33 @@
   border-color: rgba(0,0,0,0.35);
 }
 
+/* ── 햄버거 버튼 (모바일 전용) ── */
+.p12-nav-hamburger {
+  display: none;
+  flex-direction: column;
+  justify-content: center;
+  gap: 5px;
+  width: 40px;
+  height: 40px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  margin-left: auto;
+  padding: 4px;
+}
+.p12-hamburger-bar {
+  display: block;
+  width: 22px;
+  height: 2px;
+  background: #111;
+  border-radius: 2px;
+  transition: transform 0.2s, opacity 0.2s;
+}
+/* 모바일 드롭다운 */
+.p12-nav-mobile-menu {
+  display: none;
+}
+
 /* ── Hero ── */
 .p12-hero {
   min-height: 90vh;
@@ -567,7 +594,45 @@
   .p12-stat { border-right: none; border-bottom: 1px solid #e4e0da; }
   .p12-stat:last-child { border-bottom: none; }
   .p12-nav { padding: 0 20px; }
-  .p12-nav-links { gap: 16px; }
+  .p12-nav-links { display: none; }
+  .p12-nav-hamburger { display: flex; }
+  .p12-nav-mobile-menu {
+    display: flex;
+    flex-direction: column;
+    position: fixed;
+    top: 64px;
+    left: 0;
+    right: 0;
+    background: rgba(255,255,255,0.97);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border-bottom: 1px solid #e8e8e8;
+    padding: 16px 20px 24px;
+    z-index: 99;
+  }
+  .p12-nav-mobile-link {
+    font-family: 'Inter', 'Noto Sans KR', sans-serif;
+    font-size: 16px;
+    color: #333;
+    text-decoration: none;
+    padding: 12px 0;
+    border-bottom: 1px solid #f0f0f0;
+    transition: color 0.15s;
+  }
+  .p12-nav-mobile-link:hover { color: #111; }
+  .p12-nav-mobile-cta {
+    font-family: 'Inter', 'Noto Sans KR', sans-serif;
+    font-size: 15px;
+    font-weight: 600;
+    color: #111;
+    text-decoration: none;
+    margin-top: 16px;
+    padding: 10px 20px;
+    border: 1px solid rgba(0,0,0,0.2);
+    border-radius: 6px;
+    text-align: center;
+    transition: all 0.15s;
+  }
   .p12-hero { padding: 0 20px; padding-top: 64px; }
   .p12-detail-fullbleed { height: 240px; }
   .p12-toc-sidebar { display: none; }
