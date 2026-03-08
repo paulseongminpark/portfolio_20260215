@@ -587,7 +587,16 @@
 @media (max-width: 768px) {
   .p12-container { padding: 0 20px; }
   .p12-container-narrow { padding: 0 20px; }
-  .p12-section { padding: 80px 0; }
+  /* 타이포그래피 */
+  .p12-h1 { font-size: clamp(36px, 10vw, 56px); }
+  .p12-h2 { font-size: clamp(28px, 8vw, 40px); }
+  /* 섹션 패딩 */
+  .p12-section { padding: 60px 0; }
+  /* 그리드 단열 */
+  .p12-section-flow-grid { grid-template-columns: 1fr !important; }
+  .p12-system-grid { grid-template-columns: 1fr !important; }
+  /* Contact 링크 */
+  .p12-contact-link { word-break: break-all; font-size: 18px; }
   .p12-about-grid { grid-template-columns: 1fr; gap: 48px; }
   .p12-work-grid { grid-template-columns: 1fr; }
   .p12-stats-bar { grid-template-columns: 1fr; }

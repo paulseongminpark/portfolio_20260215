@@ -177,7 +177,7 @@ interface SectionGrid {
 function SectionFlowGrid({ sections, cols = 3, disableHighlight = false }: SectionGrid) {
   const colStyle = cols === 2 ? "1fr 1fr" : "1fr 1fr 1fr";
   return (
-    <div style={{ display: "grid", gridTemplateColumns: colStyle, gap: 2, alignItems: "stretch" }}>
+    <div className="p12-section-flow-grid" style={{ display: "grid", gridTemplateColumns: colStyle, gap: 2, alignItems: "stretch" }}>
       {sections.map((sec, i) => (
         <FadeIn key={i} delay={i * 0.06} style={{ display: "flex" }}>
           <div style={{
@@ -631,7 +631,7 @@ export default function Page12() {
               그리고 왜 이 방식인가.
             </p>
           </FadeIn>
-          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 2, alignItems: "stretch" }}>
+          <div className="p12-system-grid" style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 2, alignItems: "stretch" }}>
             {SYSTEM_ITEMS.map((item, i) => (
               <FadeIn key={item.id} delay={i * 0.08} style={{ display: "flex" }}>
                 <div id={item.id} style={{
