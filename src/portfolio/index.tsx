@@ -8,7 +8,7 @@ import { SectionLabel } from "./components/SectionLabel";
 import { StatsBar } from "./components/StatsBar";
 import { FeaturedCard, GridCard } from "./components/WorkCard";
 import { WorkDetail } from "./components/WorkDetail";
-import { TechReviewCards } from "./components/TechReviewCards";
+import { TechReviewMultiSource } from "./components/TechReviewMultiSource";
 import { AiWorkflowSection } from "./components/AiWorkflowSection";
 import { TechReviewSystemSection } from "./components/TechReviewSystemSection";
 import homeRaw from "./content/HOME_INTRO_TO_RELATION_KO.md?raw";
@@ -739,7 +739,7 @@ export default function Page12() {
               <p style={{ fontFamily: "'Inter',sans-serif", fontSize: 11, fontWeight: 600, letterSpacing: "0.12em", textTransform: "uppercase", color: "#aaa", marginBottom: 20 }}>
                 Latest Posts
               </p>
-              <TechReviewCards />
+              <TechReviewMultiSource />
             </FadeIn>
             <FadeIn delay={0.1}>
               <div style={{ marginTop: 48, paddingTop: 40, borderTop: "1px solid #e4e0da" }}>
