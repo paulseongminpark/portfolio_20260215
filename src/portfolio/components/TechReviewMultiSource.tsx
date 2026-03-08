@@ -61,7 +61,17 @@ const grid3: React.CSSProperties = {
 function BlogRow({ posts, lang }: { posts: BlogPost[]; lang: "ko" | "en" }) {
   return (
     <div>
-      <p style={rowLabel}>Daily Post</p>
+      <div style={{ display: "flex", alignItems: "baseline", justifyContent: "space-between", marginBottom: 14 }}>
+        <p style={{ ...rowLabel, marginBottom: 0 }}>Daily Post</p>
+        <a
+          href={`${BLOG_URL}/${lang}/`}
+          target="_blank"
+          rel="noopener noreferrer"
+          style={{ fontFamily: "'Inter',sans-serif", fontSize: 12, color: "#111", textDecoration: "none", borderBottom: "1px solid #111", paddingBottom: 1 }}
+        >
+          {lang === "ko" ? "전체보기 →" : "View all →"}
+        </a>
+      </div>
       <div style={grid3}>
         {posts.slice(0, 3).map((post) => (
           <a
@@ -95,14 +105,6 @@ function BlogRow({ posts, lang }: { posts: BlogPost[]; lang: "ko" | "en" }) {
           </a>
         ))}
       </div>
-      <a
-        href={`${BLOG_URL}/${lang}/`}
-        target="_blank"
-        rel="noopener noreferrer"
-        style={{ fontFamily: "'Inter',sans-serif", fontSize: 13, color: "#111", textDecoration: "none", borderBottom: "1px solid #111", paddingBottom: 1, display: "inline-block", marginTop: 16 }}
-      >
-        {lang === "ko" ? "전체보기 →" : "View all →"}
-      </a>
     </div>
   );
 }
@@ -135,11 +137,11 @@ function TwitterRow({ items }: { items: TwitterItem[] }) {
               </span>
               <span style={{ fontSize: 11, color: "#aaa", fontFamily: "'Inter',sans-serif" }}>{t.date}</span>
             </div>
-            <p style={{ fontFamily: "'Inter','Noto Sans KR',sans-serif", fontSize: 13, color: "#111", lineHeight: 1.55, marginBottom: 12 }}>
+            <p style={{ fontFamily: "'Noto Sans KR','Inter',sans-serif", fontSize: 14, fontWeight: 400, color: "#111", lineHeight: 1.7, marginBottom: 12, letterSpacing: "-0.01em" }}>
               {t.why}
             </p>
             {t.apply_point && (
-              <p style={{ fontFamily: "'Inter','Noto Sans KR',sans-serif", fontSize: 11, color: "#666", lineHeight: 1.5, borderLeft: "2px solid #e8e8e8", paddingLeft: 8, margin: 0 }}>
+              <p style={{ fontFamily: "'Noto Sans KR','Inter',sans-serif", fontSize: 12, fontWeight: 400, color: "#666", lineHeight: 1.65, borderLeft: "2px solid #e8e8e8", paddingLeft: 10, margin: 0 }}>
                 {t.apply_point}
               </p>
             )}
