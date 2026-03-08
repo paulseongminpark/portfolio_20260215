@@ -269,14 +269,10 @@ function P12TocSidebar({ expandedGroups, onToggleGroup, activeGroup, activeItem,
   const [hovered, setHovered] = useState(false);
   return (
     <aside
+      className="p12-toc-sidebar"
       onMouseEnter={() => setHovered(true)}
       onMouseLeave={() => setHovered(false)}
       style={{
-        position: "fixed", left: 0, top: 0, height: "100vh", overflowY: "auto",
-        width: TOC_SIDEBAR_WIDTH,
-        borderRight: "1px solid #e8e8e8", background: "#fafafa",
-        zIndex: 10, display: "flex", flexDirection: "column",
-        padding: "72px 18px 24px", boxSizing: "border-box",
         opacity: hovered ? 1 : 0.96,
         transform: hovered ? "translateX(0)" : "translateX(-3px)",
         transition: "opacity 0.3s ease, transform 0.3s ease",
@@ -562,7 +558,7 @@ export default function Page12() {
         activeItem={activeItem}
         onItemClick={handleTocItemClick}
       />
-      <div style={{ marginLeft: TOC_SIDEBAR_WIDTH }}>
+      <div className="p12-main-content">
       <Nav onNavClick={handleNavClick} />
 
       {/* ── Hero ── */}

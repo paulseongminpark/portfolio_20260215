@@ -536,6 +536,26 @@
 }
 .p12-detail-back:hover { color: #111111; }
 
+/* ── TOC + Main Layout ── */
+.p12-toc-sidebar {
+  position: fixed;
+  left: 0;
+  top: 0;
+  height: 100vh;
+  overflow-y: auto;
+  width: 220px;
+  border-right: 1px solid #e8e8e8;
+  background: #fafafa;
+  z-index: 10;
+  display: flex;
+  flex-direction: column;
+  padding: 72px 18px 24px;
+  box-sizing: border-box;
+}
+.p12-main-content {
+  margin-left: 220px;
+}
+
 /* ── Responsive ── */
 @media (max-width: 768px) {
   .p12-container { padding: 0 20px; }
@@ -550,6 +570,8 @@
   .p12-nav-links { gap: 16px; }
   .p12-hero { padding: 0 20px; padding-top: 64px; }
   .p12-detail-fullbleed { height: 240px; }
+  .p12-toc-sidebar { display: none; }
+  .p12-main-content { margin-left: 0; }
 }
 
 /* ═══════════════════════════════════════════════════════
