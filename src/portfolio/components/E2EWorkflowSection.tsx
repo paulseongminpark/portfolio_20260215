@@ -270,11 +270,11 @@ export function E2EWorkflowSection() {
 
         {/* main content */}
         <div style={{ padding: '32px 36px 48px', position: 'relative', zIndex: 1 }}>
-          <div style={{
+          <div className="p12-e2e-inner" style={{
             display: 'flex', gap: 28, alignItems: 'flex-start',
           }}>
             {/* left: phase nav list */}
-            <div style={{ width: 148, flexShrink: 0, paddingTop: 20 }}>
+            <div className="p12-e2e-nav" style={{ width: 148, flexShrink: 0, paddingTop: 20 }}>
               <PhaseNav phases={PHASES} activeId={activeId} onSelect={setActiveId} />
             </div>
 

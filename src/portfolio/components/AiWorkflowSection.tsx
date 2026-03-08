@@ -297,7 +297,7 @@ export function AiWorkflowSection({ raw: _raw }: { raw?: string }) {
         </div>
 
         {/* 3개 개념 */}
-        <div style={{
+        <div className="p12-how-concepts" style={{
           display: 'grid',
           gridTemplateColumns: 'repeat(3, 1fr)',
           gap: 24,
@@ -351,7 +351,7 @@ export function AiWorkflowSection({ raw: _raw }: { raw?: string }) {
           {NARRATIVE.systemIntro}
         </p>
 
-        <div style={{
+        <div className="p12-orch-iframe-wrap" style={{
           width: 'calc(100% + 96px)',
           marginLeft: -48,
           overflow: 'hidden',
@@ -362,11 +362,12 @@ export function AiWorkflowSection({ raw: _raw }: { raw?: string }) {
             src={`${import.meta.env.BASE_URL}orch-graph.html`}
             width="100%"
             height="640"
+            className="p12-orch-iframe"
             style={{ border: 'none', display: 'block' }}
             title="Orchestration Graph"
           />
         </div>
-        <div style={{ marginTop: 10, textAlign: 'right', paddingRight: 4 }}>
+        <div className="p12-save-layout" style={{ marginTop: 10, textAlign: 'right', paddingRight: 4 }}>
           <button
             onClick={handleSaveLayout}
             style={{

@@ -595,8 +595,24 @@
   /* 그리드 단열 */
   .p12-section-flow-grid { grid-template-columns: 1fr !important; }
   .p12-system-grid { grid-template-columns: 1fr !important; }
+  .p12-how-concepts { grid-template-columns: 1fr !important; }
   /* Contact 링크 */
   .p12-contact-link { word-break: break-all; font-size: 18px; }
+  /* Orchestration Evolution iframe */
+  .p12-orch-iframe-wrap { width: 100% !important; margin-left: 0 !important; }
+  .p12-orch-iframe { height: 380px !important; pointer-events: none; touch-action: none; }
+  .p12-save-layout { display: none !important; }
+  /* E2E Workflow */
+  .p12-e2e-inner { flex-direction: column !important; gap: 16px !important; }
+  .p12-e2e-nav {
+    width: 100% !important;
+    flex-direction: row !important;
+    overflow-x: auto !important;
+    padding-top: 0 !important;
+    padding-bottom: 4px !important;
+    flex-wrap: nowrap !important;
+    -webkit-overflow-scrolling: touch;
+  }
   .p12-about-grid { grid-template-columns: 1fr; gap: 48px; }
   .p12-work-grid { grid-template-columns: 1fr; }
   .p12-stats-bar { grid-template-columns: 1fr; }
