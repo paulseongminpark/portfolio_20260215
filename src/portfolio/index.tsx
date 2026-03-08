@@ -11,7 +11,6 @@ import { WorkDetail } from "./components/WorkDetail";
 import { TechReviewCards } from "./components/TechReviewCards";
 import { AiWorkflowSection } from "./components/AiWorkflowSection";
 import { TechReviewSystemSection } from "./components/TechReviewSystemSection";
-import { ObsidianSystemSection } from "./components/ObsidianSystemSection";
 import homeRaw from "./content/HOME_INTRO_TO_RELATION_KO.md?raw";
 import aiRaw from "./content/AI_WORKFLOW_KO.md?raw";
 import trRaw from "./content/TR_SYSTEM_KO.md?raw";
@@ -21,7 +20,6 @@ function extractBold(raw: string, marker: string): string {
   const m = raw.match(new RegExp(`${marker}[\\s\\S]*?\\*\\*([\\s\\S]*?)\\*\\*`, "i"));
   return m ? m[1].trim() : "";
 }
-
 
 /** ## 헤딩 → { heading, items[] } 파싱 (공통) */
 function parseSections(raw: string): { heading: string; items: string[] }[] {
@@ -69,31 +67,32 @@ function scrollToId(id: string) {
 const ANTHROPIC = "#D4632D";
 
 const P12_TOC: Array<{ id: string; label: string; mini: string; items: Array<{ id: string; label: string }> }> = [
-  { id: "about",   label: "About",                    mini: "AB", items: [
+  { id: "about",       label: "About",        mini: "AB", items: [
     { id: "about-intro",      label: "Intro" },
     { id: "about-background", label: "Background" },
     { id: "about-direction",  label: "Direction" },
   ]},
-  { id: "system",  label: "System",                   mini: "SY", items: [
+  { id: "how-i-think", label: "How I Think",  mini: "HT", items: [
     { id: "system-connection", label: "Connection" },
     { id: "system-currency",   label: "Context as Currency" },
-    { id: "system-structure",  label: "Structure" },
+    { id: "system-structure",  label: "Memory by Design" },
     { id: "system-governance", label: "Governance" },
-    { id: "ai",                label: "AI System" },
   ]},
-  { id: "work",    label: "Work",                     mini: "WK", items: [
+  { id: "how-i-build", label: "How I Build",  mini: "HB", items: [
+    { id: "ai",             label: "How I AI" },
+    { id: "build-ontology", label: "Ontology" },
+    { id: "build-obsidian", label: "Obsidian" },
+  ]},
+  { id: "work",        label: "Work",          mini: "WK", items: [
     { id: "work-empty-house", label: "Empty House" },
     { id: "work-skin-diary",  label: "Skin Diary" },
     { id: "work-pmcc",        label: "PMCC" },
   ]},
-  { id: "tr",      label: "Technical Writing System", mini: "TW", items: [
+  { id: "writing",     label: "Writing",       mini: "WR", items: [
     { id: "tr-tech-review",   label: "Tech Review" },
-    { id: "tr-obsidian",      label: "Obsidian" },
+    { id: "writing-1",        label: "Essay" },
   ]},
-  { id: "writing", label: "Writing",                  mini: "WR", items: [
-    { id: "writing-1",        label: "W1" },
-  ]},
-  { id: "contact", label: "Contact",                  mini: "CT", items: [] },
+  { id: "contact",     label: "Contact",       mini: "CT", items: [] },
 ];
 
 // ── 데이터 ──────────────────────────────────────────────────────
@@ -144,29 +143,85 @@ const SYSTEM_ITEMS = [
     id: "system-connection",
     label: "Connection",
     body: "무언가를 배울 때, 항목으로 기억하는 것보다 어디서 왜 나왔는지가 더 오래 남았다. 하나의 사건에도 여러 각도가 보인다 — 배경, 결정, 실패, 통찰. 이것들이 따로 저장되면 흩어진다. 아이디어 하나가 생기면, 어디서 왔는지, 무엇과 연결되는지를 먼저 본다. 이 습관을 시스템으로 옮겼다. 26개 노드 타입, 33개 관계 타입 — 무슨 일이 있었고, 어떤 판단을 했으며, 어디서 틀렸는지를 연결로 쌓는다. 기억이 아니라 사고 구조의 외부화다.",
-    type: "text" as const,
   },
   {
     id: "system-currency",
     label: "Context as Currency",
     body: "대화를 시작할 때마다 같은 맥락을 처음부터 설명해야 한다면, 생각이 아니라 기억에 에너지를 쓰게 된다. 그 낭비를 없애기 위해 맥락 자체를 구조화했다. 필요한 순간에 정확히 필요한 것만 꺼낸다 — 세션 시작 비용을 88% 줄였다.",
-    type: "text" as const,
   },
   {
     id: "system-structure",
-    label: "Structure over Willpower",
+    label: "Memory by Design",
     body: "세션이 끊기면 기억도 끊길 수 있다는 걸 안다. 그래서 기억력에 기대지 않기로 했다. 자동 Hook부터 수동 체크포인트까지 4단계 안전망을 만들었다. 의지가 아니라 구조가 기억한다.",
-    type: "text" as const,
   },
   {
     id: "system-governance",
     label: "Governance",
     body: "시스템을 만들었다고 끝이 아니다. 새 도구가 나오고, 더 나은 방식이 생기고, 기존 구조가 낡아진다. 중요한 건 무엇을 쓰느냐보다 어떻게 통제할 것인가 — 그래서 거버넌스가 먼저다. 시스템은 만드는 것, 거버넌스는 운영하는 것이다.",
-    type: "text" as const,
   },
 ];
 
-// ── 공통 섹션 흐름 카드 그리드 (portfolio_ui_test_v2 구조 기반) ──
+// ── System Accordion ─────────────────────────────────────────────
+function SystemAccordion({ items }: { items: typeof SYSTEM_ITEMS }) {
+  const [open, setOpen] = useState<Set<string>>(new Set());
+  const toggle = (id: string) => {
+    setOpen((prev) => {
+      const next = new Set(prev);
+      next.has(id) ? next.delete(id) : next.add(id);
+      return next;
+    });
+    setTimeout(() => window.dispatchEvent(new Event("scroll")), 10);
+  };
+  return (
+    <div style={{ border: "1px solid #e8e8e8" }}>
+      {items.map((item) => {
+        const isOpen = open.has(item.id);
+        return (
+          <div key={item.id} id={item.id} style={{ borderBottom: "1px solid #e8e8e8" }}>
+            <button
+              onClick={() => toggle(item.id)}
+              style={{
+                width: "100%", display: "flex", justifyContent: "space-between", alignItems: "center",
+                padding: "24px 32px", background: "none", border: "none", cursor: "pointer",
+                fontFamily: "'Inter',sans-serif", fontSize: 11, fontWeight: 600,
+                letterSpacing: "0.14em", textTransform: "uppercase", color: "#666",
+                textAlign: "left",
+              }}
+            >
+              <span>{item.label}</span>
+              <span style={{
+                fontSize: 18, color: "#aaa", lineHeight: 1,
+                transform: isOpen ? "rotate(45deg)" : "rotate(0deg)",
+                transition: "transform 0.2s ease",
+              }}>+</span>
+            </button>
+            <AnimatePresence initial={false}>
+              {isOpen && (
+                <motion.div
+                  initial={{ height: 0, opacity: 0 }}
+                  animate={{ height: "auto", opacity: 1 }}
+                  exit={{ height: 0, opacity: 0 }}
+                  transition={{ duration: 0.22, ease: "easeInOut" }}
+                  style={{ overflow: "hidden" }}
+                >
+                  <p style={{
+                    fontFamily: "'Inter','Noto Sans KR',sans-serif", fontSize: 14,
+                    color: "#555", lineHeight: 1.8, margin: 0,
+                    padding: "0 32px 28px",
+                  }}>
+                    {renderBoldPlain(item.body)}
+                  </p>
+                </motion.div>
+              )}
+            </AnimatePresence>
+          </div>
+        );
+      })}
+    </div>
+  );
+}
+
+// ── 공통 섹션 흐름 카드 그리드 ──
 interface SectionGrid {
   sections: { heading: string; items: string[] }[];
   cols?: 2 | 3;
@@ -181,12 +236,11 @@ function SectionFlowGrid({ sections, cols = 3, disableHighlight = false }: Secti
         <FadeIn key={i} delay={i * 0.06} style={{ display: "flex" }}>
           <div style={{
             padding: "36px 32px",
-            background: "#ffffff",
-            border: "1px solid #e8e8e8",
+            background: "#f7f7f5",
+            border: "1px solid #e4e0da",
             marginRight: -1, marginBottom: -1,
             flex: 1,
           }}>
-            {/* eyebrow label — blue highlight */}
             <p style={{
               fontFamily: "'Inter',sans-serif", fontSize: 11, fontWeight: 600,
               letterSpacing: "0.14em", textTransform: "uppercase",
@@ -200,7 +254,6 @@ function SectionFlowGrid({ sections, cols = 3, disableHighlight = false }: Secti
                 </mark>
               )}
             </p>
-            {/* flowing items — no dash markers */}
             <div style={{ display: "flex", flexDirection: "column", gap: 6 }}>
               {sec.items.map((item, j) => (
                 <p key={j} style={{
@@ -290,6 +343,15 @@ function P12TocSidebar({ expandedGroups, onToggleGroup, activeGroup, activeItem,
 }
 
 // ── Nav ──────────────────────────────────────────────────────────
+const NAV_LINKS = [
+  { label: "About",       id: "about" },
+  { label: "How I Think", id: "how-i-think" },
+  { label: "How I Build", id: "how-i-build" },
+  { label: "Work",        id: "work" },
+  { label: "Writing",     id: "writing" },
+  { label: "Contact",     id: "contact" },
+];
+
 function Nav({ onLogoClick, onNavClick, showLogo = true }: { onLogoClick?: () => void; onNavClick?: (id: string) => void; showLogo?: boolean }) {
   const [scrolled, setScrolled] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
@@ -308,20 +370,18 @@ function Nav({ onLogoClick, onNavClick, showLogo = true }: { onLogoClick?: () =>
     onNavClick?.(id);
   };
 
+
   return (
     <nav className={`p12-nav${scrolled ? " scrolled" : ""}`} style={{ background: scrolled ? undefined : "#ffffff" }}>
       {showLogo && (
-        <a
-          href="#contact"
-          className="p12-nav-logo"
+        <a href="#contact" className="p12-nav-logo"
           onClick={(e) => {
             e.preventDefault();
             setMenuOpen(false);
             if (onLogoClick) { onLogoClick(); return; }
             scrollToId("contact");
             onNavClick?.("contact");
-          }}
-        >
+          }}>
           PSM
         </a>
       )}
@@ -400,7 +460,7 @@ export default function Page12() {
   const [activeWork, setActiveWork] = useState<WorkKey | null>(() => getWorkFromLocation());
   const { parsedWork, heroSubtitle } = useWorkDetail(activeWork);
 
-  const [tocExpanded, setTocExpanded] = useState<Set<string>>(new Set(["about", "system", "work", "tr", "writing"]));
+  const [tocExpanded, setTocExpanded] = useState<Set<string>>(new Set(["about", "how-i-think", "how-i-build", "work", "writing"]));
   const [activeGroup, setActiveGroup] = useState("about");
   const [activeItem, setActiveItem] = useState("about");
 
@@ -422,69 +482,39 @@ export default function Page12() {
     (work: WorkKey | null, mode: "push" | "replace", state: Record<string, unknown>) => {
       if (typeof window === "undefined") return;
       const nextUrl = getUrlWithWork(work);
-      if (mode === "push") {
-        window.history.pushState(state, "", nextUrl);
-      } else {
-        window.history.replaceState(state, "", nextUrl);
-      }
+      if (mode === "push") window.history.pushState(state, "", nextUrl);
+      else window.history.replaceState(state, "", nextUrl);
     },
     [],
   );
 
   const openWorkDetail = useCallback((workKey: WorkKey) => {
-    if (typeof window === "undefined") {
-      setActiveWork(workKey);
-      return;
-    }
-
+    if (typeof window === "undefined") { setActiveWork(workKey); return; }
     if (activeWork === workKey) return;
-
     if (!activeWork) {
-      syncWorkHistory(null, "replace", {
-        ...(window.history.state ?? {}),
-        view: "list",
-        scrollY: window.scrollY,
-      });
+      syncWorkHistory(null, "replace", { ...(window.history.state ?? {}), view: "list", scrollY: window.scrollY });
     }
-
     syncWorkHistory(workKey, "push", { view: "detail", work: workKey });
     setActiveWork(workKey);
   }, [activeWork, syncWorkHistory]);
 
   const closeWorkDetail = useCallback((targetId?: string) => {
     if (typeof window !== "undefined") {
-      syncWorkHistory(null, "replace", {
-        ...(window.history.state ?? {}),
-        view: "list",
-        scrollY: window.scrollY,
-      });
+      syncWorkHistory(null, "replace", { ...(window.history.state ?? {}), view: "list", scrollY: window.scrollY });
     }
     setActiveWork(null);
-    if (targetId) {
-      setTimeout(() => scrollToId(targetId), 100);
-    }
+    if (targetId) setTimeout(() => scrollToId(targetId), 100);
   }, [syncWorkHistory]);
 
   const handleWorkBack = useCallback(() => {
-    if (typeof window === "undefined") {
-      closeWorkDetail("work");
-      return;
-    }
-
-    if (window.history.length > 1) {
-      window.history.back();
-      return;
-    }
-
+    if (typeof window === "undefined") { closeWorkDetail("work"); return; }
+    if (window.history.length > 1) { window.history.back(); return; }
     closeWorkDetail("work");
   }, [closeWorkDetail]);
 
   const handleTocItemClick = useCallback((id: string) => {
-    if (WORK_KEY_MAP[id]) {
-      openWorkDetail(WORK_KEY_MAP[id]);
-    } else {
-      scrollToId(id);
-    }
+    if (WORK_KEY_MAP[id]) openWorkDetail(WORK_KEY_MAP[id]);
+    else scrollToId(id);
   }, [openWorkDetail]);
 
   const handleNavClick = useCallback((id: string) => {
@@ -528,14 +558,12 @@ export default function Page12() {
     const handlePopState = (event: PopStateEvent) => {
       const nextWork = getWorkFromLocation();
       setActiveWork(nextWork);
-
       if (!nextWork && typeof event.state?.scrollY === "number") {
         window.requestAnimationFrame(() => {
           window.scrollTo({ top: event.state.scrollY as number, behavior: "instant" });
         });
       }
     };
-
     window.addEventListener("popstate", handlePopState);
     return () => window.removeEventListener("popstate", handlePopState);
   }, []);
@@ -554,11 +582,7 @@ export default function Page12() {
   if (activeWork) {
     return (
       <div className="p12-root" style={{ background: "#ffffff", minHeight: "100vh" }}>
-        <Nav
-          onLogoClick={() => {
-            closeWorkDetail("contact");
-          }}
-        />
+        <Nav onLogoClick={() => closeWorkDetail("contact")} />
         <AnimatePresence mode="wait">
           <motion.div key={activeWork}
             initial={{ opacity: 0, x: 30 }} animate={{ opacity: 1, x: 0 }}
@@ -618,11 +642,11 @@ export default function Page12() {
         </div>
       </section>
 
-      {/* ── 02 · System (How I Operate) ── */}
-      <section id="system" className="p12-section" style={{ background: "#ffffff", borderTop: "1px solid #e8e8e8" }}>
+      {/* ── 02 · How I Think ── */}
+      <section id="how-i-think" className="p12-section" style={{ background: "#ffffff", borderTop: "1px solid #e8e8e8" }}>
         <div className="p12-container">
           <FadeIn>
-            <SectionLabel>02 · System</SectionLabel>
+            <SectionLabel>02 · How I Think</SectionLabel>
             <h2 className="p12-h2" style={{ color: "#111", marginTop: 8, marginBottom: 8 }}>
               How I Work
             </h2>
@@ -630,40 +654,58 @@ export default function Page12() {
               그리고 왜 이 방식인가.
             </p>
           </FadeIn>
-          <div className="p12-system-grid" style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 2, alignItems: "stretch" }}>
-            {SYSTEM_ITEMS.map((item, i) => (
-              <FadeIn key={item.id} delay={i * 0.08} style={{ display: "flex" }}>
-                <div id={item.id} style={{
-                  padding: "40px 36px",
-                  background: "#ffffff",
-                  border: "1px solid #e8e8e8",
-                  marginRight: -1, marginBottom: -1,
-                  flex: 1,
-                }}>
-                  <p style={{ fontFamily: "'Inter',sans-serif", fontSize: 11, fontWeight: 600, letterSpacing: "0.14em", textTransform: "uppercase", marginBottom: 12 }}>
-                    <span style={{ color: "#666" }}>{item.label}</span>
-                  </p>
-                  <p style={{ fontFamily: "'Inter','Noto Sans KR',sans-serif", fontSize: 14, color: "#555", lineHeight: 1.75, margin: 0 }}>
-                    {renderBoldPlain(item.body)}
-                  </p>
-                </div>
-              </FadeIn>
-            ))}
-          </div>
+          <SystemAccordion items={SYSTEM_ITEMS} />
         </div>
-        {/* ── AI System — p12-container 밖으로, wd-body가 직접 padding 관리 ── */}
-        <FadeIn delay={0.2}>
-          <div id="ai" style={{ borderTop: "1px solid #e8e8e8", marginTop: 80 }}>
+      </section>
+
+      {/* ── 03 · How I Build ── */}
+      <section id="how-i-build" className="p12-section" style={{ background: "#ffffff", borderTop: "1px solid #e8e8e8" }}>
+        <div className="p12-container">
+          <FadeIn>
+            <SectionLabel>03 · How I Build</SectionLabel>
+          </FadeIn>
+        </div>
+        {/* HOW I AI */}
+        <FadeIn delay={0.1}>
+          <div id="ai">
             <AiWorkflowSection raw={aiRaw} />
           </div>
         </FadeIn>
+
+        {/* 온톨로지 placeholder */}
+        <div id="build-ontology" style={{ borderTop: "1px solid #e8e8e8", marginTop: 80, padding: "80px 0" }}>
+          <div className="p12-container">
+            <FadeIn>
+              <p style={{ fontFamily: "'Inter',sans-serif", fontSize: 11, fontWeight: 600, letterSpacing: "0.14em", textTransform: "uppercase", color: "#bbb", marginBottom: 16 }}>
+                Ontology
+              </p>
+              <p style={{ fontFamily: "'Inter','Noto Sans KR',sans-serif", fontSize: 14, color: "#aaa", lineHeight: 1.8, maxWidth: 560 }}>
+                준비 중 — 26 노드타입, 33 관계타입으로 구성된 지식 그래프
+              </p>
+            </FadeIn>
+          </div>
+        </div>
+
+        {/* Obsidian 한 단락 */}
+        <div id="build-obsidian" style={{ borderTop: "1px solid #e8e8e8", padding: "80px 0" }}>
+          <div className="p12-container">
+            <FadeIn>
+              <p style={{ fontFamily: "'Inter',sans-serif", fontSize: 11, fontWeight: 600, letterSpacing: "0.14em", textTransform: "uppercase", color: "#bbb", marginBottom: 16 }}>
+                Obsidian
+              </p>
+              <p style={{ fontFamily: "'Inter','Noto Sans KR',sans-serif", fontSize: 14, color: "#aaa", lineHeight: 1.8, maxWidth: 560 }}>
+                준비 중 — 시각화 레이어 + Living Docs 소통창구
+              </p>
+            </FadeIn>
+          </div>
+        </div>
       </section>
 
-      {/* ── 03 · Work ── */}
+      {/* ── 04 · Work ── */}
       <section id="work" className="p12-section" style={{ background: "#ffffff", borderTop: "1px solid #e8e8e8" }}>
         <div className="p12-container">
           <FadeIn>
-            <SectionLabel>03 · Work</SectionLabel>
+            <SectionLabel>04 · Work</SectionLabel>
             <h2 className="p12-h2" style={{ color: "#111", marginBottom: 48, marginTop: 8 }}>Selected Work</h2>
           </FadeIn>
           <FadeIn delay={0.1}>
@@ -679,23 +721,19 @@ export default function Page12() {
         </div>
       </section>
 
-      {/* ── 04 · Technical Writing System ── */}
-      <section id="tr" className="p12-section" style={{ background: "#ffffff", borderTop: "1px solid #e8e8e8" }}>
+      {/* ── 05 · Writing ── */}
+      <section id="writing" className="p12-section" style={{ background: "#f7f7f5", borderTop: "1px solid #e8e8e8" }}>
         <div className="p12-container">
           <FadeIn>
-            <SectionLabel>04 · Technical Writing System</SectionLabel>
-            <h2 className="p12-h2" style={{ color: "#111", marginTop: 8, marginBottom: 8 }}>
-              Technical Writing System
-            </h2>
-            <p style={{ fontFamily: "'Inter','Noto Sans KR',sans-serif", fontSize: 15, color: "#666", lineHeight: 1.7, marginBottom: 16 }}>
-              기술 트렌드를 추적하는 퍼블리싱 파이프라인과, AI 에이전트의 공유 메모리를 관리하는 문서 시스템.
-            </p>
+            <SectionLabel>05 · Writing</SectionLabel>
+            <h2 className="p12-h2" style={{ color: "#111", marginTop: 8, marginBottom: 48 }}>Writing</h2>
           </FadeIn>
-          {/* Tech Review sub-section — sticky h3 */}
-          <div id="tr-tech-review" style={{ marginTop: 48 }}>
+
+          {/* Tech Review */}
+          <div id="tr-tech-review" style={{ marginBottom: 80 }}>
             <FadeIn delay={0.05}>
-              <div style={{ position: "sticky", top: 0, zIndex: 5, background: "#ffffff", paddingTop: 16, paddingBottom: 12, borderBottom: "1px solid #e8e8e8", marginBottom: 24 }}>
-                <h3 style={{ fontFamily: "'Inter','Noto Sans KR',sans-serif", fontSize: 28, fontWeight: 700, color: "#111", margin: "0 0 6px", letterSpacing: "-0.01em" }}>Tech Review</h3>
+              <div style={{ paddingBottom: 12, borderBottom: "1px solid #e4e0da", marginBottom: 24 }}>
+                <h3 style={{ fontFamily: "'Inter','Noto Sans KR',sans-serif", fontSize: 24, fontWeight: 700, color: "#111", margin: "0 0 6px", letterSpacing: "-0.01em" }}>Tech Review</h3>
                 <p style={{ fontFamily: "'Inter','Noto Sans KR',sans-serif", fontSize: 14, color: "#666", lineHeight: 1.6, margin: 0 }}>
                   AI·빅테크·신기술 뉴스를 매일 추적하고, 산업·직무 관점 인사이트로 가공하는 퍼블리싱 파이프라인.
                 </p>
@@ -708,7 +746,7 @@ export default function Page12() {
               <TechReviewCards />
             </FadeIn>
             <FadeIn delay={0.1}>
-              <div style={{ marginTop: 64, paddingTop: 48, borderTop: "1px solid #e8e8e8" }}>
+              <div style={{ marginTop: 48, paddingTop: 40, borderTop: "1px solid #e4e0da" }}>
                 <StatsBar stats={[
                   { value: "매일", label: "포스팅 주기" },
                   { value: "Jekyll", label: "정적 사이트" },
@@ -721,37 +759,15 @@ export default function Page12() {
               <SectionFlowGrid sections={trSections} cols={3} />
             </FadeIn>
             <FadeIn delay={0.15}>
-              <div style={{ paddingTop: 48, borderTop: "1px solid #e8e8e8", marginTop: 2 }}>
+              <div style={{ paddingTop: 48, borderTop: "1px solid #e4e0da", marginTop: 2 }}>
                 <TechReviewSystemSection />
               </div>
             </FadeIn>
           </div>
-          {/* Obsidian sub-section — sticky h3 */}
-          <div id="tr-obsidian" style={{ marginTop: 64, paddingTop: 48, borderTop: "1px solid #e8e8e8" }}>
-            <FadeIn delay={0.18}>
-              <div style={{ position: "sticky", top: 0, zIndex: 5, background: "#ffffff", paddingTop: 16, paddingBottom: 12, borderBottom: "1px solid #e8e8e8", marginBottom: 24 }}>
-                <h3 style={{ fontFamily: "'Inter','Noto Sans KR',sans-serif", fontSize: 28, fontWeight: 700, color: "#111", margin: "0 0 6px", letterSpacing: "-0.01em" }}>Obsidian</h3>
-                <p style={{ fontFamily: "'Inter','Noto Sans KR',sans-serif", fontSize: 14, color: "#666", lineHeight: 1.6, margin: 0 }}>
-                  AI 오케스트레이터가 아는 것을 내가 함께 볼 수 있게 만든 로컬 문서 시스템.
-                </p>
-              </div>
-            </FadeIn>
-            <FadeIn delay={0.18}>
-              <ObsidianSystemSection />
-            </FadeIn>
-          </div>
-        </div>
-      </section>
 
-      {/* ── 06 · Writing ── */}
-      <section id="writing" className="p12-section" style={{ background: "#f7f7f5", borderTop: "1px solid #e8e8e8" }}>
-        <div className="p12-container">
+          {/* Essay */}
           <FadeIn>
-            <SectionLabel>05 · Writing</SectionLabel>
-            <h2 className="p12-h2" style={{ color: "#111", marginTop: 8, marginBottom: 48 }}>Writing</h2>
-          </FadeIn>
-          <FadeIn>
-            <div id="writing-1" className="p12-writing-item">
+            <div id="writing-1" className="p12-writing-item" style={{ borderTop: "1px solid #e4e0da", paddingTop: 48 }}>
               <div className="p12-writing-header">
                 <h3 className="p12-writing-title">시스템으로 생각하기</h3>
                 <span className="p12-writing-meta">Essay · January 2026</span>
@@ -764,7 +780,7 @@ export default function Page12() {
         </div>
       </section>
 
-      {/* ── 07 · Contact ── */}
+      {/* ── 06 · Contact ── */}
       <section id="contact" className="p12-section" style={{ background: "#ffffff", borderTop: "1px solid #e8e8e8" }}>
         <div className="p12-container">
           <FadeIn>
