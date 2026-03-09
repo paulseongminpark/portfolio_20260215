@@ -193,7 +193,7 @@ function YoutubeRow({ items }: { items: YoutubeItem[] }) {
     <div>
       <p style={rowLabel}>YouTube Analysis</p>
       <a
-        href={`${BLOG_URL}/ko/youtube.html`}
+        href={`${BLOG_URL}/ko/youtube/`}
         target="_blank"
         rel="noopener noreferrer"
         style={{ ...card, display: "flex", gap: 20, alignItems: "flex-start" }}
