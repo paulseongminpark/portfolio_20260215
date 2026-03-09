@@ -1,8 +1,6 @@
 import React, { useState, useEffect } from "react";
 
-const _BASE       = import.meta.env.DEV
-  ? "/tech-review"
-  : "https://paulseongminpark.github.io/tech-review";
+const _BASE       = "https://paulseongminpark.github.io/tech-review";
 const FEED_URL    = `${_BASE}/feed.json`;
 const SOURCES_URL = `${_BASE}/sources.json`;
 const BLOG_URL    = "https://paulseongminpark.github.io/tech-review";
@@ -20,7 +18,10 @@ interface TwitterItem {
   date: string;
   url: string;
   whats_happening: string;
-  apply_point: string;
+  why_it_matters: string;
+  apply_points: string[];
+  text: string;
+  tech_stack: string[];
 }
 interface YoutubeItem {
   title: string;
@@ -110,17 +111,134 @@ function BlogRow({ posts, lang }: { posts: BlogPost[]; lang: "ko" | "en" }) {
   );
 }
 
+// ── Twitter Modal ─────────────────────────────────────────────────
+function TwitterModal({ t, lang, onClose }: { t: TwitterItem; lang: "ko" | "en"; onClose: () => void }) {
+  React.useEffect(() => {
+    const onKey = (e: KeyboardEvent) => { if (e.key === "Escape") onClose(); };
+    document.addEventListener("keydown", onKey);
+    document.body.style.overflow = "hidden";
+    return () => {
+      document.removeEventListener("keydown", onKey);
+      document.body.style.overflow = "";
+    };
+  }, [onClose]);
+
+  return (
+    <div
+      onClick={onClose}
+      style={{
+        position: "fixed", inset: 0, background: "rgba(0,0,0,0.45)",
+        zIndex: 9999, display: "flex", alignItems: "center", justifyContent: "center",
+        padding: "2rem", backdropFilter: "blur(2px)",
+      }}
+    >
+      <div
+        onClick={(e) => e.stopPropagation()}
+        style={{
+          background: "#fff", borderRadius: 14, width: "100%", maxWidth: 860,
+          maxHeight: "82vh", display: "flex", overflow: "hidden",
+          boxShadow: "0 20px 60px rgba(0,0,0,0.20)",
+        }}
+      >
+        {/* Left: 분석 */}
+        <div style={{
+          flex: "0 0 42%", padding: "2rem 2rem 1.5rem", borderRight: "1px solid #eee",
+          display: "flex", flexDirection: "column", gap: "1.2rem", overflowY: "auto",
+        }}>
+          {/* Meta */}
+          <div style={{ fontSize: 13, color: "#aaa", display: "flex", alignItems: "center", gap: 8, flexWrap: "wrap", paddingBottom: "1rem", borderBottom: "1px solid #f0f0f0" }}>
+            <span style={{ fontSize: 12, fontWeight: 700, color: "#1d9bf0", background: "#e7f3fe", border: "1px solid #c5e1fb", borderRadius: 3, padding: "2px 7px", fontFamily: "'Inter',sans-serif" }}>
+              @{t.author}
+            </span>
+            <span>·</span>
+            <span style={{ fontFamily: "'Inter',sans-serif", fontSize: 12 }}>{t.date}</span>
+            {t.url && (
+              <>
+                <span>·</span>
+                <a href={t.url} target="_blank" rel="noopener noreferrer"
+                  style={{ fontSize: 12, color: "#0066cc", textDecoration: "none", fontFamily: "'Inter',sans-serif" }}>
+                  {lang === "ko" ? "원문 트윗 →" : "View tweet →"}
+                </a>
+              </>
+            )}
+          </div>
+
+          {/* What's happening */}
+          {t.whats_happening && (
+            <div>
+              <p style={{ fontSize: 10, fontWeight: 700, color: "#1d4ed8", textTransform: "uppercase", letterSpacing: "0.08em", marginBottom: 8, fontFamily: "'Inter',sans-serif" }}>
+                What's happening
+              </p>
+              <p style={{ fontFamily: "'Noto Sans KR','Inter',sans-serif", fontSize: 14, fontWeight: 600, color: "#1a1a1a", lineHeight: 1.65, margin: 0 }}>
+                {t.whats_happening}
+              </p>
+            </div>
+          )}
+
+          {/* Why it matters */}
+          {t.why_it_matters && (
+            <div>
+              <p style={{ fontSize: 10, fontWeight: 700, color: "#1d4ed8", textTransform: "uppercase", letterSpacing: "0.08em", marginBottom: 8, fontFamily: "'Inter',sans-serif" }}>
+                Why it matters
+              </p>
+              <p style={{ fontFamily: "'Noto Sans KR','Inter',sans-serif", fontSize: 13, color: "#444", lineHeight: 1.65, margin: 0 }}>
+                {t.why_it_matters}
+              </p>
+            </div>
+          )}
+
+          {/* Apply points */}
+          {t.apply_points?.length > 0 && (
+            <div>
+              <p style={{ fontSize: 10, fontWeight: 700, color: "#1d4ed8", textTransform: "uppercase", letterSpacing: "0.08em", marginBottom: 8, fontFamily: "'Inter',sans-serif" }}>
+                {lang === "ko" ? "적용 포인트" : "Apply Points"}
+              </p>
+              <ul style={{ listStyle: "none", padding: 0, margin: 0 }}>
+                {t.apply_points.map((p, i) => (
+                  <li key={i} style={{ fontFamily: "'Noto Sans KR','Inter',sans-serif", fontSize: 12, color: "#444", padding: "0.2rem 0 0.2rem 1rem", position: "relative", lineHeight: 1.5 }}>
+                    <span style={{ position: "absolute", left: 0, color: "#0066cc" }}>›</span>
+                    {p}
+                  </li>
+                ))}
+              </ul>
+            </div>
+          )}
+
+          <span
+            onClick={onClose}
+            style={{ marginTop: "auto", paddingTop: "1rem", fontSize: 12, color: "#bbb", cursor: "pointer", userSelect: "none", fontFamily: "'Inter',sans-serif" }}
+          >
+            {lang === "ko" ? "닫기 ✕" : "Close ✕"}
+          </span>
+        </div>
+
+        {/* Right: 원문 */}
+        <div style={{
+          flex: 1, padding: "2rem 2.2rem", overflowY: "auto",
+          background: "#fafaf9", display: "flex", flexDirection: "column",
+        }}>
+          <p style={{ fontSize: 10, fontWeight: 700, color: "#1d4ed8", textTransform: "uppercase", letterSpacing: "0.08em", marginBottom: "1.2rem", fontFamily: "'Inter',sans-serif" }}>
+            {lang === "ko" ? "원문" : "Original"}
+          </p>
+          <p style={{ fontFamily: "'Noto Sans KR','Inter',sans-serif", fontSize: 13, color: "#1a1a1a", lineHeight: 1.7, whiteSpace: "pre-line", flex: 1 }}>
+            {t.text || "—"}
+          </p>
+        </div>
+      </div>
+    </div>
+  );
+}
+
 // ── Row 2: Twitter ───────────────────────────────────────────────
-function TwitterCard({ t, lang }: { t: TwitterItem; lang: "ko" | "en" }) {
-  const [open, setOpen] = useState(false);
+function TwitterCard({ t, lang, onOpen }: { t: TwitterItem; lang: "ko" | "en"; onOpen: () => void }) {
   const preview = t.whats_happening
-    ? t.whats_happening.slice(0, 80) + (t.whats_happening.length > 80 ? "…" : "")
+    ? t.whats_happening.slice(0, 90) + (t.whats_happening.length > 90 ? "…" : "")
     : "";
 
   return (
     <div
       style={{ ...card, cursor: "pointer" }}
-      onClick={() => setOpen((v) => !v)}
+      onClick={onOpen}
       onMouseOver={(e) => {
         (e.currentTarget as HTMLDivElement).style.borderColor = "#bbb";
         (e.currentTarget as HTMLDivElement).style.boxShadow = "0 2px 12px rgba(0,0,0,0.06)";
@@ -136,51 +254,28 @@ function TwitterCard({ t, lang }: { t: TwitterItem; lang: "ko" | "en" }) {
           @{t.author}
         </span>
         <span style={{ fontSize: 11, color: "#aaa", fontFamily: "inherit" }}>{t.date}</span>
-        <span style={{ marginLeft: "auto", fontSize: 14, color: "#aaa", lineHeight: 1, transform: open ? "rotate(45deg)" : "none", transition: "transform 0.2s", display: "inline-block" }}>+</span>
+        <span style={{ marginLeft: "auto", fontSize: 13, color: "#bbb", lineHeight: 1, fontFamily: "'Inter',sans-serif" }}>→</span>
       </div>
-
-      {/* Collapsed: 80자 미리보기 */}
-      {!open && (
-        <p style={{ fontFamily: "'Noto Sans KR','Inter',sans-serif", fontSize: 14, color: "#111", lineHeight: 1.7, margin: 0, letterSpacing: "-0.01em" }}>
-          {preview}
-        </p>
-      )}
-
-      {/* Expanded */}
-      {open && (
-        <>
-          <p style={{ fontFamily: "'Noto Sans KR','Inter',sans-serif", fontSize: 14, color: "#111", lineHeight: 1.7, marginBottom: 14, letterSpacing: "-0.01em" }}>
-            {t.whats_happening}
-          </p>
-          {t.apply_point && (
-            <p style={{ fontFamily: "'Noto Sans KR','Inter',sans-serif", fontSize: 12, color: "#666", lineHeight: 1.65, borderLeft: "2px solid #e8e8e8", paddingLeft: 10, marginBottom: 14 }}>
-              {t.apply_point}
-            </p>
-          )}
-          <a
-            href={`${BLOG_URL}/${lang}/twitter/`}
-            target="_blank"
-            rel="noopener noreferrer"
-            onClick={(e) => e.stopPropagation()}
-            style={{ fontSize: 11, fontFamily: "'Inter',sans-serif", color: "#111", textDecoration: "none", borderBottom: "1px solid #111", paddingBottom: 1 }}
-          >
-            {lang === "ko" ? "전체보기 →" : "View all →"}
-          </a>
-        </>
-      )}
+      <p style={{ fontFamily: "'Noto Sans KR','Inter',sans-serif", fontSize: 14, color: "#111", lineHeight: 1.65, margin: 0, letterSpacing: "-0.01em" }}>
+        {preview}
+      </p>
     </div>
   );
 }
 
 function TwitterRow({ items, lang }: { items: TwitterItem[]; lang: "ko" | "en" }) {
+  const [active, setActive] = useState<number | null>(null);
   return (
     <div>
       <p style={rowLabel}>Twitter Bookmarks</p>
       <div style={grid3}>
         {items.map((t, i) => (
-          <TwitterCard key={i} t={t} lang={lang} />
+          <TwitterCard key={i} t={t} lang={lang} onOpen={() => setActive(i)} />
         ))}
       </div>
+      {active !== null && (
+        <TwitterModal t={items[active]} lang={lang} onClose={() => setActive(null)} />
+      )}
     </div>
   );
 }
