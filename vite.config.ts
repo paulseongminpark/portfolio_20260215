@@ -39,5 +39,10 @@ export default defineConfig({
       },
     },
   ],
-  server: { watch: { usePolling: true } },
+  server: {
+    watch: { usePolling: true },
+    proxy: {
+      '/tech-review': { target: 'http://localhost:4000', changeOrigin: true },
+    },
+  },
 })

@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 
 const _BASE       = import.meta.env.DEV
-  ? "http://localhost:4000/tech-review"
+  ? "/tech-review"
   : "https://paulseongminpark.github.io/tech-review";
 const FEED_URL    = `${_BASE}/feed.json`;
 const SOURCES_URL = `${_BASE}/sources.json`;
