@@ -1,7 +1,10 @@
 import React, { useState, useEffect } from "react";
 
-const FEED_URL    = "https://paulseongminpark.github.io/tech-review/feed.json";
-const SOURCES_URL = "https://paulseongminpark.github.io/tech-review/sources.json";
+const _BASE       = import.meta.env.DEV
+  ? "http://localhost:4000/tech-review"
+  : "https://paulseongminpark.github.io/tech-review";
+const FEED_URL    = `${_BASE}/feed.json`;
+const SOURCES_URL = `${_BASE}/sources.json`;
 const BLOG_URL    = "https://paulseongminpark.github.io/tech-review";
 
 // ── Types ────────────────────────────────────────────────────────
@@ -47,13 +50,13 @@ const rowLabel: React.CSSProperties = {
   fontWeight: 700,
   letterSpacing: "0.12em",
   textTransform: "uppercase" as const,
-  color: "#aaa",
+  color: "#1d4ed8",
   marginBottom: 14,
 };
 
 const grid3: React.CSSProperties = {
   display: "grid",
-  gridTemplateColumns: "repeat(auto-fill, minmax(220px, 1fr))",
+  gridTemplateColumns: "repeat(4, 1fr)",
   gap: 12,
 };
 
@@ -71,7 +74,7 @@ function BlogRow({ posts, lang }: { posts: BlogPost[]; lang: "ko" | "en" }) {
         {lang === "ko" ? "전체보기 →" : "View all →"}
       </a>
       <div style={grid3}>
-        {posts.slice(0, 3).map((post) => (
+        {posts.slice(0, 4).map((post) => (
           <a
             key={post.pair}
             href={`${BLOG_URL}${post.url[lang]}`}
@@ -219,7 +222,7 @@ function YoutubeRow({ items }: { items: YoutubeItem[] }) {
             <span style={{ fontSize: 11, color: "#aaa", fontFamily: "'Inter',sans-serif" }}>{v.channel}</span>
             <span style={{ fontSize: 11, color: "#aaa", fontFamily: "'Inter',sans-serif" }}>·</span>
             <span style={{ fontSize: 11, color: "#aaa", fontFamily: "'Inter',sans-serif" }}>{v.published_at}</span>
-            <span style={{ fontSize: 10, fontWeight: 700, color: "#1d9bf0", background: "#e7f3fe", border: "1px solid #c5e1fb", borderRadius: 3, padding: "2px 6px", fontFamily: "'Inter',sans-serif" }}>
+            <span style={{ fontSize: 10, fontWeight: 700, color: "#D4632D", background: "rgba(212,99,45,0.1)", border: "1px solid rgba(212,99,45,0.3)", borderRadius: 3, padding: "2px 6px", fontFamily: "'Inter',sans-serif" }}>
               {v.section_count} sections
             </span>
           </div>
