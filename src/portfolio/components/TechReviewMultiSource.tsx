@@ -186,14 +186,14 @@ function TwitterRow({ items, lang }: { items: TwitterItem[]; lang: "ko" | "en" }
 }
 
 // ── Row 3: YouTube ───────────────────────────────────────────────
-function YoutubeRow({ items }: { items: YoutubeItem[] }) {
+function YoutubeRow({ items, lang }: { items: YoutubeItem[]; lang: "ko" | "en" }) {
   if (!items.length) return null;
   const v = items[0];
   return (
     <div>
       <p style={rowLabel}>YouTube Analysis</p>
       <a
-        href={`${BLOG_URL}/ko/youtube/`}
+        href={`${BLOG_URL}/${lang}/youtube/${v.video_id ? `#${v.video_id}` : ""}`}
         target="_blank"
         rel="noopener noreferrer"
         style={{ ...card, display: "flex", gap: 20, alignItems: "flex-start" }}
@@ -264,7 +264,7 @@ export function TechReviewMultiSource() {
     <div style={{ display: "flex", flexDirection: "column", gap: 40, paddingTop: 32 }}>
       {posts.length > 0    && <BlogRow    posts={posts}   lang={lang} />}
       {twitter.length > 0  && <TwitterRow items={twitter} lang={lang} />}
-      {youtube.length > 0  && <YoutubeRow items={youtube} />}
+      {youtube.length > 0  && <YoutubeRow items={youtube} lang={lang} />}
     </div>
   );
 }
