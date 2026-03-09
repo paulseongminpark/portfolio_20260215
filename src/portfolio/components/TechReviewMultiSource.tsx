@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 
 const FEED_URL    = "https://paulseongminpark.github.io/tech-review/feed.json";
 const SOURCES_URL = "https://paulseongminpark.github.io/tech-review/sources.json";
@@ -16,7 +16,7 @@ interface TwitterItem {
   author: string;
   date: string;
   url: string;
-  why: string;
+  whats_happening: string;
   apply_point: string;
 }
 interface YoutubeItem {
@@ -108,42 +108,74 @@ function BlogRow({ posts, lang }: { posts: BlogPost[]; lang: "ko" | "en" }) {
 }
 
 // ── Row 2: Twitter ───────────────────────────────────────────────
-function TwitterRow({ items }: { items: TwitterItem[] }) {
+function TwitterCard({ t, lang }: { t: TwitterItem; lang: "ko" | "en" }) {
+  const [open, setOpen] = useState(false);
+  const preview = t.whats_happening
+    ? t.whats_happening.slice(0, 80) + (t.whats_happening.length > 80 ? "…" : "")
+    : "";
+
+  return (
+    <div
+      style={{ ...card, cursor: "pointer" }}
+      onClick={() => setOpen((v) => !v)}
+      onMouseOver={(e) => {
+        (e.currentTarget as HTMLDivElement).style.borderColor = "#bbb";
+        (e.currentTarget as HTMLDivElement).style.boxShadow = "0 2px 12px rgba(0,0,0,0.06)";
+      }}
+      onMouseOut={(e) => {
+        (e.currentTarget as HTMLDivElement).style.borderColor = "#e8e8e8";
+        (e.currentTarget as HTMLDivElement).style.boxShadow = "none";
+      }}
+    >
+      {/* Header */}
+      <div style={{ display: "flex", alignItems: "center", gap: 6, marginBottom: 10 }}>
+        <span style={{ fontSize: 10, fontWeight: 700, color: "#1d9bf0", background: "#e7f3fe", border: "1px solid #c5e1fb", borderRadius: 3, padding: "2px 6px", fontFamily: "'Inter',sans-serif" }}>
+          @{t.author}
+        </span>
+        <span style={{ fontSize: 11, color: "#aaa", fontFamily: "inherit" }}>{t.date}</span>
+        <span style={{ marginLeft: "auto", fontSize: 14, color: "#aaa", lineHeight: 1, transform: open ? "rotate(45deg)" : "none", transition: "transform 0.2s", display: "inline-block" }}>+</span>
+      </div>
+
+      {/* Collapsed: 80자 미리보기 */}
+      {!open && (
+        <p style={{ fontFamily: "'Noto Sans KR','Inter',sans-serif", fontSize: 14, color: "#111", lineHeight: 1.7, margin: 0, letterSpacing: "-0.01em" }}>
+          {preview}
+        </p>
+      )}
+
+      {/* Expanded */}
+      {open && (
+        <>
+          <p style={{ fontFamily: "'Noto Sans KR','Inter',sans-serif", fontSize: 14, color: "#111", lineHeight: 1.7, marginBottom: 14, letterSpacing: "-0.01em" }}>
+            {t.whats_happening}
+          </p>
+          {t.apply_point && (
+            <p style={{ fontFamily: "'Noto Sans KR','Inter',sans-serif", fontSize: 12, color: "#666", lineHeight: 1.65, borderLeft: "2px solid #e8e8e8", paddingLeft: 10, marginBottom: 14 }}>
+              {t.apply_point}
+            </p>
+          )}
+          <a
+            href={`${BLOG_URL}/${lang}/twitter/`}
+            target="_blank"
+            rel="noopener noreferrer"
+            onClick={(e) => e.stopPropagation()}
+            style={{ fontSize: 11, fontFamily: "'Inter',sans-serif", color: "#111", textDecoration: "none", borderBottom: "1px solid #111", paddingBottom: 1 }}
+          >
+            {lang === "ko" ? "전체보기 →" : "View all →"}
+          </a>
+        </>
+      )}
+    </div>
+  );
+}
+
+function TwitterRow({ items, lang }: { items: TwitterItem[]; lang: "ko" | "en" }) {
   return (
     <div>
       <p style={rowLabel}>Twitter Bookmarks</p>
       <div style={grid3}>
         {items.map((t, i) => (
-          <a
-            key={i}
-            href={t.url || "#"}
-            target="_blank"
-            rel="noopener noreferrer"
-            style={card}
-            onMouseOver={(e) => {
-              e.currentTarget.style.borderColor = "#bbb";
-              e.currentTarget.style.boxShadow = "0 2px 12px rgba(0,0,0,0.06)";
-            }}
-            onMouseOut={(e) => {
-              e.currentTarget.style.borderColor = "#e8e8e8";
-              e.currentTarget.style.boxShadow = "none";
-            }}
-          >
-            <div style={{ display: "flex", alignItems: "center", gap: 6, marginBottom: 10 }}>
-              <span style={{ fontSize: 10, fontWeight: 700, color: "#1d9bf0", background: "#e7f3fe", border: "1px solid #c5e1fb", borderRadius: 3, padding: "2px 6px", fontFamily: "inherit" }}>
-                @{t.author}
-              </span>
-              <span style={{ fontSize: 11, color: "#aaa", fontFamily: "inherit" }}>{t.date}</span>
-            </div>
-            <p style={{ fontFamily: "'Noto Sans KR','Inter',sans-serif", fontSize: 14, fontWeight: 400, color: "#111", lineHeight: 1.7, marginBottom: 12, letterSpacing: "-0.01em" }}>
-              {t.why}
-            </p>
-            {t.apply_point && (
-              <p style={{ fontFamily: "'Noto Sans KR','Inter',sans-serif", fontSize: 12, fontWeight: 400, color: "#666", lineHeight: 1.65, borderLeft: "2px solid #e8e8e8", paddingLeft: 10, margin: 0 }}>
-                {t.apply_point}
-              </p>
-            )}
-          </a>
+          <TwitterCard key={i} t={t} lang={lang} />
         ))}
       </div>
     </div>
@@ -187,7 +219,7 @@ function YoutubeRow({ items }: { items: YoutubeItem[] }) {
             <span style={{ fontSize: 11, color: "#aaa", fontFamily: "'Inter',sans-serif" }}>{v.channel}</span>
             <span style={{ fontSize: 11, color: "#aaa", fontFamily: "'Inter',sans-serif" }}>·</span>
             <span style={{ fontSize: 11, color: "#aaa", fontFamily: "'Inter',sans-serif" }}>{v.published_at}</span>
-            <span style={{ fontSize: 10, fontWeight: 700, color: "#059669", background: "#ecfdf5", border: "1px solid #a7f3d0", borderRadius: 3, padding: "2px 6px", fontFamily: "'Inter',sans-serif" }}>
+            <span style={{ fontSize: 10, fontWeight: 700, color: "#1d9bf0", background: "#e7f3fe", border: "1px solid #c5e1fb", borderRadius: 3, padding: "2px 6px", fontFamily: "'Inter',sans-serif" }}>
               {v.section_count} sections
             </span>
           </div>
@@ -228,7 +260,7 @@ export function TechReviewMultiSource() {
   return (
     <div style={{ display: "flex", flexDirection: "column", gap: 40, paddingTop: 32 }}>
       {posts.length > 0    && <BlogRow    posts={posts}   lang={lang} />}
-      {twitter.length > 0  && <TwitterRow items={twitter} />}
+      {twitter.length > 0  && <TwitterRow items={twitter} lang={lang} />}
       {youtube.length > 0  && <YoutubeRow items={youtube} />}
     </div>
   );
