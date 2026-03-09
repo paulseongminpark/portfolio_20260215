@@ -130,10 +130,10 @@ function TwitterRow({ items }: { items: TwitterItem[] }) {
             }}
           >
             <div style={{ display: "flex", alignItems: "center", gap: 6, marginBottom: 10 }}>
-              <span style={{ fontSize: 10, fontWeight: 700, color: "#1d9bf0", background: "#e7f3fe", border: "1px solid #c5e1fb", borderRadius: 3, padding: "2px 6px", fontFamily: "'Inter',sans-serif" }}>
+              <span style={{ fontSize: 10, fontWeight: 700, color: "#1d9bf0", background: "#e7f3fe", border: "1px solid #c5e1fb", borderRadius: 3, padding: "2px 6px", fontFamily: "inherit" }}>
                 @{t.author}
               </span>
-              <span style={{ fontSize: 11, color: "#aaa", fontFamily: "'Inter',sans-serif" }}>{t.date}</span>
+              <span style={{ fontSize: 11, color: "#aaa", fontFamily: "inherit" }}>{t.date}</span>
             </div>
             <p style={{ fontFamily: "'Noto Sans KR','Inter',sans-serif", fontSize: 14, fontWeight: 400, color: "#111", lineHeight: 1.7, marginBottom: 12, letterSpacing: "-0.01em" }}>
               {t.why}

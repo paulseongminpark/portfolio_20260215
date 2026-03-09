@@ -727,38 +727,68 @@ export default function Page12() {
 
           {/* Tech Review */}
           <div id="tr-tech-review" style={{ marginBottom: 80 }}>
+
+            {/* 헤더 */}
             <FadeIn delay={0.05}>
-              <div style={{ paddingBottom: 12, borderBottom: "1px solid #e4e0da", marginBottom: 24 }}>
+              <div style={{ paddingBottom: 12, borderBottom: "1px solid #e4e0da", marginBottom: 40 }}>
                 <h3 style={{ fontFamily: "'Inter','Noto Sans KR',sans-serif", fontSize: 24, fontWeight: 700, color: "#111", margin: "0 0 6px", letterSpacing: "-0.01em" }}>Tech Review</h3>
                 <p style={{ fontFamily: "'Inter','Noto Sans KR',sans-serif", fontSize: 14, color: "#666", lineHeight: 1.6, margin: 0 }}>
-                  AI·빅테크·신기술 뉴스를 매일 추적하고, 산업·직무 관점 인사이트로 가공하는 퍼블리싱 파이프라인.
+                  AI 세계의 인사이트를 기사·트윗·영상에서 수집하고, 구조화·배포하는 자동 파이프라인.
                 </p>
               </div>
             </FadeIn>
-            <FadeIn delay={0.05}>
-              <p style={{ fontFamily: "'Inter',sans-serif", fontSize: 11, fontWeight: 600, letterSpacing: "0.12em", textTransform: "uppercase", color: "#aaa", marginBottom: 20 }}>
-                Latest Posts
-              </p>
-              <TechReviewMultiSource />
+
+            {/* [1] The Problem */}
+            <FadeIn delay={0.06}>
+              <div style={{ borderLeft: "3px solid #D4632D", paddingLeft: 20, marginBottom: 56 }}>
+                <p style={{ fontFamily: "'Inter',sans-serif", fontSize: 10, fontWeight: 700, color: "#aaa", textTransform: "uppercase", letterSpacing: "0.55px", marginBottom: 12 }}>
+                  The Problem
+                </p>
+                <p style={{ fontFamily: "'Inter','Noto Sans KR',sans-serif", fontSize: 15, color: "#333", lineHeight: 1.8, margin: 0 }}>
+                  AI 세계의 인사이트는 기사·트윗·영상 곳곳에 흩어져 있다.<br />
+                  읽어도 남지 않고, 보아도 정리되지 않는다.<br />
+                  수작업으로는 지속할 수 없었다.
+                </p>
+              </div>
             </FadeIn>
+
+            {/* [2] 3소스 파이프라인 */}
+            <FadeIn delay={0.08}>
+              <SectionFlowGrid sections={trSections} cols={3} />
+              <p style={{ fontFamily: "'Inter',sans-serif", fontSize: 12, color: "#aaa", textAlign: "center", margin: "16px 0 0", letterSpacing: "0.04em" }}>
+                ↓ &nbsp; sources.json 으로 수렴 &nbsp;→&nbsp; Portfolio 실시간 피드
+              </p>
+            </FadeIn>
+
+            {/* [3] 실시간 피드 */}
             <FadeIn delay={0.1}>
+              <div style={{ marginTop: 56, borderTop: "1px solid #e4e0da", paddingTop: 40 }}>
+                <p style={{ fontFamily: "'Inter',sans-serif", fontSize: 11, fontWeight: 600, letterSpacing: "0.12em", textTransform: "uppercase", color: "#aaa", marginBottom: 20 }}>
+                  Latest
+                </p>
+                <TechReviewMultiSource />
+              </div>
+            </FadeIn>
+
+            {/* [4] 수치 */}
+            <FadeIn delay={0.12}>
               <div style={{ marginTop: 48, paddingTop: 40, borderTop: "1px solid #e4e0da" }}>
                 <StatsBar stats={[
-                  { value: "매일", label: "포스팅 주기" },
-                  { value: "Jekyll", label: "정적 사이트" },
-                  { value: "자동", label: "GitHub Actions 빌드" },
-                  { value: "API", label: "feed.json 연동" },
+                  { value: "100+", label: "Posts" },
+                  { value: "3",    label: "Sources" },
+                  { value: "KO/EN", label: "Languages" },
+                  { value: "~$3",  label: "/ 월" },
                 ]} />
               </div>
             </FadeIn>
-            <FadeIn delay={0.12}>
-              <SectionFlowGrid sections={trSections} cols={3} />
-            </FadeIn>
+
+            {/* [5] Design Decisions + Ongoing */}
             <FadeIn delay={0.15}>
-              <div style={{ paddingTop: 48, borderTop: "1px solid #e4e0da", marginTop: 2 }}>
+              <div style={{ paddingTop: 56, borderTop: "1px solid #e4e0da", marginTop: 48 }}>
                 <TechReviewSystemSection />
               </div>
             </FadeIn>
+
           </div>
 
           {/* Essay */}
