@@ -1,4 +1,4 @@
-import { useRef } from "react";
+import { useRef, useState, useEffect } from "react";
 import {
   NARRATIVE,
   HOW_CONCEPTS,
@@ -235,6 +235,7 @@ function ParallelDiagram() {
 
 export function AiWorkflowSection({ raw: _raw }: { raw?: string }) {
   const iframeRef = useRef<HTMLIFrameElement>(null);
+  const [orchExpanded, setOrchExpanded] = useState(false);
 
   const handleSaveLayout = () => {
     const cw = iframeRef.current?.contentWindow as any;
@@ -251,6 +252,17 @@ export function AiWorkflowSection({ raw: _raw }: { raw?: string }) {
       }
     }).catch(() => {});
   };
+
+  // Lock body scroll when expanded
+  useEffect(() => {
+    if (orchExpanded) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = '';
+    }
+    return () => { document.body.style.overflow = ''; };
+  }, [orchExpanded]);
+
 
   return (
     <div className="wd-body" style={{ background: C.bg }}>
@@ -351,11 +363,74 @@ export function AiWorkflowSection({ raw: _raw }: { raw?: string }) {
           {NARRATIVE.systemIntro}
         </p>
 
+        {/* ── Orchestration iframe: desktop = inline, mobile = tap-to-expand ── */}
+        {orchExpanded && (
+          <div
+            onClick={() => setOrchExpanded(false)}
+            style={{
+              position: 'fixed',
+              inset: 0,
+              zIndex: 9999,
+              background: 'rgba(255,255,255,0.97)',
+              display: 'flex',
+              flexDirection: 'column',
+              alignItems: 'center',
+              justifyContent: 'center',
+            }}
+          >
+            <div
+              style={{
+                width: '100vh',
+                height: '100vw',
+                transform: 'rotate(90deg)',
+                transformOrigin: 'center center',
+                display: 'flex',
+                flexDirection: 'column',
+                position: 'relative',
+                padding: 12,
+                boxSizing: 'border-box',
+              }}
+            >
+              <iframe
+                src={`${import.meta.env.BASE_URL}orch-graph.html`}
+                width="100%"
+                onClick={(e) => e.stopPropagation()}
+                style={{ border: 'none', flex: 1, display: 'block', borderRadius: 8 }}
+                title="Orchestration Graph (expanded)"
+              />
+              <button
+                onClick={() => setOrchExpanded(false)}
+                style={{
+                  position: 'absolute',
+                  top: 12,
+                  right: 12,
+                  zIndex: 10,
+                  background: 'rgba(0,0,0,0.7)',
+                  color: '#fff',
+                  border: 'none',
+                  borderRadius: '50%',
+                  width: 36,
+                  height: 36,
+                  fontSize: 18,
+                  cursor: 'pointer',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  fontFamily: font,
+                }}
+              >
+                ✕
+              </button>
+            </div>
+          </div>
+        )}
+
         <div className="p12-orch-iframe-wrap" style={{
           width: 'calc(100% + 96px)',
           marginLeft: -48,
           overflow: 'hidden',
           marginTop: 24,
+          position: 'relative',
         }}>
           <iframe
             ref={iframeRef}
@@ -365,6 +440,11 @@ export function AiWorkflowSection({ raw: _raw }: { raw?: string }) {
             className="p12-orch-iframe"
             style={{ border: 'none', display: 'block' }}
             title="Orchestration Graph"
+          />
+          {/* Mobile tap area — pulse animation invites click */}
+          <div
+            className="p12-orch-tap-overlay"
+            onClick={() => setOrchExpanded(true)}
           />
         </div>
         <div className="p12-save-layout" style={{ marginTop: 10, textAlign: 'right', paddingRight: 4 }}>
