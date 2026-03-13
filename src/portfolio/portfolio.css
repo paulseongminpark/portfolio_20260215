@@ -5,6 +5,7 @@
    ================================================================ */
 
 /* ── 전역 리셋 ── */
+.p12-root { overflow-x: hidden; }
 .p12-root * { box-sizing: border-box; }
 
 /* ── 섹션 기본 패딩 ── */
@@ -612,7 +613,7 @@
     cursor: pointer; border-radius: 8px;
     animation: orch-pulse 3s ease-in-out infinite;
   }
-  .p12-orch-iframe { height: 340px !important; pointer-events: none; touch-action: none; }
+  .p12-orch-iframe { height: 200px !important; pointer-events: none; touch-action: none; }
   .p12-save-layout { display: none !important; }
   .p12-orch-tap-overlay {
     position: absolute;
@@ -633,14 +634,20 @@
     padding-bottom: 4px !important;
     flex-wrap: nowrap !important;
     -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
   }
+  .p12-e2e-nav::-webkit-scrollbar { display: none; }
   .p12-e2e-nav > div {
     flex-direction: row !important;
     gap: 6px !important;
     overflow-x: auto !important;
     flex-wrap: nowrap !important;
     -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
   }
+  .p12-e2e-nav > div::-webkit-scrollbar { display: none; }
   .p12-e2e-nav button {
     width: auto !important;
     flex-shrink: 0 !important;

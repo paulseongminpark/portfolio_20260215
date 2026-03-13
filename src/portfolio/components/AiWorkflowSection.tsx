@@ -1,4 +1,4 @@
-import { useRef, useState, useEffect } from "react";
+import { useRef, useState, useEffect, useMemo } from "react";
 import {
   NARRATIVE,
   HOW_CONCEPTS,
@@ -237,6 +237,8 @@ export function AiWorkflowSection({ raw: _raw }: { raw?: string }) {
   const iframeRef = useRef<HTMLIFrameElement>(null);
   const [orchExpanded, setOrchExpanded] = useState(false);
 
+  const orchGraphUrl = useMemo(() => `${import.meta.env.BASE_URL}orch-graph.html?v=${Date.now()}`, []);
+
   const handleSaveLayout = () => {
     const cw = iframeRef.current?.contentWindow as any;
     if (!cw?.getLayoutData) return;
@@ -253,14 +255,17 @@ export function AiWorkflowSection({ raw: _raw }: { raw?: string }) {
     }).catch(() => {});
   };
 
-  // Lock body scroll when expanded
+  // Lock body scroll + history API for back-button close
   useEffect(() => {
-    if (orchExpanded) {
-      document.body.style.overflow = 'hidden';
-    } else {
+    if (!orchExpanded) return;
+    document.body.style.overflow = 'hidden';
+    window.history.pushState({ orchGraph: true }, '');
+    const onPopState = () => setOrchExpanded(false);
+    window.addEventListener('popstate', onPopState);
+    return () => {
+      window.removeEventListener('popstate', onPopState);
       document.body.style.overflow = '';
-    }
-    return () => { document.body.style.overflow = ''; };
+    };
   }, [orchExpanded]);
 
 
@@ -366,7 +371,6 @@ export function AiWorkflowSection({ raw: _raw }: { raw?: string }) {
         {/* ── Orchestration iframe: desktop = inline, mobile = tap-to-expand ── */}
         {orchExpanded && (
           <div
-            onClick={() => setOrchExpanded(false)}
             style={{
               position: 'fixed',
               inset: 0,
@@ -380,38 +384,40 @@ export function AiWorkflowSection({ raw: _raw }: { raw?: string }) {
           >
             <div
               style={{
-                width: '100vh',
-                height: '100vw',
-                transform: 'rotate(90deg)',
+                width: '100dvh',
+                height: '100dvw',
+                transform: 'rotate(90deg) translateZ(0)',
                 transformOrigin: 'center center',
                 display: 'flex',
                 flexDirection: 'column',
                 position: 'relative',
-                padding: 12,
+                padding: 6,
                 boxSizing: 'border-box',
+                willChange: 'transform',
+                backfaceVisibility: 'hidden',
+                WebkitBackfaceVisibility: 'hidden',
               }}
             >
               <iframe
-                src={`${import.meta.env.BASE_URL}orch-graph.html`}
+                src={orchGraphUrl}
                 width="100%"
-                onClick={(e) => e.stopPropagation()}
                 style={{ border: 'none', flex: 1, display: 'block', borderRadius: 8 }}
                 title="Orchestration Graph (expanded)"
               />
               <button
-                onClick={() => setOrchExpanded(false)}
+                onClick={() => window.history.back()}
                 style={{
                   position: 'absolute',
-                  top: 12,
-                  right: 12,
+                  top: 6,
+                  right: 6,
                   zIndex: 10,
                   background: 'rgba(0,0,0,0.7)',
                   color: '#fff',
                   border: 'none',
                   borderRadius: '50%',
-                  width: 36,
-                  height: 36,
-                  fontSize: 18,
+                  width: 32,
+                  height: 32,
+                  fontSize: 16,
                   cursor: 'pointer',
                   display: 'flex',
                   alignItems: 'center',
@@ -434,7 +440,7 @@ export function AiWorkflowSection({ raw: _raw }: { raw?: string }) {
         }}>
           <iframe
             ref={iframeRef}
-            src={`${import.meta.env.BASE_URL}orch-graph.html`}
+            src={orchGraphUrl}
             width="100%"
             height="640"
             className="p12-orch-iframe"

@@ -135,7 +135,7 @@ body {
   #top-bar {
     display: flex; justify-content: center; align-items: baseline;
     gap: 12px;
-    position: fixed; top: 4px; left: 0; right: 0;
+    position: fixed; top: 0px; left: 0; right: 0;
     z-index: 10; pointer-events: none;
   }
   #header {
@@ -154,26 +154,25 @@ body {
   #counter > div { display: inline; font-size: 8px; }
   .cnt-v { font-size: 12px; }
 
-  /* Legend → horizontal row above filters */
+  /* Legend → single horizontal row */
   #legend {
-    bottom: 34px; left: 50%; right: auto;
-    transform: translateX(-50%);
-    display: flex; flex-wrap: wrap;
-    gap: 1px 8px; justify-content: center;
-    width: calc(100% - 16px);
-    font-size: 7.5px;
+    bottom: 24px; left: 0; right: 0;
+    transform: none;
+    display: flex; flex-wrap: nowrap;
+    gap: 1px 6px; justify-content: center;
+    font-size: 7px;
   }
-  .lr { margin: 0; gap: 3px; }
-  .ld { width: 5px; height: 5px; }
+  .lr { margin: 0; gap: 2px; }
+  .ld { width: 4px; height: 4px; }
 
   /* Filters → full width */
   #filters {
-    bottom: 4px;
-    width: calc(100% - 16px);
+    bottom: 2px;
+    width: calc(100% - 8px);
     justify-content: center;
-    padding: 3px 6px; gap: 2px;
+    padding: 2px 4px; gap: 1px;
   }
-  .fb { padding: 3px 7px; font-size: 9px; }
+  .fb { padding: 2px 6px; font-size: 8px; }
 
   /* Hide tooltip + export on mobile */
   #tip { display: none !important; }
@@ -186,7 +185,7 @@ body {
   #top-bar {
     display: flex; justify-content: center; align-items: baseline;
     gap: 16px;
-    position: fixed; top: 4px; left: 0; right: 0;
+    position: fixed; top: 1px; left: 0; right: 0;
     z-index: 10; pointer-events: none;
   }
   #header {
@@ -194,34 +193,34 @@ body {
   }
   #header h1 {
     font-size: 11px; white-space: nowrap;
-    color: rgba(0,0,0,0.5); line-height: 18px;
+    color: rgba(0,0,0,0.5); line-height: 16px;
     letter-spacing: 0.06em;
   }
   #counter {
     position: static;
     display: flex; gap: 10px; align-items: baseline;
-    line-height: 18px;
+    line-height: 16px;
   }
   #counter > div { display: inline; font-size: 9px; }
   .cnt-v { font-size: 13px; }
 
   #legend {
-    bottom: 34px; left: 50%; right: auto;
+    bottom: 32px; left: 50%; right: auto;
     transform: translateX(-50%);
     display: flex; flex-wrap: nowrap;
-    gap: 2px 12px; justify-content: center;
-    width: calc(100% - 24px);
-    font-size: 8.5px;
+    gap: 1px 10px; justify-content: center;
+    width: calc(100% - 16px);
+    font-size: 8px;
   }
-  .lr { margin: 0; gap: 4px; }
-  .ld { width: 6px; height: 6px; }
+  .lr { margin: 0; gap: 3px; }
+  .ld { width: 5px; height: 5px; }
 
   #filters {
-    bottom: 6px;
+    bottom: 4px;
     width: auto;
-    padding: 4px 10px; gap: 3px;
+    padding: 3px 8px; gap: 2px;
   }
-  .fb { padding: 3px 10px; font-size: 10px; }
+  .fb { padding: 2px 8px; font-size: 9px; }
 
   #tip { display: none !important; }
   #export-btn { display: none; }
@@ -250,10 +249,6 @@ body {
   <div class="lr"><div class="ld" style="background:#a87fd4"></div>CLI / integration</div>
   <div class="lr"><div class="ld" style="background:#c4b060"></div>memory / context</div>
   <div class="lr"><div class="ld" style="background:#c47085"></div>principle</div>
-  <div class="lr" style="margin-top:8px">
-    <svg width="14" height="7"><line x1="0" y1="3.5" x2="14" y2="3.5" stroke="rgba(0,0,0,0.4)" stroke-width="1" stroke-dasharray="3,3"/></svg>
-    <span style="color:rgba(0,0,0,0.3)">concept evolution</span>
-  </div>
 </div>
 
 <div id="filters">
@@ -934,6 +929,12 @@ function render(f) {
 
   const conNodes = ns.filter(d=>d.kind==='concept');
 
+  // Invisible touch target for mobile (bigger hit area)
+  conNodes.append('circle')
+    .attr('r', 22)
+    .attr('fill', 'transparent')
+    .attr('stroke', 'none');
+
   conNodes.append('circle')
     .attr('r', 6)
     .attr('fill', d=>d.color)
@@ -1062,12 +1063,8 @@ document.querySelectorAll('.fb').forEach(btn=>{
     if(f === 'all') {
       activeFilters = new Set(ALL_CATS);
     } else {
-      if(activeFilters.has(f)) {
-        activeFilters.delete(f);
-        if(activeFilters.size === 0) activeFilters = new Set(ALL_CATS);
-      } else {
-        activeFilters.add(f);
-      }
+      // Exclusive select: show only this category
+      activeFilters = new Set([f]);
     }
     syncFilterButtons();
     curF = activeFilters.size === ALL_CATS.length ? 'all' : [...activeFilters];
@@ -1114,10 +1111,10 @@ function fitView() {
   // UI 요소 점유 영역 제외 (header/counter 위, legend/filters 아래)
   const mobile = W <= 500;
   const landscape = W > 500 && H <= 500;
-  const padL = mobile ? 4 : landscape ? 8 : 36;
-  const padR = mobile ? 4 : landscape ? 8 : 72;
-  const padT = mobile ? 16 : landscape ? 22 : 58;
-  const padB = mobile ? 46 : landscape ? 50 : 120;
+  const padL = mobile ? 2 : landscape ? 4 : 36;
+  const padR = mobile ? 2 : landscape ? 4 : 72;
+  const padT = mobile ? 4 : landscape ? 10 : 58;
+  const padB = mobile ? 20 : landscape ? 26 : 120;
   const availW = W - padL - padR;
   const availH = H - padT - padB;
   const scale = Math.min(availW / (maxX - minX), availH / (maxY - minY)) * 0.90;
