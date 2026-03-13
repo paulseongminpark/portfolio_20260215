@@ -1,6 +1,6 @@
 # portfolio STATE
 _Updated: 2026-03-09_
-_Last Session: 2026-03-09 — Writing > Tech Review 전면 재설계, TechReviewMultiSource 폰트 수정_
+_Last Session: 2026-03-09 — UI 대규모 수정: How I Think 카드 주황 클릭, How I AI 본문 #111, TR 3소스 카드 색상/하이라이트, sources.json 4개 확장, Latest 제거, 가로줄 제거_
 
 ## 목적
 개인 포트폴리오 웹사이트 (React + Vite, vanilla CSS, hash routing)
