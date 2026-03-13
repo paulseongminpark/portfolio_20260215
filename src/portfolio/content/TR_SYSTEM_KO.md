@@ -9,14 +9,15 @@
 
 ## Twitter Bookmark
 
-- 북마크 → **Codex gpt-5.4** 자동 분석
-- **why**: 왜 중요한지 핵심 1문장 추출
-- **apply_point**: 실무 적용 포인트
-- Task Scheduler 3시간 간격 처리
+- **크롬 코드 스니펫으로 JSON 형태로 export** 관심 트윗을 북마크하면 자동으로 분석
+- **Codex** 왜 중요한지 핵심 한 줄로 정리
+- **Smart Brevity** 실무에 어떻게 쓸 수 있는지 추출
+- **Task Scheduler** 3시간 간격으로 자동 처리
 
 ## YouTube
 
-- **yt-dlp** 자막 추출 + Whisper GPU 폴백
-- **Codex** 10섹션+ 구조화 분석
-- 직접 인용 transcript 검증
-- 영상 1개 → 상세 섹션 아카이브
+- **YouTube Downloader로 자막 추출**
+- **Whisper로 음성 변환** 영상을 텍스트로 자동 변환
+- **Codex** 10개 이상 주제로 구조화 정리
+- **transcript** 핵심 발언 직접 인용 포함
+- 영상 한 편 → 읽을 수 있는 아카이브로

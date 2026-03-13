@@ -5,12 +5,12 @@ import { type WorkKey } from "./content/work";
 import { useWorkDetail } from "./hooks/useWorkDetail";
 import { FadeIn } from "./components/FadeIn";
 import { SectionLabel } from "./components/SectionLabel";
-import { StatsBar } from "./components/StatsBar";
 import { FeaturedCard, GridCard } from "./components/WorkCard";
 import { WorkDetail } from "./components/WorkDetail";
 import { TechReviewMultiSource } from "./components/TechReviewMultiSource";
 import { AiWorkflowSection } from "./components/AiWorkflowSection";
 import { TechReviewSystemSection } from "./components/TechReviewSystemSection";
+import { OntologySection } from "./components/OntologySection_claude";
 import homeRaw from "./content/HOME_INTRO_TO_RELATION_KO.md?raw";
 import aiRaw from "./content/AI_WORKFLOW_KO.md?raw";
 import trRaw from "./content/TR_SYSTEM_KO.md?raw";
@@ -184,7 +184,8 @@ function SystemAccordion({ items }: { items: typeof SYSTEM_ITEMS }) {
                 width: "100%", display: "flex", justifyContent: "space-between", alignItems: "center",
                 padding: "24px 32px", background: "none", border: "none", cursor: "pointer",
                 fontFamily: "'Inter',sans-serif", fontSize: 11, fontWeight: 600,
-                letterSpacing: "0.14em", textTransform: "uppercase", color: "#666",
+                letterSpacing: "0.14em", textTransform: "uppercase", color: isOpen ? ANTHROPIC : "#666",
+                transition: "color 0.2s ease",
                 textAlign: "left",
               }}
             >
@@ -226,43 +227,60 @@ interface SectionGrid {
   sections: { heading: string; items: string[] }[];
   cols?: 2 | 3;
   disableHighlight?: boolean;
+  headingColor?: string;
+  cardColors?: string[];
 }
 
-function SectionFlowGrid({ sections, cols = 3, disableHighlight = false }: SectionGrid) {
+function SectionFlowGrid({ sections, cols = 3, disableHighlight = false, headingColor, cardColors }: SectionGrid) {
   const colStyle = cols === 2 ? "1fr 1fr" : "1fr 1fr 1fr";
+  const stripHeight = 30;
+
   return (
     <div className="p12-section-flow-grid" style={{ display: "grid", gridTemplateColumns: colStyle, gap: 2, alignItems: "stretch" }}>
       {sections.map((sec, i) => (
         <FadeIn key={i} delay={i * 0.06} style={{ display: "flex" }}>
           <div style={{
+            position: "relative",
             padding: "36px 32px",
             background: "#f7f7f5",
             border: "1px solid #e4e0da",
             marginRight: -1, marginBottom: -1,
             flex: 1,
           }}>
-            <p style={{
-              fontFamily: "'Inter',sans-serif", fontSize: 11, fontWeight: 600,
-              letterSpacing: "0.14em", textTransform: "uppercase",
-              marginBottom: 16,
-            }}>
-              {disableHighlight ? (
-                <span style={{ color: "#666" }}>{sec.heading}</span>
-              ) : (
-                <mark style={{ background: "rgba(37, 99, 235, 0.14)", color: "#1d4ed8", borderRadius: 2, padding: "2px 6px" }}>
-                  {sec.heading}
-                </mark>
-              )}
-            </p>
-            <div style={{ display: "flex", flexDirection: "column", gap: 6 }}>
-              {sec.items.map((item, j) => (
-                <p key={j} style={{
-                  fontFamily: "'Inter','Noto Sans KR',sans-serif",
-                  fontSize: 13, color: "#444", lineHeight: 1.75, margin: 0,
-                }}>
-                  {disableHighlight ? renderBoldPlain(item) : renderBold(item)}
-                </p>
-              ))}
+            {/* 상단 컬러 배경 (텍스트 뒤) */}
+            {cardColors?.[i] && (
+              <div style={{
+                position: "absolute",
+                top: 0, left: 0, right: 0,
+                height: stripHeight,
+                background: cardColors[i],
+                zIndex: 0,
+              }} />
+            )}
+            <div style={{ position: "relative", zIndex: 1 }}>
+              <p style={{
+                fontFamily: "'Inter',sans-serif", fontSize: 11, fontWeight: 600,
+                letterSpacing: "0.14em", textTransform: "uppercase",
+                marginBottom: 16,
+              }}>
+                {disableHighlight ? (
+                  <span style={{ color: headingColor ?? "#666" }}>{sec.heading}</span>
+                ) : (
+                  <mark style={{ background: "rgba(37, 99, 235, 0.14)", color: "#1d4ed8", borderRadius: 2, padding: "2px 6px" }}>
+                    {sec.heading}
+                  </mark>
+                )}
+              </p>
+              <div style={{ display: "flex", flexDirection: "column", gap: 6 }}>
+                {sec.items.map((item, j) => (
+                  <p key={j} style={{
+                    fontFamily: "'Inter','Noto Sans KR',sans-serif",
+                    fontSize: 13, color: "#444", lineHeight: 1.75, margin: 0,
+                  }}>
+                    {disableHighlight ? renderBoldPlain(item) : renderBold(item)}
+                  </p>
+                ))}
+              </div>
             </div>
           </div>
         </FadeIn>
@@ -668,18 +686,9 @@ export default function Page12() {
           </div>
         </FadeIn>
 
-        {/* 온톨로지 placeholder */}
-        <div id="build-ontology" style={{ borderTop: "1px solid #e8e8e8", marginTop: 80, padding: "80px 0" }}>
-          <div className="p12-container">
-            <FadeIn>
-              <p style={{ fontFamily: "'Inter',sans-serif", fontSize: 11, fontWeight: 600, letterSpacing: "0.14em", textTransform: "uppercase", color: "#bbb", marginBottom: 16 }}>
-                Ontology
-              </p>
-              <p style={{ fontFamily: "'Inter','Noto Sans KR',sans-serif", fontSize: 14, color: "#aaa", lineHeight: 1.8, maxWidth: 560 }}>
-                준비 중 — 26 노드타입, 33 관계타입으로 구성된 지식 그래프
-              </p>
-            </FadeIn>
-          </div>
+        {/* Ontology */}
+        <div id="build-ontology" style={{ borderTop: "1px solid #e8e8e8", marginTop: 80 }}>
+          <OntologySection />
         </div>
 
         {/* Obsidian 한 단락 */}
@@ -718,7 +727,7 @@ export default function Page12() {
       </section>
 
       {/* ── 05 · Writing ── */}
-      <section id="writing" className="p12-section" style={{ background: "#f7f7f5", borderTop: "1px solid #e8e8e8" }}>
+      <section id="writing" className="p12-section" style={{ background: "#ffffff", borderTop: "1px solid #e8e8e8" }}>
         <div className="p12-container">
           <FadeIn>
             <SectionLabel>05 · Writing</SectionLabel>
@@ -745,46 +754,34 @@ export default function Page12() {
                   The Problem
                 </p>
                 <p style={{ fontFamily: "'Inter','Noto Sans KR',sans-serif", fontSize: 15, color: "#333", lineHeight: 1.8, margin: 0 }}>
-                  AI 세계의 인사이트는 기사·트윗·영상 곳곳에 흩어져 있다.<br />
-                  읽어도 남지 않고, 보아도 정리되지 않는다.<br />
-                  수작업으로는 지속할 수 없었다.
+                  AI 세계의 인사이트는 기사·트윗·영상 곳곳에 흩어져 있다. 읽어도 남지 않고, 연결되지 않는다. input의 양은 많은데, 어디에 어떻게 적용해야 할지가 문제였다.
+                </p>
+                <p style={{ fontFamily: "'Inter','Noto Sans KR',sans-serif", fontSize: 15, color: "#333", lineHeight: 1.8, margin: 0 }}>
+                  소스들을 한 곳으로 수렴하고, 정리와 분배는 AI가 하도록. 이미 구축해둔 맥락과 외부 메모리에 새로운 정보가 들어올 때마다 적재적소에 녹아들도록. AI는 내 시스템 전체 스택을 알고 있다. 새로운 정보가 들어올 때, 그게 내 작업의 어떤 scope에 어떤 맥락으로 적용되면 좋을지 — 나보다 더 세밀한 단위로 파악할 수 있다.
                 </p>
               </div>
             </FadeIn>
 
             {/* [2] 3소스 파이프라인 */}
             <FadeIn delay={0.08}>
-              <SectionFlowGrid sections={trSections} cols={3} />
-              <p style={{ fontFamily: "'Inter',sans-serif", fontSize: 12, color: "#aaa", textAlign: "center", margin: "16px 0 0", letterSpacing: "0.04em" }}>
-                ↓ &nbsp; sources.json 으로 수렴 &nbsp;→&nbsp; Portfolio 실시간 피드
+              <SectionFlowGrid sections={trSections} cols={3} disableHighlight headingColor="#1d4ed8" cardColors={["#6C9D81", "#99CCD6", "#FF846E"]} />
+              <p style={{ fontFamily: "'Inter',sans-serif", fontSize: 12, color: "#111", textAlign: "center", margin: "32px 0 0", letterSpacing: "0.04em" }}>
+                <span style={{ color: "#D4632D", fontWeight: 700, fontSize: 16 }}>↓</span> &nbsp; sources.json 으로 수렴 &nbsp;→&nbsp; Portfolio 실시간 피드
               </p>
             </FadeIn>
 
             {/* [3] 실시간 피드 */}
             <FadeIn delay={0.1}>
-              <div style={{ marginTop: 56, borderTop: "1px solid #e4e0da", paddingTop: 40 }}>
-                <p style={{ fontFamily: "'Inter',sans-serif", fontSize: 11, fontWeight: 600, letterSpacing: "0.12em", textTransform: "uppercase", color: "#aaa", marginBottom: 20 }}>
-                  Latest
-                </p>
+              <div style={{ marginTop: 24 }}>
                 <TechReviewMultiSource />
               </div>
             </FadeIn>
 
             {/* [4] 수치 */}
-            <FadeIn delay={0.12}>
-              <div style={{ marginTop: 48, paddingTop: 40, borderTop: "1px solid #e4e0da" }}>
-                <StatsBar stats={[
-                  { value: "100+", label: "Posts" },
-                  { value: "3",    label: "Sources" },
-                  { value: "KO/EN", label: "Languages" },
-                  { value: "~$3",  label: "/ 월" },
-                ]} />
-              </div>
-            </FadeIn>
 
             {/* [5] Design Decisions + Ongoing */}
             <FadeIn delay={0.15}>
-              <div style={{ paddingTop: 56, borderTop: "1px solid #e4e0da", marginTop: 48 }}>
+              <div style={{ paddingTop: 56, marginTop: 48 }}>
                 <TechReviewSystemSection />
               </div>
             </FadeIn>

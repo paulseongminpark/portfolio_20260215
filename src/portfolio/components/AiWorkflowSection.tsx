@@ -269,7 +269,7 @@ export function AiWorkflowSection({ raw: _raw }: { raw?: string }) {
       {/* ━━━ 2. Before ━━━ */}
       <section style={{ paddingBottom: 32 }}>
         {NARRATIVE.before.map((p, i) => (
-          <p key={i} className="wd-paragraph" style={{ fontSize: 15, lineHeight: 1.95, maxWidth: 800 }}>
+          <p key={i} className="wd-paragraph" style={{ fontSize: 15, lineHeight: 1.95, maxWidth: 800, color: '#111' }}>
             {p}
           </p>
         ))}
@@ -278,7 +278,7 @@ export function AiWorkflowSection({ raw: _raw }: { raw?: string }) {
       {/* ━━━ 3. After ━━━ */}
       <section style={{ paddingBottom: 32 }}>
         {NARRATIVE.after.map((p, i) => (
-          <p key={i} className="wd-paragraph" style={{ fontSize: 15, lineHeight: 1.95, maxWidth: 800 }}>
+          <p key={i} className="wd-paragraph" style={{ fontSize: 15, lineHeight: 1.95, maxWidth: 800, color: '#111' }}>
             {p}
           </p>
         ))}
@@ -302,7 +302,7 @@ export function AiWorkflowSection({ raw: _raw }: { raw?: string }) {
           gridTemplateColumns: 'repeat(3, 1fr)',
           gap: 24,
           maxWidth: 800,
-          marginTop: 24,
+          margin: '24px auto 0',
         }}>
           {HOW_CONCEPTS.map((c) => (
             <div key={c.title}>
@@ -332,7 +332,7 @@ export function AiWorkflowSection({ raw: _raw }: { raw?: string }) {
 
       {/* ━━━ 5. Cycle — 다이어그램 2 ━━━ */}
       <section>
-        <p className="wd-paragraph" style={{ maxWidth: 800 }}>
+        <p className="wd-paragraph" style={{ maxWidth: 800, color: '#111' }}>
           {NARRATIVE.cycle}
         </p>
         <div style={{ maxWidth: 660, margin: '28px auto 0' }}>
@@ -344,10 +344,10 @@ export function AiWorkflowSection({ raw: _raw }: { raw?: string }) {
 
       {/* ━━━ 6. System — 다이어그램 3 ━━━ */}
       <section>
-        <p className="wd-paragraph" style={{ maxWidth: 800 }}>
+        <p className="wd-paragraph" style={{ maxWidth: 800, color: '#111' }}>
           {NARRATIVE.cycleToSystem}
         </p>
-        <p className="wd-paragraph" style={{ maxWidth: 800 }}>
+        <p className="wd-paragraph" style={{ maxWidth: 800, color: '#111' }}>
           {NARRATIVE.systemIntro}
         </p>
 
@@ -385,7 +385,7 @@ export function AiWorkflowSection({ raw: _raw }: { raw?: string }) {
           </button>
         </div>
 
-        <p className="wd-paragraph" style={{ maxWidth: 800, marginTop: 24 }}>
+        <p className="wd-paragraph" style={{ maxWidth: 800, marginTop: 24, color: '#111' }}>
           {NARRATIVE.systemDetail}
         </p>
       </section>
@@ -403,8 +403,11 @@ export function AiWorkflowSection({ raw: _raw }: { raw?: string }) {
         <h2 className="wd-title">3주의 기록</h2>
 
         {/* 도입 */}
-        <p className="wd-paragraph" style={{ maxWidth: 800, marginLeft: 'auto', marginRight: 'auto' }}>
+        <p className="wd-paragraph" style={{ maxWidth: 800, marginLeft: 'auto', marginRight: 'auto', color: '#111' }}>
           {NARRATIVE.evolutionIntro}
+        </p>
+        <p className="wd-paragraph" style={{ maxWidth: 800, marginLeft: 'auto', marginRight: 'auto' }}>
+          {NARRATIVE.evolutionIntro2}
         </p>
 
         {/* 세로 타임라인 */}
@@ -484,7 +487,7 @@ export function AiWorkflowSection({ raw: _raw }: { raw?: string }) {
             <p key={i} style={{
               fontFamily: font,
               fontSize: 15,
-              color: C.textSub,
+              color: i === 0 || i === 2 ? '#111' : C.textSub,
               lineHeight: 1.95,
               marginTop: i > 0 ? 16 : 0,
               marginBottom: 0,
