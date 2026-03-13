@@ -125,19 +125,121 @@ body {
   text-align: right; line-height: 1.8;
 }
 .cnt-v { color: rgba(0,0,0,0.6); font-weight: 500; font-size: 18px; }
+
+/* top-bar: invisible wrapper on desktop */
+#top-bar { display: contents; }
+
+/* ── Mobile responsive ── */
+@media (max-width: 500px) {
+  /* Top bar: centered flex row */
+  #top-bar {
+    display: flex; justify-content: center; align-items: baseline;
+    gap: 12px;
+    position: fixed; top: 4px; left: 0; right: 0;
+    z-index: 10; pointer-events: none;
+  }
+  #header {
+    position: static; transform: none; text-align: center;
+  }
+  #header h1 {
+    font-size: 10px; letter-spacing: 0.06em;
+    white-space: nowrap; color: rgba(0,0,0,0.5);
+    line-height: 16px;
+  }
+  #counter {
+    position: static;
+    display: flex; gap: 8px; align-items: baseline;
+    line-height: 16px;
+  }
+  #counter > div { display: inline; font-size: 8px; }
+  .cnt-v { font-size: 12px; }
+
+  /* Legend → horizontal row above filters */
+  #legend {
+    bottom: 34px; left: 50%; right: auto;
+    transform: translateX(-50%);
+    display: flex; flex-wrap: wrap;
+    gap: 1px 8px; justify-content: center;
+    width: calc(100% - 16px);
+    font-size: 7.5px;
+  }
+  .lr { margin: 0; gap: 3px; }
+  .ld { width: 5px; height: 5px; }
+
+  /* Filters → full width */
+  #filters {
+    bottom: 4px;
+    width: calc(100% - 16px);
+    justify-content: center;
+    padding: 3px 6px; gap: 2px;
+  }
+  .fb { padding: 3px 7px; font-size: 9px; }
+
+  /* Hide tooltip + export on mobile */
+  #tip { display: none !important; }
+  #export-btn { display: none; }
+  #export-toast { display: none; }
+}
+
+/* ── Landscape expanded (wide but short — iframe in rotated fullscreen) ── */
+@media (min-width: 501px) and (max-height: 500px) {
+  #top-bar {
+    display: flex; justify-content: center; align-items: baseline;
+    gap: 16px;
+    position: fixed; top: 4px; left: 0; right: 0;
+    z-index: 10; pointer-events: none;
+  }
+  #header {
+    position: static; transform: none; text-align: center;
+  }
+  #header h1 {
+    font-size: 11px; white-space: nowrap;
+    color: rgba(0,0,0,0.5); line-height: 18px;
+    letter-spacing: 0.06em;
+  }
+  #counter {
+    position: static;
+    display: flex; gap: 10px; align-items: baseline;
+    line-height: 18px;
+  }
+  #counter > div { display: inline; font-size: 9px; }
+  .cnt-v { font-size: 13px; }
+
+  #legend {
+    bottom: 34px; left: 50%; right: auto;
+    transform: translateX(-50%);
+    display: flex; flex-wrap: nowrap;
+    gap: 2px 12px; justify-content: center;
+    width: calc(100% - 24px);
+    font-size: 8.5px;
+  }
+  .lr { margin: 0; gap: 4px; }
+  .ld { width: 6px; height: 6px; }
+
+  #filters {
+    bottom: 6px;
+    width: auto;
+    padding: 4px 10px; gap: 3px;
+  }
+  .fb { padding: 3px 10px; font-size: 10px; }
+
+  #tip { display: none !important; }
+  #export-btn { display: none; }
+}
 </style>
 </head>
 <body>
 
 <svg id="canvas"></svg>
 
-<div id="header">
-  <h1>Orchestration Evolution · v0 → v4</h1>
-</div>
-
-<div id="counter">
-  <div><span class="cnt-v" id="cnt-agents">—</span> agents</div>
-  <div><span class="cnt-v" id="cnt-concepts">—</span> concepts</div>
+<div id="top-bar">
+  <div id="header">
+    <h1>Orchestration Evolution · v0 → v4</h1>
+  </div>
+  <div id="counter">
+    <div><span class="cnt-v" id="cnt-agents">—</span> agents</div>
+    <div><span class="cnt-v" id="cnt-concepts">—</span> concepts</div>
+  </div>
 </div>
 
 <div id="legend">
@@ -1010,7 +1112,12 @@ function fitView() {
   const minX = Math.min(...xs), maxX = Math.max(...xs);
   const minY = Math.min(...ys), maxY = Math.max(...ys);
   // UI 요소 점유 영역 제외 (header/counter 위, legend/filters 아래)
-  const padL = 36, padR = 72, padT = 58, padB = 120;
+  const mobile = W <= 500;
+  const landscape = W > 500 && H <= 500;
+  const padL = mobile ? 4 : landscape ? 8 : 36;
+  const padR = mobile ? 4 : landscape ? 8 : 72;
+  const padT = mobile ? 16 : landscape ? 22 : 58;
+  const padB = mobile ? 46 : landscape ? 50 : 120;
   const availW = W - padL - padR;
   const availH = H - padT - padB;
   const scale = Math.min(availW / (maxX - minX), availH / (maxY - minY)) * 0.90;
@@ -1026,7 +1133,8 @@ svg.on('click', ()=>{ pinnedNode = null; onOut(); });
 
 // ── Init ─────────────────────────────────────────────────────────────────────
 render('all');
-if (INITIAL_TRANSFORM) {
+// Mobile portrait (W<=500) OR landscape-in-iframe (H<=500): always fitView
+if (INITIAL_TRANSFORM && W > 500 && H > 500) {
   svg.call(zoom.transform, d3.zoomIdentity
     .translate(INITIAL_TRANSFORM.tx, INITIAL_TRANSFORM.ty)
     .scale(INITIAL_TRANSFORM.scale));
