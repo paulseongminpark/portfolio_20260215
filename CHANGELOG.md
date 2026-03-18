@@ -1,5 +1,28 @@
 # Portfolio CHANGELOG
 
+## 2026-03-17
+
+### How I AI v6.0 콘텐츠 갱신 (미커밋)
+- Evolution 3막 전체 재작성: "만들수록 좁아졌다" / "포스트잇 한 장" / "잊혀도 괜찮다"
+- Before+After 4→3문단 재구성 (전환을 한 호흡에)
+- HOW_CONCEPTS v6: 맥락이 이어진다 / 시스템이 자기를 안다 / 사고가 실행이 된다
+- ParallelDiagram v6: Direction → Guards/Skills/Workers → Claude(orchestrator) → Output → Measure
+- Cycle 텍스트 v6: 시스템이 자기 상태를 측정하고 먼저 말한다
+- System 텍스트 v6: Guards + Skills + Workers 3 + 자기 측정 + 세션 간 감지
+- E2E Workflow 9개 Phase v6 갱신 (삭제된 에이전트 → Claude/Skills/Workers)
+- 시스템에 대하여 v6: 규칙 생명주기 + "Claude의 세계를 설계하는 것"
+- Closing: "다음 장이 있다"
+- How I Think 4카드: 원칙 수준으로 정리 (구현 디테일 제거)
+- GrowthDiagram: Cycle → Week 레이블
+- 파이프라인: 04_v6-portfolio-update_0317 (Ideation R1)
+- 체크포인트: git tag `pre-v6-update`
+
+### 발견된 구조 문제
+- How I Think / How I Work / How I Build / How I AI 이름 겹침 → 재설계 필요
+- Option A(합치기) 방향 선호, 별도 아이디에이션(R2)
+
+---
+
 ## 2026-03-04 (세션2)
 
 ### GitHub Actions + Vercel 빌드 수정
