@@ -1,6 +1,6 @@
 <!-- pipeline: v6-portfolio-update | type: custom | mode: standard | status: ACTIVE -->
 <!-- phase: ideation | updated: 2026-03-18T14:30 -->
-<!-- current_task: R3 전체 텍스트 초안 완성 | next: Hero 결정 + 시각화 선택 + 코드 반영 -->
+<!-- current_task: R3 코드 반영 완료 — UI 폴리싱 진행 중 (7개 중 2번 타이포 위계 수정 중) | next: 타이포 위계 완료 → Hero → 섹션 구분 → Now → TOC -->
 
 # v6.0 Portfolio Update
 > 시작: 2026-03-17 | 타입: custom | 모드: 정식

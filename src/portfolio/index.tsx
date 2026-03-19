@@ -7,57 +7,6 @@ import { FadeIn } from "./components/FadeIn";
 import { SectionLabel } from "./components/SectionLabel";
 import { FeaturedCard, GridCard } from "./components/WorkCard";
 import { WorkDetail } from "./components/WorkDetail";
-import { TechReviewMultiSource } from "./components/TechReviewMultiSource";
-import { AiWorkflowSection } from "./components/AiWorkflowSection";
-import { TechReviewSystemSection } from "./components/TechReviewSystemSection";
-import { OntologySection } from "./components/OntologySection_claude";
-import homeRaw from "./content/HOME_INTRO_TO_RELATION_KO.md?raw";
-import aiRaw from "./content/AI_WORKFLOW_KO.md?raw";
-import trRaw from "./content/TR_SYSTEM_KO.md?raw";
-
-// ── 파싱 유틸 ───────────────────────────────────────────────────
-function extractBold(raw: string, marker: string): string {
-  const m = raw.match(new RegExp(`${marker}[\\s\\S]*?\\*\\*([\\s\\S]*?)\\*\\*`, "i"));
-  return m ? m[1].trim() : "";
-}
-
-/** ## 헤딩 → { heading, items[] } 파싱 (공통) */
-function parseSections(raw: string): { heading: string; items: string[] }[] {
-  const result: { heading: string; items: string[] }[] = [];
-  const lines = raw.split("\n");
-  let cur: { heading: string; items: string[] } | null = null;
-  for (const line of lines) {
-    const h2 = line.match(/^## (.+)/);
-    if (h2) {
-      if (cur) result.push(cur);
-      cur = { heading: h2[1].trim(), items: [] };
-      continue;
-    }
-    if (cur && line.trim().startsWith("-")) {
-      cur.items.push(line.trim().replace(/^-\s*/, ""));
-    }
-  }
-  if (cur) result.push(cur);
-  return result;
-}
-
-function renderBold(text: string): React.ReactNode[] {
-  const parts = text.split(/(\*\*[^*]+\*\*)/g);
-  return parts.map((p, i) =>
-    p.startsWith("**") && p.endsWith("**")
-      ? <mark key={i} style={{ background: "rgba(249, 115, 22, 0.18)", color: "inherit", borderRadius: 2, padding: "0 3px", fontWeight: 600 }}>{p.slice(2, -2)}</mark>
-      : <span key={i}>{p}</span>
-  );
-}
-
-function renderBoldPlain(text: string): React.ReactNode[] {
-  const parts = text.split(/(\*\*[^*]+\*\*)/g);
-  return parts.map((p, i) =>
-    p.startsWith("**") && p.endsWith("**")
-      ? <strong key={i} style={{ fontWeight: 600 }}>{p.slice(2, -2)}</strong>
-      : <span key={i}>{p}</span>
-  );
-}
 
 // ── TOC ──────────────────────────────────────────────────────────
 function scrollToId(id: string) {
@@ -67,47 +16,31 @@ function scrollToId(id: string) {
 const ANTHROPIC = "#D4632D";
 
 const P12_TOC: Array<{ id: string; label: string; mini: string; items: Array<{ id: string; label: string }> }> = [
-  { id: "about",       label: "About",        mini: "AB", items: [
-    { id: "about-intro",      label: "Intro" },
-    { id: "about-background", label: "Background" },
-    { id: "about-direction",  label: "Direction" },
-  ]},
-  { id: "how-i-think", label: "How I Think",  mini: "HT", items: [
-    { id: "system-connection", label: "Connection" },
-    { id: "system-currency",   label: "Context as Currency" },
-    { id: "system-structure",  label: "Memory by Design" },
-    { id: "system-governance", label: "Governance" },
-  ]},
-  { id: "how-i-build", label: "How I Build",  mini: "HB", items: [
-    { id: "ai",             label: "How I AI" },
-    { id: "build-ontology", label: "Ontology" },
-    { id: "build-obsidian", label: "Obsidian" },
-  ]},
-  { id: "work",        label: "Work",          mini: "WK", items: [
+  { id: "about",   label: "About",          mini: "AB", items: [] },
+  { id: "why",     label: "Why I Build AI",  mini: "WH", items: [] },
+  { id: "journey", label: "Journey",         mini: "JN", items: [] },
+  { id: "work",    label: "Work",            mini: "WK", items: [
+    { id: "work-mcp-memory",  label: "mcp-memory" },
+    { id: "work-ce",          label: "Context Engineering" },
+    { id: "work-tech-review", label: "Tech Review" },
     { id: "work-empty-house", label: "Empty House" },
     { id: "work-skin-diary",  label: "Skin Diary" },
     { id: "work-pmcc",        label: "PMCC" },
   ]},
-  { id: "writing",     label: "Writing",       mini: "WR", items: [
-    { id: "tr-tech-review",   label: "Tech Review" },
-    { id: "writing-1",        label: "Essay" },
+  { id: "now",     label: "Now",     mini: "NW", items: [
+    { id: "now-memory", label: "Memory" },
+    { id: "now-flow",   label: "Flow" },
+    { id: "now-loop",   label: "Loop" },
   ]},
-  { id: "contact",     label: "Contact",       mini: "CT", items: [] },
+  { id: "forward", label: "Forward", mini: "FW", items: [] },
+  { id: "contact", label: "Contact", mini: "CT", items: [] },
 ];
 
 // ── 데이터 ──────────────────────────────────────────────────────
-const trSections = parseSections(trRaw);
-
-const aboutItems = [
-  { id: "about-intro", label: "Intro", text: extractBold(homeRaw, "# 1\\) Intro") },
-  { id: "about-background", label: "Background", text: extractBold(homeRaw, "\\*\\*Background\\*\\*") },
-  { id: "about-direction", label: "Direction", text: extractBold(homeRaw, "\\*\\*Direction\\*\\*") },
-];
-
 const workItems = [
-  { id: "work-empty-house", workKey: "empty-house" as WorkKey, label: "Empty House CPS", eyebrow: "June 2025", tag: "Data · Policy", description: "빈집 문제를 사람이 떠나서 생긴 결과로만 단정 짓는 기존 정책들의 설명이 의문이었습니다. 인구·상권·교통 데이터의 관계를 구조화해, 개입 우선순위를 판단할 수 있는 시스템을 설계했습니다." },
-  { id: "work-skin-diary", workKey: "skin-diary" as WorkKey, label: "Skin Diary AI", eyebrow: "August 2025", tag: "AI · Mobile", description: "피부를 숫자로만 평가하는 방식으로는 지금 무엇을 해야 하는지 알 수 없다는 점이 답답했습니다. 사용자 맥락들을 결합해 행동 제안 시스템을 개발했습니다." },
-  { id: "work-pmcc", workKey: "pmcc" as WorkKey, label: "PMCC", eyebrow: "2023–2026", tag: "Community · Design", description: "함께 달려도 사람들 사이가 좀처럼 가까워지지 않는 게 아쉬웠습니다. 관계가 시작되는 순간과 규칙을 직접 설계했습니다." },
+  { id: "work-empty-house", workKey: "empty-house" as WorkKey, label: "Empty House CPS", eyebrow: "June 2025", tag: "Data \u00b7 Policy", description: "\ube48\uc9d1 \ubb38\uc81c\ub97c \ub3c4\uc2dc \uc2dc\uc2a4\ud15c \ub2e8\uc704\ub85c \ubd84\uc11d. \uc778\uad6c\u00b7\uc0c1\uad8c\u00b7\uad50\ud1b5\u00b7\ub178\ud6c4 \ub370\uc774\ud130\ub97c \uc628\ud1a8\ub85c\uc9c0\ub85c \uc5f0\uacb0\ud574 4\uac1c \ud1b5\ud569\uc9c0\ud45c\ub85c \uac1c\uc785 \uc6b0\uc120\uc21c\uc704\ub97c \ud310\ub2e8\ud55c\ub2e4." },
+  { id: "work-skin-diary", workKey: "skin-diary" as WorkKey, label: "Skin Diary AI", eyebrow: "August 2025", tag: "Data \u00b7 AI \u00b7 Mobile", description: "\ud53c\ubd80 \uc774\ubbf8\uc9c0\ub97c \ubd80\uc704\ubcc4\ub85c \ubd84\uc11d\ud558\uace0, \ub0a0\uc528\u00b7\ud658\uacbd \ub9e5\ub77d\uc744 \uacb0\ud569\ud574 \ud589\ub3d9\uc744 \uc81c\uc548\ud558\ub294 \uc571. \uc810\uc218\uac00 \uc544\ub2c8\ub77c '\uc9c0\uae08 \ubb34\uc5c7\uc744 \ud574\uc57c \ud558\ub294\uc9c0'\ub97c \uc54c\ub824\uc900\ub2e4." },
+  { id: "work-pmcc", workKey: "pmcc" as WorkKey, label: "PMCC", eyebrow: "2023\u20132026", tag: "Community \u00b7 Design", description: "\ucc98\uc74c \ub9cc\ub09c \uc0ac\ub78c\ub4e4\uc774 \uc9c4\uc815\ud55c \ub300\ud654\ub97c \ub098\ub20c \uc218 \uc788\ub3c4\ub85d \ud658\uacbd\uc744 \uc124\uacc4\ud55c \ub7ec\ub2dd \ucee4\ubba4\ub2c8\ud2f0. \uacbd\uacc4\u00b7\ud750\ub984\u00b7\uc758\ub840\ub97c \uc9c1\uc811 \ub9cc\ub4e4\uace0 3\ub144\uac04 168\uba85\uacfc \uc6b4\uc601." },
 ];
 
 function getWorkTitle(key: WorkKey) {
@@ -138,157 +71,6 @@ function getUrlWithWork(work: WorkKey | null): string {
   return `${url.pathname}${url.search}${url.hash}`;
 }
 
-const SYSTEM_ITEMS = [
-  {
-    id: "system-connection",
-    label: "Connection",
-    body: "무언가를 배울 때, 항목으로 기억하는 것보다 어디서 왜 나왔는지가 더 오래 남았다. 하나의 사건에도 여러 각도가 보인다 — 배경, 결정, 실패, 통찰. 이것들이 따로 저장되면 흩어진다. 아이디어 하나가 생기면, 어디서 왔는지, 무엇과 연결되는지를 먼저 본다. 이 습관을 시스템으로 옮겼다. 26개 노드 타입, 33개 관계 타입 — 무슨 일이 있었고, 어떤 판단을 했으며, 어디서 틀렸는지를 연결로 쌓는다. 기억이 아니라 사고 구조의 외부화다.",
-  },
-  {
-    id: "system-currency",
-    label: "Context as Currency",
-    body: "대화를 시작할 때마다 같은 맥락을 처음부터 설명해야 한다면, 생각이 아니라 기억에 에너지를 쓰게 된다. 그 낭비를 없애기 위해 맥락 자체를 구조화했다. 필요한 순간에 정확히 필요한 것만 꺼낸다 — 세션 시작 비용을 88% 줄였다.",
-  },
-  {
-    id: "system-structure",
-    label: "Memory by Design",
-    body: "세션이 끊기면 기억도 끊길 수 있다는 걸 안다. 그래서 기억력에 기대지 않기로 했다. 자동 Hook부터 수동 체크포인트까지 4단계 안전망을 만들었다. 의지가 아니라 구조가 기억한다.",
-  },
-  {
-    id: "system-governance",
-    label: "Governance",
-    body: "시스템을 만들었다고 끝이 아니다. 새 도구가 나오고, 더 나은 방식이 생기고, 기존 구조가 낡아진다. 중요한 건 무엇을 쓰느냐보다 어떻게 통제할 것인가 — 그래서 거버넌스가 먼저다. 시스템은 만드는 것, 거버넌스는 운영하는 것이다.",
-  },
-];
-
-// ── System Accordion ─────────────────────────────────────────────
-function SystemAccordion({ items }: { items: typeof SYSTEM_ITEMS }) {
-  const [open, setOpen] = useState<Set<string>>(new Set());
-  const toggle = (id: string) => {
-    setOpen((prev) => {
-      const next = new Set(prev);
-      next.has(id) ? next.delete(id) : next.add(id);
-      return next;
-    });
-    setTimeout(() => window.dispatchEvent(new Event("scroll")), 10);
-  };
-  return (
-    <div style={{ border: "1px solid #e8e8e8" }}>
-      {items.map((item) => {
-        const isOpen = open.has(item.id);
-        return (
-          <div key={item.id} id={item.id} style={{ borderBottom: "1px solid #e8e8e8" }}>
-            <button
-              onClick={() => toggle(item.id)}
-              style={{
-                width: "100%", display: "flex", justifyContent: "space-between", alignItems: "center",
-                padding: "24px 32px", background: "none", border: "none", cursor: "pointer",
-                fontFamily: "'Inter',sans-serif", fontSize: 11, fontWeight: 600,
-                letterSpacing: "0.14em", textTransform: "uppercase", color: isOpen ? ANTHROPIC : "#666",
-                transition: "color 0.2s ease",
-                textAlign: "left",
-              }}
-            >
-              <span>{item.label}</span>
-              <span style={{
-                fontSize: 18, color: "#aaa", lineHeight: 1,
-                transform: isOpen ? "rotate(45deg)" : "rotate(0deg)",
-                transition: "transform 0.2s ease",
-              }}>+</span>
-            </button>
-            <AnimatePresence initial={false}>
-              {isOpen && (
-                <motion.div
-                  initial={{ height: 0, opacity: 0 }}
-                  animate={{ height: "auto", opacity: 1 }}
-                  exit={{ height: 0, opacity: 0 }}
-                  transition={{ duration: 0.22, ease: "easeInOut" }}
-                  style={{ overflow: "hidden" }}
-                >
-                  <p style={{
-                    fontFamily: "'Inter','Noto Sans KR',sans-serif", fontSize: 14,
-                    color: "#555", lineHeight: 1.8, margin: 0,
-                    padding: "0 32px 28px",
-                  }}>
-                    {renderBoldPlain(item.body)}
-                  </p>
-                </motion.div>
-              )}
-            </AnimatePresence>
-          </div>
-        );
-      })}
-    </div>
-  );
-}
-
-// ── 공통 섹션 흐름 카드 그리드 ──
-interface SectionGrid {
-  sections: { heading: string; items: string[] }[];
-  cols?: 2 | 3;
-  disableHighlight?: boolean;
-  headingColor?: string;
-  cardColors?: string[];
-}
-
-function SectionFlowGrid({ sections, cols = 3, disableHighlight = false, headingColor, cardColors }: SectionGrid) {
-  const colStyle = cols === 2 ? "1fr 1fr" : "1fr 1fr 1fr";
-  const stripHeight = 30;
-
-  return (
-    <div className="p12-section-flow-grid" style={{ display: "grid", gridTemplateColumns: colStyle, gap: 2, alignItems: "stretch" }}>
-      {sections.map((sec, i) => (
-        <FadeIn key={i} delay={i * 0.06} style={{ display: "flex" }}>
-          <div style={{
-            position: "relative",
-            padding: "36px 32px",
-            background: "#f7f7f5",
-            border: "1px solid #e4e0da",
-            marginRight: -1, marginBottom: -1,
-            flex: 1,
-          }}>
-            {/* 상단 컬러 배경 (텍스트 뒤) */}
-            {cardColors?.[i] && (
-              <div style={{
-                position: "absolute",
-                top: 0, left: 0, right: 0,
-                height: stripHeight,
-                background: cardColors[i],
-                zIndex: 0,
-              }} />
-            )}
-            <div style={{ position: "relative", zIndex: 1 }}>
-              <p style={{
-                fontFamily: "'Inter',sans-serif", fontSize: 11, fontWeight: 600,
-                letterSpacing: "0.14em", textTransform: "uppercase",
-                marginBottom: 16,
-              }}>
-                {disableHighlight ? (
-                  <span style={{ color: headingColor ?? "#666" }}>{sec.heading}</span>
-                ) : (
-                  <mark style={{ background: "rgba(37, 99, 235, 0.14)", color: "#1d4ed8", borderRadius: 2, padding: "2px 6px" }}>
-                    {sec.heading}
-                  </mark>
-                )}
-              </p>
-              <div style={{ display: "flex", flexDirection: "column", gap: 6 }}>
-                {sec.items.map((item, j) => (
-                  <p key={j} style={{
-                    fontFamily: "'Inter','Noto Sans KR',sans-serif",
-                    fontSize: 13, color: "#444", lineHeight: 1.75, margin: 0,
-                  }}>
-                    {disableHighlight ? renderBoldPlain(item) : renderBold(item)}
-                  </p>
-                ))}
-              </div>
-            </div>
-          </div>
-        </FadeIn>
-      ))}
-    </div>
-  );
-}
-
 // ── TOC 컴포넌트 ─────────────────────────────────────────────────
 function P12TocGroupItem({ group, expanded, activeGroup, activeItem, onToggle, onItemClick }: {
   group: { id: string; label: string; mini: string; items: Array<{ id: string; label: string }> };
@@ -302,9 +84,9 @@ function P12TocGroupItem({ group, expanded, activeGroup, activeItem, onToggle, o
         onClick={(e) => { e.preventDefault(); scrollToId(group.id); if (group.items.length > 0) onToggle(); }}
         onMouseEnter={(e) => { if (!isActive) { const el = e.currentTarget as HTMLElement; el.style.color = ANTHROPIC; el.style.fontWeight = "700"; } }}
         onMouseLeave={(e) => { if (!isActive) { const el = e.currentTarget as HTMLElement; el.style.color = "#4f4f4f"; el.style.fontWeight = "400"; } }}
-        style={{ display: "block", fontFamily: "'Inter', sans-serif", fontSize: 11,
+        style={{ display: "block", fontFamily: "'Inter', sans-serif", fontSize: 13,
           fontWeight: isActive ? 600 : 400, color: isActive ? ANTHROPIC : "#4f4f4f",
-          textDecoration: "none", padding: "5px 0", letterSpacing: "0.02em", transition: "color 0.15s", cursor: "pointer" }}>
+          textDecoration: "none", padding: "6px 0", letterSpacing: "0.02em", transition: "color 0.15s", cursor: "pointer" }}>
         {group.label}
       </a>
       {expanded && group.items.length > 0 && (
@@ -316,9 +98,9 @@ function P12TocGroupItem({ group, expanded, activeGroup, activeItem, onToggle, o
                 onClick={(e) => { e.preventDefault(); onItemClick ? onItemClick(item.id) : scrollToId(item.id); }}
                 onMouseEnter={(e) => { if (!active) { const el = e.currentTarget as HTMLElement; el.style.color = ANTHROPIC; el.style.fontWeight = "600"; } }}
                 onMouseLeave={(e) => { if (!active) { const el = e.currentTarget as HTMLElement; el.style.color = "#6f6f6f"; el.style.fontWeight = "400"; } }}
-                style={{ display: "block", fontFamily: "'Inter', sans-serif", fontSize: 10,
+                style={{ display: "block", fontFamily: "'Inter', sans-serif", fontSize: 11,
                   fontWeight: active ? 600 : 400, color: active ? ANTHROPIC : "#6f6f6f",
-                  textDecoration: "none", padding: "3px 0 3px 10px", transition: "color 0.15s",
+                  textDecoration: "none", padding: "4px 0 4px 12px", transition: "color 0.15s",
                   whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis",
                   borderLeft: active ? `2px solid ${ANTHROPIC}` : "2px solid transparent",
                   marginLeft: -2 }}>
@@ -362,12 +144,13 @@ function P12TocSidebar({ expandedGroups, onToggleGroup, activeGroup, activeItem,
 
 // ── Nav ──────────────────────────────────────────────────────────
 const NAV_LINKS = [
-  { label: "About",       id: "about" },
-  { label: "How I Think", id: "how-i-think" },
-  { label: "How I Build", id: "how-i-build" },
-  { label: "Work",        id: "work" },
-  { label: "Writing",     id: "writing" },
-  { label: "Contact",     id: "contact" },
+  { label: "About",          id: "about" },
+  { label: "Why I Build AI", id: "why" },
+  { label: "Journey",        id: "journey" },
+  { label: "Work",           id: "work" },
+  { label: "Now",            id: "now" },
+  { label: "Forward",        id: "forward" },
+  { label: "Contact",        id: "contact" },
 ];
 
 function Nav({ onLogoClick, onNavClick, showLogo = true }: { onLogoClick?: () => void; onNavClick?: (id: string) => void; showLogo?: boolean }) {
@@ -407,7 +190,7 @@ function Nav({ onLogoClick, onNavClick, showLogo = true }: { onLogoClick?: () =>
             {l.label}
           </a>
         ))}
-        <a href="mailto:paulseongminpark@gmail.com" className="p12-nav-cta">Contact →</a>
+        <a href="mailto:paulseongminpark@gmail.com" className="p12-nav-cta">Contact &rarr;</a>
       </div>
       {/* 모바일 햄버거 버튼 */}
       <button
@@ -429,7 +212,7 @@ function Nav({ onLogoClick, onNavClick, showLogo = true }: { onLogoClick?: () =>
             </a>
           ))}
           <a href="mailto:paulseongminpark@gmail.com" className="p12-nav-mobile-cta">
-            Contact →
+            Contact &rarr;
           </a>
         </div>
       )}
@@ -438,34 +221,77 @@ function Nav({ onLogoClick, onNavClick, showLogo = true }: { onLogoClick?: () =>
 }
 
 // ── Hero ─────────────────────────────────────────────────────────
-const heroWords = ["Building", "systems", "that", "think."];
-
 function Hero() {
   return (
     <section id="hero" className="p12-hero" style={{ background: "#ffffff" }}>
       <div style={{ maxWidth: 1200, margin: "0 auto", width: "100%" }}>
-        <motion.p className="p12-hero-badge" initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 0.8, delay: 0.2 }}>
-          PORTFOLIO
-        </motion.p>
-        <h1 className="p12-h1" style={{ color: "#111111" }}>
-          {heroWords.map((word, i) => (
-            <motion.span key={i} style={{ display: "inline-block", marginRight: "0.25em" }}
-              initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.7, delay: 0.4 + i * 0.1, ease: [0.25, 0.46, 0.45, 0.94] }}>
-              {word}
-            </motion.span>
-          ))}
-        </h1>
-        <motion.p className="p12-hero-sub" style={{ color: "#555555" }} initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.7, delay: 1.0 }}>
-          데이터·AI·커뮤니티 시스템을 설계합니다.<br />
-          Claude Code를 운영체제처럼 씁니다.
+        <motion.h1
+          className="p12-h1"
+          style={{ color: "#111111", fontSize: "clamp(36px, 5vw, 56px)", fontWeight: 700, marginBottom: 16 }}
+          initial={{ opacity: 0, y: 30 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.7, delay: 0.3, ease: [0.25, 0.46, 0.45, 0.94] }}
+        >
+          Paul Seongmin Park
+        </motion.h1>
+        <motion.p
+          className="p12-hero-sub"
+          style={{ color: "#444444", fontSize: "clamp(18px, 2.5vw, 26px)", fontWeight: 400 }}
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.7, delay: 0.6 }}
+        >
+          Designing AI Operations.
         </motion.p>
       </div>
       <div className="p12-hero-scroll">
-        <span>↓</span>
+        <span>&darr;</span>
         <span>Scroll</span>
       </div>
     </section>
+  );
+}
+
+// ── Prose block helper ──────────────────────────────────────────
+function ProseBlock({ paragraphs, firstBold = true }: { paragraphs: string[]; firstBold?: boolean }) {
+  return (
+    <div style={{ maxWidth: 800, margin: "0 auto" }}>
+      {paragraphs.map((p, i) => (
+        <p key={i} style={{
+          fontFamily: "'Inter','Noto Sans KR',sans-serif",
+          fontSize: 15,
+          fontWeight: i === 0 && firstBold ? 600 : 400,
+          color: "#333",
+          lineHeight: 1.85,
+          marginBottom: i < paragraphs.length - 1 ? (i === 0 && firstBold ? 16 : 6) : 0,
+        }}>
+          {i === 0 && firstBold
+            ? <span style={{ background: "rgba(249,115,22,0.18)", padding: "2px 6px", borderRadius: 3, boxDecorationBreak: "clone", WebkitBoxDecorationBreak: "clone" }}>{p}</span>
+            : p}
+        </p>
+      ))}
+    </div>
+  );
+}
+
+// ── Now subsection helper ───────────────────────────────────────
+function NowSubsection({ id, label, text }: { id: string; label: string; text: string }) {
+  return (
+    <div id={id} style={{ marginBottom: 48 }}>
+      <p style={{
+        fontFamily: "'Inter',sans-serif", fontSize: 15, fontWeight: 600,
+        color: "#333",
+        marginBottom: 16,
+      }}>
+        <span style={{ background: "rgba(249,115,22,0.18)", padding: "2px 6px", borderRadius: 3 }}>{label}</span>
+      </p>
+      <p style={{
+        fontFamily: "'Inter','Noto Sans KR',sans-serif",
+        fontSize: 15, color: "#333", lineHeight: 1.85,
+      }}>
+        {text}
+      </p>
+    </div>
   );
 }
 
@@ -474,7 +300,7 @@ export default function Page12() {
   const [activeWork, setActiveWork] = useState<WorkKey | null>(() => getWorkFromLocation());
   const { parsedWork, heroSubtitle } = useWorkDetail(activeWork);
 
-  const [tocExpanded, setTocExpanded] = useState<Set<string>>(new Set(["about", "how-i-think", "how-i-build", "work", "writing"]));
+  const [tocExpanded, setTocExpanded] = useState<Set<string>>(new Set());
   const [activeGroup, setActiveGroup] = useState("about");
   const [activeItem, setActiveItem] = useState("about");
 
@@ -540,6 +366,7 @@ export default function Page12() {
     }
   }, []);
 
+  // scroll-based active section tracking
   useEffect(() => {
     if (activeWork) return;
     const allEntries: Array<{ id: string; groupId: string }> = [];
@@ -557,17 +384,22 @@ export default function Page12() {
       }
       setActiveGroup(current.groupId);
       setActiveItem(current.id);
+      if (P12_TOC.find(g => g.id === current.groupId)?.items.length) {
+        setTocExpanded(prev => prev.has(current.groupId) ? prev : new Set([...prev, current.groupId]));
+      }
     };
     window.addEventListener("scroll", handleScroll, { passive: true });
     handleScroll();
     return () => window.removeEventListener("scroll", handleScroll);
   }, [activeWork]);
 
+  // scroll to top on work detail open
   useEffect(() => {
     if (!activeWork) return;
     window.scrollTo({ top: 0, behavior: "instant" });
   }, [activeWork]);
 
+  // popstate for browser back/forward
   useEffect(() => {
     const handlePopState = (event: PopStateEvent) => {
       const nextWork = getWorkFromLocation();
@@ -582,17 +414,19 @@ export default function Page12() {
     return () => window.removeEventListener("popstate", handlePopState);
   }, []);
 
+  // font loading
   useEffect(() => {
     const id = "portfolio-fonts";
     if (!document.getElementById(id)) {
       const link = document.createElement("link");
       link.id = id; link.rel = "stylesheet";
-      link.href = "https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;1,400&family=Inter:wght@300;400;500;600&family=Noto+Sans+KR:wght@400;500;700&display=swap";
+      link.href = "https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;1,400&family=Inter:wght@300;400;500;600;700&family=Noto+Sans+KR:wght@400;500;700&display=swap";
       document.head.appendChild(link);
     }
     return () => { document.getElementById(id)?.remove(); };
   }, []);
 
+  // ── Work Detail view ──
   if (activeWork) {
     return (
       <div className="p12-root" style={{ background: "#ffffff", minHeight: "100vh" }}>
@@ -614,6 +448,7 @@ export default function Page12() {
     );
   }
 
+  // ── Main page ──
   return (
     <div className="p12-root" style={{ background: "#ffffff" }}>
       <P12TocSidebar
@@ -634,85 +469,87 @@ export default function Page12() {
         <div className="p12-container">
           <FadeIn>
             <SectionLabel>01 · About</SectionLabel>
-            <div className="p12-about-grid" style={{ marginTop: 24 }}>
-              <div>
-                <h2 className="p12-h2" style={{ color: "#111" }}>
-                  박성민<br />
-                  Paul Seongmin Park
-                </h2>
-              </div>
-              <div className="p12-about-items">
-                {aboutItems.map((item) => (
-                  <FadeIn key={item.id}>
-                    <div id={item.id}>
-                      <p className="p12-about-item-label">{item.label}</p>
-                      <p className="p12-about-item-text">{item.text}</p>
-                    </div>
-                  </FadeIn>
-                ))}
-              </div>
-            </div>
+          </FadeIn>
+          <FadeIn delay={0.05}>
+            <ProseBlock paragraphs={[
+              "\ubbf8\ud559\uacfc \uac74\ucd95\uc744 \uacf5\ubd80\ud55c \uc0ac\ub78c\uc774 AI \uc2dc\uc2a4\ud15c\uc744 \uc124\uacc4\ud558\uac8c \ub410\ub2e4. \uc0dd\uac01\ubcf4\ub2e4 \ub9ce\uc740 \uac83\uc774 \uc774\uc5b4\uc838 \uc788\uc5c8\ub2e4.",
+              "\uac70\uae30\uc11c \uc775\ud78c \uac74 \uae30\uc220\uc774 \uc544\ub2c8\ub77c \uac10\uac01\uc774\uc5c8\ub2e4 \u2014 \ud558\ub098\uc758 \uacb0\uacfc\ub97c \ud558\ub098\uc758 \uc6d0\uc778\uc73c\ub85c \uc124\uba85\ud558\ub294 \ubc29\uc2dd\ubcf4\ub2e4, \uc11c\ub85c \ub2e4\ub978 \uce35\uc704\uac00 \ub9cc\ub098\uba74\uc11c \ubb34\uc5c7\uc774 \ub9cc\ub4e4\uc5b4\uc9c0\ub294\uc9c0\ub97c \ub354 \uc624\ub798 \ubc14\ub77c\ubcf4\ub294 \uac10\uac01. \uc77c\uc5d0\uc11c\ub3c4, \uad00\uacc4\uc5d0\uc11c\ub3c4, \uc0b6 \uc790\uccb4\uc5d0\uc11c\ub3c4, \uadf8\ub807\uac8c \uc0ac\uace0\ud55c\ub2e4.",
+              "\uc0b4\uc544\uc624\uba74\uc11c \uc54c\uac8c \ub41c \uc0ac\uc2e4\uc740, \uc0ac\ub78c\uc740 \uc758\uc9c0\uac00 \uc544\ub2c8\ub77c \uc870\uac74\uc5d0 \uc758\ud574 \uc6c0\uc9c1\uc778\ub2e4\ub294 \uac83\uc774\uc5c8\ub2e4. \uc88b\uc740 \uc758\ub3c4\ub9cc\uc73c\ub85c \uc88b\uc740 \uacb0\uacfc\uac00 \ub098\uc624\uc9c0 \uc54a\uc558\ub2e4. \uc758\ub3c4\ubcf4\ub2e4 \ud658\uacbd\uc744, \ub178\ub825\ubcf4\ub2e4 \uad6c\uc870\ub97c \ubc14\uafb8\ub294 \ucabd\uc774 \uc77c\uad00\ub418\uac8c \ud6a8\uacfc\uac00 \uc788\uc5c8\ub2e4. \ub0b4\uac00 \uc0ac\uace0\ud558\ub294 \ubc29\uc2dd\uc5d0\ub3c4 \uac19\uc740 \ubb38\uc81c\uac00 \uc788\uc5c8\ub2e4 \u2014 \uc5f0\uacb0\uc740 \ub9ce\uc774 \ubcf4\uc774\ub294\ub370, \uadf8\uac78 \uc720\uc9c0\ud560 \uc218 \uc788\ub294 \ud658\uacbd\uc774 \uc5c6\uc5c8\ub2e4.",
+              "\uc9c0\uae08\uc740 AI \uc6b4\uc601 \uc2dc\uc2a4\ud15c\uc73c\ub85c \uadf8 \ud658\uacbd\uc744 \ub9cc\ub4e4\uace0 \uc788\ub2e4.",
+            ]} />
           </FadeIn>
         </div>
       </section>
 
-      {/* ── 02 · How I Think ── */}
-      <section id="how-i-think" className="p12-section" style={{ background: "#ffffff", borderTop: "1px solid #e8e8e8" }}>
+      {/* ── 02 · Why I Build AI ── */}
+      <section id="why" className="p12-section" style={{ background: "#ffffff" }}>
         <div className="p12-container">
           <FadeIn>
-            <SectionLabel>02 · How I Think</SectionLabel>
-            <h2 className="p12-h2" style={{ color: "#111", marginTop: 8, marginBottom: 8 }}>
-              How I Work
-            </h2>
-            <p style={{ fontFamily: "'Inter','Noto Sans KR',sans-serif", fontSize: 15, color: "#666", lineHeight: 1.7, maxWidth: 560, marginBottom: 48 }}>
-              그리고 왜 이 방식인가.
-            </p>
+            <SectionLabel>02 · Why I Build AI</SectionLabel>
           </FadeIn>
-          <SystemAccordion items={SYSTEM_ITEMS} />
+          <FadeIn delay={0.05}>
+            <ProseBlock paragraphs={[
+              "\uc0dd\uac01\ud558\ub294 \ub370 \uc5d0\ub108\uc9c0\ub97c \uc4f0\ub294 \uac8c \uc544\ub2c8\ub77c, \uc774\ubbf8 \uc0dd\uac01\ud588\ub358 \uac83\uc744 \ubcf5\uc6d0\ud558\ub294 \ub370 \uc5d0\ub108\uc9c0\ub97c \uc4f0\uace0 \uc788\uc5c8\ub2e4.",
+              "\uc798 \uc0dd\uac01\ud558\uace0, \uae4a\uac8c \ub4e4\uc5b4\uac00\uace0, \uc88b\uc740 \uacb0\uc815\uc744 \ub0b4\ub9b0\ub2e4. \uadf8\ub7f0\ub370 \uba70\uce60 \ub4a4 \uac19\uc740 \ubb38\uc81c \uc55e\uc5d0 \uc11c\uba74 \ub9e5\ub77d\uc740 \uc0ac\ub77c\uc9c0\uace0 \uacb0\uacfc\ub9cc \ud76c\ubbf8\ud558\uac8c \ub0a8\uc544 \uc788\uc5c8\ub2e4. \uc65c \uadf8\ub7f0 \uacb0\uc815\uc744 \ud588\ub294\uc9c0, \ubb34\uc5c7\uc744 \ubcf4\ub958\ud588\ub294\uc9c0, \uc5b4\ub514\uc5d0\uc11c \ub9c9\ud600\ub294\uc9c0 \u2014 \uc804\ubd80 \ub2e4\uc2dc \ubcf5\uad6c\ud574\uc57c \ud588\ub2e4.",
+              "\ub098\ub294 \uc758\uc9c0\uac00 \uc57d\ud574\uc11c \ubc18\ubcf5\uc744 \uc2eb\uc5b4\ud55c \uac8c \uc544\ub2c8\ub2e4. \ubc18\ubcf5\uc744 \ubc84\ud2f0\ub294 \ubc29\uc2dd\uc774 \ub108\ubb34 \ube44\ud6a8\uc728\uc801\uc774\ub77c\ub294 \uac78 \uacac\ub514\uae30 \uc5b4\ub824\uc6e0\ub2e4.",
+              "\ud310\ub2e8\uc740 \ub0b4\uac00 \ub0b4\ub9ac\ub418, \ub9e5\ub77d\uc740 \ub0a8\uac8c \ud558\uace0 \uc2f6\uc5c8\ub2e4.",
+            ]} />
+          </FadeIn>
         </div>
       </section>
 
-      {/* ── 03 · How I Build ── */}
-      <section id="how-i-build" className="p12-section" style={{ background: "#ffffff", borderTop: "1px solid #e8e8e8" }}>
+      {/* ── 03 · Journey ── */}
+      <section id="journey" className="p12-section" style={{ background: "#ffffff" }}>
         <div className="p12-container">
           <FadeIn>
-            <SectionLabel>03 · How I Build</SectionLabel>
+            <SectionLabel>03 · Journey</SectionLabel>
           </FadeIn>
-        </div>
-        {/* HOW I AI */}
-        <FadeIn delay={0.1}>
-          <div id="ai">
-            <AiWorkflowSection raw={aiRaw} />
-          </div>
-        </FadeIn>
-
-        {/* Ontology */}
-        <div id="build-ontology" style={{ borderTop: "1px solid #e8e8e8", marginTop: 80 }}>
-          <OntologySection />
-        </div>
-
-        {/* Obsidian 한 단락 */}
-        <div id="build-obsidian" style={{ borderTop: "1px solid #e8e8e8", padding: "80px 0" }}>
-          <div className="p12-container">
-            <FadeIn>
-              <p style={{ fontFamily: "'Inter',sans-serif", fontSize: 11, fontWeight: 600, letterSpacing: "0.14em", textTransform: "uppercase", color: "#bbb", marginBottom: 16 }}>
-                Obsidian
-              </p>
-              <p style={{ fontFamily: "'Inter','Noto Sans KR',sans-serif", fontSize: 14, color: "#aaa", lineHeight: 1.8, maxWidth: 560 }}>
-                준비 중 — 시각화 레이어 + Living Docs 소통창구
-              </p>
-            </FadeIn>
-          </div>
+          <FadeIn delay={0.05}>
+            <ProseBlock paragraphs={[
+              "\ud558\ub098\uc758 CLI\uc5d0\uc11c \uc2dc\uc791\ub410\ub2e4.",
+              "Claude Code\ub97c \ucc98\uc74c \ub9cc\ub0ac\uc744 \ub54c, \uba38\ub9bf\uc18d\uc758 \uc5f0\uacb0\uc744 \ubc16\uc73c\ub85c \uaebc\ub0bc \uc218 \uc788\uaca0\ub2e4\ub294 \uac10\uac01\uc774 \uc654\ub2e4. \ub0b4\uac00 \ubc18\ubcf5\ud558\ub294 \ud310\ub2e8\uc744 \ud558\ub098\uc529 \ubc14\uae65\uc73c\ub85c \uc62e\uae30\uae30 \uc2dc\uc791\ud588\ub2e4. orchestrator, synthesizer, compressor \u2014 \uc870\uc728\ud558\uace0, \ud310\ub2e8\ud558\uace0, \uae30\uc5b5\uc744 \uc815\ub9ac\ud558\ub294 \uc77c\uc744 \ub118\uacbc\ub2e4. \ube60\ub728\ub9ac\ub294 \uac8c \ub450\ub824\uc6cc\uc11c \ubcf4\uc774\ub294 \uc871\uc871 \ub9cc\ub4e4\uc5c8\ub2e4. 7\uc77c \ub9cc\uc5d0 3\uac1c\uac00 24\uac1c\uac00 \ub410\ub2e4.",
+              "AI\uac00 \ud55c \ubc88\uc5d0 \ubcfc \uc218 \uc788\ub294 \uacf5\uac04\uc740 \ud55c\uc815\ub3fc \uc788\uc5c8\ub2e4. \ub9cc\ub4e0 \uac83\ub4e4\uc758 \uc815\uc758\ub9cc\uc73c\ub85c \uadf8 \uacf5\uac04\uc758 \uc808\ubc18\uc774 \ucc3c\ub2e4. \ub9cc\ub4e4\uc218\ub85d \uc0dd\uac01\ud560 \uacf5\uac04\uc774 \uc904\uace0 \uc788\uc5c8\ub294\ub370, \ub9cc\ub4dc\ub294 \ub3d9\uc548\uc5d0\ub294 \uadf8\uac78 \ubcf4\uc9c0 \ubabb\ud588\ub2e4. \uba48\ucd94\uace0 \uc77d\uae30 \uc2dc\uc791\ud588\ub2e4. \uacb9\uce58\ub294 \uac83\uc774 \ubcf4\uc600\ub2e4. 24\uac1c\ub294 15\uac1c\ub85c, 15\uac1c\ub294 3\uac1c\ub85c \uc904\uc5c8\ub2e4. \uc4f0\uc774\uc9c0 \uc54a\ub294 \uac83\uc740 \ubc84\ub838\ub2e4. \uae30\uc900\uc740 \ub2e8\uc21c\ud588\ub2e4 \u2014 \ud3ec\uc2a4\ud2b8\uc787 \ud55c \uc7a5\uc5d0 \uc804\uccb4\uac00 \uc548 \ub4e4\uc5b4\uac00\uba74 \uc544\uc9c1 \uc774\ud574\ud55c \uac8c \uc544\ub2c8\ub2e4. \uadf8 \uacfc\uc815\uc5d0\uc11c \uc0ac\uace0\ub3c4 \uacaa\uc5c8\ub2e4. \uc774\uac74 \ub3c4\uad6c \ubaa8\uc74c\uc774 \uc544\ub2c8\ub77c, \ud558\ub098\uc758 \uad6c\uc870\ub85c \uc774\ud574\ud560 \uc218 \uc788\uc5b4\uc57c \ud55c\ub2e4\ub294 \uac78 \uc54c\uc558\ub2e4.",
+              "\uc798 \ub3cc\uc544\uac00\ub294 \uac83\uacfc, \uc790\uae30 \uc0c1\ud0dc\ub97c \uc544\ub294 \uac83\uc740 \ub2e4\ub978 \ubb38\uc81c\uc600\ub2e4. \uc2dc\uc2a4\ud15c\uc774 \uc2a4\uc2a4\ub85c \uc0c1\ud0dc\ub97c \uce21\uc815\ud558\uae30 \uc2dc\uc791\ud588\uace0, \ubb38\uc81c\ub97c \ubc1c\uacac\ud558\uace0, \uc81c\uc548\ud558\uace0, \uc2b9\uc778\ub41c \uac83\ub9cc \ubc14\ub00c\uc5c8\ub2e4. \uc78a\uc5b4\ub3c4 \ub2e4\uc2dc \uc7a1\ud614\ub2e4. \uadf8\ub54c \ucc98\uc74c \uc774\uac78 \uc0b4\uc544 \uc788\ub2e4\uace0 \ub290\uaf08\ub2e4. \uacb0\uc815\uc744 \ub300\uc2e0\ud574\uc11c\uac00 \uc544\ub2c8\ub2e4. \ub0b4\uac00 \ub193\uce60 \uac83\uc744 \uba3c\uc800 \ub4dc\ub7ec\ub0b4\uae30 \uc2dc\uc791\ud588\uae30 \ub54c\ubb38\uc774\ub2e4.",
+            ]} />
+          </FadeIn>
         </div>
       </section>
 
       {/* ── 04 · Work ── */}
-      <section id="work" className="p12-section" style={{ background: "#ffffff", borderTop: "1px solid #e8e8e8" }}>
+      <section id="work" className="p12-section" style={{ background: "#ffffff", paddingTop: 56 }}>
         <div className="p12-container">
           <FadeIn>
             <SectionLabel>04 · Work</SectionLabel>
             <h2 className="p12-h2" style={{ color: "#111", marginBottom: 48, marginTop: 8 }}>Selected Work</h2>
           </FadeIn>
+
+          {/* 시스템 프로젝트 — 카드 (클릭 불가) */}
+          <FadeIn delay={0.08}>
+            <div className="p12-work-grid" style={{ marginBottom: 48 }}>
+              {[
+                { id: "work-mcp-memory", label: "mcp-memory", tag: "AI \u00b7 Memory", description: "\uc628\ud1a8\ub85c\uc9c0 \uae30\ubc18 \uc678\ubd80 \uae30\uc5b5 \uc2dc\uc2a4\ud15c. Vector + Full-Text + Graph 3\uc911 \uac80\uc0c9\uc73c\ub85c \ud544\uc694\ud55c \uae30\uc5b5\uc744 \ucc3e\uace0, BCM \uac00\uc18c\uc131\uc73c\ub85c \uae30\uc5b5 \uac15\ub3c4\ub97c \uc790\ub3d9 \uc870\uc808\ud55c\ub2e4. 3,700\uac1c \ub178\ub4dc, 100% \uc5f0\uacb0." },
+                { id: "work-ce", label: "Context Engineering", tag: "AI \u00b7 System", description: "AI\uc758 \ucd94\ub860 \ud488\uc9c8\uc744 \uadf9\ub300\ud654\ud558\uae30 \uc704\ud55c \ub9e5\ub77d \ud050\ub808\uc774\uc158 \uccb4\uacc4. \ubb34\uc5c7\uc744 \ub123\uace0, \uc5b4\ub5a4 \uc21c\uc11c\ub85c \ubcf4\uc5ec\uc8fc\uace0, \uc5b8\uc81c \ub35c\uc5b4\ub0bc\uc9c0\ub97c 4\uac1c \ub808\uc774\uc5b4\ub85c \uc124\uacc4\ud55c\ub2e4. \uc2dc\uc2a4\ud15c\uc774 \uc544\ub2c8\ub77c \uc6d0\uce59\uc774\ub2e4." },
+                { id: "work-tech-review", label: "Tech Review", tag: "AI \u00b7 Automation", description: "\uae30\uc220 \uae30\uc0ac\u00b7\ud2b8\uc717\u00b7\uc601\uc0c1\uc5d0\uc11c \uc778\uc0ac\uc774\ud2b8\ub97c \uc790\ub3d9 \uc218\uc9d1\ud558\uace0 \uc7ac\uc791\uc131\ud574 \ub9e4\uc77c \ubc1c\ud589\ud558\ub294 \ud30c\uc774\ud504\ub77c\uc778. 3\uac1c \uc18c\uc2a4, 100\uac74 \uc774\uc0c1 \ubc1c\ud589." },
+              ].map((item) => (
+                <div key={item.id} id={item.id} style={{
+                  background: "#fafaf9", border: "1px solid #e8e8e8", borderRadius: 8,
+                  padding: "28px 24px", cursor: "default",
+                }}>
+                  <h3 style={{ fontFamily: "'Inter','Noto Sans KR',sans-serif", fontSize: 18, fontWeight: 700, color: "#111", marginBottom: 4 }}>
+                    {item.label}
+                  </h3>
+                  <p style={{ fontFamily: "'Inter',sans-serif", fontSize: 12, color: ANTHROPIC, marginBottom: 12 }}>
+                    {item.tag}
+                  </p>
+                  <p style={{ fontFamily: "'Inter','Noto Sans KR',sans-serif", fontSize: 14, color: "#555", lineHeight: 1.7 }}>
+                    {item.description}
+                  </p>
+                </div>
+              ))}
+            </div>
+          </FadeIn>
+
+          {/* 기존 프로젝트 — 클릭 가능, detail page */}
           <FadeIn delay={0.1}>
             <FeaturedCard work={workItems[0]} onSelect={() => openWorkDetail(workItems[0].workKey)} />
           </FadeIn>
@@ -726,88 +563,56 @@ export default function Page12() {
         </div>
       </section>
 
-      {/* ── 05 · Writing ── */}
-      <section id="writing" className="p12-section" style={{ background: "#ffffff", borderTop: "1px solid #e8e8e8" }}>
+      {/* ── 05 · Now ── */}
+      <section id="now" className="p12-section" style={{ background: "#ffffff", paddingTop: 56 }}>
         <div className="p12-container">
           <FadeIn>
-            <SectionLabel>05 · Writing</SectionLabel>
-            <h2 className="p12-h2" style={{ color: "#111", marginTop: 8, marginBottom: 48 }}>Writing</h2>
+            <SectionLabel>05 · Now</SectionLabel>
+            {/* h2 removed — section label is enough */}
           </FadeIn>
-
-          {/* Tech Review */}
-          <div id="tr-tech-review" style={{ marginBottom: 80 }}>
-
-            {/* 헤더 */}
-            <FadeIn delay={0.05}>
-              <div style={{ paddingBottom: 12, borderBottom: "1px solid #e4e0da", marginBottom: 40 }}>
-                <h3 style={{ fontFamily: "'Inter','Noto Sans KR',sans-serif", fontSize: 24, fontWeight: 700, color: "#111", margin: "0 0 6px", letterSpacing: "-0.01em" }}>Tech Review</h3>
-                <p style={{ fontFamily: "'Inter','Noto Sans KR',sans-serif", fontSize: 14, color: "#666", lineHeight: 1.6, margin: 0 }}>
-                  AI 세계의 인사이트를 기사·트윗·영상에서 수집하고, 구조화·배포하는 자동 파이프라인.
-                </p>
-              </div>
-            </FadeIn>
-
-            {/* [1] The Problem */}
-            <FadeIn delay={0.06}>
-              <div style={{ borderLeft: "3px solid #D4632D", paddingLeft: 20, marginBottom: 56 }}>
-                <p style={{ fontFamily: "'Inter',sans-serif", fontSize: 10, fontWeight: 700, color: "#aaa", textTransform: "uppercase", letterSpacing: "0.55px", marginBottom: 12 }}>
-                  The Problem
-                </p>
-                <p style={{ fontFamily: "'Inter','Noto Sans KR',sans-serif", fontSize: 15, color: "#333", lineHeight: 1.8, margin: 0 }}>
-                  AI 세계의 인사이트는 기사·트윗·영상 곳곳에 흩어져 있다. 읽어도 남지 않고, 연결되지 않는다. input의 양은 많은데, 어디에 어떻게 적용해야 할지가 문제였다.
-                </p>
-                <p style={{ fontFamily: "'Inter','Noto Sans KR',sans-serif", fontSize: 15, color: "#333", lineHeight: 1.8, margin: 0 }}>
-                  소스들을 한 곳으로 수렴하고, 정리와 분배는 AI가 하도록. 이미 구축해둔 맥락과 외부 메모리에 새로운 정보가 들어올 때마다 적재적소에 녹아들도록. AI는 내 시스템 전체 스택을 알고 있다. 새로운 정보가 들어올 때, 그게 내 작업의 어떤 scope에 어떤 맥락으로 적용되면 좋을지 — 나보다 더 세밀한 단위로 파악할 수 있다.
-                </p>
-              </div>
-            </FadeIn>
-
-            {/* [2] 3소스 파이프라인 */}
-            <FadeIn delay={0.08}>
-              <SectionFlowGrid sections={trSections} cols={3} disableHighlight headingColor="#1d4ed8" cardColors={["#6C9D81", "#99CCD6", "#FF846E"]} />
-              <p style={{ fontFamily: "'Inter',sans-serif", fontSize: 12, color: "#111", textAlign: "center", margin: "32px 0 0", letterSpacing: "0.04em" }}>
-                <span style={{ color: "#D4632D", fontWeight: 700, fontSize: 16 }}>↓</span> &nbsp; sources.json 으로 수렴 &nbsp;→&nbsp; Portfolio 실시간 피드
-              </p>
-            </FadeIn>
-
-            {/* [3] 실시간 피드 */}
-            <FadeIn delay={0.1}>
-              <div style={{ marginTop: 24 }}>
-                <TechReviewMultiSource />
-              </div>
-            </FadeIn>
-
-            {/* [4] 수치 */}
-
-            {/* [5] Design Decisions + Ongoing */}
-            <FadeIn delay={0.15}>
-              <div style={{ paddingTop: 56, marginTop: 48 }}>
-                <TechReviewSystemSection />
-              </div>
-            </FadeIn>
-
-          </div>
-
-          {/* Essay */}
-          <FadeIn>
-            <div id="writing-1" className="p12-writing-item" style={{ borderTop: "1px solid #e4e0da", paddingTop: 48 }}>
-              <div className="p12-writing-header">
-                <h3 className="p12-writing-title">시스템으로 생각하기</h3>
-                <span className="p12-writing-meta">Essay · January 2026</span>
-              </div>
-              <p className="p12-writing-desc">
-                생각을 구조화하는 방식, 그리고 Claude와 함께 글쓰는 방법에 대한 에세이입니다.
-              </p>
+          <FadeIn delay={0.05}>
+            <div style={{ maxWidth: 800, margin: "0 auto" }}>
+              <NowSubsection
+                id="now-memory"
+                label="Memory"
+                text={"\uc138\uc158\uc5d0\uc11c \ub098\uc628 \ud310\ub2e8, \uc2e4\ud328, \uc9c8\ubb38\uc774 \ub178\ub4dc\ub85c \uc800\uc7a5\ub41c\ub2e4. \ub2e4\uc74c \uc138\uc158\uc5d0\uc11c \uad00\ub828 \ud0a4\uc6cc\ub4dc\ub97c \uac80\uc0c9\ud558\uba74, 4\uac1c \ucc44\ub110\uc774 \ub3d9\uc2dc\uc5d0 \ub4a4\uc838\uc11c \uac00\uc7a5 \uad00\ub828 \ub192\uc740 \uae30\uc5b5\uc744 \uc810\uc218\uc21c\uc73c\ub85c \uaebc\ub0b4\uc628\ub2e4. \uc790\uc8fc \uc4f0\uc774\ub294 \uae30\uc5b5\uc740 \uc810\uc218\uac00 \uc62c\ub77c\uac00\uace0, \uc548 \uc4f0\uc774\ub294 \uae30\uc5b5\uc740 \uc11c\uc11c\ud788 \ud750\ub824\uc9c4\ub2e4. \uad00\ucc30\uc740 \ube60\ub974\uac8c \ud750\ub824\uc9c0\uace0, \uc6d0\uce59\uc740 \uc624\ub798 \ub0a8\ub294\ub2e4 \u2014 \ub1cc\uac00 \ud558\ub294 \uc77c\uc744 \ubaa8\uc0ac\ud55c \uac83\uc774\ub2e4. \uc9c0\uae08 3,700\uac1c\uc758 \ub178\ub4dc\uac00 \ud558\ub098\ub3c4 \ub04a\uae30\uc9c0 \uc54a\uace0 \uc5f0\uacb0\ub3fc \uc788\ub2e4."}
+              />
+              <NowSubsection
+                id="now-flow"
+                label="Flow"
+                text={"\uc138\uc158\uc774 \uc2dc\uc791\ub418\uba74 \uc5b4\uc81c\uc758 \uacb0\uc815, \ubbf8\ud574\uacb0 \uc9c8\ubb38, \ubbf8\ucee4\ubc0b \ubcc0\uacbd\uc0ac\ud56d\uc774 \uc790\ub3d9\uc73c\ub85c \uc62c\ub77c\uc628\ub2e4. \uc791\uc5c5\uc774 \uc2dc\uc791\ub418\uba74 \uad00\ub828 \ud30c\uc77c\ub9cc \ub2e8\uacc4\uc801\uc73c\ub85c \uc77d\ub294\ub2e4 \u2014 \uc804\uccb4\ub97c \ud55c \ubc88\uc5d0 \uc77d\uc9c0 \uc54a\ub294\ub2e4. \ud30c\uc77c\uc774 \ubc14\ub00c\uba74 \ubb38\uc11c\uac00 \ud568\uaed8 \uac31\uc2e0\ub3fc\uc57c \ud55c\ub2e4 \u2014 \ube60\ub728\ub9ac\uba74 hook\uc774 \ucee4\ubc0b\uc744 \ub9c9\ub294\ub2e4. \ub05d\ub098\uba74 \uadf8\ub0a0\uc758 \ud310\ub2e8\uacfc \uc9c8\ubb38\uc774 \uae30\uc5b5\uc5d0 \uc800\uc7a5\ub41c\ub2e4. \uadf8\uac8c \ub2e4\uc74c \ub0a0\uc758 \uc2dc\uc791\uc810\uc774 \ub41c\ub2e4 \u2014 \ub05d\uc774 \uc2dc\uc791\uc744 \ub9cc\ub4dc\ub294 \uad6c\uc870\ub2e4."}
+              />
+              <NowSubsection
+                id="now-loop"
+                label="Loop"
+                text={"\uc2dc\uc2a4\ud15c\uc740 \uc790\uae30 \uc0c1\ud0dc\ub97c \uc22b\uc790\ub85c \uc548\ub2e4. 14\uac1c \ud56d\ubaa9\uc744 \uac80\uc0ac\ud55c\ub2e4 \u2014 \ub04a\uae34 \uc5f0\uacb0, \uc624\ub798\ub41c \ubb38\uc11c, \ubbf8\ubc18\uc601 \uacb0\uc815, \uace0\uc544 \ub178\ub4dc, \ud14c\uc2a4\ud2b8 \ud1b5\uacfc\uc728. \uacb0\uacfc\ub294 \uc810\uc218\ub85c \ub098\uc628\ub2e4. \ubb38\uc81c\uac00 \ubc1c\uacac\ub418\uba74 \ub2e4\uc74c \uc138\uc158 \uc2dc\uc791 \uc2dc \ubcf4\uc778\ub2e4. \uace0\uce58\uba74 \uc810\uc218\uac00 \uc624\ub978\ub2e4. \uc78a\uc5b4\ub3c4 \ub2e4\uc74c \uce21\uc815\uc5d0\uc11c \ub2e4\uc2dc \uc7a1\ud78c\ub2e4."}
+              />
             </div>
           </FadeIn>
         </div>
       </section>
 
-      {/* ── 06 · Contact ── */}
-      <section id="contact" className="p12-section" style={{ background: "#ffffff", borderTop: "1px solid #e8e8e8" }}>
+      {/* ── 06 · Forward ── */}
+      <section id="forward" className="p12-section" style={{ background: "#ffffff", paddingTop: 56 }}>
         <div className="p12-container">
           <FadeIn>
-            <SectionLabel>06 · Contact</SectionLabel>
+            <SectionLabel>06 · Forward</SectionLabel>
+          </FadeIn>
+          <FadeIn delay={0.05}>
+            <ProseBlock paragraphs={[
+              "도구는 바뀌기 마련이다.",
+              "\uadf8\ub798\uc11c \ub0b4\uac00 \uc9c0\uc18d\uc801\uc73c\ub85c \uc124\uacc4\ud558\ub294 \uac83\uc740 \ub3c4\uad6c\uac00 \uc544\ub2c8\ub77c \uc6b4\uc601 \uc2dc\uc2a4\ud15c\uc774\ub2e4. \uacb0\uc815, \uc2e4\ud328, \uc9c8\ubb38\uc774 \uc0ac\ub77c\uc9c0\uc9c0 \uc54a\uace0 \uc313\uc778\ub2e4. \uc313\uc778 \uac83\uc744 \uae30\ubc18\uc73c\ub85c, \uc2dc\uc2a4\ud15c\uc740 \uc790\uae30 \uc0c1\ud0dc\ub97c \uce21\uc815\ud558\uace0, \ubb38\uc81c\ub97c \ucc3e\uace0, \ub354 \ub098\uc740 \ubc29\ud5a5\uc744 \uc81c\uc548\ud55c\ub2e4.",
+              "\ub0b4 \uad00\uc2ec\uc740 Living System\uc5d0 \uc788\ub2e4. \uc0ac\ub78c\uc774 \uc78a\uc5b4\ub3c4 \uc2dc\uc2a4\ud15c\uc774 \uae30\uc5b5\ud558\uace0, \ub193\uce5c \uac83\uc744 \uba3c\uc800 \ub4dc\ub7ec\ub0b4\uace0, \uc2a4\uc2a4\ub85c \ub098\uc544\uc9c4\ub2e4. \uc2dc\uc2a4\ud15c\uc774 \ubcf5\uc6d0\uc744 \ub9e1\uc73c\uba74, \ub098\ub294 \uc0ac\uace0\uc5d0 \uc5d0\ub108\uc9c0\ub97c \uc4f8 \uc218 \uc788\ub2e4.",
+            ]} />
+          </FadeIn>
+        </div>
+      </section>
+
+      {/* ── 07 · Contact ── */}
+      <section id="contact" className="p12-section" style={{ background: "#ffffff" }}>
+        <div className="p12-container">
+          <FadeIn>
+            <SectionLabel>07 · Contact</SectionLabel>
             <h2 className="p12-h2" style={{ color: "#111", marginTop: 8, marginBottom: 48 }}>Let's talk.</h2>
             <a href="mailto:paulseongminpark@gmail.com" className="p12-contact-link" style={{ color: "#111111" }}>
               paulseongminpark@gmail.com
@@ -818,7 +623,7 @@ export default function Page12() {
           </FadeIn>
           <div style={{ marginTop: 80, paddingTop: 32, borderTop: "1px solid #e8e8e8" }}>
             <p style={{ fontFamily: "'Inter',sans-serif", fontSize: 12, color: "#aaa" }}>
-              © 2026 박성민 · Paul Seongmin Park
+              &copy; 2026 박성민 &middot; Paul Seongmin Park
             </p>
           </div>
         </div>

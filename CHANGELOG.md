@@ -1,5 +1,15 @@
 # Portfolio CHANGELOG
 
+## 2026-03-19
+
+### UI 폴리싱 + 텍스트 서사 강화
+- 타이포 위계: 훅 15px/600 + PMCC 주황 하이라이트, 본문 15px/400
+- 섹션 구분: borderTop 제거, 비대칭 패딩 (48/16), 본문 간격 6px
+- TOC: 폰트 확대, 하위항목 기본 접힘+스크롤 자동 펼침
+- Now 서브라벨: 주황 하이라이트 통일
+- 텍스트: Why 마지막 문장, Journey/Forward 훅 분리, Work 서사 전환
+- About/Now/Forward 문장 강화
+
 ## 2026-03-17
 
 ### How I AI v6.0 콘텐츠 갱신 (미커밋)
