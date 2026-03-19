@@ -1,6 +1,6 @@
 # portfolio STATE
-_Updated: 2026-03-09_
-_Last Session: 2026-03-09 — UI 대규모 수정: How I Think 카드 주황 클릭, How I AI 본문 #111, TR 3소스 카드 색상/하이라이트, sources.json 4개 확장, Latest 제거, 가로줄 제거_
+_Updated: 2026-03-19_
+_Last Session: 2026-03-19 — UI 폴리싱 1-4 + 텍스트 서사 강화. 위계·여백·훅 하이라이트·Work 서사 전환. 다음: Work 온톨로지 섹션 구성._
 
 ## 목적
 개인 포트폴리오 웹사이트 (React + Vite, vanilla CSS, hash routing)
