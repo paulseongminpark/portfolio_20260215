@@ -1,6 +1,6 @@
 # portfolio STATE
-_Updated: 2026-03-19_
-_Last Session: 2026-03-19 — UI 폴리싱 1-4 + 텍스트 서사 강화. 위계·여백·훅 하이라이트·Work 서사 전환. 다음: Work 온톨로지 섹션 구성._
+_Updated: 2026-03-20_
+_Last Session: 2026-03-20 — mcp-memory 상세 페이지 연결 + Work 카드 clickable + Journey 텍스트 리라이트. 다음: CE/Tech Review 상세 페이지, Hero 텍스트, 다이어그램._
 
 ## 목적
 개인 포트폴리오 웹사이트 (React + Vite, vanilla CSS, hash routing)
@@ -69,6 +69,14 @@ _Last Session: 2026-03-19 — UI 폴리싱 1-4 + 텍스트 서사 강화. 위계
   - 4카드 타이틀 변경 (commit 392e724)
   - audit 문서: docs/design/2026-03-04-portfolio-full-audit.md (416줄)
   - mcp-memory checkpoint: node #4057~#4059
+- **완료: mcp-memory Work 상세 페이지 연결** (2026-03-20)
+  - MCP_MEMORY_DETAIL_KO.md 콘텐츠 작성
+  - work.ts WorkKey에 mcp-memory 추가, WorkDetail/index.tsx 라우팅 연결
+  - Work 카드 clickable 속성 추가 (hover + "자세히 보기 →")
+- **완료: Journey 텍스트 리라이트** (2026-03-20)
+  - Claude Code 첫 만남 → 아이디어 실험 → 도구 커스터마이징 서사 강화
+- **완료: AI Workflow/E2E 구조 정리** (2026-03-20)
+  - AiWorkflowSection 텍스트 축소, E2EWorkflowSection 정리, aiWorkflowData 업데이트
 - 진행중: PR 5174 검토 및 병합 (6섹션 구조 마지막 단계)
 - 진행중: 미결 A~F 목록 추적 (docs/design/2026-03-04-portfolio-full-audit.md 섹션 6)
 - **완료: HOW I AI 섹션 Evolution 전면 재작성** (2026-03-04)
@@ -85,6 +93,8 @@ _Last Session: 2026-03-19 — UI 폴리싱 1-4 + 텍스트 서사 강화. 위계
   - "이색적인 접합" 4번 카드 제거 — show vs tell 원칙
 
 ## 최근 결정
+- 2026-03-20: mcp-memory Work 카드만 clickable (CE/Tech Review는 상세 미작성 → clickable: false)
+- 2026-03-20: Journey 텍스트 리라이트 — 추상적 묘사 → 구체적 행동 서사 전환
 - 2026-03-09: Writing > Tech Review 전면 재설계 — B(스토리텔링) 구조 채택
   - TR_SYSTEM_KO.md 재작성 — 3소스(Perplexity/Twitter/YouTube) 중심으로
   - TechReviewSystemSection.tsx 전면 재작성 — 화려한 색상 카드 제거, SystemAccordion 패턴만
