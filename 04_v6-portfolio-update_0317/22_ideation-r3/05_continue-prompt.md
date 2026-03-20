@@ -1,41 +1,36 @@
-# 포트폴리오 UI 폴리싱 — 이어서
+# 포트폴리오 — 이어서
 
 ## 세션 목표
-R3 코드 반영 완료 상태에서 UI 폴리싱 7개 항목 순차 수정 중.
+Work 온톨로지 섹션 구성 + 남은 UI 폴리싱 (5-7)
 
-## 배경
-/restore → portfolio 04_v6-portfolio-update_0317 파이프라인 복구
+## 완료 (2026-03-19)
+- UI 폴리싱 1-4: 여백, 타이포, Hero, 섹션 구분
+- 훅 하이라이트: 15px/600 + PMCC 주황 배경 (글자만)
+- 비대칭 패딩: 48px top / 16px bottom
+- 본문 간격: 6px (훅→본문 16px)
+- 텍스트 수정: Why 마지막, Journey/Forward 훅, Work 서사, Now/Forward 강화
+- TOC: 13px/11px, 하위항목 기본 접힘+자동 펼침
+- Now 서브라벨: 주황 하이라이트
+- 커밋: cf4021a
 
-## 현재 상태
-- R3 텍스트 초안 전체 확정 (01_full-draft.md)
-- 코드 반영 완료 (index.tsx 재작성, 빌드 성공)
-- UI 폴리싱 7개 중 **1번 완료, 2번 진행 중**
+## 남은 작업
+1. **Work 온톨로지 섹션 구성** — 가장 중요. 03_text-only.md의 Work 서사를 코드에 반영 + 시각적 구조
+2. **5번 Now 구조감** — Memory/Flow/Loop 간 여백/구분 정리 (라벨은 하이라이트 완료)
+3. **6번 TOC 위치** — 현재 padding 120px 32px. 추가 조정 필요할 수 있음
+4. **7번 TOC 밀도** — 구현 완료 (기본 접힘). 확인만
+5. **01_full-draft.md SoT 동기화** — 03_text-only.md 수정분을 01_full-draft.md에도 반영
 
-### 확정 구조
+## 확정 디자인 시스템
 ```
-Hero: Paul Seongmin Park / Designing AI Operations.
-01 · About
-02 · Why I Build AI
-03 · Journey
-04 · Work (6카드)
-05 · Now (Memory / Flow / Loop)
-06 · Forward
-07 · Contact
+SectionLabel    13px / 600 / uppercase / #999
+Hook            15px / 600 / #333 + rgba(249,115,22,0.18) 하이라이트
+Body            15px / 400 / #333 / 간격 6px
+Now 서브라벨    15px / 600 / #333 + 주황 하이라이트 (Hook과 동일)
+섹션 패딩       48px top / 16px bottom (비대칭)
+카드 섹션       paddingTop: 56px (Work/Now/Forward)
 ```
-
-## 남은 작업 (02_ui-polish-plan.md 참조)
-1. ~~여백 축소~~ ✅
-2. **타이포 위계** — 섹션 라벨 완료, ProseBlock 첫 문단(17→20px, 500→600) + 간격(16→20px) 미적용
-3. Hero 강화
-4. 섹션 구분
-5. Now 구조감
-6. TOC 위치
-7. TOC 밀도
-
-하나 수정 → 사용자 확인 → 다음. 순서대로.
 
 ## 참고 파일
-- 파이프라인 index: 04_v6-portfolio-update_0317/00_index.md
-- 전체 텍스트: 22_ideation-r3/01_full-draft.md
-- UI 계획: 22_ideation-r3/02_ui-polish-plan.md
-- 현재 코드: src/portfolio/index.tsx + portfolio.css
+- 전체 텍스트: 03_text-only.md (최신 SoT)
+- 원본 draft: 01_full-draft.md (부분 동기화 필요)
+- 코드: src/portfolio/index.tsx + portfolio.css

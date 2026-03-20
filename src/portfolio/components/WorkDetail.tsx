@@ -7,6 +7,7 @@ import { PageEditorPanel } from "./PageEditorPanel";
 import "./PageEditor.css";
 
 const GRADIENTS: Record<string, string> = {
+  "mcp-memory":  "linear-gradient(135deg, #e0e7ff 0%, #c7d2fe 50%, #a5b4fc 100%)",
   "empty-house": "linear-gradient(135deg, #dbeafe 0%, #ede9fe 50%, #fce7f3 100%)",
   "skin-diary":  "linear-gradient(135deg, #d1fae5 0%, #a7f3d0 50%, #6ee7b7 100%)",
   "pmcc":        "linear-gradient(135deg, #fed7aa 0%, #fbbf24 50%, #f59e0b 100%)",
@@ -19,6 +20,17 @@ const WORK_META: Record<string, {
   stats: Array<{ value: string; label: string }>;
   overview: string;
 }> = {
+  "mcp-memory": {
+    period: "2025–현재",
+    role: "시스템 설계 · 개발",
+    tools: ["Python", "SQLite", "FTS5", "OpenAI Embeddings", "MCP Protocol"],
+    stats: [
+      { value: "3,700+", label: "노드" },
+      { value: "3중", label: "검색 채널" },
+      { value: "49개", label: "관계 규칙" },
+    ],
+    overview: "세션이 끝나도 판단의 맥락이 남는 구조를 만들기 위해 설계한 온톨로지 기반 외부 기억 시스템입니다.\nVector + Full-Text + Graph 3중 검색으로 관련 기억을 찾고, BCM 감쇠로 기억 강도를 자동 조절합니다.",
+  },
   "empty-house": {
     period: "2025년 6월",
     role: "데이터 분석 · 시스템 설계",

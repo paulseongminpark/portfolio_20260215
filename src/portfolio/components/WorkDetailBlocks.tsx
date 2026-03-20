@@ -34,7 +34,8 @@ function resolveAssetSrc(raw: string, activeWork: string) {
   if (s.startsWith('/')) return `${baseUrl}${s.slice(1)}`;
   const base = s.split(/[/\\]/).pop() ?? s;
   const folder =
-    activeWork === 'empty-house' ? 'empty-house-cps'
+    activeWork === 'mcp-memory' ? 'mcp-memory'
+    : activeWork === 'empty-house' ? 'empty-house-cps'
     : activeWork === 'skin-diary' ? 'skin-diary-ai'
     : 'pmcc';
   return `${baseUrl}work/${folder}/${base}`;

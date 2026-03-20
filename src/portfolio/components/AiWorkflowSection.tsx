@@ -88,7 +88,7 @@ function GrowthDiagram() {
           <text key={i} x={x} y={pad.t + cH + 18}
             textAnchor="middle" fontSize={10} fill={subC}
             fontFamily={font}>
-            {`Cycle ${i + 1}`}
+            {`Week ${i + 1}`}
           </text>
         );
       })}
@@ -124,16 +124,15 @@ function ParallelDiagram() {
 
   const inCx = 55, inCy = 107, inRx = 34, inRy = 22;
   const boxX = 135, boxW = 130, boxH = 36;
-  const boxYs = [32, 82, 132, 182];
+  const boxYs = [52, 107, 162];
   const aggX = 315, aggW = 130, aggH = 44, aggCy = 107;
   const outCx = 510, outCy = 107, outRx = 34, outRy = 22;
-  const entryYs = [aggCy - 15, aggCy - 5, aggCy + 5, aggCy + 15];
+  const entryYs = [aggCy - 12, aggCy, aggCy + 12];
 
   const nodes = [
-    { title: 'Claude A',   sub: 'Review'    },
-    { title: 'Claude B',   sub: 'Build'     },
-    { title: 'Claude C',   sub: 'Verify'    },
-    { title: 'Other LLMs', sub: null        },
+    { title: 'Guards',   sub: '보호'    },
+    { title: 'Skills',   sub: '레시피'  },
+    { title: 'Workers',  sub: '실행'    },
   ];
 
   return (
@@ -155,19 +154,19 @@ function ParallelDiagram() {
         stroke="#ccc8c2" strokeWidth="1.2" fill="none"
         strokeDasharray="4 3" markerEnd="url(#paArrLoop)" />
       <text x={W / 2} y={H - 10} textAnchor="middle"
-        fill="#bbb" fontSize={9} fontFamily={font} letterSpacing="0.04em">Better Input</text>
+        fill="#bbb" fontSize={9} fontFamily={font} letterSpacing="0.04em">Measure</text>
 
-      {/* In → boxes (화살표 마커는 중앙 i=1만) */}
+      {/* In → boxes */}
       {boxYs.map((by, i) => (
         <path key={`in${i}`}
           d={by === inCy
             ? `M${inCx + inRx},${inCy} L${boxX},${by}`
             : `M${inCx + inRx},${inCy} Q${inCx + inRx + 30},${by} ${boxX},${by}`}
           stroke={arrow} strokeWidth="1.2" fill="none"
-          markerEnd={i === 1 ? 'url(#paArr)' : undefined} />
+          strokeDasharray="4 3" markerEnd={i === 1 ? 'url(#paArr)' : undefined} />
       ))}
 
-      {/* boxes → aggregator (개별 진입점, 화살표는 중앙 i=2만) */}
+      {/* boxes → aggregator */}
       {boxYs.map((by, i) => {
         const ey = entryYs[i];
         const d = Math.abs(by - ey) < 2
@@ -176,19 +175,20 @@ function ParallelDiagram() {
         return (
           <path key={`agg${i}`} d={d}
             stroke={arrow} strokeWidth="1.2" fill="none"
-            markerEnd={i === 2 ? 'url(#paArr)' : undefined} />
+            strokeDasharray="4 3" markerEnd={i === 2 ? 'url(#paArr)' : undefined} />
         );
       })}
 
       {/* aggregator → Out */}
       <path d={`M${aggX + aggW},${aggCy} L${outCx - outRx},${outCy}`}
-        stroke={arrow} strokeWidth="1.2" fill="none" markerEnd="url(#paArr)" />
+        stroke={arrow} strokeWidth="1.2" fill="none"
+        strokeDasharray="4 3" markerEnd="url(#paArr)" />
 
       {/* In oval */}
       <ellipse cx={inCx} cy={inCy} rx={inRx} ry={inRy}
         fill={inOut.fill} stroke={inOut.stroke} strokeWidth="1.5" />
       <text x={inCx} y={inCy} textAnchor="middle" dominantBaseline="middle"
-        fill={inOut.text} fontSize={10} fontWeight={700} fontFamily={font}>User Input</text>
+        fill={inOut.text} fontSize={10} fontWeight={700} fontFamily={font}>Direction</text>
 
       {/* 4 parallel boxes */}
       {nodes.map((n, i) => (
@@ -216,11 +216,11 @@ function ParallelDiagram() {
       <text x={aggX + aggW / 2} y={aggCy}
         textAnchor="middle" dominantBaseline="middle"
         fill={blue.text} fontSize={11} fontWeight={700} fontFamily={font}>
-        Synthesizer
+        Claude
       </text>
       <text x={aggX + aggW / 2} y={aggCy + aggH / 2 + 13}
         textAnchor="middle" dominantBaseline="middle"
-        fill="#aaa" fontSize={9} fontFamily={font}>Claude</text>
+        fill="#aaa" fontSize={9} fontFamily={font}>orchestrator</text>
 
       {/* Out oval */}
       <ellipse cx={outCx} cy={outCy} rx={outRx} ry={outRy}
@@ -283,19 +283,10 @@ export function AiWorkflowSection({ raw: _raw }: { raw?: string }) {
         </p>
       </section>
 
-      {/* ━━━ 2. Before ━━━ */}
+      {/* ━━━ 2. Before + After (연속 흐름) ━━━ */}
       <section style={{ paddingBottom: 32 }}>
-        {NARRATIVE.before.map((p, i) => (
-          <p key={i} className="wd-paragraph" style={{ fontSize: 15, lineHeight: 1.95, maxWidth: 800, color: '#111' }}>
-            {p}
-          </p>
-        ))}
-      </section>
-
-      {/* ━━━ 3. After ━━━ */}
-      <section style={{ paddingBottom: 32 }}>
-        {NARRATIVE.after.map((p, i) => (
-          <p key={i} className="wd-paragraph" style={{ fontSize: 15, lineHeight: 1.95, maxWidth: 800, color: '#111' }}>
+        {[...NARRATIVE.before, ...NARRATIVE.after].map((p, i) => (
+          <p key={i} className="wd-paragraph" style={{ fontSize: 15, lineHeight: 1.95, maxWidth: 800, color: '#111', marginBottom: 0, marginTop: i > 0 ? 6 : 0, whiteSpace: 'pre-line' }}>
             {p}
           </p>
         ))}
@@ -486,7 +477,7 @@ export function AiWorkflowSection({ raw: _raw }: { raw?: string }) {
       {/* ━━━ 8. Evolution + Closing ━━━ */}
       <section style={{ paddingBottom: 80 }}>
         <p className="wd-eyebrow">Evolution</p>
-        <h2 className="wd-title">3주의 기록</h2>
+        <h2 className="wd-title">여정의 기록</h2>
 
         {/* 도입 */}
         <p className="wd-paragraph" style={{ maxWidth: 800, marginLeft: 'auto', marginRight: 'auto', color: '#111' }}>
@@ -504,10 +495,10 @@ export function AiWorkflowSection({ raw: _raw }: { raw?: string }) {
           marginTop: 40,
         }}>
           {TIMELINE.map((t, i) => (
-            <div key={t.phase} style={{
+            <div key={t.question} style={{
               marginBottom: i < TIMELINE.length - 1 ? 48 : 0,
             }}>
-              {/* 주차 레이블 */}
+              {/* 라벨 — 시스템에 대하여 형식 */}
               <div style={{
                 fontFamily: "'Inter', sans-serif",
                 fontSize: 11,
@@ -515,21 +506,9 @@ export function AiWorkflowSection({ raw: _raw }: { raw?: string }) {
                 color: C.textMuted,
                 letterSpacing: '0.1em',
                 textTransform: 'uppercase' as const,
-                marginBottom: 10,
-              }}>
-                {t.phase}
-              </div>
-
-              {/* 질문 */}
-              <div style={{
-                fontFamily: font,
-                fontSize: 21,
-                fontWeight: 600,
-                color: C.text,
-                lineHeight: 1.4,
                 marginBottom: 16,
               }}>
-                "{t.question}"
+                {t.question}
               </div>
 
               {/* 본문 */}
@@ -537,7 +516,7 @@ export function AiWorkflowSection({ raw: _raw }: { raw?: string }) {
                 <p key={j} style={{
                   fontFamily: font,
                   fontSize: 15,
-                  color: C.textSub,
+                  color: j === 0 ? '#111' : C.textSub,
                   lineHeight: 1.95,
                   marginTop: j > 0 ? 16 : 0,
                   marginBottom: 0,
@@ -554,9 +533,7 @@ export function AiWorkflowSection({ raw: _raw }: { raw?: string }) {
           maxWidth: 800,
           marginLeft: 'auto',
           marginRight: 'auto',
-          marginTop: 56,
-          paddingTop: 32,
-          borderTop: `1px solid ${C.border}`,
+          marginTop: 48,
         }}>
           <div style={{
             fontFamily: "'Inter', sans-serif",

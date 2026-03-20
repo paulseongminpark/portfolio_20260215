@@ -1,5 +1,15 @@
 # Portfolio CHANGELOG
 
+## 2026-03-20
+
+### mcp-memory 상세 페이지 + Work clickable + Journey 리라이트
+- mcp-memory Work 카드 clickable 전환 (hover 효과 + "자세히 보기 →")
+- MCP_MEMORY_DETAIL_KO.md 콘텐츠 작성 + work.ts/WorkDetail.tsx/index.tsx 연결
+- Journey 텍스트 리라이트 (Claude Code 첫 만남 → 아이디어 실험 → 도구 커스터마이징 서사)
+- AiWorkflowSection/E2EWorkflowSection 구조 정리 + 텍스트 축소
+- aiWorkflowData.ts 데이터 업데이트
+- 파이프라인 index + Ideation R3 문서 갱신
+
 ## 2026-03-19
 
 ### UI 폴리싱 + 텍스트 서사 강화

@@ -44,12 +44,13 @@ const workItems = [
 ];
 
 function getWorkTitle(key: WorkKey) {
+  if (key === "mcp-memory") return "mcp-memory";
   if (key === "empty-house") return "Empty House CPS";
   if (key === "skin-diary") return "Skin Diary AI";
   return "PMCC";
 }
 
-const WORK_KEY_SET = new Set<WorkKey>(["empty-house", "skin-diary", "pmcc"]);
+const WORK_KEY_SET = new Set<WorkKey>(["mcp-memory", "empty-house", "skin-diary", "pmcc"]);
 
 function parseWorkFromSearch(search: string): WorkKey | null {
   const params = new URLSearchParams(search);
@@ -313,6 +314,7 @@ export default function Page12() {
   }, []);
 
   const WORK_KEY_MAP: Record<string, WorkKey> = {
+    "work-mcp-memory":  "mcp-memory",
     "work-empty-house": "empty-house",
     "work-skin-diary":  "skin-diary",
     "work-pmcc":        "pmcc",
@@ -507,7 +509,7 @@ export default function Page12() {
           <FadeIn delay={0.05}>
             <ProseBlock paragraphs={[
               "\ud558\ub098\uc758 CLI\uc5d0\uc11c \uc2dc\uc791\ub410\ub2e4.",
-              "Claude Code\ub97c \ucc98\uc74c \ub9cc\ub0ac\uc744 \ub54c, \uba38\ub9bf\uc18d\uc758 \uc5f0\uacb0\uc744 \ubc16\uc73c\ub85c \uaebc\ub0bc \uc218 \uc788\uaca0\ub2e4\ub294 \uac10\uac01\uc774 \uc654\ub2e4. \ub0b4\uac00 \ubc18\ubcf5\ud558\ub294 \ud310\ub2e8\uc744 \ud558\ub098\uc529 \ubc14\uae65\uc73c\ub85c \uc62e\uae30\uae30 \uc2dc\uc791\ud588\ub2e4. orchestrator, synthesizer, compressor \u2014 \uc870\uc728\ud558\uace0, \ud310\ub2e8\ud558\uace0, \uae30\uc5b5\uc744 \uc815\ub9ac\ud558\ub294 \uc77c\uc744 \ub118\uacbc\ub2e4. \ube60\ub728\ub9ac\ub294 \uac8c \ub450\ub824\uc6cc\uc11c \ubcf4\uc774\ub294 \uc871\uc871 \ub9cc\ub4e4\uc5c8\ub2e4. 7\uc77c \ub9cc\uc5d0 3\uac1c\uac00 24\uac1c\uac00 \ub410\ub2e4.",
+              "Claude Code\ub97c \ucc98\uc74c \ub9cc\ub0ac\uc744 \ub54c, \uba38\ub9bf\uc18d\uc5d0\uc11c \ub5a0\uc624\ub974\ub294 \uc544\uc774\ub514\uc5b4\ub4e4\uc744 \uc989\uac01 \uad6c\ud604\ud560 \uc218 \uc788\uaca0\ub2e4\ub294 \uc0dd\uac01\uc774 \ub4e4\uc5c8\ub2e4. \ud074\ub85c\ub4dc\ub294 \ub098\uc5d0\uac8c \ub2e4\uc591\ud55c \ud504\ub808\uc784\uc6cc\ud06c\ub4e4\uc744 \uc81c\uc2dc\ud588\uace0, \ub098\ub294 \uc2e0\uc774 \ub098\uc11c \ud3c9\uc18c\uc5d0 \uad00\uc2ec \uc788\ub358 \uc544\uc774\ub514\uc5b4\ub4e4\uc744 \ub9c8\uad6c \uc2e4\ud5d8\ud574\ubcf4\uc558\ub2e4. \uba38\ub9bf\uc18d\uc5d0\uc11c\ub9cc \ubc18\ubcf5\uc801\uc73c\ub85c \ud30c\uace0\ub4e4\ub358 \uc0ac\uace0\ub97c \ud558\ub098\uc529 \ud074\ub85c\ub4dc\ud55c\ud14c \uc8fc\uc785\ud558\uae30 \uc2dc\uc791\ud588\ub2e4. \uadf8\ub7ec\uba74\uc11c \ud074\ub85c\ub4dc\ub97c \ub354 \uc798 \uc4f0\uace0 \uc2f6\ub2e4\ub294 \uc0dd\uac01\uc774 \ub4e4\uc5c8\uace0, \ud074\ub85c\ub4dc \uc790\uccb4\ub97c \uc798 \uc4f0\uae30 \uc704\ud55c \ubc29\ubc95\uc744 \uc5f0\uad6c\ud588\ub2e4. \uc5ec\ub7ec \ub3c4\uad6c\ub97c \uc9c1\uc811 \ucee4\uc2a4\ud130\ub9c8\uc774\uc9d5\ud588\ub2e4. orchestrator, synthesizer, compressor \u2014 \uc870\uc728\ud558\uace0, \ud310\ub2e8\ud558\uace0, \uae30\uc5b5\uc744 \uc815\ub9ac\ud558\ub294 \uc77c\uc744 \ub118\uacbc\ub2e4. \ube60\ub728\ub9ac\ub294 \uac8c \ub450\ub824\uc6cc\uc11c \ubcf4\uc774\ub294 \uc871\uc871 \ub9cc\ub4e4\uc5c8\ub2e4. 7\uc77c \ub9cc\uc5d0 3\uac1c\uac00 24\uac1c\uac00 \ub410\ub2e4.",
               "AI\uac00 \ud55c \ubc88\uc5d0 \ubcfc \uc218 \uc788\ub294 \uacf5\uac04\uc740 \ud55c\uc815\ub3fc \uc788\uc5c8\ub2e4. \ub9cc\ub4e0 \uac83\ub4e4\uc758 \uc815\uc758\ub9cc\uc73c\ub85c \uadf8 \uacf5\uac04\uc758 \uc808\ubc18\uc774 \ucc3c\ub2e4. \ub9cc\ub4e4\uc218\ub85d \uc0dd\uac01\ud560 \uacf5\uac04\uc774 \uc904\uace0 \uc788\uc5c8\ub294\ub370, \ub9cc\ub4dc\ub294 \ub3d9\uc548\uc5d0\ub294 \uadf8\uac78 \ubcf4\uc9c0 \ubabb\ud588\ub2e4. \uba48\ucd94\uace0 \uc77d\uae30 \uc2dc\uc791\ud588\ub2e4. \uacb9\uce58\ub294 \uac83\uc774 \ubcf4\uc600\ub2e4. 24\uac1c\ub294 15\uac1c\ub85c, 15\uac1c\ub294 3\uac1c\ub85c \uc904\uc5c8\ub2e4. \uc4f0\uc774\uc9c0 \uc54a\ub294 \uac83\uc740 \ubc84\ub838\ub2e4. \uae30\uc900\uc740 \ub2e8\uc21c\ud588\ub2e4 \u2014 \ud3ec\uc2a4\ud2b8\uc787 \ud55c \uc7a5\uc5d0 \uc804\uccb4\uac00 \uc548 \ub4e4\uc5b4\uac00\uba74 \uc544\uc9c1 \uc774\ud574\ud55c \uac8c \uc544\ub2c8\ub2e4. \uadf8 \uacfc\uc815\uc5d0\uc11c \uc0ac\uace0\ub3c4 \uacaa\uc5c8\ub2e4. \uc774\uac74 \ub3c4\uad6c \ubaa8\uc74c\uc774 \uc544\ub2c8\ub77c, \ud558\ub098\uc758 \uad6c\uc870\ub85c \uc774\ud574\ud560 \uc218 \uc788\uc5b4\uc57c \ud55c\ub2e4\ub294 \uac78 \uc54c\uc558\ub2e4.",
               "\uc798 \ub3cc\uc544\uac00\ub294 \uac83\uacfc, \uc790\uae30 \uc0c1\ud0dc\ub97c \uc544\ub294 \uac83\uc740 \ub2e4\ub978 \ubb38\uc81c\uc600\ub2e4. \uc2dc\uc2a4\ud15c\uc774 \uc2a4\uc2a4\ub85c \uc0c1\ud0dc\ub97c \uce21\uc815\ud558\uae30 \uc2dc\uc791\ud588\uace0, \ubb38\uc81c\ub97c \ubc1c\uacac\ud558\uace0, \uc81c\uc548\ud558\uace0, \uc2b9\uc778\ub41c \uac83\ub9cc \ubc14\ub00c\uc5c8\ub2e4. \uc78a\uc5b4\ub3c4 \ub2e4\uc2dc \uc7a1\ud614\ub2e4. \uadf8\ub54c \ucc98\uc74c \uc774\uac78 \uc0b4\uc544 \uc788\ub2e4\uace0 \ub290\uaf08\ub2e4. \uacb0\uc815\uc744 \ub300\uc2e0\ud574\uc11c\uac00 \uc544\ub2c8\ub2e4. \ub0b4\uac00 \ub193\uce60 \uac83\uc744 \uba3c\uc800 \ub4dc\ub7ec\ub0b4\uae30 \uc2dc\uc791\ud588\uae30 \ub54c\ubb38\uc774\ub2e4.",
             ]} />
@@ -523,18 +525,24 @@ export default function Page12() {
             <h2 className="p12-h2" style={{ color: "#111", marginBottom: 48, marginTop: 8 }}>Selected Work</h2>
           </FadeIn>
 
-          {/* 시스템 프로젝트 — 카드 (클릭 불가) */}
+          {/* 시스템 프로젝트 — 카드 */}
           <FadeIn delay={0.08}>
             <div className="p12-work-grid" style={{ marginBottom: 48 }}>
               {[
-                { id: "work-mcp-memory", label: "mcp-memory", tag: "AI \u00b7 Memory", description: "\uc628\ud1a8\ub85c\uc9c0 \uae30\ubc18 \uc678\ubd80 \uae30\uc5b5 \uc2dc\uc2a4\ud15c. Vector + Full-Text + Graph 3\uc911 \uac80\uc0c9\uc73c\ub85c \ud544\uc694\ud55c \uae30\uc5b5\uc744 \ucc3e\uace0, BCM \uac00\uc18c\uc131\uc73c\ub85c \uae30\uc5b5 \uac15\ub3c4\ub97c \uc790\ub3d9 \uc870\uc808\ud55c\ub2e4. 3,700\uac1c \ub178\ub4dc, 100% \uc5f0\uacb0." },
-                { id: "work-ce", label: "Context Engineering", tag: "AI \u00b7 System", description: "AI\uc758 \ucd94\ub860 \ud488\uc9c8\uc744 \uadf9\ub300\ud654\ud558\uae30 \uc704\ud55c \ub9e5\ub77d \ud050\ub808\uc774\uc158 \uccb4\uacc4. \ubb34\uc5c7\uc744 \ub123\uace0, \uc5b4\ub5a4 \uc21c\uc11c\ub85c \ubcf4\uc5ec\uc8fc\uace0, \uc5b8\uc81c \ub35c\uc5b4\ub0bc\uc9c0\ub97c 4\uac1c \ub808\uc774\uc5b4\ub85c \uc124\uacc4\ud55c\ub2e4. \uc2dc\uc2a4\ud15c\uc774 \uc544\ub2c8\ub77c \uc6d0\uce59\uc774\ub2e4." },
-                { id: "work-tech-review", label: "Tech Review", tag: "AI \u00b7 Automation", description: "\uae30\uc220 \uae30\uc0ac\u00b7\ud2b8\uc717\u00b7\uc601\uc0c1\uc5d0\uc11c \uc778\uc0ac\uc774\ud2b8\ub97c \uc790\ub3d9 \uc218\uc9d1\ud558\uace0 \uc7ac\uc791\uc131\ud574 \ub9e4\uc77c \ubc1c\ud589\ud558\ub294 \ud30c\uc774\ud504\ub77c\uc778. 3\uac1c \uc18c\uc2a4, 100\uac74 \uc774\uc0c1 \ubc1c\ud589." },
+                { id: "work-mcp-memory", label: "mcp-memory", tag: "AI \u00b7 Memory", description: "\uc628\ud1a8\ub85c\uc9c0 \uae30\ubc18 \uc678\ubd80 \uae30\uc5b5 \uc2dc\uc2a4\ud15c. Vector + Full-Text + Graph 3\uc911 \uac80\uc0c9\uc73c\ub85c \ud544\uc694\ud55c \uae30\uc5b5\uc744 \ucc3e\uace0, BCM \uac00\uc18c\uc131\uc73c\ub85c \uae30\uc5b5 \uac15\ub3c4\ub97c \uc790\ub3d9 \uc870\uc808\ud55c\ub2e4. 3,700\uac1c \ub178\ub4dc, 100% \uc5f0\uacb0.", clickable: true },
+                { id: "work-ce", label: "Context Engineering", tag: "AI \u00b7 System", description: "AI\uc758 \ucd94\ub860 \ud488\uc9c8\uc744 \uadf9\ub300\ud654\ud558\uae30 \uc704\ud55c \ub9e5\ub77d \ud050\ub808\uc774\uc158 \uccb4\uacc4. \ubb34\uc5c7\uc744 \ub123\uace0, \uc5b4\ub5a4 \uc21c\uc11c\ub85c \ubcf4\uc5ec\uc8fc\uace0, \uc5b8\uc81c \ub35c\uc5b4\ub0bc\uc9c0\ub97c 4\uac1c \ub808\uc774\uc5b4\ub85c \uc124\uacc4\ud55c\ub2e4. \uc2dc\uc2a4\ud15c\uc774 \uc544\ub2c8\ub77c \uc6d0\uce59\uc774\ub2e4.", clickable: false },
+                { id: "work-tech-review", label: "Tech Review", tag: "AI \u00b7 Automation", description: "\uae30\uc220 \uae30\uc0ac\u00b7\ud2b8\uc717\u00b7\uc601\uc0c1\uc5d0\uc11c \uc778\uc0ac\uc774\ud2b8\ub97c \uc790\ub3d9 \uc218\uc9d1\ud558\uace0 \uc7ac\uc791\uc131\ud574 \ub9e4\uc77c \ubc1c\ud589\ud558\ub294 \ud30c\uc774\ud504\ub77c\uc778. 3\uac1c \uc18c\uc2a4, 100\uac74 \uc774\uc0c1 \ubc1c\ud589.", clickable: false },
               ].map((item) => (
-                <div key={item.id} id={item.id} style={{
-                  background: "#fafaf9", border: "1px solid #e8e8e8", borderRadius: 8,
-                  padding: "28px 24px", cursor: "default",
-                }}>
+                <div key={item.id} id={item.id}
+                  onClick={item.clickable ? () => openWorkDetail(WORK_KEY_MAP[item.id]) : undefined}
+                  style={{
+                    background: "#fafaf9", border: "1px solid #e8e8e8", borderRadius: 8,
+                    padding: "28px 24px", cursor: item.clickable ? "pointer" : "default",
+                    transition: item.clickable ? "border-color 0.2s, box-shadow 0.2s" : "none",
+                  }}
+                  onMouseEnter={item.clickable ? (e) => { e.currentTarget.style.borderColor = "#ccc"; e.currentTarget.style.boxShadow = "0 2px 8px rgba(0,0,0,0.06)"; } : undefined}
+                  onMouseLeave={item.clickable ? (e) => { e.currentTarget.style.borderColor = "#e8e8e8"; e.currentTarget.style.boxShadow = "none"; } : undefined}
+                >
                   <h3 style={{ fontFamily: "'Inter','Noto Sans KR',sans-serif", fontSize: 18, fontWeight: 700, color: "#111", marginBottom: 4 }}>
                     {item.label}
                   </h3>
@@ -544,6 +552,11 @@ export default function Page12() {
                   <p style={{ fontFamily: "'Inter','Noto Sans KR',sans-serif", fontSize: 14, color: "#555", lineHeight: 1.7 }}>
                     {item.description}
                   </p>
+                  {item.clickable && (
+                    <p style={{ fontFamily: "'Inter',sans-serif", fontSize: 13, color: "#999", marginTop: 12, transition: "color 0.15s" }}>
+                      자세히 보기 →
+                    </p>
+                  )}
                 </div>
               ))}
             </div>
