@@ -194,7 +194,7 @@ export function WorkDetail({ activeWork, title, heroSubtitle: _heroSubtitle, par
   const meta = WORK_META[activeWork];
 
   const F = "'Inter','Noto Sans KR',sans-serif";
-  const sideOffset = 100;
+
 
   // Build flat TOC from section eyebrows (first occurrence only)
   const tocItems = (() => {
