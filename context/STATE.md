@@ -1,6 +1,6 @@
 # portfolio STATE
-_Updated: 2026-03-20_
-_Last Session: 2026-03-20 — mcp-memory 상세 페이지 연결 + Work 카드 clickable + Journey 텍스트 리라이트. 다음: CE/Tech Review 상세 페이지, Hero 텍스트, 다이어그램._
+_Updated: 2026-03-23_
+_Last Session: 2026-03-23 — Hero 프로필 사진 + Work 카드 그라데이션 + 전 상세 페이지 TOC/레이아웃 통일. 다음: 다이어그램 12개 구현, 섹션 하이라이트, 카드-배너 그라데이션 동기화._
 
 ## 목적
 개인 포트폴리오 웹사이트 (React + Vite, vanilla CSS, hash routing)

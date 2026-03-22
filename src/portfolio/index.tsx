@@ -257,7 +257,7 @@ function Hero() {
           <img
             src={`${_b}profile.jpg`}
             alt="Paul Seongmin Park"
-            style={{ width: 252, height: 252, objectFit: "cover", objectPosition: "center 20%", borderRadius: "50%", filter: "grayscale(0%)" }}
+            style={{ width: 252, height: 252, objectFit: "cover", objectPosition: "center 10%", borderRadius: "50%", filter: "grayscale(0%)" }}
           />
         </motion.div>
       </div>

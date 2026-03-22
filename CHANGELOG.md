@@ -1,5 +1,15 @@
 # Portfolio CHANGELOG
 
+## 2026-03-23
+
+### Hero 프로필 사진 + Work 카드 그라데이션 + TOC/레이아웃 통일
+- Hero: 프로필 사진 추가 (원형 252px), 100vh 풀스크린, padding-top 196px
+- Work 카드: mcp-memory 블루, CE 주황, Tech Review 퍼플-피치 메쉬 그라데이션
+- TOC: 메인/상세 200px 통일, Work 기본 펼침, 스크롤바 숨김
+- 상세 페이지: 동적 TOC + 스크롤 하이라이트, 전 페이지 통일
+- CSS: eyebrow 13px, paragraph #333, 본문 maxWidth 800px 가운데 정렬
+- mcp-memory 상세 헤더: 블루 메쉬 그라데이션 배경 + 흰색 텍스트
+
 ## 2026-03-22
 
 ### 온톨로지 상세 페이지 전면 재작성 + 메인페이지 업데이트
