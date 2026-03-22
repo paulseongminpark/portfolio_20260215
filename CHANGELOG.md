@@ -1,5 +1,17 @@
 # Portfolio CHANGELOG
 
+## 2026-03-22
+
+### 온톨로지 상세 페이지 전면 재작성 + 메인페이지 업데이트
+- Hero 태그라인: "I design knowledge structures that make AI reason better."
+- Work mcp-memory 설명 교체 + 숫자 4,685 반영
+- Now Memory 숫자 4,685 업데이트
+- Forward "같은 구조가 조직의 의사결정 기억이 될 수 있다고 생각한다" 추가
+- MCP_MEMORY_DETAIL_KO.md: 6섹션 케이스스터디 → 15섹션 4페이지(시작·설계·실체·강화)
+- WorkDetail.tsx: mcp-memory 전용 fixed left sidebar TOC 추가
+- WORK_META: period 2026, stats 4685/25/4368, tools 업데이트
+- 파이프라인 문서: Opus 매핑, 전체 스펙, 최종 결정, Opus 초안 v1
+
 ## 2026-03-20
 
 ### mcp-memory 상세 페이지 + Work clickable + Journey 리라이트

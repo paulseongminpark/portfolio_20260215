@@ -223,27 +223,43 @@ function Nav({ onLogoClick, onNavClick, showLogo = true }: { onLogoClick?: () =>
 
 // ── Hero ─────────────────────────────────────────────────────────
 function Hero() {
+  const _b = import.meta.env.BASE_URL;
   return (
     <section id="hero" className="p12-hero" style={{ background: "#ffffff" }}>
-      <div style={{ maxWidth: 1200, margin: "0 auto", width: "100%" }}>
-        <motion.h1
-          className="p12-h1"
-          style={{ color: "#111111", fontSize: "clamp(36px, 5vw, 56px)", fontWeight: 700, marginBottom: 16 }}
-          initial={{ opacity: 0, y: 30 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.7, delay: 0.3, ease: [0.25, 0.46, 0.45, 0.94] }}
+      <div style={{ maxWidth: 1200, margin: "0 auto", width: "100%", display: "flex", alignItems: "center", justifyContent: "space-between", gap: 48 }}>
+        <div style={{ flex: 1 }}>
+          <motion.h1
+            className="p12-h1"
+            style={{ color: "#111111", fontSize: "clamp(36px, 5vw, 56px)", fontWeight: 700, marginBottom: 16 }}
+            initial={{ opacity: 0, y: 30 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.7, delay: 0.3, ease: [0.25, 0.46, 0.45, 0.94] }}
+          >
+            Paul Seongmin Park
+          </motion.h1>
+          <motion.p
+            className="p12-hero-sub"
+            style={{ color: "#444444", fontSize: "clamp(18px, 2.5vw, 26px)", fontWeight: 400 }}
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.7, delay: 0.6 }}
+          >
+            I design knowledge structures that make AI reason better.
+          </motion.p>
+        </div>
+        <motion.div
+          className="p12-hero-photo"
+          style={{ marginRight: 186, marginTop: 38 }}
+          initial={{ opacity: 0, scale: 0.95 }}
+          animate={{ opacity: 1, scale: 1 }}
+          transition={{ duration: 0.8, delay: 0.5 }}
         >
-          Paul Seongmin Park
-        </motion.h1>
-        <motion.p
-          className="p12-hero-sub"
-          style={{ color: "#444444", fontSize: "clamp(18px, 2.5vw, 26px)", fontWeight: 400 }}
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.7, delay: 0.6 }}
-        >
-          Designing AI Operations.
-        </motion.p>
+          <img
+            src={`${_b}profile.jpg`}
+            alt="Paul Seongmin Park"
+            style={{ width: 252, height: 252, objectFit: "cover", objectPosition: "center 20%", borderRadius: "50%", filter: "grayscale(0%)" }}
+          />
+        </motion.div>
       </div>
       <div className="p12-hero-scroll">
         <span>&darr;</span>
@@ -301,7 +317,7 @@ export default function Page12() {
   const [activeWork, setActiveWork] = useState<WorkKey | null>(() => getWorkFromLocation());
   const { parsedWork, heroSubtitle } = useWorkDetail(activeWork);
 
-  const [tocExpanded, setTocExpanded] = useState<Set<string>>(new Set());
+  const [tocExpanded, setTocExpanded] = useState<Set<string>>(new Set(["work"]));
   const [activeGroup, setActiveGroup] = useState("about");
   const [activeItem, setActiveItem] = useState("about");
 
@@ -529,27 +545,36 @@ export default function Page12() {
           <FadeIn delay={0.08}>
             <div className="p12-work-grid" style={{ marginBottom: 48 }}>
               {[
-                { id: "work-mcp-memory", label: "mcp-memory", tag: "AI \u00b7 Memory", description: "\uc628\ud1a8\ub85c\uc9c0 \uae30\ubc18 \uc678\ubd80 \uae30\uc5b5 \uc2dc\uc2a4\ud15c. Vector + Full-Text + Graph 3\uc911 \uac80\uc0c9\uc73c\ub85c \ud544\uc694\ud55c \uae30\uc5b5\uc744 \ucc3e\uace0, BCM \uac00\uc18c\uc131\uc73c\ub85c \uae30\uc5b5 \uac15\ub3c4\ub97c \uc790\ub3d9 \uc870\uc808\ud55c\ub2e4. 3,700\uac1c \ub178\ub4dc, 100% \uc5f0\uacb0.", clickable: true },
+                { id: "work-mcp-memory", label: "mcp-memory", tag: "AI · Memory", description: "AI가 맥락을 추론하도록 지식의 구조를 설계한 실험. 25개 타입, 4,685개 노드의 온톨로지 기반 외부 기억 시스템.", clickable: true },
                 { id: "work-ce", label: "Context Engineering", tag: "AI \u00b7 System", description: "AI\uc758 \ucd94\ub860 \ud488\uc9c8\uc744 \uadf9\ub300\ud654\ud558\uae30 \uc704\ud55c \ub9e5\ub77d \ud050\ub808\uc774\uc158 \uccb4\uacc4. \ubb34\uc5c7\uc744 \ub123\uace0, \uc5b4\ub5a4 \uc21c\uc11c\ub85c \ubcf4\uc5ec\uc8fc\uace0, \uc5b8\uc81c \ub35c\uc5b4\ub0bc\uc9c0\ub97c 4\uac1c \ub808\uc774\uc5b4\ub85c \uc124\uacc4\ud55c\ub2e4. \uc2dc\uc2a4\ud15c\uc774 \uc544\ub2c8\ub77c \uc6d0\uce59\uc774\ub2e4.", clickable: false },
                 { id: "work-tech-review", label: "Tech Review", tag: "AI \u00b7 Automation", description: "\uae30\uc220 \uae30\uc0ac\u00b7\ud2b8\uc717\u00b7\uc601\uc0c1\uc5d0\uc11c \uc778\uc0ac\uc774\ud2b8\ub97c \uc790\ub3d9 \uc218\uc9d1\ud558\uace0 \uc7ac\uc791\uc131\ud574 \ub9e4\uc77c \ubc1c\ud589\ud558\ub294 \ud30c\uc774\ud504\ub77c\uc778. 3\uac1c \uc18c\uc2a4, 100\uac74 \uc774\uc0c1 \ubc1c\ud589.", clickable: false },
-              ].map((item) => (
+              ].map((item) => {
+                const isCe = item.id === "work-ce";
+                const isMcp = item.id === "work-mcp-memory";
+                const isTr = item.id === "work-tech-review";
+                const hasGradient = isCe || isMcp || isTr;
+                const mcpGradient = "radial-gradient(ellipse at 25% 30%, rgba(59,130,246,0.7) 0%, transparent 50%), radial-gradient(ellipse at 75% 70%, rgba(96,165,250,0.6) 0%, transparent 45%), radial-gradient(ellipse at 50% 45%, rgba(37,99,195,0.5) 0%, transparent 55%), linear-gradient(150deg, #1e3a6f 0%, #2d5a9a 40%, #4a8ad4 100%)";
+                const trGradient = "radial-gradient(ellipse at 25% 30%, rgba(107,92,231,0.7) 0%, transparent 50%), radial-gradient(ellipse at 75% 70%, rgba(232,164,184,0.6) 0%, transparent 45%), radial-gradient(ellipse at 50% 45%, rgba(139,122,207,0.5) 0%, transparent 55%), linear-gradient(150deg, #3b2e6e 0%, #7a65a5 40%, #d4a4ba 100%)";
+                const ceGradient = "radial-gradient(ellipse at 25% 30%, rgba(232,140,60,0.7) 0%, transparent 50%), radial-gradient(ellipse at 75% 70%, rgba(212,99,45,0.6) 0%, transparent 45%), radial-gradient(ellipse at 50% 45%, rgba(196,120,60,0.5) 0%, transparent 55%), linear-gradient(150deg, #8b3a0f 0%, #c4703a 40%, #e8a050 100%)";
+                return (
                 <div key={item.id} id={item.id}
                   onClick={item.clickable ? () => openWorkDetail(WORK_KEY_MAP[item.id]) : undefined}
                   style={{
-                    background: "#fafaf9", border: "1px solid #e8e8e8", borderRadius: 8,
+                    background: isMcp ? mcpGradient : isCe ? ceGradient : isTr ? trGradient : "#fafaf9",
+                    border: hasGradient ? "none" : "1px solid #e8e8e8", borderRadius: 8,
                     padding: "28px 24px", cursor: item.clickable ? "pointer" : "default",
                     transition: item.clickable ? "border-color 0.2s, box-shadow 0.2s" : "none",
                   }}
                   onMouseEnter={item.clickable ? (e) => { e.currentTarget.style.borderColor = "#ccc"; e.currentTarget.style.boxShadow = "0 2px 8px rgba(0,0,0,0.06)"; } : undefined}
                   onMouseLeave={item.clickable ? (e) => { e.currentTarget.style.borderColor = "#e8e8e8"; e.currentTarget.style.boxShadow = "none"; } : undefined}
                 >
-                  <h3 style={{ fontFamily: "'Inter','Noto Sans KR',sans-serif", fontSize: 18, fontWeight: 700, color: "#111", marginBottom: 4 }}>
+                  <h3 style={{ fontFamily: "'Inter','Noto Sans KR',sans-serif", fontSize: 18, fontWeight: 700, color: hasGradient ? "#fff" : "#111", marginBottom: 4 }}>
                     {item.label}
                   </h3>
-                  <p style={{ fontFamily: "'Inter',sans-serif", fontSize: 12, color: ANTHROPIC, marginBottom: 12 }}>
+                  <p style={{ fontFamily: "'Inter',sans-serif", fontSize: 12, color: hasGradient ? "rgba(255,255,255,0.7)" : ANTHROPIC, marginBottom: 12 }}>
                     {item.tag}
                   </p>
-                  <p style={{ fontFamily: "'Inter','Noto Sans KR',sans-serif", fontSize: 14, color: "#555", lineHeight: 1.7 }}>
+                  <p style={{ fontFamily: "'Inter','Noto Sans KR',sans-serif", fontSize: 14, color: hasGradient ? "rgba(255,255,255,0.8)" : "#555", lineHeight: 1.7 }}>
                     {item.description}
                   </p>
                   {item.clickable && (
@@ -558,7 +583,8 @@ export default function Page12() {
                     </p>
                   )}
                 </div>
-              ))}
+                );
+              })}
             </div>
           </FadeIn>
 
@@ -588,7 +614,7 @@ export default function Page12() {
               <NowSubsection
                 id="now-memory"
                 label="Memory"
-                text={"\uc138\uc158\uc5d0\uc11c \ub098\uc628 \ud310\ub2e8, \uc2e4\ud328, \uc9c8\ubb38\uc774 \ub178\ub4dc\ub85c \uc800\uc7a5\ub41c\ub2e4. \ub2e4\uc74c \uc138\uc158\uc5d0\uc11c \uad00\ub828 \ud0a4\uc6cc\ub4dc\ub97c \uac80\uc0c9\ud558\uba74, 4\uac1c \ucc44\ub110\uc774 \ub3d9\uc2dc\uc5d0 \ub4a4\uc838\uc11c \uac00\uc7a5 \uad00\ub828 \ub192\uc740 \uae30\uc5b5\uc744 \uc810\uc218\uc21c\uc73c\ub85c \uaebc\ub0b4\uc628\ub2e4. \uc790\uc8fc \uc4f0\uc774\ub294 \uae30\uc5b5\uc740 \uc810\uc218\uac00 \uc62c\ub77c\uac00\uace0, \uc548 \uc4f0\uc774\ub294 \uae30\uc5b5\uc740 \uc11c\uc11c\ud788 \ud750\ub824\uc9c4\ub2e4. \uad00\ucc30\uc740 \ube60\ub974\uac8c \ud750\ub824\uc9c0\uace0, \uc6d0\uce59\uc740 \uc624\ub798 \ub0a8\ub294\ub2e4 \u2014 \ub1cc\uac00 \ud558\ub294 \uc77c\uc744 \ubaa8\uc0ac\ud55c \uac83\uc774\ub2e4. \uc9c0\uae08 3,700\uac1c\uc758 \ub178\ub4dc\uac00 \ud558\ub098\ub3c4 \ub04a\uae30\uc9c0 \uc54a\uace0 \uc5f0\uacb0\ub3fc \uc788\ub2e4."}
+                text={"세션에서 나온 판단, 실패, 질문이 노드로 저장된다. 다음 세션에서 관련 키워드를 검색하면, 4개 채널이 동시에 뒤져서 가장 관련 높은 기억을 점수순으로 꺼내온다. 자주 쓰이는 기억은 점수가 올라가고, 안 쓰이는 기억은 서서히 흐려진다. 관찰은 빠르게 흐려지고, 원칙은 오래 남는다 — 뇌가 하는 일을 모사한 것이다. 지금 4,685개의 노드가 하나도 끊기지 않고 연결돼 있다."}
               />
               <NowSubsection
                 id="now-flow"
@@ -615,7 +641,7 @@ export default function Page12() {
             <ProseBlock paragraphs={[
               "도구는 바뀌기 마련이다.",
               "\uadf8\ub798\uc11c \ub0b4\uac00 \uc9c0\uc18d\uc801\uc73c\ub85c \uc124\uacc4\ud558\ub294 \uac83\uc740 \ub3c4\uad6c\uac00 \uc544\ub2c8\ub77c \uc6b4\uc601 \uc2dc\uc2a4\ud15c\uc774\ub2e4. \uacb0\uc815, \uc2e4\ud328, \uc9c8\ubb38\uc774 \uc0ac\ub77c\uc9c0\uc9c0 \uc54a\uace0 \uc313\uc778\ub2e4. \uc313\uc778 \uac83\uc744 \uae30\ubc18\uc73c\ub85c, \uc2dc\uc2a4\ud15c\uc740 \uc790\uae30 \uc0c1\ud0dc\ub97c \uce21\uc815\ud558\uace0, \ubb38\uc81c\ub97c \ucc3e\uace0, \ub354 \ub098\uc740 \ubc29\ud5a5\uc744 \uc81c\uc548\ud55c\ub2e4.",
-              "\ub0b4 \uad00\uc2ec\uc740 Living System\uc5d0 \uc788\ub2e4. \uc0ac\ub78c\uc774 \uc78a\uc5b4\ub3c4 \uc2dc\uc2a4\ud15c\uc774 \uae30\uc5b5\ud558\uace0, \ub193\uce5c \uac83\uc744 \uba3c\uc800 \ub4dc\ub7ec\ub0b4\uace0, \uc2a4\uc2a4\ub85c \ub098\uc544\uc9c4\ub2e4. \uc2dc\uc2a4\ud15c\uc774 \ubcf5\uc6d0\uc744 \ub9e1\uc73c\uba74, \ub098\ub294 \uc0ac\uace0\uc5d0 \uc5d0\ub108\uc9c0\ub97c \uc4f8 \uc218 \uc788\ub2e4.",
+              "내 관심은 Living System에 있다. 사람이 잊어도 시스템이 기억하고, 놓친 것을 먼저 드러내고, 스스로 나아진다. 같은 구조가 조직의 의사결정 기억이 될 수 있다고 생각한다. 시스템이 복원을 맡으면, 나는 사고에 에너지를 쓸 수 있다.",
             ]} />
           </FadeIn>
         </div>

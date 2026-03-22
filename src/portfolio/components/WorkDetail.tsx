@@ -1,4 +1,4 @@
-import { useRef } from "react";
+import { useRef, useState, useEffect } from "react";
 import { type WorkKey } from "../content/work";
 import { type WorkSection } from "../parseWorkDetail";
 import { WorkDetailBlocks } from "./WorkDetailBlocks";
@@ -7,7 +7,7 @@ import { PageEditorPanel } from "./PageEditorPanel";
 import "./PageEditor.css";
 
 const GRADIENTS: Record<string, string> = {
-  "mcp-memory":  "linear-gradient(135deg, #e0e7ff 0%, #c7d2fe 50%, #a5b4fc 100%)",
+  "mcp-memory":  "radial-gradient(ellipse at 25% 30%, rgba(59,130,246,0.7) 0%, transparent 50%), radial-gradient(ellipse at 75% 70%, rgba(96,165,250,0.6) 0%, transparent 45%), radial-gradient(ellipse at 50% 45%, rgba(37,99,195,0.5) 0%, transparent 55%), linear-gradient(150deg, #1e3a6f 0%, #2d5a9a 40%, #4a8ad4 100%)",
   "empty-house": "linear-gradient(135deg, #dbeafe 0%, #ede9fe 50%, #fce7f3 100%)",
   "skin-diary":  "linear-gradient(135deg, #d1fae5 0%, #a7f3d0 50%, #6ee7b7 100%)",
   "pmcc":        "linear-gradient(135deg, #fed7aa 0%, #fbbf24 50%, #f59e0b 100%)",
@@ -21,15 +21,15 @@ const WORK_META: Record<string, {
   overview: string;
 }> = {
   "mcp-memory": {
-    period: "2025–현재",
-    role: "시스템 설계 · 개발",
-    tools: ["Python", "SQLite", "FTS5", "OpenAI Embeddings", "MCP Protocol"],
+    period: "2026–현재",
+    role: "온톨로지 설계 · 시스템 구축",
+    tools: ["Python", "SQLite", "FTS5", "ChromaDB", "NetworkX", "MCP Protocol"],
     stats: [
-      { value: "3,700+", label: "노드" },
-      { value: "3중", label: "검색 채널" },
-      { value: "49개", label: "관계 규칙" },
+      { value: "4,685", label: "노드" },
+      { value: "25", label: "타입" },
+      { value: "4,368", label: "엣지" },
     ],
-    overview: "세션이 끝나도 판단의 맥락이 남는 구조를 만들기 위해 설계한 온톨로지 기반 외부 기억 시스템입니다.\nVector + Full-Text + Graph 3중 검색으로 관련 기억을 찾고, BCM 감쇠로 기억 강도를 자동 조절합니다.",
+    overview: "AI가 맥락을 추론하도록 지식의 구조를 설계한 실험.\n25개 타입과 4,368개 엣지로 이루어진 온톨로지 기반 외부 기억 시스템.",
   },
   "empty-house": {
     period: "2025년 6월",
@@ -194,71 +194,140 @@ export function WorkDetail({ activeWork, title, heroSubtitle: _heroSubtitle, par
   const meta = WORK_META[activeWork];
 
   const F = "'Inter','Noto Sans KR',sans-serif";
+  const sideOffset = 100;
+
+  // Build flat TOC from section eyebrows (first occurrence only)
+  const tocItems = (() => {
+    const items: Array<{ label: string; id: string }> = [];
+    const seen = new Set<string>();
+    filteredSections.forEach((section, idx) => {
+      const sectionId = `s-${idx + 2}`;
+      const sectionTitle = section.blocks.find((b) => b.type === 'section-title') as
+        | { type: 'section-title'; eyebrow: string; title: string; desc: string }
+        | undefined;
+      const eyebrow = sectionTitle?.eyebrow || section.name;
+      if (!seen.has(eyebrow)) {
+        seen.add(eyebrow);
+        items.push({ label: eyebrow, id: sectionId });
+      }
+    });
+    return items;
+  })();
+
+  // mcp-memory: grouped TOC
+  const mcpToc = [
+    { label: "시작", items: [
+      { name: "매일 일어나는 일", id: "s-3" },
+      { name: "삶에 들어온 AI", id: "s-4" },
+      { name: "뉴런이라는 직감", id: "s-5" },
+    ]},
+    { label: "설계", items: [
+      { name: "1막 · 만들 수 있으니까", id: "s-6" },
+      { name: "2막 · 0.057", id: "s-7" },
+      { name: "3막 · 깎는 일", id: "s-8" },
+      { name: "4막 · 자기 상태를 아는 것", id: "s-9" },
+    ]},
+    { label: "실체", items: [
+      { name: "그래프", id: "s-10" },
+      { name: "Where This Stands", id: "s-11" },
+    ]},
+    { label: "강화", items: [
+      { name: "사고 리팩토링", id: "s-12" },
+      { name: "Claude에게 하는 일", id: "s-13" },
+      { name: "다른 세계에서", id: "s-14" },
+      { name: "가리키는 곳", id: "s-15" },
+    ]},
+  ];
+  const isMcpToc = activeWork === 'mcp-memory';
+
+  const [activeGroup, setActiveGroup] = useState(isMcpToc ? mcpToc[0]?.label ?? "" : "");
+  const [activeItem, setActiveItem] = useState(isMcpToc ? mcpToc[0]?.items[0]?.id ?? "" : tocItems[0]?.id ?? "");
+
+  useEffect(() => {
+    if (isMcpToc) {
+      const allEntries: Array<{ id: string; groupLabel: string }> = [];
+      mcpToc.forEach((g) => g.items.forEach((item) => allEntries.push({ id: item.id, groupLabel: g.label })));
+      const handleScroll = () => {
+        const offset = 90;
+        let current = allEntries[0];
+        for (const entry of allEntries) {
+          const el = document.getElementById(entry.id);
+          if (!el) continue;
+          if (el.getBoundingClientRect().top <= offset) current = entry;
+        }
+        if (current) { setActiveGroup(current.groupLabel); setActiveItem(current.id); }
+      };
+      window.addEventListener("scroll", handleScroll, { passive: true });
+      handleScroll();
+      return () => window.removeEventListener("scroll", handleScroll);
+    } else {
+      if (tocItems.length === 0) return;
+      const handleScroll = () => {
+        const offset = 90;
+        let current = tocItems[0];
+        for (const entry of tocItems) {
+          const el = document.getElementById(entry.id);
+          if (!el) continue;
+          if (el.getBoundingClientRect().top <= offset) current = entry;
+        }
+        if (current) setActiveItem(current.id);
+      };
+      window.addEventListener("scroll", handleScroll, { passive: true });
+      handleScroll();
+      return () => window.removeEventListener("scroll", handleScroll);
+    }
+  }, [activeWork, filteredSections.length]);
 
   const content = (
     <div style={{ background: "#ffffff", minHeight: "100vh" }}>
 
       {/* ── 헤더 ── */}
-      <div style={{ background: "#f9f9f7", padding: "120px 0 72px" }}>
-        <div style={{ maxWidth: 1540, margin: "0 auto", padding: "0 48px" }}>
-
-          {/* 뒤로가기 */}
-          <div style={{ maxWidth: 860, margin: "0 auto" }}>
-            <button onClick={onBack}
-              style={{ display: "inline-flex", alignItems: "center", gap: 8,
-                fontFamily: F, fontSize: 13, color: "#999", background: "none",
-                border: "none", cursor: "pointer", padding: 0, marginBottom: 40, transition: "color 0.15s" }}
-              onMouseEnter={(e) => (e.currentTarget.style.color = "#111")}
-              onMouseLeave={(e) => (e.currentTarget.style.color = "#999")}>
-              ← 돌아가기
-            </button>
-          </div>
-
-          {/* 섹션 레이블 */}
-          <p style={{ fontFamily: F, fontSize: 11, fontWeight: 600,
-            letterSpacing: "0.18em", textTransform: "uppercase", color: "#D4632D", marginBottom: 16, textAlign: "center" }}>
-            Case Study
-          </p>
-
-          {/* 프로젝트 제목 */}
-          <h1 style={{ fontFamily: F, fontSize: "clamp(32px, 4vw, 52px)",
-            fontWeight: 700, color: "#111", lineHeight: 1.08,
-            letterSpacing: "-0.02em", margin: "0 0 32px", textAlign: "center" }}>
-            {activeWork === 'pmcc' ? 'Peer Mile Coffee Club' : title}
-          </h1>
-
-          {/* 오버뷰 — 제목 바로 아래 */}
-          <p style={{ fontFamily: F, fontWeight: 400,
-            color: "#444", lineHeight: 1.85, margin: "0 auto 48px", maxWidth: 860, fontSize: 18, textAlign: "center", whiteSpace: "pre-line" }}>
-            {meta.overview}
-          </p>
-
-          {/* 메타 정보 */}
-          <div style={{ display: "flex", gap: 40, flexWrap: "wrap", justifyContent: "center",
-            paddingTop: 24, borderTop: "1px solid #e8e8e8", maxWidth: 860, margin: "0 auto" }}>
-            {[
-              { label: "기간", value: meta.period },
-              { label: "역할", value: meta.role },
-              { label: "도구", value: meta.tools.join(" · ") },
-            ].map(({ label, value }) => (
-              <div key={label} style={{ textAlign: "center" }}>
-                <p style={{ fontFamily: F, fontSize: 11, fontWeight: 600,
-                  letterSpacing: "0.12em", textTransform: "uppercase", color: "#bbb", marginBottom: 6 }}>
-                  {label}
-                </p>
-                <p style={{ fontFamily: F, fontSize: 14, color: "#333", margin: 0 }}>{value}</p>
-              </div>
-            ))}
+      {(() => {
+        const hasHeroGradient = !!GRADIENTS[activeWork] && activeWork !== 'pmcc';
+        const hg = hasHeroGradient;
+        return (
+        <>
+        {/* CASE STUDY ~ 메타 정보 */}
+        <div style={{ background: hg ? GRADIENTS[activeWork] : "#f9f9f7", padding: "120px 0 48px" }}>
+          <div style={{ maxWidth: 1540, margin: "0 auto", padding: "0 48px" }}>
+            <p style={{ fontFamily: F, fontSize: 11, fontWeight: 600,
+              letterSpacing: "0.18em", textTransform: "uppercase",
+              color: hg ? "rgba(255,255,255,0.7)" : "#D4632D", marginBottom: 16, textAlign: "center" }}>
+              Case Study
+            </p>
+            <h1 style={{ fontFamily: F, fontSize: "clamp(32px, 4vw, 52px)",
+              fontWeight: 700, color: hg ? "#fff" : "#111", lineHeight: 1.08,
+              letterSpacing: "-0.02em", margin: "0 0 32px", textAlign: "center" }}>
+              {activeWork === 'pmcc' ? 'Peer Mile Coffee Club' : title}
+            </h1>
+            <p style={{ fontFamily: F, fontWeight: 400,
+              color: hg ? "rgba(255,255,255,0.85)" : "#444", lineHeight: 1.85, margin: "0 auto 48px", maxWidth: 860, fontSize: 18, textAlign: "center", whiteSpace: "pre-line" }}>
+              {meta.overview}
+            </p>
+            <div style={{ display: "flex", gap: 40, flexWrap: "wrap", justifyContent: "center",
+              paddingTop: 24, borderTop: hg ? "1px solid rgba(255,255,255,0.2)" : "1px solid #e8e8e8", maxWidth: 860, margin: "0 auto" }}>
+              {[
+                { label: "기간", value: meta.period },
+                { label: "역할", value: meta.role },
+                { label: "도구", value: meta.tools.join(" · ") },
+              ].map(({ label, value }) => (
+                <div key={label} style={{ textAlign: "center" }}>
+                  <p style={{ fontFamily: F, fontSize: 11, fontWeight: 600,
+                    letterSpacing: "0.12em", textTransform: "uppercase", color: hg ? "rgba(255,255,255,0.5)" : "#bbb", marginBottom: 6 }}>
+                    {label}
+                  </p>
+                  <p style={{ fontFamily: F, fontSize: 14, color: hg ? "rgba(255,255,255,0.9)" : "#333", margin: 0 }}>{value}</p>
+                </div>
+              ))}
+            </div>
           </div>
         </div>
-      </div>
 
-      {/* ── 히어로 이미지 블록 ── */}
-      {activeWork === 'pmcc' ? (
-        <HeroSlider />
-      ) : (
-        <div style={{ width: "100%", height: "36vh", background: GRADIENTS[activeWork] }} />
-      )}
+        {/* ── 히어로 이미지 블록 (pmcc만, 나머지는 위에 통합) ── */}
+        {activeWork === 'pmcc' && <HeroSlider />}
+        </>
+        );
+      })()}
 
       {/* ── Stats ── */}
       <div style={{ borderBottom: "1px solid #e8e8e8" }}>
@@ -279,13 +348,75 @@ export function WorkDetail({ activeWork, title, heroSubtitle: _heroSubtitle, par
         </div>
       </div>
 
+      {/* ── fixed TOC sidebar (all detail pages) ── */}
+      {tocItems.length > 0 && (
+        <aside style={{
+          position: "fixed", left: 0, top: 0, height: "100vh", overflowY: "auto",
+          width: 200, borderRight: "1px solid #e8e8e8", background: "#fafafa",
+          zIndex: 10, display: "flex", flexDirection: "column",
+          padding: "0 24px 24px 24px", fontFamily: F,
+          scrollbarWidth: "none", msOverflowStyle: "none",
+        } as React.CSSProperties}>
+          <button onClick={onBack}
+            style={{ fontFamily: F, fontSize: 13, color: "#999", background: "none",
+              border: "none", cursor: "pointer", padding: "24px 0 0", textAlign: "left", transition: "color 0.15s", alignSelf: "flex-start" }}
+            onMouseEnter={(e) => (e.currentTarget.style.color = "#111")}
+            onMouseLeave={(e) => (e.currentTarget.style.color = "#999")}>
+            ← 돌아가기
+          </button>
+          <nav style={{ flex: 1, paddingTop: 60 }}>
+            {isMcpToc ? mcpToc.map((group) => {
+              const isGrpActive = activeGroup === group.label;
+              return (
+              <div key={group.label} style={{ marginBottom: 18 }}>
+                <p style={{ fontSize: 13, fontWeight: 600, letterSpacing: "0.02em",
+                  textTransform: "uppercase", color: isGrpActive ? "#D4632D" : "#999", marginBottom: 4, padding: "4px 0",
+                  transition: "color 0.15s" }}>
+                  {group.label}
+                </p>
+                {group.items.map((item) => {
+                  const isActive = activeItem === item.id;
+                  return (
+                  <a key={item.id} href={`#${item.id}`}
+                    onClick={(e) => { e.preventDefault(); document.getElementById(item.id)?.scrollIntoView({ behavior: "smooth", block: "start" }); }}
+                    style={{ display: "block", color: isActive ? "#D4632D" : "#4F4F4F", textDecoration: "none", fontSize: 11,
+                      fontWeight: isActive ? 600 : 400,
+                      padding: "3px 0 3px 10px", borderLeft: `2px solid ${isActive ? "#D4632D" : "transparent"}`,
+                      transition: "color 0.15s, border-color 0.15s", cursor: "pointer", lineHeight: 1.5 }}
+                    onMouseEnter={(e) => { if (!isActive) { e.currentTarget.style.color = "#111"; e.currentTarget.style.borderLeftColor = "#D4632D"; }}}
+                    onMouseLeave={(e) => { if (!isActive) { e.currentTarget.style.color = "#4F4F4F"; e.currentTarget.style.borderLeftColor = "transparent"; }}}>
+                    {item.name}
+                  </a>
+                  );
+                })}
+              </div>
+              );
+            }) : tocItems.map((item) => {
+              const isActive = activeItem === item.id;
+              return (
+                <a key={item.id} href={`#${item.id}`}
+                  onClick={(e) => { e.preventDefault(); document.getElementById(item.id)?.scrollIntoView({ behavior: "smooth", block: "start" }); }}
+                  style={{ display: "block", color: isActive ? "#D4632D" : "#4F4F4F", textDecoration: "none", fontSize: 13,
+                    fontWeight: isActive ? 600 : 400,
+                    padding: "6px 0", transition: "color 0.15s", cursor: "pointer", lineHeight: 1.5 }}
+                  onMouseEnter={(e) => { if (!isActive) e.currentTarget.style.color = "#111"; }}
+                  onMouseLeave={(e) => { if (!isActive) e.currentTarget.style.color = "#4F4F4F"; }}>
+                  {item.label}
+                </a>
+              );
+            })}
+          </nav>
+        </aside>
+      )}
+
       {/* ── 본문 ── */}
+      <div style={tocItems.length > 0 ? { marginLeft: 200 } : undefined}>
       <div className="wd-body">
         {filteredSections.length > 0 ? (
           filteredSections.map((section, idx) => {
             const hasEyebrow = section.blocks[0]?.type === 'section-title' && section.blocks[0]?.eyebrow;
             return (
-              <div key={section.name} style={{
+              <div key={section.name} id={`s-${idx + 2}`} style={{
                 padding: "64px 0",
                 borderBottom: idx < filteredSections.length - 1 ? "1px solid #e4e0da" : "none",
                 opacity: isFootnote(section.name) ? 0.55 : 1,
@@ -306,6 +437,7 @@ export function WorkDetail({ activeWork, title, heroSubtitle: _heroSubtitle, par
             케이스스터디 내용을 불러오는 중입니다.
           </div>
         )}
+      </div>
       </div>
 
     </div>
