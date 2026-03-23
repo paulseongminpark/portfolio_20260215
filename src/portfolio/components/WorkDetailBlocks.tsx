@@ -6,6 +6,8 @@ import { VisualCuesGallery } from './VisualCuesGallery';
 import { ActivityGallery } from './ActivityGallery';
 import { EditableBlock } from './EditableBlock';
 import { GridScrubSlider } from './GridScrubSlider';
+import { Diagram1 } from './diagrams/Diagram1';
+import { Diagram5 } from './diagrams/Diagram5';
 
 export function renderBold(text: string) {
   const parts = text.split(/(\*\*.+?\*\*|\{\{o:.+?\}\}|\{\{b:.+?\}\})/g).filter(Boolean);
@@ -370,8 +372,16 @@ function renderSingleBlock(block: Block, idx: number, activeWork: string, parent
           {block.desc && <E id={`${bid()}-de`} type="lede"><p className="wd-lede">{renderBold(block.desc)}</p></E>}
         </div>
       );
-    case 'paragraph':
+    case 'paragraph': {
+      const diagramMatch = block.text.match(/\[다이어그램\s*(\d+)/);
+      if (diagramMatch) {
+        const num = parseInt(diagramMatch[1], 10);
+        if (num === 1) return <Diagram1 key={idx} />;
+        if (num === 5) return <Diagram5 key={idx} />;
+        // 나머지 다이어그램은 추후 추가
+      }
       return <p key={idx} className="wd-paragraph">{renderBold(block.text)}</p>;
+    }
     case 'heading':
       return <h3 key={idx} className="wd-heading">{block.text.replace(/^\d+[-\d]*\)\s*/, '')}</h3>;
     case 'cards':
