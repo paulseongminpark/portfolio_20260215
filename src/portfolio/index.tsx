@@ -45,12 +45,14 @@ const workItems = [
 
 function getWorkTitle(key: WorkKey) {
   if (key === "mcp-memory") return "mcp-memory";
+  if (key === "context-engineering") return "Context Engineering";
+  if (key === "tech-review") return "Tech Review";
   if (key === "empty-house") return "Empty House CPS";
   if (key === "skin-diary") return "Skin Diary AI";
   return "PMCC";
 }
 
-const WORK_KEY_SET = new Set<WorkKey>(["mcp-memory", "empty-house", "skin-diary", "pmcc"]);
+const WORK_KEY_SET = new Set<WorkKey>(["mcp-memory", "context-engineering", "empty-house", "skin-diary", "pmcc", "tech-review"]);
 
 function parseWorkFromSearch(search: string): WorkKey | null {
   const params = new URLSearchParams(search);
@@ -330,10 +332,12 @@ export default function Page12() {
   }, []);
 
   const WORK_KEY_MAP: Record<string, WorkKey> = {
-    "work-mcp-memory":  "mcp-memory",
-    "work-empty-house": "empty-house",
-    "work-skin-diary":  "skin-diary",
-    "work-pmcc":        "pmcc",
+    "work-mcp-memory":   "mcp-memory",
+    "work-ce":           "context-engineering",
+    "work-tech-review":  "tech-review",
+    "work-empty-house":  "empty-house",
+    "work-skin-diary":   "skin-diary",
+    "work-pmcc":         "pmcc",
   };
 
   const syncWorkHistory = useCallback(
@@ -546,8 +550,8 @@ export default function Page12() {
             <div className="p12-work-grid" style={{ marginBottom: 48 }}>
               {[
                 { id: "work-mcp-memory", label: "mcp-memory", tag: "AI · Memory", description: "AI가 맥락을 추론하도록 지식의 구조를 설계한 실험. 25개 타입, 4,685개 노드의 온톨로지 기반 외부 기억 시스템.", clickable: true },
-                { id: "work-ce", label: "Context Engineering", tag: "AI \u00b7 System", description: "AI\uc758 \ucd94\ub860 \ud488\uc9c8\uc744 \uadf9\ub300\ud654\ud558\uae30 \uc704\ud55c \ub9e5\ub77d \ud050\ub808\uc774\uc158 \uccb4\uacc4. \ubb34\uc5c7\uc744 \ub123\uace0, \uc5b4\ub5a4 \uc21c\uc11c\ub85c \ubcf4\uc5ec\uc8fc\uace0, \uc5b8\uc81c \ub35c\uc5b4\ub0bc\uc9c0\ub97c 4\uac1c \ub808\uc774\uc5b4\ub85c \uc124\uacc4\ud55c\ub2e4. \uc2dc\uc2a4\ud15c\uc774 \uc544\ub2c8\ub77c \uc6d0\uce59\uc774\ub2e4.", clickable: false },
-                { id: "work-tech-review", label: "Tech Review", tag: "AI \u00b7 Automation", description: "\uae30\uc220 \uae30\uc0ac\u00b7\ud2b8\uc717\u00b7\uc601\uc0c1\uc5d0\uc11c \uc778\uc0ac\uc774\ud2b8\ub97c \uc790\ub3d9 \uc218\uc9d1\ud558\uace0 \uc7ac\uc791\uc131\ud574 \ub9e4\uc77c \ubc1c\ud589\ud558\ub294 \ud30c\uc774\ud504\ub77c\uc778. 3\uac1c \uc18c\uc2a4, 100\uac74 \uc774\uc0c1 \ubc1c\ud589.", clickable: false },
+                { id: "work-ce", label: "Context Engineering", tag: "AI \u00b7 System", description: "AI\uc758 \ucd94\ub860 \ud488\uc9c8\uc744 \uadf9\ub300\ud654\ud558\uae30 \uc704\ud55c \ub9e5\ub77d \ud050\ub808\uc774\uc158 \uccb4\uacc4. \ubb34\uc5c7\uc744 \ub123\uace0, \uc5b4\ub5a4 \uc21c\uc11c\ub85c \ubcf4\uc5ec\uc8fc\uace0, \uc5b8\uc81c \ub35c\uc5b4\ub0bc\uc9c0\ub97c 4\uac1c \ub808\uc774\uc5b4\ub85c \uc124\uacc4\ud55c\ub2e4. \uc2dc\uc2a4\ud15c\uc774 \uc544\ub2c8\ub77c \uc6d0\uce59\uc774\ub2e4.", clickable: true },
+                { id: "work-tech-review", label: "Tech Review", tag: "AI \u00b7 Automation", description: "\uae30\uc220 \uae30\uc0ac\u00b7\ud2b8\uc717\u00b7\uc601\uc0c1\uc5d0\uc11c \uc778\uc0ac\uc774\ud2b8\ub97c \uc790\ub3d9 \uc218\uc9d1\ud558\uace0 \uc7ac\uc791\uc131\ud574 \ub9e4\uc77c \ubc1c\ud589\ud558\ub294 \ud30c\uc774\ud504\ub77c\uc778. 3\uac1c \uc18c\uc2a4, 100\uac74 \uc774\uc0c1 \ubc1c\ud589.", clickable: true },
               ].map((item) => {
                 const isCe = item.id === "work-ce";
                 const isMcp = item.id === "work-mcp-memory";

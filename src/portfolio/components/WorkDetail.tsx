@@ -7,10 +7,12 @@ import { PageEditorPanel } from "./PageEditorPanel";
 import "./PageEditor.css";
 
 const GRADIENTS: Record<string, string> = {
-  "mcp-memory":  "radial-gradient(ellipse at 25% 30%, rgba(59,130,246,0.7) 0%, transparent 50%), radial-gradient(ellipse at 75% 70%, rgba(96,165,250,0.6) 0%, transparent 45%), radial-gradient(ellipse at 50% 45%, rgba(37,99,195,0.5) 0%, transparent 55%), linear-gradient(150deg, #1e3a6f 0%, #2d5a9a 40%, #4a8ad4 100%)",
-  "empty-house": "linear-gradient(135deg, #dbeafe 0%, #ede9fe 50%, #fce7f3 100%)",
-  "skin-diary":  "linear-gradient(135deg, #d1fae5 0%, #a7f3d0 50%, #6ee7b7 100%)",
-  "pmcc":        "linear-gradient(135deg, #fed7aa 0%, #fbbf24 50%, #f59e0b 100%)",
+  "mcp-memory":   "radial-gradient(ellipse at 25% 30%, rgba(59,130,246,0.7) 0%, transparent 50%), radial-gradient(ellipse at 75% 70%, rgba(96,165,250,0.6) 0%, transparent 45%), radial-gradient(ellipse at 50% 45%, rgba(37,99,195,0.5) 0%, transparent 55%), linear-gradient(150deg, #1e3a6f 0%, #2d5a9a 40%, #4a8ad4 100%)",
+  "context-engineering": "radial-gradient(ellipse at 25% 30%, rgba(232,140,60,0.7) 0%, transparent 50%), radial-gradient(ellipse at 75% 70%, rgba(212,99,45,0.6) 0%, transparent 45%), radial-gradient(ellipse at 50% 45%, rgba(196,120,60,0.5) 0%, transparent 55%), linear-gradient(150deg, #8b3a0f 0%, #c4703a 40%, #e8a050 100%)",
+  "tech-review":  "radial-gradient(ellipse at 25% 30%, rgba(107,92,231,0.7) 0%, transparent 50%), radial-gradient(ellipse at 75% 70%, rgba(232,164,184,0.6) 0%, transparent 45%), radial-gradient(ellipse at 50% 45%, rgba(139,122,207,0.5) 0%, transparent 55%), linear-gradient(150deg, #3b2e6e 0%, #7a65a5 40%, #d4a4ba 100%)",
+  "empty-house":  "linear-gradient(135deg, #dbeafe 0%, #ede9fe 50%, #fce7f3 100%)",
+  "skin-diary":   "linear-gradient(135deg, #d1fae5 0%, #a7f3d0 50%, #6ee7b7 100%)",
+  "pmcc":         "linear-gradient(135deg, #fed7aa 0%, #fbbf24 50%, #f59e0b 100%)",
 };
 
 const WORK_META: Record<string, {
@@ -30,6 +32,17 @@ const WORK_META: Record<string, {
       { value: "4,368", label: "엣지" },
     ],
     overview: "AI가 맥락을 추론하도록 지식의 구조를 설계한 실험.\n25개 타입과 4,368개 엣지로 이루어진 온톨로지 기반 외부 기억 시스템.",
+  },
+  "context-engineering": {
+    period: "2026–현재",
+    role: "컨텍스트 설계 · 큐레이션 체계",
+    tools: ["Claude Code", "Serena MCP", "Codex CLI", "Gemini CLI", "Python Hooks"],
+    stats: [
+      { value: "4", label: "레이어" },
+      { value: "3", label: "게이트" },
+      { value: "92", label: "파일" },
+    ],
+    overview: "AI의 추론 품질을 극대화하기 위한 맥락 큐레이션 체계.\n무엇을 넣고, 어떤 순서로 보여주고, 언제 덜어낼지를 4개 레이어로 설계한다.",
   },
   "empty-house": {
     period: "2025년 6월",
@@ -63,6 +76,17 @@ const WORK_META: Record<string, {
       { value: "직접", label: "규칙 설계" },
     ],
     overview: "달리기를 위한 런클럽이 아니라 서로의 삶의 한 부분을 공유하는 모임을 만들고자 커피클럽을 시작했습니다.\n달리고 이야기를 나누며 관계를 쌓아가는 커뮤니티를 3년 이상 지속적으로 설계·운영했습니다.",
+  },
+  "tech-review": {
+    period: "2026–현재",
+    role: "파이프라인 설계 · 자동화",
+    tools: ["Python", "Playwright", "Claude", "Perplexity", "Jekyll", "Task Scheduler"],
+    stats: [
+      { value: "100+", label: "발행" },
+      { value: "3", label: "소스" },
+      { value: "7", label: "렌즈" },
+    ],
+    overview: "기술 기사·트윗·영상에서 인사이트를 자동 수집하고 재작성해 매일 발행하는 파이프라인.\n3개 소스, 7개 렌즈, 매일 새벽 5시에 시작된다.",
   },
 };
 
@@ -238,15 +262,52 @@ export function WorkDetail({ activeWork, title, heroSubtitle: _heroSubtitle, par
       { name: "가리키는 곳", id: "s-15" },
     ]},
   ];
-  const isMcpToc = activeWork === 'mcp-memory';
+  const ceToc = [
+    { label: "시작", items: [
+      { name: "Claude의 세계", id: "s-3" },
+    ]},
+    { label: "설계", items: [
+      { name: "1막 · 만들수록 줄어들었다", id: "s-4" },
+      { name: "2막 · 정보에는 수명이 있다", id: "s-5" },
+      { name: "3막 · 읽지 않는 것도 설계다", id: "s-6" },
+    ]},
+    { label: "실체", items: [
+      { name: "만들고 버린 것", id: "s-7" },
+    ]},
+    { label: "강화", items: [
+      { name: "절차에서 관점으로", id: "s-8" },
+      { name: "가리키는 곳", id: "s-9" },
+    ]},
+  ];
+  const trToc = [
+    { label: "시작", items: [
+      { name: "매일 아침의 질문", id: "s-2" },
+      { name: "수집과 해석 사이", id: "s-3" },
+    ]},
+    { label: "설계", items: [
+      { name: "3개 소스", id: "s-4" },
+      { name: "WIM 7렌즈", id: "s-5" },
+      { name: "새벽 5시", id: "s-6" },
+    ]},
+    { label: "실체", items: [
+      { name: "하루의 흐름", id: "s-7" },
+      { name: "100일의 기록", id: "s-8" },
+    ]},
+    { label: "강화", items: [
+      { name: "뭐가 달라졌는가", id: "s-9" },
+    ]},
+  ];
+  const isGroupedToc = activeWork === 'mcp-memory' || activeWork === 'context-engineering' || activeWork === 'tech-review';
+  const isMcpToc = isGroupedToc;
+  const groupedTocData = activeWork === 'context-engineering' ? ceToc : activeWork === 'tech-review' ? trToc : mcpToc;
 
-  const [activeGroup, setActiveGroup] = useState(isMcpToc ? mcpToc[0]?.label ?? "" : "");
-  const [activeItem, setActiveItem] = useState(isMcpToc ? mcpToc[0]?.items[0]?.id ?? "" : tocItems[0]?.id ?? "");
+  const [activeGroup, setActiveGroup] = useState(isGroupedToc ? groupedTocData[0]?.label ?? "" : "");
+  const [activeItem, setActiveItem] = useState(isGroupedToc ? groupedTocData[0]?.items[0]?.id ?? "" : tocItems[0]?.id ?? "");
 
   useEffect(() => {
-    if (isMcpToc) {
+    if (isGroupedToc) {
       const allEntries: Array<{ id: string; groupLabel: string }> = [];
-      mcpToc.forEach((g) => g.items.forEach((item) => allEntries.push({ id: item.id, groupLabel: g.label })));
+      groupedTocData.forEach((g) => g.items.forEach((item) => allEntries.push({ id: item.id, groupLabel: g.label })));
       const handleScroll = () => {
         const offset = 90;
         let current = allEntries[0];
@@ -365,7 +426,7 @@ export function WorkDetail({ activeWork, title, heroSubtitle: _heroSubtitle, par
             ← 돌아가기
           </button>
           <nav style={{ flex: 1, paddingTop: 60 }}>
-            {isMcpToc ? mcpToc.map((group) => {
+            {isGroupedToc ? groupedTocData.map((group) => {
               const isGrpActive = activeGroup === group.label;
               return (
               <div key={group.label} style={{ marginBottom: 18 }}>
@@ -414,7 +475,7 @@ export function WorkDetail({ activeWork, title, heroSubtitle: _heroSubtitle, par
       <div className="wd-body">
         {filteredSections.length > 0 ? (
           filteredSections.map((section, idx) => {
-            const hasEyebrow = section.blocks[0]?.type === 'section-title' && section.blocks[0]?.eyebrow;
+            const hasEyebrow = section.blocks[0]?.type === 'section-title';
             return (
               <div key={section.name} id={`s-${idx + 2}`} style={{
                 padding: "64px 0",

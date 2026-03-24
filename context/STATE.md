@@ -1,6 +1,6 @@
 # portfolio STATE
-_Updated: 2026-03-23_
-_Last Session: 2026-03-23 — 다이어그램 1,5 초안 + 자동교체 구조 + 디자인 토큰 확정. 다음: 나머지 다이어그램 10개, 상세 페이지 정렬 시각검증, 카드-배너 동기화._
+_Updated: 2026-03-24_
+_Last Session: 2026-03-24 — Context Engineering 상세 페이지 신규 추가 (8섹션, 다이어그램 7개 스펙). 다음: CE 다이어그램 구현, tech-review 상세 페이지 계속._
 
 ## 목적
 개인 포트폴리오 웹사이트 (React + Vite, vanilla CSS, hash routing)

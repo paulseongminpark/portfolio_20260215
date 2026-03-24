@@ -1,5 +1,13 @@
 # Portfolio CHANGELOG
 
+## 2026-03-24
+
+### Context Engineering 상세 페이지 추가
+- CONTEXT_ENGINEERING_DETAIL_KO.md: 시작(2) + 설계(3) + 실체(1) + 강화(2) = 8섹션
+- WorkKey, 그래디언트(오렌지), 메타데이터, ceToc, 카드 clickable
+- 파이프라인 23_context-engineering: 글감수집, handoff, drafts v1-v2, diagram-specs, final, lesson
+- CSS: 같은 섹션 내 연속 section-header 간격 통일 (.wd-section-header ~ .wd-section-header)
+
 ## 2026-03-23
 
 ### Paul 리라이트 + 다이어그램 12개 스펙

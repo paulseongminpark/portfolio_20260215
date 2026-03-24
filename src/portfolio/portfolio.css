@@ -729,6 +729,7 @@
 
 /* Lv.0 — 섹션 컨테이너 */
 .wd-section-header { margin-bottom: 36px; }
+.wd-section-header ~ .wd-section-header { margin-top: 36px; }
 
 /* 서브섹션 구분 가로선 */
 .wd-section-divider { border: none; border-top: 1px solid #e4e0da; margin: 56px 0; }
