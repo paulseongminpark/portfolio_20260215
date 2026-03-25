@@ -91,7 +91,7 @@ function P12TocGroupItem({ group, expanded, activeGroup, activeItem, onToggle, o
         onClick={(e) => { e.preventDefault(); scrollToId(group.id); if (group.items.length > 0) onToggle(); }}
         onMouseEnter={(e) => { if (!isActive) { const el = e.currentTarget as HTMLElement; el.style.color = ANTHROPIC; el.style.fontWeight = "700"; } }}
         onMouseLeave={(e) => { if (!isActive) { const el = e.currentTarget as HTMLElement; el.style.color = "#4f4f4f"; el.style.fontWeight = "400"; } }}
-        style={{ display: "block", fontFamily: "'Inter', sans-serif", fontSize: 13,
+        style={{ display: "block", fontFamily: "'Inter', 'Noto Sans KR', sans-serif", fontSize: 13,
           fontWeight: isActive ? 600 : 400, color: isActive ? ANTHROPIC : "#4f4f4f",
           textDecoration: "none", padding: "6px 0", letterSpacing: "0.02em", transition: "color 0.15s", cursor: "pointer" }}>
         {group.label}
@@ -105,7 +105,7 @@ function P12TocGroupItem({ group, expanded, activeGroup, activeItem, onToggle, o
                 onClick={(e) => { e.preventDefault(); onItemClick ? onItemClick(item.id) : scrollToId(item.id); }}
                 onMouseEnter={(e) => { if (!active) { const el = e.currentTarget as HTMLElement; el.style.color = ANTHROPIC; el.style.fontWeight = "600"; } }}
                 onMouseLeave={(e) => { if (!active) { const el = e.currentTarget as HTMLElement; el.style.color = "#6f6f6f"; el.style.fontWeight = "400"; } }}
-                style={{ display: "block", fontFamily: "'Inter', sans-serif", fontSize: 11,
+                style={{ display: "block", fontFamily: "'Inter', 'Noto Sans KR', sans-serif", fontSize: 11,
                   fontWeight: active ? 600 : 400, color: active ? ANTHROPIC : "#6f6f6f",
                   textDecoration: "none", padding: "4px 0 4px 12px", transition: "color 0.15s",
                   whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis",
@@ -298,11 +298,11 @@ function ProseBlock({ paragraphs, firstBold = true }: { paragraphs: string[]; fi
 }
 
 // ── Now subsection helper ───────────────────────────────────────
-function NowSubsection({ id, label, text }: { id: string; label: string; text: string }) {
+function NowSubsection({ id, label, text, last }: { id: string; label: string; text: string; last?: boolean }) {
   return (
-    <div id={id} style={{ marginBottom: 48 }}>
+    <div id={id} style={{ marginBottom: last ? 0 : 48 }}>
       <p style={{
-        fontFamily: "'Inter',sans-serif", fontSize: 15, fontWeight: 600,
+        fontFamily: "'Inter','Noto Sans KR',sans-serif", fontSize: 15, fontWeight: 600,
         color: "#333",
         marginBottom: 16,
       }}>
@@ -582,6 +582,7 @@ export default function Page12() {
               <NowSubsection
                 id="now-loop"
                 label="Loop"
+                last
                 text={"\uc2dc\uc2a4\ud15c\uc740 \uc790\uae30 \uc0c1\ud0dc\ub97c \uc22b\uc790\ub85c \uc548\ub2e4. 14\uac1c \ud56d\ubaa9\uc744 \uac80\uc0ac\ud55c\ub2e4 \u2014 \ub04a\uae34 \uc5f0\uacb0, \uc624\ub798\ub41c \ubb38\uc11c, \ubbf8\ubc18\uc601 \uacb0\uc815, \uace0\uc544 \ub178\ub4dc, \ud14c\uc2a4\ud2b8 \ud1b5\uacfc\uc728. \uacb0\uacfc\ub294 \uc810\uc218\ub85c \ub098\uc628\ub2e4. \ubb38\uc81c\uac00 \ubc1c\uacac\ub418\uba74 \ub2e4\uc74c \uc138\uc158 \uc2dc\uc791 \uc2dc \ubcf4\uc778\ub2e4. \uace0\uce58\uba74 \uc810\uc218\uac00 \uc624\ub978\ub2e4. \uc78a\uc5b4\ub3c4 \ub2e4\uc74c \uce21\uc815\uc5d0\uc11c \ub2e4\uc2dc \uc7a1\ud78c\ub2e4."}
               />
             </div>
