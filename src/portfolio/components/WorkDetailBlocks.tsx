@@ -37,6 +37,7 @@ function resolveAssetSrc(raw: string, activeWork: string) {
   const base = s.split(/[/\\]/).pop() ?? s;
   const folder =
     activeWork === 'mcp-memory' ? 'mcp-memory'
+    : activeWork === 'tech-review' ? 'tech-review'
     : activeWork === 'empty-house' ? 'empty-house-cps'
     : activeWork === 'skin-diary' ? 'skin-diary-ai'
     : 'pmcc';
@@ -55,14 +56,27 @@ type Processed =
   | { kind: 'asistobe'; src: string; caption?: string }
   | { kind: 'image-grid'; images: ImageRef[] };
 
-const isOntology = (s: string) =>
-  /ontology_/i.test(s) ||
-  /pmcc_hyrox_web/i.test(s) ||
-  /pmcc_jujitsu_web/i.test(s) ||
-  /pmcc_yoga_web/i.test(s) ||
-  /pmcc_crossfit_web/i.test(s) ||
-  /pmcc volunteer/i.test(s) ||
-  /pmcc_insta/i.test(s);
+const PMCC_GALLERY_FILES = [
+  'pmcc_hyrox_web.mp4',
+  'pmcc_jujitsu_web.mp4',
+  'pmcc_yoga_web.mp4',
+  'pmcc_crossfit_web.mp4',
+  'pmcc volunteer.webp',
+  'pmcc_insta1.webp',
+  'pmcc_insta2.webp',
+  'pmcc_insta3.webp',
+  'pmcc_insta4.webp',
+  'pmcc_insta5.webp',
+  'pmcc_add1.webp',
+  'pmcc_add2.webp'
+];
+
+const isOntology = (s: string) => {
+  if (/ontology_/i.test(s)) return true;
+  const base = (s ?? '').split(/[/\\]/).pop() || '';
+  return PMCC_GALLERY_FILES.includes(base);
+};
+
 const isAsIsToBe = (s: string) => /as_is_to_be/i.test(s);
 
 function normalizeLabel(s: string) {
@@ -81,6 +95,8 @@ function preprocessBlocks(blocks: Block[]): Processed[] {
   let i = 0;
   while (i < blocks.length) {
     const b = blocks[i];
+
+    // 1. Group 2+ consecutive "isOntology" images into a carousel
     if (b.type === 'image' && isOntology(b.src)) {
       const imgs: ImageRef[] = [];
       while (
@@ -89,15 +105,23 @@ function preprocessBlocks(blocks: Block[]): Processed[] {
         isOntology((blocks[i] as Block & { type: 'image' }).src)
       ) {
         const img = blocks[i] as Block & { type: 'image' };
-        imgs.push({ src: img.src, caption: img.caption });
+        if (img.src && img.src.trim() !== '') {
+          imgs.push({ src: img.src, caption: img.caption });
+        }
         i++;
       }
-      out.push({ kind: 'carousel', images: imgs });
+      if (imgs.length > 0) {
+        out.push({ kind: 'carousel', images: imgs });
+      }
       continue;
     }
+
+    // 2. As-Is/To-Be check
     if (b.type === 'image' && isAsIsToBe(b.src)) {
       const img = b as Block & { type: 'image' };
-      out.push({ kind: 'asistobe', src: img.src, caption: img.caption });
+      if (img.src && img.src.trim() !== '') {
+        out.push({ kind: 'asistobe', src: img.src, caption: img.caption });
+      }
       i++;
       continue;
     }

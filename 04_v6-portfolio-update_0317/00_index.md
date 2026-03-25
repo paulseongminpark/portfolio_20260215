@@ -1,6 +1,6 @@
 <!-- pipeline: v6-portfolio-update | type: custom | mode: standard | status: ACTIVE -->
-<!-- phase: ideation | updated: 2026-03-20T08:40 -->
-<!-- current_task: mcp-memory 상세 페이지 — 4페이지 구조 확정(시작·설계·실체·강화), 시작 ✅, 설계 스코프 확정(삼자연결), 하위 미정 | next: 설계 하위 섹션 구조 → 실체/강화 → 다이어그램 → 코드 구현 -->
+<!-- phase: ideation | updated: 2026-03-22T23:30 -->
+<!-- current_task: mcp-memory 상세 페이지 — 4페이지 구조 전체 확정(시작·설계·실체·강화 + 관통선). 시작 ✅ 텍스트, 설계 ✅ 4막+하위 구조, 실체 ✅ Scene 0~5, 강화 ✅ 코다 3항목 | next: 글 작성 (설계 텍스트부터) → 다이어그램 7개 → 코드 구현 -->
 
 # v6.0 Portfolio Update
 > 시작: 2026-03-17 | 타입: custom | 모드: 정식

@@ -1,6 +1,6 @@
 # portfolio STATE
-_Updated: 2026-03-24_
-_Last Session: 2026-03-24 — Context Engineering 상세 페이지 신규 추가 (8섹션, 다이어그램 7개 스펙). 다음: CE 다이어그램 구현, tech-review 상세 페이지 계속._
+_Updated: 2026-03-25_
+_Last Session: 2026-03-25 — MCP-Memory 상세 텍스트 대폭 확장 (TOC 추가, 노드 4962, 저장 구조 상세), WorkDetailBlocks 갤러리 로직 개선, PMCC 이미지 추가. 다음: CE 다이어그램 7개, Tech Review 상세 페이지._
 
 ## 목적
 개인 포트폴리오 웹사이트 (React + Vite, vanilla CSS, hash routing)
@@ -93,6 +93,9 @@ _Last Session: 2026-03-24 — Context Engineering 상세 페이지 신규 추가
   - "이색적인 접합" 4번 카드 제거 — show vs tell 원칙
 
 ## 최근 결정
+- 2026-03-25: MCP-Memory 상세 TOC 카드 4장 추가, 노드 수 4962 갱신, 저장 구조 상세 설명 추가
+- 2026-03-25: WorkDetailBlocks 갤러리 로직 — PMCC_GALLERY_FILES 배열 전환 + tech-review 폴더 매핑 + 빈 src 방어
+- 2026-03-25: PMCC 갤러리 이미지 2장 추가 (pmcc_add1.webp, pmcc_add2.webp)
 - 2026-03-20: mcp-memory Work 카드만 clickable (CE/Tech Review는 상세 미작성 → clickable: false)
 - 2026-03-20: Journey 텍스트 리라이트 — 추상적 묘사 → 구체적 행동 서사 전환
 - 2026-03-09: Writing > Tech Review 전면 재설계 — B(스토리텔링) 구조 채택

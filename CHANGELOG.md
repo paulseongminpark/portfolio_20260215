@@ -2,6 +2,13 @@
 
 ## 2026-03-25
 
+### MCP-Memory 상세 텍스트 확장 + 갤러리 로직 개선
+- MCP_MEMORY_DETAIL_KO.md: TOC 섹션(카드 4장) 신규 추가, 노드 수 4685→4962 갱신
+- SectionTitle desc 제거→본문 통합, 저장 구조 상세 설명(36필드, 의미 라우터) 추가
+- WorkDetailBlocks.tsx: PMCC_GALLERY_FILES 명시 배열로 전환, tech-review 폴더 매핑, 빈 src 방어
+- PMCC_DETAIL_KO.md: pmcc_add1.webp, pmcc_add2.webp 갤러리 이미지 추가
+- 파이프라인 문서 정리: paul-rewrite, CE final MD에 통합 후 삭제
+
 ### 메인 카드 섹션 호버 슬라이드 디자인 전면 개편
 - 6개 카드 3열 그리드 통합 (2열→3열, aspect-ratio 20/17)
 - 호버 슬라이드 디자인: 기본(제목 가운데+태그), 호버(패널 슬라이드업+설명)
