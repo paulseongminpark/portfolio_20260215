@@ -1,5 +1,15 @@
 # Portfolio CHANGELOG
 
+## 2026-03-25
+
+### 메인 카드 섹션 호버 슬라이드 디자인 전면 개편
+- 6개 카드 3열 그리드 통합 (2열→3열, aspect-ratio 20/17)
+- 호버 슬라이드 디자인: 기본(제목 가운데+태그), 호버(패널 슬라이드업+설명)
+- CE/MCP/TR 카드 이미지 교체 (오버레이 제거, 이미지 직접 노출)
+- MCP-Memory 대소문자 통일 (TOC·카드·상세 페이지)
+- CE/MCP 상세 hero 오버레이 정리
+- Selected Work h2 제거
+
 ## 2026-03-24
 
 ### Context Engineering 상세 페이지 추가

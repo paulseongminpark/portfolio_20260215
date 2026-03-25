@@ -5,7 +5,7 @@ import { type WorkKey } from "./content/work";
 import { useWorkDetail } from "./hooks/useWorkDetail";
 import { FadeIn } from "./components/FadeIn";
 import { SectionLabel } from "./components/SectionLabel";
-import { FeaturedCard, GridCard } from "./components/WorkCard";
+import { GridCard } from "./components/WorkCard";
 import { WorkDetail } from "./components/WorkDetail";
 
 // ── TOC ──────────────────────────────────────────────────────────
@@ -20,7 +20,7 @@ const P12_TOC: Array<{ id: string; label: string; mini: string; items: Array<{ i
   { id: "why",     label: "Why I Build AI",  mini: "WH", items: [] },
   { id: "journey", label: "Journey",         mini: "JN", items: [] },
   { id: "work",    label: "Work",            mini: "WK", items: [
-    { id: "work-mcp-memory",  label: "mcp-memory" },
+    { id: "work-mcp-memory",  label: "MCP-Memory" },
     { id: "work-ce",          label: "Context Engineering" },
     { id: "work-tech-review", label: "Tech Review" },
     { id: "work-empty-house", label: "Empty House" },
@@ -37,14 +37,18 @@ const P12_TOC: Array<{ id: string; label: string; mini: string; items: Array<{ i
 ];
 
 // ── 데이터 ──────────────────────────────────────────────────────
+const _B = import.meta.env.BASE_URL;
 const workItems = [
-  { id: "work-empty-house", workKey: "empty-house" as WorkKey, label: "Empty House CPS", eyebrow: "June 2025", tag: "Data \u00b7 Policy", description: "\ube48\uc9d1 \ubb38\uc81c\ub97c \ub3c4\uc2dc \uc2dc\uc2a4\ud15c \ub2e8\uc704\ub85c \ubd84\uc11d. \uc778\uad6c\u00b7\uc0c1\uad8c\u00b7\uad50\ud1b5\u00b7\ub178\ud6c4 \ub370\uc774\ud130\ub97c \uc628\ud1a8\ub85c\uc9c0\ub85c \uc5f0\uacb0\ud574 4\uac1c \ud1b5\ud569\uc9c0\ud45c\ub85c \uac1c\uc785 \uc6b0\uc120\uc21c\uc704\ub97c \ud310\ub2e8\ud55c\ub2e4." },
-  { id: "work-skin-diary", workKey: "skin-diary" as WorkKey, label: "Skin Diary AI", eyebrow: "August 2025", tag: "Data \u00b7 AI \u00b7 Mobile", description: "\ud53c\ubd80 \uc774\ubbf8\uc9c0\ub97c \ubd80\uc704\ubcc4\ub85c \ubd84\uc11d\ud558\uace0, \ub0a0\uc528\u00b7\ud658\uacbd \ub9e5\ub77d\uc744 \uacb0\ud569\ud574 \ud589\ub3d9\uc744 \uc81c\uc548\ud558\ub294 \uc571. \uc810\uc218\uac00 \uc544\ub2c8\ub77c '\uc9c0\uae08 \ubb34\uc5c7\uc744 \ud574\uc57c \ud558\ub294\uc9c0'\ub97c \uc54c\ub824\uc900\ub2e4." },
-  { id: "work-pmcc", workKey: "pmcc" as WorkKey, label: "PMCC", eyebrow: "2023\u20132026", tag: "Community \u00b7 Design", description: "\ucc98\uc74c \ub9cc\ub09c \uc0ac\ub78c\ub4e4\uc774 \uc9c4\uc815\ud55c \ub300\ud654\ub97c \ub098\ub20c \uc218 \uc788\ub3c4\ub85d \ud658\uacbd\uc744 \uc124\uacc4\ud55c \ub7ec\ub2dd \ucee4\ubba4\ub2c8\ud2f0. \uacbd\uacc4\u00b7\ud750\ub984\u00b7\uc758\ub840\ub97c \uc9c1\uc811 \ub9cc\ub4e4\uace0 3\ub144\uac04 168\uba85\uacfc \uc6b4\uc601." },
+  { id: "work-mcp-memory", workKey: "mcp-memory" as WorkKey, label: "MCP-Memory", eyebrow: "", tag: "AI · Memory", description: "AI가 맥락을 추론하도록 지식의 구조를 설계한 실험. 25개 타입, 4,685개 노드의 온톨로지 기반 외부 기억 시스템.", bgImage: `${_B}work/mcp-memory/card.png` },
+  { id: "work-ce", workKey: "context-engineering" as WorkKey, label: "Context Engineering", eyebrow: "", tag: "AI · System", description: "AI의 추론 품질을 극대화하기 위한 맥락 큐레이션 체계. 무엇을 넣고, 어떤 순서로 보여주고, 언제 덜어낼지를 4개 레이어로 설계한다. 시스템이 아니라 원칙이다.", bgImage: `${_B}work/context-engineering/card.png` },
+  { id: "work-tech-review", workKey: "tech-review" as WorkKey, label: "Tech Review", eyebrow: "", tag: "AI · Automation", description: "매일 새벽 5시, 시스템이 깨어난다. 기사를 읽고, 영상을 보고, 트윗을 수집하고, 왜 중요한지를 쓰고, 발행하고, 다시 잠든다. 편집장이 없는 뉴스룸. 기자 대신 파이프라인.", bgImage: `${_B}work/tech-review/card.png`, bgPosition: "top center" },
+  { id: "work-empty-house", workKey: "empty-house" as WorkKey, label: "Empty House CPS", eyebrow: "June 2025", tag: "Data · Policy", description: "빈집 문제를 도시 시스템 단위로 분석. 인구·상권·교통·노후 데이터를 온톨로지로 연결해 4개 통합지표로 개입 우선순위를 판단한다." },
+  { id: "work-skin-diary", workKey: "skin-diary" as WorkKey, label: "Skin Diary AI", eyebrow: "August 2025", tag: "Data · AI · Mobile", description: "피부 이미지를 부위별로 분석하고, 날씨·환경 맥락을 결합해 행동을 제안하는 앱. 점수가 아니라 '지금 무엇을 해야 하는지'를 알려준다." },
+  { id: "work-pmcc", workKey: "pmcc" as WorkKey, label: "PMCC", eyebrow: "2023–2026", tag: "Community · Design", description: "처음 만난 사람들이 진정한 대화를 나눌 수 있도록 환경을 설계한 러닝 커뮤니티. 경계·흐름·의례를 직접 만들고 3년간 168명과 운영." },
 ];
 
 function getWorkTitle(key: WorkKey) {
-  if (key === "mcp-memory") return "mcp-memory";
+  if (key === "mcp-memory") return "MCP-Memory";
   if (key === "context-engineering") return "Context Engineering";
   if (key === "tech-review") return "Tech Review";
   if (key === "empty-house") return "Empty House CPS";
@@ -542,63 +546,13 @@ export default function Page12() {
         <div className="p12-container">
           <FadeIn>
             <SectionLabel>04 · Work</SectionLabel>
-            <h2 className="p12-h2" style={{ color: "#111", marginBottom: 48, marginTop: 8 }}>Selected Work</h2>
+
           </FadeIn>
 
-          {/* 시스템 프로젝트 — 카드 */}
+          {/* 전체 6개 카드 — 3열 통합 그리드 */}
           <FadeIn delay={0.08}>
-            <div className="p12-work-grid" style={{ marginBottom: 48 }}>
-              {[
-                { id: "work-mcp-memory", label: "mcp-memory", tag: "AI · Memory", description: "AI가 맥락을 추론하도록 지식의 구조를 설계한 실험. 25개 타입, 4,685개 노드의 온톨로지 기반 외부 기억 시스템.", clickable: true },
-                { id: "work-ce", label: "Context Engineering", tag: "AI \u00b7 System", description: "AI\uc758 \ucd94\ub860 \ud488\uc9c8\uc744 \uadf9\ub300\ud654\ud558\uae30 \uc704\ud55c \ub9e5\ub77d \ud050\ub808\uc774\uc158 \uccb4\uacc4. \ubb34\uc5c7\uc744 \ub123\uace0, \uc5b4\ub5a4 \uc21c\uc11c\ub85c \ubcf4\uc5ec\uc8fc\uace0, \uc5b8\uc81c \ub35c\uc5b4\ub0bc\uc9c0\ub97c 4\uac1c \ub808\uc774\uc5b4\ub85c \uc124\uacc4\ud55c\ub2e4. \uc2dc\uc2a4\ud15c\uc774 \uc544\ub2c8\ub77c \uc6d0\uce59\uc774\ub2e4.", clickable: true },
-                { id: "work-tech-review", label: "Tech Review", tag: "AI \u00b7 Automation", description: "\uae30\uc220 \uae30\uc0ac\u00b7\ud2b8\uc717\u00b7\uc601\uc0c1\uc5d0\uc11c \uc778\uc0ac\uc774\ud2b8\ub97c \uc790\ub3d9 \uc218\uc9d1\ud558\uace0 \uc7ac\uc791\uc131\ud574 \ub9e4\uc77c \ubc1c\ud589\ud558\ub294 \ud30c\uc774\ud504\ub77c\uc778. 3\uac1c \uc18c\uc2a4, 100\uac74 \uc774\uc0c1 \ubc1c\ud589.", clickable: true },
-              ].map((item) => {
-                const isCe = item.id === "work-ce";
-                const isMcp = item.id === "work-mcp-memory";
-                const isTr = item.id === "work-tech-review";
-                const hasGradient = isCe || isMcp || isTr;
-                const mcpGradient = "radial-gradient(ellipse at 25% 30%, rgba(59,130,246,0.7) 0%, transparent 50%), radial-gradient(ellipse at 75% 70%, rgba(96,165,250,0.6) 0%, transparent 45%), radial-gradient(ellipse at 50% 45%, rgba(37,99,195,0.5) 0%, transparent 55%), linear-gradient(150deg, #1e3a6f 0%, #2d5a9a 40%, #4a8ad4 100%)";
-                const trGradient = "radial-gradient(ellipse at 25% 30%, rgba(107,92,231,0.7) 0%, transparent 50%), radial-gradient(ellipse at 75% 70%, rgba(232,164,184,0.6) 0%, transparent 45%), radial-gradient(ellipse at 50% 45%, rgba(139,122,207,0.5) 0%, transparent 55%), linear-gradient(150deg, #3b2e6e 0%, #7a65a5 40%, #d4a4ba 100%)";
-                const ceGradient = "radial-gradient(ellipse at 25% 30%, rgba(232,140,60,0.7) 0%, transparent 50%), radial-gradient(ellipse at 75% 70%, rgba(212,99,45,0.6) 0%, transparent 45%), radial-gradient(ellipse at 50% 45%, rgba(196,120,60,0.5) 0%, transparent 55%), linear-gradient(150deg, #8b3a0f 0%, #c4703a 40%, #e8a050 100%)";
-                return (
-                <div key={item.id} id={item.id}
-                  onClick={item.clickable ? () => openWorkDetail(WORK_KEY_MAP[item.id]) : undefined}
-                  style={{
-                    background: isMcp ? mcpGradient : isCe ? ceGradient : isTr ? trGradient : "#fafaf9",
-                    border: hasGradient ? "none" : "1px solid #e8e8e8", borderRadius: 8,
-                    padding: "28px 24px", cursor: item.clickable ? "pointer" : "default",
-                    transition: item.clickable ? "border-color 0.2s, box-shadow 0.2s" : "none",
-                  }}
-                  onMouseEnter={item.clickable ? (e) => { e.currentTarget.style.borderColor = "#ccc"; e.currentTarget.style.boxShadow = "0 2px 8px rgba(0,0,0,0.06)"; } : undefined}
-                  onMouseLeave={item.clickable ? (e) => { e.currentTarget.style.borderColor = "#e8e8e8"; e.currentTarget.style.boxShadow = "none"; } : undefined}
-                >
-                  <h3 style={{ fontFamily: "'Inter','Noto Sans KR',sans-serif", fontSize: 18, fontWeight: 700, color: hasGradient ? "#fff" : "#111", marginBottom: 4 }}>
-                    {item.label}
-                  </h3>
-                  <p style={{ fontFamily: "'Inter',sans-serif", fontSize: 12, color: hasGradient ? "rgba(255,255,255,0.7)" : ANTHROPIC, marginBottom: 12 }}>
-                    {item.tag}
-                  </p>
-                  <p style={{ fontFamily: "'Inter','Noto Sans KR',sans-serif", fontSize: 14, color: hasGradient ? "rgba(255,255,255,0.8)" : "#555", lineHeight: 1.7 }}>
-                    {item.description}
-                  </p>
-                  {item.clickable && (
-                    <p style={{ fontFamily: "'Inter',sans-serif", fontSize: 13, color: "#999", marginTop: 12, transition: "color 0.15s" }}>
-                      자세히 보기 →
-                    </p>
-                  )}
-                </div>
-                );
-              })}
-            </div>
-          </FadeIn>
-
-          {/* 기존 프로젝트 — 클릭 가능, detail page */}
-          <FadeIn delay={0.1}>
-            <FeaturedCard work={workItems[0]} onSelect={() => openWorkDetail(workItems[0].workKey)} />
-          </FadeIn>
-          <FadeIn delay={0.15}>
             <div className="p12-work-grid">
-              {workItems.slice(1).map((work) => (
+              {workItems.map((work) => (
                 <GridCard key={work.id} work={work} onSelect={() => openWorkDetail(work.workKey)} />
               ))}
             </div>

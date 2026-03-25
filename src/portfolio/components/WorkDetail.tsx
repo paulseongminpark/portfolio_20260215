@@ -86,7 +86,7 @@ const WORK_META: Record<string, {
       { value: "3", label: "소스" },
       { value: "7", label: "렌즈" },
     ],
-    overview: "기술 기사·트윗·영상에서 인사이트를 자동 수집하고 재작성해 매일 발행하는 파이프라인.\n3개 소스, 7개 렌즈, 매일 새벽 5시에 시작된다.",
+    overview: "매일 새벽 5시, 시스템이 깨어난다. 기사를 읽고, 영상을 보고, 트윗을 수집하고, 왜 중요한지를 쓰고, 발행하고, 다시 잠든다.\n편집장이 없는 뉴스룸. 기자 대신 파이프라인. 내가 설계한 것은 렌즈뿐이다.",
   },
 };
 
@@ -282,7 +282,7 @@ export function WorkDetail({ activeWork, title, heroSubtitle: _heroSubtitle, par
   const trToc = [
     { label: "시작", items: [
       { name: "매일 아침의 질문", id: "s-2" },
-      { name: "수집과 해석 사이", id: "s-3" },
+      { name: "정보의 양과 질 사이", id: "s-3" },
     ]},
     { label: "설계", items: [
       { name: "3개 소스", id: "s-4" },
@@ -346,10 +346,22 @@ export function WorkDetail({ activeWork, title, heroSubtitle: _heroSubtitle, par
       {(() => {
         const hasHeroGradient = !!GRADIENTS[activeWork] && activeWork !== 'pmcc';
         const hg = hasHeroGradient;
+        const isTrHero = activeWork === 'tech-review';
+        const isCeHero = activeWork === 'context-engineering';
+        const isMcpHero = activeWork === 'mcp-memory';
+        const trHeroBg = isTrHero
+          ? `url(${_B}work/tech-review/hero.png) center/cover no-repeat, #1a1a1a`
+          : undefined;
+        const ceHeroBg = isCeHero
+          ? `url(${_B}work/context-engineering/card.png) center/cover no-repeat`
+          : undefined;
+        const mcpHeroBg = isMcpHero
+          ? `linear-gradient(rgba(0,0,0,0.4), rgba(0,0,0,0.4)), url(${_B}work/mcp-memory/card.png) center/cover no-repeat`
+          : undefined;
         return (
         <>
         {/* CASE STUDY ~ 메타 정보 */}
-        <div style={{ background: hg ? GRADIENTS[activeWork] : "#f9f9f7", padding: "120px 0 48px" }}>
+        <div style={{ background: isMcpHero ? mcpHeroBg : isCeHero ? ceHeroBg : isTrHero ? trHeroBg : hg ? GRADIENTS[activeWork] : "#f9f9f7", padding: "120px 0 48px" }}>
           <div style={{ maxWidth: 1540, margin: "0 auto", padding: "0 48px" }}>
             <p style={{ fontFamily: F, fontSize: 11, fontWeight: 600,
               letterSpacing: "0.18em", textTransform: "uppercase",
