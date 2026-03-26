@@ -41,6 +41,9 @@ _sandbox/
 01_outsourcing/
 02_ontology/
 03_ontology-ui-ideation_0311/
+04_v6-portfolio-update_0317/01_plan.md
+04_v6-portfolio-update_0317/2*
+04_v6-portfolio-update_0317/foundation/
 05_diagram-ui_0317/
 scripts/
 STATE.md.draft
@@ -53,3 +56,6 @@ docs/plans/
 # Unused ideation variants
 src/portfolio/components/OntologySection_codex.tsx
 src/portfolio/components/OntologySection_gemini.tsx
+public/work/new projects/
+public/work/pmcc/pmcc_add1.jpg
+public/work/pmcc/pmcc_add2.JPG
