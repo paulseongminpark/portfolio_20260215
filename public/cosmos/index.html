@@ -1,0 +1,431 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Ontology Explorer — cosmos.gl</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: 'Inter', system-ui, sans-serif;
+      background: #0a0a0f;
+      color: #e0e0e0;
+      overflow: hidden;
+      height: 100vh;
+    }
+    /* Each scene has its own full-viewport canvas */
+    .graph-canvas {
+      position: fixed;
+      top: 0; left: 0;
+      width: 100vw; height: 100vh;
+      z-index: -1;
+      visibility: hidden;
+    }
+    .graph-canvas.active { z-index: 0; visibility: visible; }
+    /* Slide text overlay */
+    .slide {
+      position: fixed;
+      top: 0; left: 0;
+      width: 100vw; height: 100vh;
+      z-index: 1;
+      display: flex;
+      align-items: center;
+      padding: 0 5vw;
+      pointer-events: none;
+      opacity: 0;
+      transition: opacity 0.6s ease;
+    }
+    .slide.active { opacity: 1; pointer-events: auto; }
+    .slide-text { max-width: 420px; }
+    .slide-title {
+      font-size: 36px; font-weight: 700;
+      letter-spacing: -0.03em; line-height: 1.2;
+      margin-bottom: 16px; color: #fff;
+      text-shadow: 0 0 20px rgba(0,0,0,0.9), 0 0 40px rgba(0,0,0,0.7), 0 2px 4px rgba(0,0,0,1);
+    }
+    .slide-desc {
+      font-size: 15px; line-height: 1.7; color: #fff;
+      text-shadow: 0 0 16px rgba(0,0,0,0.9), 0 0 40px rgba(0,0,0,0.8), 0 1px 3px rgba(0,0,0,1);
+    }
+    .slide-stat {
+      margin-top: 24px; font-size: 48px; font-weight: 700;
+      color: #fff; font-variant-numeric: tabular-nums;
+      text-shadow: 0 0 24px rgba(0,0,0,0.9), 0 0 50px rgba(0,0,0,0.7);
+    }
+    .slide-stat span { font-size: 16px; font-weight: 400; color: #ddd; margin-left: 8px; }
+    #legend {
+      position: fixed; bottom: 32px; left: 32px; z-index: 10;
+      display: flex; flex-wrap: nowrap; gap: 6px;
+      opacity: 0; pointer-events: none; transition: opacity 0.5s ease;
+    }
+    #legend.visible { opacity: 1; pointer-events: auto; }
+    .legend-item {
+      display: flex; align-items: center; gap: 6px;
+      font-size: 11px; color: #888;
+      background: rgba(20, 20, 30, 0.8);
+      padding: 4px 10px; border-radius: 4px;
+      backdrop-filter: blur(8px); cursor: pointer;
+    }
+    .legend-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
+    .legend-item.dim { opacity: 0.35; }
+    .legend-item:hover { background: rgba(40, 40, 60, 0.9); }
+    #nav {
+      position: fixed; right: 32px; top: 50%;
+      transform: translateY(-50%); z-index: 10;
+      display: flex; flex-direction: column; gap: 12px;
+    }
+    .nav-dot {
+      width: 8px; height: 8px; border-radius: 50%;
+      background: #333; cursor: pointer;
+      transition: background 0.3s, transform 0.3s;
+    }
+    .nav-dot.active { background: #fff; transform: scale(1.5); }
+    #nav-arrows {
+      position: fixed; bottom: 32px; right: 32px;
+      z-index: 10; font-size: 11px; color: #444;
+    }
+    #stats {
+      position: fixed; top: 24px; right: 32px;
+      z-index: 10; font-size: 12px; color: #444; text-align: right;
+    }
+    #scene1-labels {
+      position: absolute; top: 0; left: 0;
+      width: 100%; height: 100%;
+      pointer-events: none;
+      transform: translateX(34vw) translateY(-3vh) scale(0.65);
+      transform-origin: center center;
+    }
+    #scene2-layers {
+      position: absolute;
+      left: 33vw;
+      top: 36vh;
+      bottom: 32vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      pointer-events: none;
+    }
+    .layer-line {
+      font-size: 13px;
+      color: #fff;
+      opacity: 0;
+      transform: translateY(10px);
+      transition: opacity 1.2s ease, transform 0.8s ease;
+      text-shadow: 0 0 16px rgba(0,0,0,0.9), 0 0 40px rgba(0,0,0,0.8), 0 1px 3px rgba(0,0,0,1);
+      white-space: nowrap;
+    }
+    .layer-line.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+    .layer-arrow {
+      font-size: 16px;
+      color: #fff;
+      text-align: center;
+      pointer-events: none;
+      opacity: 0;
+      transition: opacity 0.8s ease;
+      text-shadow: 0 0 16px rgba(0,0,0,0.9), 0 0 40px rgba(0,0,0,0.8);
+    }
+    .layer-arrow.visible {
+      opacity: 1;
+    }
+    .leader-line {
+      transition: opacity 0.3s ease;
+    }
+    .leader-line.dim {
+      opacity: 0 !important;
+    }
+    #scene2-stat {
+      font-size: 18px;
+      margin-top: 16px;
+    }
+    #scene2-stat span {
+      font-size: 13px;
+      margin-left: 4px;
+    }
+    #scene2-labels {
+      position: absolute; top: 0; left: 0;
+      width: 100%; height: 100%;
+      pointer-events: none;
+      transform: translateX(calc(38vw - 1.5cm)) translateY(-3vh) scale(0.65);
+      transform-origin: center center;
+    }
+    .type-label {
+      position: absolute;
+      font-size: 12px; font-weight: 700;
+      transform: translate(-50%, -50%);
+      pointer-events: none;
+      background: rgba(10, 10, 18, 0.75);
+      padding: 2px 7px; border-radius: 3px;
+      transition: opacity 0.3s ease;
+    }
+    #scene1-labels .type-label,
+    #scene2-labels .type-label {
+      font-size: 15px;
+      padding: 3px 8px;
+      border-radius: 4px;
+    }
+    .type-label.dim { opacity: 0; }
+    .type-flow {
+      margin-top: 20px; overflow: hidden;
+      mask-image: linear-gradient(to right, transparent, black 8%, black 92%, transparent);
+      -webkit-mask-image: linear-gradient(to right, transparent, black 8%, black 92%, transparent);
+    }
+    .type-flow-track {
+      display: flex; white-space: nowrap;
+      animation: flow-ltr 10s linear infinite;
+    }
+    .type-flow-track span {
+      font-size: 11px; color: #fff;
+      letter-spacing: 0.02em; padding-right: 24px;
+    }
+    @keyframes flow-ltr {
+      from { transform: translateX(0); }
+      to { transform: translateX(-50%); }
+    }
+    #scene1-layers {
+      position: absolute;
+      left: 33vw;
+      top: 30vh;
+      bottom: 28vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      pointer-events: none;
+    }
+    /* Scene 1: Type bar chart */
+    #scene1-chart {
+      position: fixed;
+      left: 50vw; top: 22vh;
+      width: 22vw; height: 55vh;
+      z-index: 2;
+      display: none;
+    }
+    #scene1-chart.active { display: block; }
+    /* Scene 2: Stacked bar chart */
+    #scene2-chart {
+      position: fixed;
+      left: calc(50vw - 0.5cm); top: 18vh;
+      width: 22vw; height: 55vh;
+      z-index: 2;
+      display: none;
+    }
+    #scene2-chart.active { display: block; }
+    /* Scene 3: Inside One Thought */
+    #scene3-labels {
+      position: absolute; top: 0; left: 0;
+      width: 100%; height: 100%;
+      pointer-events: none;
+    }
+    .chain-label {
+      position: absolute;
+      background: rgba(10, 10, 18, 0.8);
+      padding: 6px 12px;
+      border-radius: 4px;
+      max-width: 320px;
+      backdrop-filter: blur(6px);
+      opacity: 0;
+      transform: translateY(10px);
+      transition: opacity 0.8s ease, transform 0.6s ease;
+    }
+    .chain-label.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+    .chain-type {
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+      margin-bottom: 3px;
+    }
+    .chain-text {
+      font-size: 12px;
+      line-height: 1.5;
+      color: #ddd;
+    }
+    .chain-relation {
+      position: absolute;
+      font-size: 10px;
+      font-weight: 600;
+      background: rgba(10, 10, 18, 0.7);
+      padding: 2px 6px;
+      border-radius: 3px;
+      transform: translate(-50%, -50%);
+      opacity: 0;
+      transition: opacity 0.6s ease;
+    }
+    .chain-relation.visible { opacity: 1; }
+    /* Scene 3: Timeline coordinate plane */
+    #scene3-timeline {
+      position: fixed;
+      right: 8vw; top: 27vh;
+      width: 25vw; height: 51vh;
+      z-index: 2;
+      display: none;
+    }
+    #scene3-timeline.active { display: block; }
+    .tl-label {
+      position: absolute;
+      font-size: 9px; color: #444;
+      font-weight: 600; letter-spacing: 0.04em;
+      transform: translateY(-50%);
+      pointer-events: none;
+    }
+    .tl-line {
+      position: absolute; left: 0;
+      width: 100%; height: 1px;
+      background: rgba(255,255,255,0.05);
+      pointer-events: none;
+    }
+    /* Scene 4: layer narration + labels */
+    #scene4-overlay {
+      position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+      pointer-events: none; z-index: 2; display: none;
+    }
+    #scene4-overlay.active { display: block; }
+    .s4-label {
+      position: absolute; font-size: 12px; font-weight: 600;
+      color: #888; letter-spacing: 0.04em;
+      text-shadow: 0 0 12px rgba(0,0,0,0.9);
+      transform: translateY(-50%);
+      opacity: 0; transition: opacity 1s ease;
+    }
+    .s4-label.visible { opacity: 1; }
+    .s4-nar {
+      position: absolute; font-size: 12px; line-height: 1.7;
+      color: #fff; max-width: 24vw;
+      text-shadow: 0 0 16px rgba(0,0,0,0.9), 0 0 40px rgba(0,0,0,0.7);
+      transform: translateY(-50%);
+      opacity: 0; transition: opacity 1.2s ease;
+    }
+    .s4-nar.visible { opacity: 1; }
+    .s4-arrow {
+      position: absolute; font-size: 18px; color: #fff;
+      text-shadow: 0 0 12px rgba(0,0,0,0.9);
+      transform: translate(-50%, -50%);
+      opacity: 0; transition: opacity 0.8s ease;
+    }
+    .s4-arrow.visible { opacity: 1; }
+    /* Scene 5: tooltip */
+    .slide[data-slide="5"].active { pointer-events: none; }
+    #scene5-tooltip {
+      position: fixed;
+      z-index: 100;
+      pointer-events: none;
+      max-width: 360px;
+      padding: 10px 14px;
+      background: rgba(10, 10, 18, 0.92);
+      border: 1px solid rgba(255,255,255,0.12);
+      border-radius: 6px;
+      backdrop-filter: blur(8px);
+      opacity: 0;
+      transition: opacity 0.15s ease;
+      font-size: 13px;
+      line-height: 1.5;
+      color: #ccc;
+    }
+    #scene5-tooltip.visible { opacity: 1; }
+    .tt-type { font-size: 11px; font-weight: 700; letter-spacing: 0.05em; margin-bottom: 4px; }
+    .tt-label { font-size: 13px; color: #ddd; }
+    .tt-label span { font-size: 10px; margin-right: 4px; }
+    .tt-arrow { text-align: center; color: #555; font-size: 11px; margin: 2px 0; }
+  </style>
+  <script type="module" crossorigin src="./assets/index-B-Di_4KJ.js"></script>
+</head>
+<body>
+  <!-- Canvases: one per implemented scene -->
+  <div id="gc-0" class="graph-canvas active"></div>
+  <div id="gc-1" class="graph-canvas"></div>
+  <div id="gc-2" class="graph-canvas"></div>
+  <div id="gc-3" class="graph-canvas"></div>
+  <div id="gc-4" class="graph-canvas"></div>
+  <div id="gc-5" class="graph-canvas"></div>
+
+  <div class="slide active" data-slide="0">
+    <div class="slide-text">
+      <div class="slide-title">Watch It Grow</div>
+      <div class="slide-desc">첫 번째 노드부터 4,686개까지 — 모든 결정, 통찰, 패턴이 연결되며 시스템이 진화한다.</div>
+      <div id="growth-counter" class="slide-stat"></div>
+    </div>
+  </div>
+  <div class="slide" data-slide="1">
+    <div class="slide-text">
+      <div class="slide-title">25 Types of<br>Knowledge</div>
+      <div class="slide-desc">모든 노드는 분류된다 — Decision, Insight, Pattern, Principle 등. 각 타입은 서로 다른 역할을 한다.</div>
+      <div id="type-highlight" class="slide-stat"></div>
+      <div class="type-flow"><div class="type-flow-track"><span>Decision · Insight · Pattern · Question · Principle · Narrative · Observation · Tool · Framework · Project · Goal · Failure · Experiment · Identity · Workflow · Conversation · Agent · Skill · SystemVersion · Breakthrough · Tension · Preference · Evolution · Connection · Signal · </span><span>Decision · Insight · Pattern · Question · Principle · Narrative · Observation · Tool · Framework · Project · Goal · Failure · Experiment · Identity · Workflow · Conversation · Agent · Skill · SystemVersion · Breakthrough · Tension · Preference · Evolution · Connection · Signal · </span></div></div>
+    </div>
+    <div id="scene1-labels"></div>
+    <div id="scene1-layers">
+      <div class="layer-line">946 <span style="color:rgb(102,72,158)">Decisions</span> — 332 <span style="color:rgb(46,97,133)">Observations</span></div>
+      <div class="layer-line" style="font-size:11px;color:#999">경험보다 판단이 3배. 행동이 먼저다.</div>
+      <div class="layer-arrow">↓</div>
+      <div class="layer-line">475 <span style="color:rgb(230,166,38)">Insights</span> — 138 <span style="color:rgb(166,51,56)">Failures</span></div>
+      <div class="layer-line" style="font-size:11px;color:#999">실패 하나가 통찰 셋을 낳는다.</div>
+      <div class="layer-arrow">↓</div>
+      <div class="layer-line">25개 타입 — 12개가 97%</div>
+      <div class="layer-line" style="font-size:11px;color:#999">97%가 골격. 3%가 방향을 바꾼다.</div>
+    </div>
+  </div>
+  <div class="slide" data-slide="2">
+    <div class="slide-text">
+      <div class="slide-title">9 Projects,<br>1 System</div>
+      <div class="slide-desc">각 프로젝트는 하나의 영역이다. 그 사이를 잇는 밝은 선이 경계를 넘는 지식 — 시냅스다.</div>
+      <div id="scene2-stat" class="slide-stat"></div>
+    </div>
+    <div id="scene2-labels"></div>
+    <div id="scene2-layers">
+      <div class="layer-line"><span style="color:rgb(51,64,148)">Principles</span>이 핵심에서 결정화된다</div>
+      <div class="layer-arrow">&#8593;</div>
+      <div class="layer-line"><span style="color:rgb(217,128,38)">Patterns</span>이 중심을 향해 선명해진다</div>
+      <div class="layer-arrow">&#8593;</div>
+      <div class="layer-line"><span style="color:rgb(230,166,38)">Insights</span>는 프로젝트가 교차하는 곳에서 생긴다</div>
+      <div class="layer-arrow">&#8593;</div>
+      <div class="layer-line">날것의 <span style="color:rgb(46,97,133)">Observations</span>는 가장자리에 머문다</div>
+    </div>
+  </div>
+  <div class="slide" data-slide="3">
+    <div class="slide-text">
+      <div class="slide-title">Inside One<br>Thought</div>
+      <div class="slide-desc">하나의 실패가 원칙이 된다.<br>노드 사이의 엣지가 "왜"를 보존한다.</div>
+    </div>
+    <div id="scene3-labels"></div>
+  </div>
+  <div class="slide" data-slide="4">
+    <div class="slide-text">
+      <div class="slide-title">The Circulation</div>
+      <div class="slide-desc">기억은 오르내린다. 관찰이 원칙이 되고, 원칙이 새로운 관찰을 만든다. 고정된 것은 없다.</div>
+      <div id="scene4-stat" class="slide-stat"></div>
+    </div>
+  </div>
+  <div class="slide" data-slide="5">
+    <div class="slide-text">
+      <div class="slide-title">A Living<br>System</div>
+      <div class="slide-desc">사람은 데이터를 기억하지 않는다. 판단의 구조를 다시 사용한다.</div>
+      <div class="slide-desc" style="margin-top:20px;font-size:13px;">3월 3일의 실패가 원칙이 됐고, 그 원칙이 3월 16일 세션에서 자동으로 recall돼서, 같은 실수를 안 했다. 저장이 끝이 아니라 저장된 것이 다음 행동을 바꾼다.</div>
+      <div class="slide-desc" style="margin-top:20px;">경험 → 판단 → 원칙 → 가치.<br>이 경로가 보존되고, 다음 판단을 바꾼다.</div>
+    </div>
+  </div>
+
+  <div id="scene1-chart"></div>
+  <div id="scene2-chart"></div>
+  <div id="scene3-timeline"></div>
+  <div id="scene4-overlay"></div>
+  <div id="scene5-tooltip"></div>
+  <div id="legend"></div>
+  <div id="nav">
+    <div class="nav-dot active" data-target="0"></div>
+    <div class="nav-dot" data-target="1"></div>
+    <div class="nav-dot" data-target="2"></div>
+    <div class="nav-dot" data-target="3"></div>
+    <div class="nav-dot" data-target="4"></div>
+    <div class="nav-dot" data-target="5"></div>
+  </div>
+  <div id="nav-arrows">← → or scroll</div>
+  <div id="stats"><div id="stats-text"></div></div>
+
+</body>
+</html>
