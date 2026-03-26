@@ -2,6 +2,18 @@
 
 ## 2026-03-26
 
+### 다이어그램 도식 시스템 구축 + D1~D5 + CE 7개
+- .impeccable.md: 디자인 컨텍스트 (브랜드 깊이·절제·친근, 토큰, draw.io 레퍼런스 기반)
+- diagramTokens.tsx: 공유 토큰 (색상, 타이포, 간격) + DiagramContainer
+- diagramPrimitives.tsx: Primitive System v1 — Shape(4) + CardNode + Edge + FanOut + Band + GroupBox + Label + Legend
+- Diagram1: 타입 팽창 그래프 (네트워크 노드 27개, 엣지 36개, 타임라인)
+- Diagram2: 0.057 (타이포그래피 + 스케일 바 + 바운스 화살표)
+- Diagram3: 타입 수렴 52→15 (산만 클러스터 → 3 Tier 정돈)
+- Diagram4: 6레이어 성숙 지도 (수직 스택, 방화벽 경계, 뇌과학 2구간)
+- Diagram5: 3중 검색 아키텍처 (수평 3레인 병렬 → RRF 합류 → Hebbian 피드백)
+- CE 다이어그램 1~7: Gemini 작성분 통합 (WorkDetailBlocks 라우팅 연결)
+- WorkDetailBlocks: D2~D4 import + 라우팅 추가, placeholder 블록 타입 추가
+
 ### PMCC 상세 페이지 UI 전면 개선
 - VisualCuesGallery: FadeSlot 다중 이미지 순환, 팔레트 합성 이미지, 캡션 페이드 애니메이션
 - 라이트박스: 순환 네비게이션, body overflow 보정, 배경 불투명도 0.95, pointer-events 수정

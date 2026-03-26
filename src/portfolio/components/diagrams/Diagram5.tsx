@@ -1,164 +1,117 @@
-/** 다이어그램 5 — 3중 검색 아키텍처: Vector + FTS5 + Graph → RRF 합류 → Hebbian feedback */
-export function Diagram5() {
-  const W = 780;
-  const H = 420;
+/**
+ * 다이어그램 5 — 3중 검색 아키텍처
+ * 좌: query → 중: 3레인 병렬 → 우: 합류 → 결과
+ * Primitive System v1
+ */
+import { DiagramScene, type NodeDef, type EdgeDef, type LabelDef, type BandDef } from "./diagramPrimitives";
+import { COLORS, TYPO, CONN } from "./diagramTokens";
 
-  // 색상 토큰
-  const bgCard = "#fafafa";
-  const blue = "#dbeafe";
-  const blueBorder = "#93c5fd";
-  const yellow = "#fef3c7";
-  const yellowBorder = "#fcd34d";
-  const gray = "#f3f4f6";
-  const grayBorder = "#d1d5db";
-  const accent = "#D4632D";
-  const textDark = "#333";
-  const textMid = "#777";
-  const arrowColor = "#999";
+/* ── 레이아웃 상수 ── */
+const laneX = 105;
+const laneW = 180;
+const laneH = 38;
+const laneGap = 6;
+const laneStartY = 58;
 
-  // 박스 렌더 헬퍼
-  function Box({ x, y, w, h, fill, stroke, label, sub }: {
-    x: number; y: number; w: number; h: number;
-    fill: string; stroke: string; label: string; sub?: string;
-  }) {
-    return (
-      <g>
-        <rect x={x} y={y} width={w} height={h} rx={6} fill={fill} stroke={stroke} strokeWidth={1.5} />
-        <text x={x + w / 2} y={y + (sub ? h / 2 - 4 : h / 2 + 1)} textAnchor="middle" dominantBaseline="middle"
-          fontFamily="Inter, sans-serif" fontSize={12} fontWeight={600} fill={textDark}>
-          {label}
-        </text>
-        {sub && (
-          <text x={x + w / 2} y={y + h / 2 + 12} textAnchor="middle" dominantBaseline="middle"
-            fontFamily="Inter, sans-serif" fontSize={9} fill={textMid}>
-            {sub}
-          </text>
-        )}
-      </g>
-    );
-  }
+const boxCX = laneX + 48;
+const boxW = 76;
+const boxH = 26;
 
-  // 작은 라벨 박스
-  function SmallBox({ x, y, w, h, label }: {
-    x: number; y: number; w: number; h: number; label: string;
-  }) {
-    return (
-      <g>
-        <rect x={x} y={y} width={w} height={h} rx={4} fill={gray} stroke={grayBorder} strokeWidth={1} />
-        <text x={x + w / 2} y={y + h / 2 + 1} textAnchor="middle" dominantBaseline="middle"
-          fontFamily="Inter, sans-serif" fontSize={9} fill={textMid}>
-          {label}
-        </text>
-      </g>
-    );
-  }
+const rrfX = laneX + laneW + 55;
+const ndcgX = rrfX + 70;
 
-  // 화살표 (수직)
-  function ArrowV({ x, y1, y2 }: { x: number; y1: number; y2: number }) {
-    return (
-      <g>
-        <line x1={x} y1={y1} x2={x} y2={y2 - 4} stroke={arrowColor} strokeWidth={1.2} />
-        <polygon points={`${x - 3.5},${y2 - 6} ${x + 3.5},${y2 - 6} ${x},${y2}`} fill={arrowColor} />
-      </g>
-    );
-  }
+function laneY(i: number) { return laneStartY + i * (laneH + laneGap); }
+function laneCY(i: number) { return laneY(i) + laneH / 2; }
 
-  // 화살표 (수평)
-  function ArrowH({ y, x1, x2 }: { y: number; x1: number; x2: number }) {
-    const dir = x2 > x1 ? 1 : -1;
-    return (
-      <g>
-        <line x1={x1} y1={y} x2={x2 - dir * 4} y2={y} stroke={arrowColor} strokeWidth={1.2} />
-        <polygon points={`${x2 - dir * 6},${y - 3.5} ${x2 - dir * 6},${y + 3.5} ${x2},${y}`} fill={arrowColor} />
-      </g>
-    );
-  }
+const midLaneCY = laneCY(1);
+const hebbY = laneY(2) + laneH + 38;
 
-  // 레이아웃 좌표
-  const queryX = 330, queryY = 20, queryW = 100, queryH = 36;
+/* ── Bands ── */
+const bands: BandDef[] = [
+  { x: laneX, y: laneY(0), w: laneW, h: laneH, fill: "rgba(219,234,254,0.3)" },
+  { x: laneX, y: laneY(1), w: laneW, h: laneH, fill: "rgba(209,250,229,0.3)" },
+  { x: laneX, y: laneY(2), w: laneW, h: laneH, fill: "rgba(254,243,199,0.3)" },
+];
 
-  const vecX = 120, searchY = 110, searchW = 140, searchH = 44;
-  const ftsX = 310;
-  const graphX = 500;
+/* ── Nodes ── */
+const nodes: NodeDef[] = [
+  { id: "query", type: "rect", x: 50, y: midLaneCY, w: 60, h: 24, variant: "tertiary", label: "recall()", cornerRadius: 4 },
+  { id: "vec",   type: "rect", x: boxCX, y: laneCY(0), w: boxW, h: boxH, variant: "surface", label: "Vector", sub: "ChromaDB", cornerRadius: 3 },
+  { id: "fts",   type: "rect", x: boxCX, y: laneCY(1), w: boxW, h: boxH, variant: "surface", label: "FTS5", sub: "trigram", cornerRadius: 3 },
+  { id: "graph", type: "rect", x: boxCX, y: laneCY(2), w: boxW, h: boxH, variant: "surface", label: "Graph", sub: "NetworkX", cornerRadius: 3 },
+  { id: "rrf",   type: "rect", x: rrfX, y: midLaneCY - 2, w: 64, h: 30, variant: "tertiary", label: "RRF", sub: "K=18", cornerRadius: 4 },
+  { id: "hebb",  type: "rect", x: 240, y: hebbY, w: 120, h: 22, variant: "primary", label: "Hebbian Feedback", cornerRadius: 4 },
+];
 
-  const rrfY = 220, rrfX = 290, rrfW = 180, rrfH = 44;
-  const hebbY = 320, hebbX = 270, hebbW = 220, hebbH = 44;
+/* ── Edges ── */
+const edges: EdgeDef[] = [
+  { from: "query", to: "vec",   fromAnchor: "right", toAnchor: "left", routing: "orthogonal-h", cornerRadius: 6 },
+  { from: "query", to: "fts",   fromAnchor: "right", toAnchor: "left" },
+  { from: "query", to: "graph", fromAnchor: "right", toAnchor: "left", routing: "orthogonal-h", cornerRadius: 6 },
+  { from: "vec",   to: "rrf",   fromAnchor: "right", toAnchor: "left", routing: "orthogonal-h", cornerRadius: 6 },
+  { from: "fts",   to: "rrf",   fromAnchor: "right", toAnchor: "left" },
+  { from: "graph", to: "rrf",   fromAnchor: "right", toAnchor: "left", routing: "orthogonal-h", cornerRadius: 6 },
+  { from: "hebb",  to: "graph", fromAnchor: "left", toAnchor: "bottom", routing: "orthogonal-v", cornerRadius: 6, style: "dashed", color: COLORS.accent.fill },
+];
 
+/* ── Labels ── */
+const labels: LabelDef[] = [
+  { x: 240, y: 26, text: "3중 검색 아키텍처", level: "label", size: 12, weight: 700 },
+  { x: boxCX + boxW / 2 + 8, y: laneCY(0) - 6, text: "의미로 찾는다", level: "caption", size: 7, anchor: "start" },
+  { x: boxCX + boxW / 2 + 8, y: laneCY(1) - 6, text: "이름을 짚는다", level: "caption", size: 7, anchor: "start" },
+  { x: boxCX + boxW / 2 + 8, y: laneCY(2) - 6, text: "관계를 따라간다", level: "caption", size: 7, anchor: "start" },
+  { x: 240, y: hebbY + 28, text: "어느 하나가 놓치는 것을 나머지가 잡는다.", level: "caption", size: 9 },
+];
+
+/* ── 커스텀: NDCG + 피드백 라벨 ── */
+function CustomElements() {
   return (
-    <div style={{ background: bgCard, borderRadius: 12, padding: "24px 20px 20px", margin: "24px auto", maxWidth: 560, border: "1px solid #e8e8e8" }}>
-      <svg viewBox={`0 0 ${W} ${H}`} width="100%" style={{ display: "block" }}>
+    <g>
+      {/* NDCG — RRF 오른쪽, 분리 */}
+      <line x1={rrfX + 32} y1={midLaneCY} x2={ndcgX - 14} y2={midLaneCY}
+        stroke={CONN.stroke} strokeWidth={0.8} markerEnd="url(#arrow-default)" />
+      <text x={ndcgX + 16} y={midLaneCY - 10} textAnchor="middle"
+        fontFamily={TYPO.family} fontSize={8} fontWeight={600} fill={TYPO.caption.color}>
+        NDCG
+      </text>
+      <text x={ndcgX + 16} y={midLaneCY + 7} textAnchor="middle"
+        fontFamily={TYPO.family} fontSize={16} fontWeight={700} fill={COLORS.accent.fill}>
+        0.624
+      </text>
 
-        {/* 쿼리 입력 */}
-        <Box x={queryX} y={queryY} w={queryW} h={queryH}
-          fill={yellow} stroke={yellowBorder} label="recall()" sub="query" />
+      {/* RRF → Hebbian 연결 */}
+      <line x1={rrfX} y1={midLaneCY + 15} x2={rrfX} y2={hebbY - 14}
+        stroke={CONN.stroke} strokeWidth={0.5} />
+      <line x1={rrfX} y1={hebbY - 14} x2={240 + 70} y2={hebbY - 14}
+        stroke={CONN.stroke} strokeWidth={0.5} markerEnd="url(#arrow-default)" />
 
-        {/* 쿼리 → 3개 채널 분기 화살표 */}
-        <ArrowV x={queryX + queryW / 2} y1={queryY + queryH} y2={searchY} />
-        <line x1={queryX + queryW / 2} y1={queryY + queryH + 20} x2={vecX + searchW / 2} y2={queryY + queryH + 20}
-          stroke={arrowColor} strokeWidth={1.2} />
-        <ArrowV x={vecX + searchW / 2} y1={queryY + queryH + 20} y2={searchY} />
-        <line x1={queryX + queryW / 2} y1={queryY + queryH + 20} x2={graphX + searchW / 2} y2={queryY + queryH + 20}
-          stroke={arrowColor} strokeWidth={1.2} />
-        <ArrowV x={graphX + searchW / 2} y1={queryY + queryH + 20} y2={searchY} />
+      {/* feedback loop 라벨 */}
+      <text x={240 - 78} y={hebbY + 1} textAnchor="end" dominantBaseline="middle"
+        fontFamily={TYPO.family} fontSize={9} fontWeight={500} fill={COLORS.accent.fill}>
+        feedback
+      </text>
 
-        {/* 3중 검색 채널 */}
-        <Box x={vecX} y={searchY} w={searchW} h={searchH}
-          fill={blue} stroke={blueBorder} label="Vector" sub="ChromaDB 3072d" />
-        <Box x={ftsX} y={searchY} w={searchW} h={searchH}
-          fill={blue} stroke={blueBorder} label="FTS5" sub="한글 trigram" />
-        <Box x={graphX} y={searchY} w={searchW} h={searchH}
-          fill={blue} stroke={blueBorder} label="Graph" sub="NetworkX UCB" />
+      {/* 10% 탐험 — Graph 레인 아래, 작게 */}
+      <text x={boxCX} y={laneY(2) + laneH + 12} textAnchor="middle"
+        fontFamily={TYPO.family} fontSize={7} fontWeight={500} fill={COLORS.accent.fill}>
+        UCB 10% 탐험
+      </text>
+    </g>
+  );
+}
 
-        {/* 3채널 → RRF 합류 */}
-        <ArrowV x={vecX + searchW / 2} y1={searchY + searchH} y2={rrfY} />
-        <line x1={vecX + searchW / 2} y1={searchY + searchH + 22} x2={rrfX + rrfW / 2} y2={searchY + searchH + 22}
-          stroke={arrowColor} strokeWidth={1.2} />
-        <ArrowV x={ftsX + searchW / 2} y1={searchY + searchH} y2={rrfY} />
-        <ArrowV x={graphX + searchW / 2} y1={searchY + searchH} y2={rrfY} />
-        <line x1={graphX + searchW / 2} y1={searchY + searchH + 22} x2={rrfX + rrfW / 2} y2={searchY + searchH + 22}
-          stroke={arrowColor} strokeWidth={1.2} />
-
-        {/* RRF 합류 */}
-        <Box x={rrfX} y={rrfY} w={rrfW} h={rrfH}
-          fill={yellow} stroke={yellowBorder} label="RRF Fusion" sub="K=18" />
-
-        {/* RRF → Hebbian */}
-        <ArrowV x={rrfX + rrfW / 2} y1={rrfY + rrfH} y2={hebbY} />
-
-        {/* Hebbian feedback */}
-        <Box x={hebbX} y={hebbY} w={hebbW} h={hebbH}
-          fill={blue} stroke={blueBorder} label="Hebbian Feedback" sub="edge frequency +1" />
-
-        {/* 피드백 루프 화살표 (오른쪽으로 올라감) */}
-        <line x1={hebbX + hebbW} y1={hebbY + hebbH / 2} x2={700} y2={hebbY + hebbH / 2}
-          stroke={accent} strokeWidth={1.2} strokeDasharray="4 3" />
-        <line x1={700} y1={hebbY + hebbH / 2} x2={700} y2={searchY + searchH / 2}
-          stroke={accent} strokeWidth={1.2} strokeDasharray="4 3" />
-        <ArrowH y={searchY + searchH / 2} x1={700} x2={graphX + searchW} />
-        <text x={710} y={230} fontFamily="Inter, sans-serif" fontSize={9} fill={accent}
-          transform="rotate(90, 710, 230)" textAnchor="middle">
-          feedback loop
-        </text>
-
-        {/* 10% 탐험 경로 */}
-        <SmallBox x={10} y={searchY + searchH + 16} w={80} h={26} label="10% 탐험" />
-        <line x1={50} y1={searchY + searchH + 16} x2={50} y2={searchY + searchH}
-          stroke={accent} strokeWidth={1} strokeDasharray="3 2" />
-        <ArrowH y={searchY + searchH - 5} x1={90} x2={vecX} />
-        <text x={50} y={searchY + searchH + 56} textAnchor="middle"
-          fontFamily="Inter, sans-serif" fontSize={8} fill={accent}>
-          UCB 계수
-        </text>
-
-        {/* NDCG 결과 */}
-        <text x={rrfX + rrfW + 20} y={rrfY + 16} fontFamily="Inter, sans-serif" fontSize={10} fill={textMid}>
-          NDCG
-        </text>
-        <text x={rrfX + rrfW + 20} y={rrfY + 34} fontFamily="Inter, sans-serif" fontSize={18} fontWeight={700} fill={accent}>
-          0.624
-        </text>
-
-      </svg>
-    </div>
+export function Diagram5() {
+  return (
+    <DiagramScene
+      nodes={nodes}
+      edges={edges}
+      bands={bands}
+      labels={labels}
+      viewBoxOverride="0 8 460 250"
+      maxWidth={620}
+      marginTop={40}
+    >
+      <CustomElements />
+    </DiagramScene>
   );
 }

@@ -7,7 +7,17 @@ import { ActivityGallery } from './ActivityGallery';
 import { EditableBlock } from './EditableBlock';
 import { GridScrubSlider } from './GridScrubSlider';
 import { Diagram1 } from './diagrams/Diagram1';
+import { Diagram2 } from './diagrams/Diagram2';
+import { Diagram3 } from './diagrams/Diagram3';
+import { Diagram4 } from './diagrams/Diagram4';
 import { Diagram5 } from './diagrams/Diagram5';
+import { CEDiagram1 } from './diagrams/ce/CEDiagram1';
+import { CEDiagram2 } from './diagrams/ce/CEDiagram2';
+import { CEDiagram3 } from './diagrams/ce/CEDiagram3';
+import { CEDiagram4 } from './diagrams/ce/CEDiagram4';
+import { CEDiagram5 } from './diagrams/ce/CEDiagram5';
+import { CEDiagram6 } from './diagrams/ce/CEDiagram6';
+import { CEDiagram7 } from './diagrams/ce/CEDiagram7';
 import { CosmosShader } from './CosmosShader';
 
 export function renderBold(text: string) {
@@ -406,9 +416,21 @@ function renderSingleBlock(block: Block, idx: number, activeWork: string, parent
       const diagramMatch = block.text.match(/\[다이어그램\s*(\d+)/);
       if (diagramMatch) {
         const num = parseInt(diagramMatch[1], 10);
-        if (num === 1) return <Diagram1 key={idx} />;
-        if (num === 5) return <Diagram5 key={idx} />;
-        // 나머지 다이어그램은 추후 추가
+        if (activeWork === 'context-engineering') {
+          if (num === 1) return <CEDiagram1 key={idx} />;
+          if (num === 2) return <CEDiagram2 key={idx} />;
+          if (num === 3) return <CEDiagram3 key={idx} />;
+          if (num === 4) return <CEDiagram4 key={idx} />;
+          if (num === 5) return <CEDiagram5 key={idx} />;
+          if (num === 6) return <CEDiagram6 key={idx} />;
+          if (num === 7) return <CEDiagram7 key={idx} />;
+        } else {
+          if (num === 1) return <Diagram1 key={idx} />;
+          if (num === 2) return <Diagram2 key={idx} />;
+          if (num === 3) return <Diagram3 key={idx} />;
+          if (num === 4) return <Diagram4 key={idx} />;
+          if (num === 5) return <Diagram5 key={idx} />;
+        }
       }
       return <p key={idx} className="wd-paragraph">{renderBold(block.text)}</p>;
     }
@@ -476,15 +498,43 @@ function renderSingleBlock(block: Block, idx: number, activeWork: string, parent
     }
     case 'placeholder':
       return (
-        <div key={idx} className="wd-placeholder-grid">
+        <div key={idx} className="wd-placeholder-grid" style={{ marginTop: '24px', marginBottom: '24px' }}>
           {Array.from({ length: block.count }, (_, pi) => (
-            <div key={pi} className="wd-placeholder-box">
-              <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round">
-                <rect x="3" y="3" width="18" height="18" rx="2" />
-                <circle cx="8.5" cy="8.5" r="1.5" />
-                <path d="M21 15l-5-5L5 21" />
+            <div key={pi} style={{ 
+              border: '0.5px solid #e2e8f0', 
+              background: '#f8fafc', 
+              aspectRatio: '1.5', // Exactly matching 640/420
+              position: 'relative', 
+              display: 'flex', 
+              alignItems: 'center', 
+              justifyContent: 'center',
+              borderRadius: '1px',
+              overflow: 'hidden',
+              maxWidth: '640px',
+              margin: '0 auto 16px'
+            }}>
+              {/* Blueprint Reference: Grid Dot Pattern */}
+              <svg width="100%" height="100%" style={{ position: 'absolute', opacity: 0.05 }}>
+                <pattern id="dotPattern" x="0" y="0" width="20" height="20" patternUnits="userSpaceOnUse">
+                  <circle cx="1" cy="1" r="1" fill="#475569" />
+                </pattern>
+                <rect width="100%" height="100%" fill="url(#dotPattern)" />
               </svg>
-              <span>Image {pi + 1}</span>
+
+              {/* Precise Blueprint Guide Marks */}
+              <div style={{ position: 'absolute', top: 12, left: 12, width: 12, height: 12, borderTop: '0.5px solid #94a3b8', borderLeft: '0.5px solid #94a3b8' }} />
+              <div style={{ position: 'absolute', top: 12, right: 12, width: 12, height: 12, borderTop: '0.5px solid #94a3b8', borderRight: '0.5px solid #94a3b8' }} />
+              <div style={{ position: 'absolute', bottom: 12, left: 12, width: 12, height: 12, borderBottom: '0.5px solid #94a3b8', borderLeft: '0.5px solid #94a3b8' }} />
+              <div style={{ position: 'absolute', bottom: 12, right: 12, width: 12, height: 12, borderBottom: '0.5px solid #94a3b8', borderRight: '0.5px solid #94a3b8' }} />
+              
+              <div style={{ textAlign: 'center', position: 'relative', zIndex: 1 }}>
+                <div style={{ fontSize: '8px', fontWeight: 800, color: '#94a3b8', letterSpacing: '0.2em', marginBottom: '6px' }}>TECHNICAL DRAFT</div>
+                <div style={{ fontSize: '16px', fontWeight: 800, color: '#334155', letterSpacing: '-0.02em' }}>ASSET SPECIFICATION {pi + 1}</div>
+                <div style={{ fontSize: '8px', color: '#94a3b8', marginTop: '6px', fontWeight: 600 }}>PENDING VISUAL INTEGRATION</div>
+              </div>
+
+              {/* Dimension Label (Blueprint style) */}
+              <div style={{ position: 'absolute', bottom: 12, right: 30, fontSize: '7px', fontWeight: 700, color: '#cbd5e1' }}>REF: PSS_V1.0_640x420</div>
             </div>
           ))}
         </div>

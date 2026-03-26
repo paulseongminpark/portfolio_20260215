@@ -1,6 +1,6 @@
 # portfolio STATE
 _Updated: 2026-03-26_
-_Last Session: 2026-03-26 — PMCC 상세 페이지 UI 전면 개선: VCG 순환 라이트박스, 갤러리 와이드 스트립, grouped TOC(문제/해결/변화/정리), 섹션 구분선 제거, 로고 크기 통일._
+_Last Session: 2026-03-26 — 다이어그램 도식 시스템 구축 + D1~D5 구현: Primitive System v1(Shape/Edge/FanOut/CardNode/Band), .impeccable.md 디자인 컨텍스트, CE 다이어그램 7개 Gemini 작성분 통합._
 
 ## 목적
 개인 포트폴리오 웹사이트 (React + Vite, vanilla CSS, hash routing)
