@@ -1,6 +1,6 @@
 # portfolio STATE
-_Updated: 2026-03-23_
-_Last Session: 2026-03-23 — 다이어그램 1,5 초안 + 자동교체 구조 + 디자인 토큰 확정. 다음: 나머지 다이어그램 10개, 상세 페이지 정렬 시각검증, 카드-배너 동기화._
+_Updated: 2026-03-26_
+_Last Session: 2026-03-26 — PMCC 상세 페이지 UI 전면 개선: VCG 순환 라이트박스, 갤러리 와이드 스트립, grouped TOC(문제/해결/변화/정리), 섹션 구분선 제거, 로고 크기 통일._
 
 ## 목적
 개인 포트폴리오 웹사이트 (React + Vite, vanilla CSS, hash routing)
@@ -93,6 +93,9 @@ _Last Session: 2026-03-23 — 다이어그램 1,5 초안 + 자동교체 구조 +
   - "이색적인 접합" 4번 카드 제거 — show vs tell 원칙
 
 ## 최근 결정
+- 2026-03-25: MCP-Memory 상세 TOC 카드 4장 추가, 노드 수 4962 갱신, 저장 구조 상세 설명 추가
+- 2026-03-25: WorkDetailBlocks 갤러리 로직 — PMCC_GALLERY_FILES 배열 전환 + tech-review 폴더 매핑 + 빈 src 방어
+- 2026-03-25: PMCC 갤러리 이미지 2장 추가 (pmcc_add1.webp, pmcc_add2.webp)
 - 2026-03-20: mcp-memory Work 카드만 clickable (CE/Tech Review는 상세 미작성 → clickable: false)
 - 2026-03-20: Journey 텍스트 리라이트 — 추상적 묘사 → 구체적 행동 서사 전환
 - 2026-03-09: Writing > Tech Review 전면 재설계 — B(스토리텔링) 구조 채택
