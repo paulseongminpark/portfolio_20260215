@@ -1,6 +1,6 @@
 # portfolio STATE
-_Updated: 2026-03-25_
-_Last Session: 2026-03-25 — MCP-Memory 상세 텍스트 대폭 확장 (TOC 추가, 노드 4962, 저장 구조 상세), WorkDetailBlocks 갤러리 로직 개선, PMCC 이미지 추가. 다음: CE 다이어그램 7개, Tech Review 상세 페이지._
+_Updated: 2026-03-26_
+_Last Session: 2026-03-26 — PMCC 상세 페이지 UI 전면 개선: VCG 순환 라이트박스, 갤러리 와이드 스트립, grouped TOC(문제/해결/변화/정리), 섹션 구분선 제거, 로고 크기 통일._
 
 ## 목적
 개인 포트폴리오 웹사이트 (React + Vite, vanilla CSS, hash routing)

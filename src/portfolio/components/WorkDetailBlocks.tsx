@@ -8,6 +8,7 @@ import { EditableBlock } from './EditableBlock';
 import { GridScrubSlider } from './GridScrubSlider';
 import { Diagram1 } from './diagrams/Diagram1';
 import { Diagram5 } from './diagrams/Diagram5';
+import { CosmosShader } from './CosmosShader';
 
 export function renderBold(text: string) {
   const parts = text.split(/(\*\*.+?\*\*|\{\{o:.+?\}\}|\{\{b:.+?\}\})/g).filter(Boolean);
@@ -388,15 +389,20 @@ function E({ id, type, children }: { id: string; type: string; children: React.R
 function renderSingleBlock(block: Block, idx: number, activeWork: string, parentId: string, reverse?: boolean) {
   const bid = (sub?: number) => sub != null ? `${parentId}-${sub}` : parentId;
   switch (block.type) {
-    case 'section-title':
+    case 'section-title': {
+      const anchorId = block.eyebrow ? `ey-${block.eyebrow.toLowerCase().replace(/[\s/&]+/g, '-').replace(/-+/g, '-')}` : undefined;
       return (
-        <div key={idx} className="wd-section-header">
+        <div key={idx} className="wd-section-header" id={anchorId}>
           <E id={`${bid()}-ey`} type="eyebrow">{block.eyebrow && <div className="wd-eyebrow">{block.eyebrow}</div>}</E>
           <E id={`${bid()}-ti`} type="title"><h3 className="wd-title">{block.title}</h3></E>
           {block.desc && <E id={`${bid()}-de`} type="lede"><p className="wd-lede">{renderBold(block.desc)}</p></E>}
         </div>
       );
+    }
     case 'paragraph': {
+      if (block.text.includes('[Cosmograph')) {
+        return <CosmosShader key={idx} />;
+      }
       const diagramMatch = block.text.match(/\[다이어그램\s*(\d+)/);
       if (diagramMatch) {
         const num = parseInt(diagramMatch[1], 10);
@@ -514,8 +520,7 @@ export function WorkDetailBlocks({ blocks, activeWork }: { blocks: Block[]; acti
         // Divider before specific subsection headers
         const isSectionTitle = item.kind === 'block' && item.block.type === 'section-title';
         const eyebrow = isSectionTitle ? (item.block as { eyebrow: string }).eyebrow : '';
-        const DIVIDER_BEFORE = ['GALLERY', 'GROWTH & METRICS'];
-        const needsDivider = isSectionTitle && DIVIDER_BEFORE.includes(eyebrow);
+        const needsDivider = false;
 
         const wrap = (node: React.ReactNode) => (
           <EditableBlock key={`eb-${i}`} id={id} type={getBlockType(item)}>{node}</EditableBlock>

@@ -297,9 +297,30 @@ export function WorkDetail({ activeWork, title, heroSubtitle: _heroSubtitle, par
       { name: "뭐가 달라졌는가", id: "s-9" },
     ]},
   ];
-  const isGroupedToc = activeWork === 'mcp-memory' || activeWork === 'context-engineering' || activeWork === 'tech-review';
+  const pmccToc = [
+    { label: "문제", items: [
+      { name: "Overview", id: "s-2" },
+      { name: "Problem Definition", id: "s-3" },
+    ]},
+    { label: "해결", items: [
+      { name: "Approach / Solution", id: "s-4" },
+      { name: "Visual Cues", id: "s-5" },
+    ]},
+    { label: "변화", items: [
+      { name: "Shift", id: "s-6" },
+      { name: "Results & Impact", id: "s-7" },
+      { name: "Community Voice", id: "ey-community-voice" },
+      { name: "Growth & Metrics", id: "ey-growth-metrics" },
+      { name: "Dataset", id: "ey-dataset" },
+      { name: "Gallery", id: "ey-gallery" },
+    ]},
+    { label: "정리", items: [
+      { name: "Takeaways", id: "s-8" },
+    ]},
+  ];
+  const isGroupedToc = activeWork === 'mcp-memory' || activeWork === 'context-engineering' || activeWork === 'tech-review' || activeWork === 'pmcc';
   const isMcpToc = isGroupedToc;
-  const groupedTocData = activeWork === 'context-engineering' ? ceToc : activeWork === 'tech-review' ? trToc : mcpToc;
+  const groupedTocData = activeWork === 'pmcc' ? pmccToc : activeWork === 'context-engineering' ? ceToc : activeWork === 'tech-review' ? trToc : mcpToc;
 
   const [activeGroup, setActiveGroup] = useState(isGroupedToc ? groupedTocData[0]?.label ?? "" : "");
   const [activeItem, setActiveItem] = useState(isGroupedToc ? groupedTocData[0]?.items[0]?.id ?? "" : tocItems[0]?.id ?? "");
@@ -310,11 +331,16 @@ export function WorkDetail({ activeWork, title, heroSubtitle: _heroSubtitle, par
       groupedTocData.forEach((g) => g.items.forEach((item) => allEntries.push({ id: item.id, groupLabel: g.label })));
       const handleScroll = () => {
         const offset = 90;
+        const atBottom = window.innerHeight + window.scrollY >= document.body.scrollHeight - 100;
         let current = allEntries[0];
-        for (const entry of allEntries) {
-          const el = document.getElementById(entry.id);
-          if (!el) continue;
-          if (el.getBoundingClientRect().top <= offset) current = entry;
+        if (atBottom) {
+          current = allEntries[allEntries.length - 1];
+        } else {
+          for (const entry of allEntries) {
+            const el = document.getElementById(entry.id);
+            if (!el) continue;
+            if (el.getBoundingClientRect().top <= offset) current = entry;
+          }
         }
         if (current) { setActiveGroup(current.groupLabel); setActiveItem(current.id); }
       };
@@ -427,22 +453,23 @@ export function WorkDetail({ activeWork, title, heroSubtitle: _heroSubtitle, par
           position: "fixed", left: 0, top: 0, height: "100vh", overflowY: "auto",
           width: 200, borderRight: "1px solid #e8e8e8", background: "#fafafa",
           zIndex: 10, display: "flex", flexDirection: "column",
-          padding: "0 24px 24px 24px", fontFamily: F,
+          padding: "120px 24px 24px 24px", fontFamily: F,
           scrollbarWidth: "none", msOverflowStyle: "none",
         } as React.CSSProperties}>
           <button onClick={onBack}
             style={{ fontFamily: F, fontSize: 13, color: "#999", background: "none",
-              border: "none", cursor: "pointer", padding: "24px 0 0", textAlign: "left", transition: "color 0.15s", alignSelf: "flex-start" }}
+              border: "none", cursor: "pointer", padding: 0, textAlign: "left", transition: "color 0.15s", alignSelf: "flex-start",
+              position: "absolute", top: 24, left: 24 }}
             onMouseEnter={(e) => (e.currentTarget.style.color = "#111")}
             onMouseLeave={(e) => (e.currentTarget.style.color = "#999")}>
             ← 돌아가기
           </button>
-          <nav style={{ flex: 1, paddingTop: 60 }}>
+          <nav style={{ flex: 1, paddingTop: 0 }}>
             {isGroupedToc ? groupedTocData.map((group) => {
               const isGrpActive = activeGroup === group.label;
               return (
               <div key={group.label} style={{ marginBottom: 18 }}>
-                <p style={{ fontSize: 13, fontWeight: 600, letterSpacing: "0.02em",
+                <p style={{ fontFamily: F, fontSize: 13, fontWeight: 600, letterSpacing: "0.02em",
                   textTransform: "uppercase", color: isGrpActive ? "#D4632D" : "#999", marginBottom: 4, padding: "4px 0",
                   transition: "color 0.15s" }}>
                   {group.label}
@@ -452,7 +479,7 @@ export function WorkDetail({ activeWork, title, heroSubtitle: _heroSubtitle, par
                   return (
                   <a key={item.id} href={`#${item.id}`}
                     onClick={(e) => { e.preventDefault(); document.getElementById(item.id)?.scrollIntoView({ behavior: "smooth", block: "start" }); }}
-                    style={{ display: "block", color: isActive ? "#D4632D" : "#4F4F4F", textDecoration: "none", fontSize: 11,
+                    style={{ display: "block", fontFamily: F, color: isActive ? "#D4632D" : "#4F4F4F", textDecoration: "none", fontSize: 11,
                       fontWeight: isActive ? 600 : 400,
                       padding: "3px 0 3px 10px", borderLeft: `2px solid ${isActive ? "#D4632D" : "transparent"}`,
                       transition: "color 0.15s, border-color 0.15s", cursor: "pointer", lineHeight: 1.5 }}
@@ -469,9 +496,9 @@ export function WorkDetail({ activeWork, title, heroSubtitle: _heroSubtitle, par
               return (
                 <a key={item.id} href={`#${item.id}`}
                   onClick={(e) => { e.preventDefault(); document.getElementById(item.id)?.scrollIntoView({ behavior: "smooth", block: "start" }); }}
-                  style={{ display: "block", color: isActive ? "#D4632D" : "#4F4F4F", textDecoration: "none", fontSize: 13,
+                  style={{ display: "block", fontFamily: F, color: isActive ? "#D4632D" : "#4F4F4F", textDecoration: "none", fontSize: 11,
                     fontWeight: isActive ? 600 : 400,
-                    padding: "6px 0", transition: "color 0.15s", cursor: "pointer", lineHeight: 1.5 }}
+                    padding: "3px 0", transition: "color 0.15s", cursor: "pointer", lineHeight: 1.5 }}
                   onMouseEnter={(e) => { if (!isActive) e.currentTarget.style.color = "#111"; }}
                   onMouseLeave={(e) => { if (!isActive) e.currentTarget.style.color = "#4F4F4F"; }}>
                   {item.label}
@@ -491,7 +518,7 @@ export function WorkDetail({ activeWork, title, heroSubtitle: _heroSubtitle, par
             return (
               <div key={section.name} id={`s-${idx + 2}`} style={{
                 padding: "64px 0",
-                borderBottom: idx < filteredSections.length - 1 ? "1px solid #e4e0da" : "none",
+                borderBottom: "none",
                 opacity: isFootnote(section.name) ? 0.55 : 1,
               }}>
                 {!isFootnote(section.name) && !hasEyebrow && (

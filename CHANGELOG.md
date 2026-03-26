@@ -1,5 +1,15 @@
 # Portfolio CHANGELOG
 
+## 2026-03-26
+
+### PMCC 상세 페이지 UI 전면 개선
+- VisualCuesGallery: FadeSlot 다중 이미지 순환, 팔레트 합성 이미지, 캡션 페이드 애니메이션
+- 라이트박스: 순환 네비게이션, body overflow 보정, 배경 불투명도 0.95, pointer-events 수정
+- GridScrubSlider: 2x2 그리드 → 1행 와이드 스트립(1200px), VCG 스타일 라이트박스 통일
+- 로고 이미지 8,9 크기 1400x1049로 크롭 (슬롯 비율 통일)
+- PMCC grouped TOC 추가 (문제/해결/변화/정리 4그룹), section-title eyebrow 앵커 id 자동 부여
+- 섹션 구분선 제거, 마크다운 이스케이프 따옴표 수정, TOC 하단 스크롤 추적 보정
+
 ## 2026-03-25
 
 ### MCP-Memory 상세 텍스트 확장 + 갤러리 로직 개선
