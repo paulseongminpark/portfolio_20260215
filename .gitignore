@@ -36,3 +36,20 @@ nul
 .vercel
 public/work/_tmp/
 _sandbox/
+
+# Pipeline docs (작업 기록, 레포 미포함)
+01_outsourcing/
+02_ontology/
+03_ontology-ui-ideation_0311/
+05_diagram-ui_0317/
+scripts/
+STATE.md.draft
+card-preview.html
+ce-check.png
+ce-s3.png
+docs/plans/
+포트폴리오 - 모바일 작업.sti
+
+# Unused ideation variants
+src/portfolio/components/OntologySection_codex.tsx
+src/portfolio/components/OntologySection_gemini.tsx

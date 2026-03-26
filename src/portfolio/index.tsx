@@ -1,5 +1,5 @@
 import "./portfolio.css";
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { type WorkKey } from "./content/work";
 import { useWorkDetail } from "./hooks/useWorkDetail";
@@ -88,7 +88,7 @@ function P12TocGroupItem({ group, expanded, activeGroup, activeItem, onToggle, o
   return (
     <div style={{ marginBottom: 2 }}>
       <a href={`#${group.id}`}
-        onClick={(e) => { e.preventDefault(); scrollToId(group.id); if (group.items.length > 0) onToggle(); }}
+        onClick={(e) => { e.preventDefault(); scrollToId(group.id); if (group.items.length > 0 && !expanded) onToggle(); }}
         onMouseEnter={(e) => { if (!isActive) { const el = e.currentTarget as HTMLElement; el.style.color = ANTHROPIC; el.style.fontWeight = "700"; } }}
         onMouseLeave={(e) => { if (!isActive) { const el = e.currentTarget as HTMLElement; el.style.color = "#4f4f4f"; el.style.fontWeight = "400"; } }}
         style={{ display: "block", fontFamily: "'Inter', 'Noto Sans KR', sans-serif", fontSize: 13,
@@ -103,10 +103,10 @@ function P12TocGroupItem({ group, expanded, activeGroup, activeItem, onToggle, o
             return (
               <a key={item.id} href={`#${item.id}`}
                 onClick={(e) => { e.preventDefault(); onItemClick ? onItemClick(item.id) : scrollToId(item.id); }}
-                onMouseEnter={(e) => { if (!active) { const el = e.currentTarget as HTMLElement; el.style.color = ANTHROPIC; el.style.fontWeight = "600"; } }}
-                onMouseLeave={(e) => { if (!active) { const el = e.currentTarget as HTMLElement; el.style.color = "#6f6f6f"; el.style.fontWeight = "400"; } }}
+                onMouseEnter={(e) => { if (!active) { const el = e.currentTarget as HTMLElement; el.style.color = ANTHROPIC; } }}
+                onMouseLeave={(e) => { if (!active) { const el = e.currentTarget as HTMLElement; el.style.color = "#6f6f6f"; } }}
                 style={{ display: "block", fontFamily: "'Inter', 'Noto Sans KR', sans-serif", fontSize: 11,
-                  fontWeight: active ? 600 : 400, color: active ? ANTHROPIC : "#6f6f6f",
+                  fontWeight: 500, color: active ? ANTHROPIC : "#6f6f6f",
                   textDecoration: "none", padding: "4px 0 4px 12px", transition: "color 0.15s",
                   whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis",
                   borderLeft: active ? `2px solid ${ANTHROPIC}` : "2px solid transparent",
@@ -326,6 +326,7 @@ export default function Page12() {
   const [tocExpanded, setTocExpanded] = useState<Set<string>>(new Set(["work"]));
   const [activeGroup, setActiveGroup] = useState("about");
   const [activeItem, setActiveItem] = useState("about");
+  const activeRef = useRef({ group: "about", item: "about" });
 
   const toggleTocGroup = useCallback((id: string) => {
     setTocExpanded((prev) => {
@@ -408,10 +409,13 @@ export default function Page12() {
         if (!el) continue;
         if (el.getBoundingClientRect().top <= offset) current = entry;
       }
-      setActiveGroup(current.groupId);
-      setActiveItem(current.id);
-      if (P12_TOC.find(g => g.id === current.groupId)?.items.length) {
-        setTocExpanded(prev => prev.has(current.groupId) ? prev : new Set([...prev, current.groupId]));
+      if (activeRef.current.group !== current.groupId || activeRef.current.item !== current.id) {
+        activeRef.current = { group: current.groupId, item: current.id };
+        setActiveGroup(current.groupId);
+        setActiveItem(current.id);
+        if (P12_TOC.find(g => g.id === current.groupId)?.items.length) {
+          setTocExpanded(prev => prev.has(current.groupId) ? prev : new Set([...prev, current.groupId]));
+        }
       }
     };
     window.addEventListener("scroll", handleScroll, { passive: true });
