@@ -1,6 +1,6 @@
 <!-- pipeline: v6-portfolio-update | type: custom | mode: standard | status: ACTIVE -->
-<!-- phase: ideation | updated: 2026-03-22T23:30 -->
-<!-- current_task: mcp-memory 상세 페이지 — 4페이지 구조 전체 확정(시작·설계·실체·강화 + 관통선). 시작 ✅ 텍스트, 설계 ✅ 4막+하위 구조, 실체 ✅ Scene 0~5, 강화 ✅ 코다 3항목 | next: 글 작성 (설계 텍스트부터) → 다이어그램 7개 → 코드 구현 -->
+<!-- phase: build | updated: 2026-03-26T16:30 -->
+<!-- current_task: PMCC 상세 페이지 UI 개선 완료 | next: CE 다이어그램 7개, Tech Review 상세 페이지, Hero 텍스트 -->
 
 # v6.0 Portfolio Update
 > 시작: 2026-03-17 | 타입: custom | 모드: 정식
@@ -14,6 +14,9 @@
 | Ideation R1 | 20_ideation-r1/ | ✅ 방향+톤+콘텐츠 확정 |
 | Ideation R2 | 21_ideation-r2/ | ✅ 섹션 구조 재설계 + 텍스트 교체 코드 반영 완료 |
 | Ideation R3 | 22_ideation-r3/ | ✅ 전면 재설계 — 서사 구조 + 전체 텍스트 초안 완성 |
+| Build | 코드 반영 | ✅ 서사 구조 + 텍스트 + 상세 페이지(mcp-memory, CE) 구현 완료 |
+| Build | PMCC UI | ✅ VCG 순환 라이트박스, 갤러리 와이드 스트립, grouped TOC, 구분선 제거 |
+| Build | 다이어그램 | 🔄 다이어그램 1,5 초안 완료. CE 7개 + ontology-cosmos 임베드 진행중 |
 
 ## 확정 구조 (R3 — R2를 전면 대체)
 ```
@@ -79,13 +82,14 @@
 
 ## Pending
 - [x] 섹션별 텍스트 작성 (About → Why I Build AI → Journey → Work → Now → Forward)
-- [ ] Hero 텍스트 결정 (전체 글 완성 후)
-- [ ] 시각화 기법 선택 + 적용 (글 완성 후)
-- [ ] Work 카드 detail 페이지
-- [ ] 다이어그램 2개 제작 (GPT 작업중)
-- [ ] 코드 반영
-- [ ] 커밋
+- [x] Work 카드 detail 페이지 — mcp-memory, CE 상세 완료
+- [x] 코드 반영 — 서사 구조, Hero, TOC, 상세 라우팅 등 다수 커밋
+- [x] 다이어그램 1, 5 초안
+- [ ] Hero 텍스트 최종 결정
+- [ ] CE 다이어그램 7개
+- [ ] ontology-cosmos → mcp-memory 실체 섹션 임베드 (ideation 중)
+- [ ] Tech Review 상세 페이지
 
 ## 체크포인트
 - git tag: `pre-v6-update` (commit 12372df) — 롤백 포인트
-- R2 코드 반영 상태 (미커밋) — 브라우저에서 확인 가능
+- 최근 커밋: b0543d4 (2026-03-26) — PMCC 상세 UI 전면 개선
