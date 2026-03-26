@@ -38,10 +38,6 @@ function getLayerY(i: number) {
 
 const totalH = getLayerY(layers.length - 1) + layerH + 40;
 
-/* ── Band 영역 계산 ── */
-const neoBotY = getLayerY(firewallIdx - 1) + layerH + 4;
-const hippTopY = getLayerY(firewallIdx) - 4;
-
 /* ── Labels ── */
 const labels: LabelDef[] = [
   { x: CX, y: 30, text: "6-Layer Maturity Map", level: "label", size: 13, weight: 700 },

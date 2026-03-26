@@ -1,7 +1,7 @@
 /** CEDiagram4: "읽기의 순서" 
  * PSS Sequential Engine Applied
  */
-import { DiagramContainer, COLORS, TYPO, CONN } from "../diagramTokens";
+import { DiagramContainer, COLORS, TYPO, } from "../diagramTokens";
 
 export function CEDiagram4() {
   const W = 480;

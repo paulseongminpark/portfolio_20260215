@@ -1,7 +1,7 @@
 /** CEDiagram6: "에코시스템" 
  * Revision: High-Density Blueprint (Narrow Width)
  */
-import { DiagramContainer, COLORS, TYPO, CONN } from "../diagramTokens";
+import { DiagramContainer, COLORS, TYPO, } from "../diagramTokens";
 
 export function CEDiagram6() {
   const W = 520; // Narrow & Compact

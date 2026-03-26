@@ -1,7 +1,7 @@
 /** CEDiagram3: "규모에 따라 전략이 갈린다" (Scale-driven Strategy)
  * PSS Graph/Logic Engine Applied
  */
-import { DiagramContainer, COLORS, TYPO, CONN } from "../diagramTokens";
+import { DiagramContainer, COLORS, TYPO, } from "../diagramTokens";
 
 export function CEDiagram3() {
   const W = 640;

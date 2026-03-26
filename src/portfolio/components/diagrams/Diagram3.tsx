@@ -5,7 +5,7 @@
  */
 import {
   DiagramScene,
-  type NodeDef, type EdgeDef, type LabelDef, type LegendItemDef,
+  type NodeDef, type EdgeDef, type LabelDef,
 } from "./diagramPrimitives";
 import { COLORS, TYPO, CONN } from "./diagramTokens";
 

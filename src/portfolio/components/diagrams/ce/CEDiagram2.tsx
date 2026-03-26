@@ -1,7 +1,7 @@
 /** CEDiagram2: "4개의 층" 
  * Revision: Balanced Layout & Sharp Hierarchy
  */
-import { DiagramContainer, COLORS, TYPO, CONN } from "../diagramTokens";
+import { DiagramContainer, COLORS, TYPO, } from "../diagramTokens";
 
 export function CEDiagram2() {
   const W = 560;

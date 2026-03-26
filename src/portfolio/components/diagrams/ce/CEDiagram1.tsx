@@ -1,7 +1,7 @@
 /** CEDiagram1: "만들수록 줄어들었다" 
  * Revision: Blueprint Detail & Centered Alignment
  */
-import { DiagramContainer, COLORS, TYPO, CONN } from "../diagramTokens";
+import { DiagramContainer, COLORS, TYPO, } from "../diagramTokens";
 
 export function CEDiagram1() {
   const W = 620;

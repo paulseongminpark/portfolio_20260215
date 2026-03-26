@@ -1,7 +1,7 @@
 /** CEDiagram5: "무거워지면" 
  * 3번 다이어그램의 'Gate Card' 미학 적용 (Blueprint DNA)
  */
-import { DiagramContainer, COLORS, TYPO, CONN } from "../diagramTokens";
+import { DiagramContainer, COLORS, TYPO, } from "../diagramTokens";
 
 export function CEDiagram5() {
   const W = 620;
