@@ -4,7 +4,7 @@ export function Diagram5() {
   const H = 420;
 
   // 색상 토큰
-  const bgCard = "#f8f6f3";
+  const bgCard = "#fafafa";
   const blue = "#dbeafe";
   const blueBorder = "#93c5fd";
   const yellow = "#fef3c7";
@@ -85,7 +85,7 @@ export function Diagram5() {
   const hebbY = 320, hebbX = 270, hebbW = 220, hebbH = 44;
 
   return (
-    <div style={{ background: bgCard, borderRadius: 12, padding: "32px 24px 24px", margin: "24px 0" }}>
+    <div style={{ background: bgCard, borderRadius: 12, padding: "24px 20px 20px", margin: "24px auto", maxWidth: 560, border: "1px solid #e8e8e8" }}>
       <svg viewBox={`0 0 ${W} ${H}`} width="100%" style={{ display: "block" }}>
 
         {/* 쿼리 입력 */}

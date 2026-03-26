@@ -2,7 +2,7 @@
 export function Diagram1() {
   const W = 760;
   const H = 340;
-  const bg = "#f8f6f3";
+  const bg = "#fafafa";
   const accent = "#D4632D";
   const nodeColor = "#e8e4de";
   const nodeActive = "#d4c4b0";
@@ -45,7 +45,7 @@ export function Diagram1() {
   ];
 
   return (
-    <div style={{ background: bg, borderRadius: 12, padding: "32px 24px 24px", margin: "24px 0" }}>
+    <div style={{ background: bg, borderRadius: 12, padding: "24px 20px 20px", margin: "24px auto", maxWidth: 560, border: "1px solid #e8e8e8" }}>
       <svg viewBox={`0 0 ${W} ${H}`} width="100%" style={{ display: "block" }}>
         {/* 연결선 — 왼쪽 */}
         {leftEdges.map(([a, b], i) => (
