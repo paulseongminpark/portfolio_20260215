@@ -121,8 +121,9 @@ export function CosmosShader() {
   useEffect(() => {
     const canvas = ref.current;
     if (!canvas) return;
-    const gl = canvas.getContext('webgl', { alpha: false, antialias: true });
-    if (!gl) return;
+    const glCtx = canvas.getContext('webgl', { alpha: false, antialias: true });
+    if (!glCtx) return;
+    const gl = glCtx;
 
     const dpr = Math.min(window.devicePixelRatio, 2);
     const rect = canvas.getBoundingClientRect();

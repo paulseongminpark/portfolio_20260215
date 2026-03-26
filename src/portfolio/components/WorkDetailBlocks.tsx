@@ -519,7 +519,7 @@ export function WorkDetailBlocks({ blocks, activeWork }: { blocks: Block[]; acti
 
         // Divider before specific subsection headers
         const isSectionTitle = item.kind === 'block' && item.block.type === 'section-title';
-        const eyebrow = isSectionTitle ? (item.block as { eyebrow: string }).eyebrow : '';
+        const _eyebrow = isSectionTitle ? (item.block as { eyebrow: string }).eyebrow : '';
         const needsDivider = false;
 
         const wrap = (node: React.ReactNode) => (

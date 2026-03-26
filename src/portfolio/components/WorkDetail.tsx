@@ -319,7 +319,6 @@ export function WorkDetail({ activeWork, title, heroSubtitle: _heroSubtitle, par
     ]},
   ];
   const isGroupedToc = activeWork === 'mcp-memory' || activeWork === 'context-engineering' || activeWork === 'tech-review' || activeWork === 'pmcc';
-  const isMcpToc = isGroupedToc;
   const groupedTocData = activeWork === 'pmcc' ? pmccToc : activeWork === 'context-engineering' ? ceToc : activeWork === 'tech-review' ? trToc : mcpToc;
 
   const [activeGroup, setActiveGroup] = useState(isGroupedToc ? groupedTocData[0]?.label ?? "" : "");
