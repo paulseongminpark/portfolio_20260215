@@ -2,6 +2,12 @@ import { createContext, useContext, useState, useCallback, useRef, type ReactNod
 
 export type HighlightColor = 'blue' | 'orange' | null;
 
+export interface TextHighlight {
+  blockId: string;
+  text: string;
+  color: 'blue' | 'orange';
+}
+
 export interface BlockOverrides {
   marginTop?: number;
   marginBottom?: number;
@@ -36,10 +42,13 @@ interface PageEditorState {
   canUndo: boolean;
   highlightTool: HighlightTool;
   setHighlightTool: (t: HighlightTool) => void;
-  textMarks: HTMLElement[];
-  addTextMark: (mark: HTMLElement) => void;
+  textHighlights: TextHighlight[];
+  addTextHighlight: (h: TextHighlight) => void;
+  removeTextHighlight: (blockId: string, text: string) => void;
+  clearTextHighlights: () => void;
   workKey: string;
   exportCss: () => string;
+  exportHighlights: () => string;
 }
 
 const Ctx = createContext<PageEditorState | null>(null);
@@ -67,6 +76,12 @@ export function PageEditorProvider({ workKey, children }: { workKey: string; chi
   const [selected, setSelected] = useState<SelectedBlock | null>(null);
   const [overrides, setOverrides] = useState<Record<string, BlockOverrides>>(() => loadOverrides(workKey));
   const [highlightTool, setHighlightTool] = useState<HighlightTool>(null);
+  const [textHighlights, setTextHighlights] = useState<TextHighlight[]>(() => {
+    try {
+      const raw = localStorage.getItem(STORAGE_PREFIX + workKey + '-hl');
+      return raw ? JSON.parse(raw) : [];
+    } catch { return []; }
+  });
   const history = useRef<Record<string, BlockOverrides>[]>([]);
 
   const select = useCallback((id: string, type: string, el: HTMLElement) => {
@@ -113,6 +128,35 @@ export function PageEditorProvider({ workKey, children }: { workKey: string; chi
 
   const canUndo = history.current.length > 0;
 
+  const addTextHighlight = useCallback((h: TextHighlight) => {
+    setTextHighlights(prev => {
+      const exists = prev.some(p => p.blockId === h.blockId && p.text === h.text);
+      const next = exists
+        ? prev.map(p => p.blockId === h.blockId && p.text === h.text ? h : p)
+        : [...prev, h];
+      localStorage.setItem(STORAGE_PREFIX + workKey + '-hl', JSON.stringify(next));
+      return next;
+    });
+  }, [workKey]);
+
+  const removeTextHighlight = useCallback((blockId: string, text: string) => {
+    setTextHighlights(prev => {
+      const next = prev.filter(p => !(p.blockId === blockId && p.text === text));
+      localStorage.setItem(STORAGE_PREFIX + workKey + '-hl', JSON.stringify(next));
+      return next;
+    });
+  }, [workKey]);
+
+  const clearTextHighlights = useCallback(() => {
+    setTextHighlights([]);
+    localStorage.removeItem(STORAGE_PREFIX + workKey + '-hl');
+  }, [workKey]);
+
+  const exportHighlights = useCallback(() => {
+    if (textHighlights.length === 0) return '/* No text highlights */';
+    return JSON.stringify(textHighlights, null, 2);
+  }, [textHighlights]);
+
   const exportCss = useCallback(() => {
     const lines: string[] = [];
     for (const [id, o] of Object.entries(overrides)) {
@@ -137,9 +181,8 @@ export function PageEditorProvider({ workKey, children }: { workKey: string; chi
       moveBlock: () => {},
       undo, canUndo,
       highlightTool, setHighlightTool,
-      textMarks: [],
-      addTextMark: () => {},
-      workKey, exportCss,
+      textHighlights, addTextHighlight, removeTextHighlight, clearTextHighlights,
+      workKey, exportCss, exportHighlights,
     }}>
       {children}
     </Ctx.Provider>

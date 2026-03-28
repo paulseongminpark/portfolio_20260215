@@ -1,46 +1,42 @@
 /**
  * 다이어그램 3 — 타입 수렴: 52(v2.0) → 15(v3.0)
- * D1과 반대 방향. 왼쪽 크고 복잡, 오른쪽 작고 정돈.
- * Primitive System v1
+ * El Croquis Design System 적용
  */
-import {
-  DiagramScene,
-  type NodeDef, type EdgeDef, type LabelDef,
-} from "./diagramPrimitives";
-import { COLORS, TYPO, CONN } from "./diagramTokens";
 
+const EC = {
+  accent:    "#CC0000",
+  black:     "#000000",
+  gray40:    "#666666",
+  gray60:    "#999999",
+  gray85:    "#D8D8D8",
+  gray90:    "#E8E8E8",
+  font:      "'Inter', -apple-system, 'Noto Sans KR', sans-serif",
+  lineLight: 0.35,
+  lineReg:   0.5,
+  lineBold:  0.75,
+} as const;
+
+/* ── Layout ── */
 const LC = 130;
 const RC = 420;
 const MID = (LC + RC) / 2;
 
-/* ── Tier 색상 ── */
-const T1 = COLORS.primary;
-const T2 = COLORS.tertiary;
-const T3 = COLORS.neutral;
-
-/* ── 왼쪽: 산만한 노드 클러스터 ── */
-const leftNodes: NodeDef[] = Array.from({ length: 14 }, (_, i) => ({
-  id: `S${i}`,
-  type: "circle" as const,
-  x: LC + Math.cos(i * 1.7 + 0.5) * 50,
-  y: 180 + Math.sin(i * 1.3 + 0.2) * 45,
-  r: 4,
-  variant: "neutral" as const,
+/* ── Left: scattered cluster (52 types) ── */
+const leftNodes = Array.from({ length: 14 }, (_, i) => ({
+  x: LC + Math.cos(i * 1.7 + 0.5) * 52,
+  y: 185 + Math.sin(i * 1.3 + 0.2) * 48,
 }));
 
-const leftEdges: EdgeDef[] = [
-  { from: "S0", to: "S1" }, { from: "S1", to: "S3" }, { from: "S2", to: "S4" },
-  { from: "S3", to: "S5" }, { from: "S4", to: "S6" }, { from: "S5", to: "S7" },
-  { from: "S6", to: "S8" }, { from: "S8", to: "S9" }, { from: "S9", to: "S10" },
-  { from: "S10", to: "S11" }, { from: "S11", to: "S12" }, { from: "S12", to: "S13" },
-  { from: "S0", to: "S4" }, { from: "S2", to: "S7" }, { from: "S7", to: "S13" },
-].map((e) => ({ ...e, color: "#D1D5DB", strokeWidth: 0.5 }));
+const leftEdgeIdx: [number, number][] = [
+  [0,1],[1,3],[2,4],[3,5],[4,6],[5,7],[6,8],[8,9],[9,10],
+  [10,11],[11,12],[12,13],[0,4],[2,7],[7,13],
+];
 
-/* ── 오른쪽: 3 Tier 타입 카드 ── */
+/* ── Right: 3 Tier type cards (15 types) ── */
 const itemW = 72;
 const itemH = 18;
 const rowGap = 4;
-const tierGap = 8;
+const tierGap = 10;
 const colGap = 8;
 const col1 = RC - colGap / 2 - itemW / 2;
 const col2 = RC + colGap / 2 + itemW / 2;
@@ -57,9 +53,9 @@ const t3Y = t2Y + t2Rows * (itemH + rowGap) + tierGap;
 const t3Rows = Math.ceil(tier3.length / 2);
 const bottomY = t3Y + t3Rows * (itemH + rowGap);
 
-/* ── Tier 카드 렌더 ── */
-function TierCards({ names, startY, fill, stroke, prefix }: {
-  names: string[]; startY: number; fill: string; stroke: string; prefix: string;
+/* ── Tier Card Renderer ── */
+function TierCards({ names, startY, isAccent }: {
+  names: string[]; startY: number; isAccent?: boolean;
 }) {
   return (
     <g>
@@ -67,11 +63,14 @@ function TierCards({ names, startY, fill, stroke, prefix }: {
         const cx = i % 2 === 0 ? col1 : col2;
         const cy = startY + Math.floor(i / 2) * (itemH + rowGap);
         return (
-          <g key={`${prefix}${i}`}>
+          <g key={`${name}`}>
             <rect x={cx - itemW / 2} y={cy - itemH / 2} width={itemW} height={itemH}
-              rx={3} fill={fill} stroke={stroke} strokeWidth={0.8} />
+              rx={0} fill="none"
+              stroke={isAccent ? EC.accent : EC.black}
+              strokeWidth={isAccent ? EC.lineBold : EC.lineReg} />
             <text x={cx} y={cy + 1} textAnchor="middle" dominantBaseline="middle"
-              fontFamily={TYPO.family} fontSize={8} fontWeight={600} fill={TYPO.label.color}>
+              fontFamily={EC.font} fontSize={8} fontWeight={300}
+              fill={isAccent ? EC.accent : EC.black}>
               {name}
             </text>
           </g>
@@ -81,58 +80,101 @@ function TierCards({ names, startY, fill, stroke, prefix }: {
   );
 }
 
-/* ── Tier 라벨 (오른쪽 끝) ── */
-function TierLabels() {
-  const lx = col2 + itemW / 2 + 10;
-  return (
-    <g>
-      <text x={lx} y={t1Y} fontFamily={TYPO.family} fontSize={8} fontWeight={600} fill={T1.stroke} dominantBaseline="middle">핵심 7</text>
-      <text x={lx} y={t2Y} fontFamily={TYPO.family} fontSize={8} fontWeight={600} fill={T2.stroke} dominantBaseline="middle">맥락 5</text>
-      <text x={lx} y={t3Y} fontFamily={TYPO.family} fontSize={8} fontWeight={600} fill={TYPO.caption.color} dominantBaseline="middle">전환 3</text>
-    </g>
-  );
-}
-
-/* ── Labels ── */
-const labels: LabelDef[] = [
-  { x: LC, y: 65, text: "52", level: "hero", color: TYPO.caption.color, size: 26, weight: 700 },
-  { x: LC, y: 82, text: "types · v2.0", level: "desc", size: 12, weight: 500 },
-  { x: RC, y: 65, text: "15", level: "hero", size: 26, weight: 700 },
-  { x: RC, y: 82, text: "types · v3.0", level: "desc", size: 12, weight: 500 },
-  { x: MID, y: bottomY + 30, text: "온톨로지 타입이 수렴하는 궤적", level: "caption" },
-];
-
-/* ── 중앙 화살표 ── */
-function Arrow() {
-  const y = 180;
-  return (
-    <g>
-      <line x1={LC + 60} y1={y} x2={RC - itemW - colGap / 2 - 15} y2={y}
-        stroke={CONN.stroke} strokeWidth={CONN.strokeWidth}
-        markerEnd="url(#arrow-default)" />
-      <text x={MID - 10} y={y - 10} textAnchor="middle"
-        fontFamily={TYPO.family} fontSize={9} fontWeight={500} fill={TYPO.desc.color}>
-        타입은 성숙도, 태그가 의미
-      </text>
-    </g>
-  );
-}
-
 export function Diagram3() {
   return (
-    <DiagramScene
-      nodes={leftNodes}
-      edges={leftEdges}
-      labels={labels}
-      viewBoxOverride={`20 40 530 ${bottomY + 10}`}
-      maxWidth={600}
-      marginTop={40}
-    >
-      <TierCards names={tier1} startY={t1Y} fill={T1.fill} stroke={T1.stroke} prefix="T1_" />
-      <TierCards names={tier2} startY={t2Y} fill={T2.fill} stroke={T2.stroke} prefix="T2_" />
-      <TierCards names={tier3} startY={t3Y} fill={T3.fill} stroke={T3.stroke} prefix="T3_" />
-      <TierLabels />
-      <Arrow />
-    </DiagramScene>
+    <div style={{
+      margin: "48px auto 40px",
+      maxWidth: 640,
+      padding: "0 16px",
+    }}>
+      <svg viewBox={`20 40 530 ${bottomY + 10}`} width="100%" style={{ display: "block" }}>
+        <defs>
+          <marker id="ec-arrow-3" viewBox="0 0 8 6" refX="8" refY="3"
+            markerWidth="5" markerHeight="4" orient="auto">
+            <polygon points="0 0, 8 3, 0 6" fill={EC.gray60} />
+          </marker>
+        </defs>
+
+        {/* ── Left edges ── */}
+        {leftEdgeIdx.map(([a, b], i) => (
+          <line key={`le${i}`}
+            x1={leftNodes[a].x} y1={leftNodes[a].y}
+            x2={leftNodes[b].x} y2={leftNodes[b].y}
+            stroke={EC.gray85} strokeWidth={EC.lineLight} />
+        ))}
+
+        {/* ── Left nodes: stroke only ── */}
+        {leftNodes.map((n, i) => (
+          <circle key={`ln${i}`} cx={n.x} cy={n.y} r={4}
+            fill="none" stroke={EC.black} strokeWidth={EC.lineReg} />
+        ))}
+
+        {/* ── Hero Numbers ── */}
+        <text x={LC} y={68} textAnchor="middle"
+          fontFamily={EC.font} fontSize={28} fontWeight={200}
+          fill={EC.gray60} style={{ fontVariantNumeric: "tabular-nums" }}>
+          52
+        </text>
+        <text x={LC} y={84} textAnchor="middle"
+          fontFamily={EC.font} fontSize={8} fontWeight={300}
+          fill={EC.gray60} letterSpacing="1.5px">
+          {"TYPES · V2.0"}
+        </text>
+
+        <text x={RC} y={68} textAnchor="middle"
+          fontFamily={EC.font} fontSize={28} fontWeight={200}
+          fill={EC.black} style={{ fontVariantNumeric: "tabular-nums" }}>
+          15
+        </text>
+        <text x={RC} y={84} textAnchor="middle"
+          fontFamily={EC.font} fontSize={8} fontWeight={300}
+          fill={EC.gray60} letterSpacing="1.5px">
+          {"TYPES · V3.0"}
+        </text>
+
+        {/* ── Right: Tier cards ── */}
+        <TierCards names={tier1} startY={t1Y} isAccent />
+        <TierCards names={tier2} startY={t2Y} />
+        <TierCards names={tier3} startY={t3Y} />
+
+        {/* ── Tier labels ── */}
+        {(() => {
+          const lx = col2 + itemW / 2 + 12;
+          return (
+            <g>
+              <text x={lx} y={t1Y} fontFamily={EC.font} fontSize={7} fontWeight={200}
+                fill={EC.accent} dominantBaseline="middle" letterSpacing="0.5px">
+                핵심 7
+              </text>
+              <text x={lx} y={t2Y} fontFamily={EC.font} fontSize={7} fontWeight={200}
+                fill={EC.gray40} dominantBaseline="middle" letterSpacing="0.5px">
+                맥락 5
+              </text>
+              <text x={lx} y={t3Y} fontFamily={EC.font} fontSize={7} fontWeight={200}
+                fill={EC.gray60} dominantBaseline="middle" letterSpacing="0.5px">
+                전환 3
+              </text>
+            </g>
+          );
+        })()}
+
+        {/* ── Center arrow ── */}
+        <line x1={LC + 62} y1={185} x2={RC - itemW - colGap / 2 - 15} y2={185}
+          stroke={EC.gray85} strokeWidth={EC.lineLight}
+          markerEnd="url(#ec-arrow-3)" />
+        <text x={MID - 10} y={175} textAnchor="middle"
+          fontFamily={EC.font} fontSize={8} fontWeight={200}
+          fill={EC.gray60}>
+          타입은 성숙도, 태그가 의미
+        </text>
+
+        {/* ── Caption ── */}
+        <text x={MID} y={bottomY + 28} textAnchor="middle"
+          fontFamily={EC.font} fontSize={8} fontWeight={200}
+          fill={EC.gray60} letterSpacing="0.5px">
+          온톨로지 타입이 수렴하는 궤적
+        </text>
+      </svg>
+    </div>
   );
 }

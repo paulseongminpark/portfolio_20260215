@@ -11,6 +11,17 @@ import { Diagram2 } from './diagrams/Diagram2';
 import { Diagram3 } from './diagrams/Diagram3';
 import { Diagram4 } from './diagrams/Diagram4';
 import { Diagram5 } from './diagrams/Diagram5';
+import { Diagram6 } from './diagrams/Diagram6';
+import { Diagram7 } from './diagrams/Diagram7';
+import { Diagram8 } from './diagrams/Diagram8';
+import { Diagram9 } from './diagrams/Diagram9';
+import { Diagram10 } from './diagrams/Diagram10';
+import { Diagram11 } from './diagrams/Diagram11';
+import { Diagram12 } from './diagrams/Diagram12';
+import { Diagram13 } from './diagrams/Diagram13';
+import { Diagram14 } from './diagrams/Diagram14';
+import { Diagram15 } from './diagrams/Diagram15';
+import { Diagram16 } from './diagrams/Diagram16';
 import { CEDiagram1 } from './diagrams/ce/CEDiagram1';
 import { CEDiagram2 } from './diagrams/ce/CEDiagram2';
 import { CEDiagram3 } from './diagrams/ce/CEDiagram3';
@@ -19,6 +30,11 @@ import { CEDiagram5 } from './diagrams/ce/CEDiagram5';
 import { CEDiagram6 } from './diagrams/ce/CEDiagram6';
 import { CEDiagram7 } from './diagrams/ce/CEDiagram7';
 import { CosmosShader } from './CosmosShader';
+import { Triptych } from './diagrams/Triptych';
+import { Diptych } from './diagrams/Diptych';
+import { FailureDiptych } from './diagrams/FailureDiptych';
+import { StructureDiptych } from './diagrams/StructureDiptych';
+import { ContextDiptych } from './diagrams/ContextDiptych';
 
 export function renderBold(text: string) {
   const parts = text.split(/(\*\*.+?\*\*|\{\{o:.+?\}\}|\{\{b:.+?\}\})/g).filter(Boolean);
@@ -413,6 +429,21 @@ function renderSingleBlock(block: Block, idx: number, activeWork: string, parent
       if (block.text.includes('[Cosmograph')) {
         return <CosmosShader key={idx} />;
       }
+      if (block.text.includes('[triptych-5-6-7]')) {
+        return <Triptych key={idx} />;
+      }
+      if (block.text.includes('[diptych-11-12]')) {
+        return <Diptych key={idx} />;
+      }
+      if (block.text.includes('[failure-diptych]')) {
+        return <FailureDiptych key={idx} />;
+      }
+      if (block.text.includes('[structure-diptych]')) {
+        return <StructureDiptych key={idx} />;
+      }
+      if (block.text.includes('[context-diptych]')) {
+        return <ContextDiptych key={idx} />;
+      }
       const diagramMatch = block.text.match(/\[다이어그램\s*(\d+)/);
       if (diagramMatch) {
         const num = parseInt(diagramMatch[1], 10);
@@ -430,6 +461,17 @@ function renderSingleBlock(block: Block, idx: number, activeWork: string, parent
           if (num === 3) return <Diagram3 key={idx} />;
           if (num === 4) return <Diagram4 key={idx} />;
           if (num === 5) return <Diagram5 key={idx} />;
+          if (num === 6) return <Diagram6 key={idx} />;
+          if (num === 7) return <Diagram7 key={idx} />;
+          if (num === 8) return <Diagram8 key={idx} />;
+          if (num === 9) return <Diagram9 key={idx} />;
+          if (num === 10) return <Diagram10 key={idx} />;
+          if (num === 11) return <Diagram11 key={idx} />;
+          if (num === 12) return <Diagram12 key={idx} />;
+          if (num === 13) return <Diagram13 key={idx} />;
+          if (num === 14) return <Diagram14 key={idx} />;
+          if (num === 15) return <Diagram15 key={idx} />;
+          if (num === 16) return <Diagram16 key={idx} />;
         }
       }
       return <p key={idx} className="wd-paragraph">{renderBold(block.text)}</p>;

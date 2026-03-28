@@ -125,8 +125,26 @@ export function PageEditorPanel() {
         </div>
       )}
 
+      {/* Text highlights list */}
+      {editor.textHighlights.length > 0 && (
+        <div className="pe-hl-list">
+          <div className="pe-label" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+            <span>Text Highlights ({editor.textHighlights.length})</span>
+            <button className="pe-btn pe-btn-sm pe-btn-danger" onClick={editor.clearTextHighlights}>Clear All</button>
+          </div>
+          {editor.textHighlights.map((h, i) => (
+            <div key={i} className="pe-hl-item">
+              <span className={`pe-hl-dot pe-hl-${h.color}`} />
+              <span className="pe-hl-text">"{h.text.slice(0, 30)}{h.text.length > 30 ? '...' : ''}"</span>
+              <button className="pe-btn pe-btn-sm" onClick={() => editor.removeTextHighlight(h.blockId, h.text)}>✕</button>
+            </div>
+          ))}
+        </div>
+      )}
+
       {exportOpen && (
         <div className="pe-export">
+          <div className="pe-label">CSS Overrides</div>
           <pre className="pe-export-code">{editor.exportCss() || '/* No overrides */'}</pre>
           <button className="pe-btn pe-btn-primary" onClick={() => {
             navigator.clipboard.writeText(editor.exportCss());
@@ -134,6 +152,15 @@ export function PageEditorPanel() {
             setTimeout(() => setCopied(false), 1200);
           }}>
             {copied ? 'Copied!' : 'Copy CSS'}
+          </button>
+          <div className="pe-label" style={{ marginTop: 12 }}>Text Highlights JSON</div>
+          <pre className="pe-export-code">{editor.exportHighlights()}</pre>
+          <button className="pe-btn pe-btn-primary" onClick={() => {
+            navigator.clipboard.writeText(editor.exportHighlights());
+            setCopied(true);
+            setTimeout(() => setCopied(false), 1200);
+          }}>
+            {copied ? 'Copied!' : 'Copy Highlights'}
           </button>
         </div>
       )}
