@@ -1,95 +1,142 @@
-/** CEDiagram1: "만들수록 줄어들었다" 
- * Revision: Blueprint Detail & Centered Alignment
+/** CEDiagram1 — "만들수록 줄어들었다"
+ * Format: Erosion Section Strip — proportional allocation with dimension lines
+ * El Croquis Design System §12
  */
-import { DiagramContainer, COLORS, TYPO, } from "../diagramTokens";
+
+const EC = {
+  accent:    "#CC0000",
+  black:     "#000000",
+  gray40:    "#666666",
+  gray60:    "#999999",
+  gray85:    "#D8D8D8",
+  gray90:    "#E8E8E8",
+  font:      "'Inter', -apple-system, 'Noto Sans KR', sans-serif",
+  lineLight: 0.25,
+  lineReg:   0.5,
+  lineBold:  0.75,
+} as const;
 
 export function CEDiagram1() {
-  const W = 620;
-  const H = 300;
+  const W = 620, H = 260;
+
+  const rows = [
+    { ver: "v3.0",   cap: "200K", n: 24, sys: 0.20, tool: 0.60, bw: 360 },
+    { ver: "v3.3.1", cap: "200K", n: 15, sys: 0.20, tool: 0.35, bw: 360 },
+    { ver: "v5.0",   cap: "1M",   n: 3,  sys: 0.04, tool: 0.02, bw: 480 },
+  ];
+
+  const sH = 38, gap = 28, ox = 80, oy = 54;
 
   return (
-    <DiagramContainer viewBox={`0 0 ${W} ${H}`} maxWidth={700} marginTop={40}>
-      {/* --- Top Spec Label: Centered --- */}
-      <g transform={`translate(${W / 2}, 30)`}>
-        <text textAnchor="middle" fontFamily={TYPO.family} fontSize={8} fontWeight={800} fill={TYPO.caption.color} style={{ letterSpacing: '0.1em' }}>
-          ITERATION LOG: CONTEXT WINDOW EVOLUTION
+    <div style={{ margin: "48px auto 40px", maxWidth: 660 }}>
+      <svg viewBox={`0 0 ${W} ${H}`} width="100%" style={{ display: "block" }}>
+        <defs>
+          <pattern id="ce1-hatch" patternUnits="userSpaceOnUse" width="4" height="4" patternTransform="rotate(45)">
+            <line x1="0" y1="0" x2="0" y2="4" stroke={EC.gray60} strokeWidth={0.4} />
+          </pattern>
+        </defs>
+
+        {/* Title */}
+        <text x={ox} y={22} fontFamily={EC.font} fontSize={9} fontWeight={300}
+          fill={EC.gray40} style={{ letterSpacing: "1.5px" }}>
+          CONTEXT WINDOW ALLOCATION
         </text>
-        <line x1={-80} y1={8} x2={80} y2={8} stroke={COLORS.surface.stroke} strokeWidth={0.5} />
-      </g>
+        <line x1={ox} y1={30} x2={ox + 155} y2={30}
+          stroke={EC.gray90} strokeWidth={EC.lineLight} />
 
-      {/* --- Viewports Stage: Balanced --- */}
-      <g transform="translate(0, 70)">
-        {/* v3.0: The Bottleneck */}
-        <g transform="translate(40, 0)">
-          <DViewport w={100} h={120} sys={25} tool={65} work={10} label="v3.0 (200K)" />
-          <DImpact num="24" sub="tools" x={50} y={160} />
+        {rows.map((r, i) => {
+          const y = oy + i * (sH + gap);
+          const sw = r.bw * r.sys;
+          const tw = r.bw * r.tool;
+          const last = i === 2;
+
+          return (
+            <g key={i}>
+              {/* Left annotation */}
+              <text x={ox - 10} y={y + 14} textAnchor="end"
+                fontFamily={EC.font} fontSize={8} fontWeight={300} fill={EC.black}>
+                {r.ver}
+              </text>
+              <text x={ox - 10} y={y + 26} textAnchor="end"
+                fontFamily={EC.font} fontSize={7} fontWeight={200} fill={EC.gray60}>
+                {r.cap}
+              </text>
+
+              {/* Strip frame */}
+              <rect x={ox} y={y} width={r.bw} height={sH}
+                fill="none" stroke={EC.black} strokeWidth={EC.lineReg} />
+
+              {/* System zone — hatched */}
+              <rect x={ox} y={y} width={sw} height={sH} fill="url(#ce1-hatch)" />
+
+              {/* Tools zone — faint fill */}
+              {tw > 1 && (
+                <rect x={ox + sw} y={y} width={tw} height={sH}
+                  fill={EC.black} opacity={0.06} />
+              )}
+
+              {/* Internal dividers */}
+              {sw > 2 && (
+                <line x1={ox + sw} y1={y} x2={ox + sw} y2={y + sH}
+                  stroke={EC.gray85} strokeWidth={EC.lineLight} />
+              )}
+              {tw > 3 && (
+                <line x1={ox + sw + tw} y1={y} x2={ox + sw + tw} y2={y + sH}
+                  stroke={EC.gray85} strokeWidth={EC.lineLight} />
+              )}
+
+              {/* Dimension line — tool span */}
+              {tw > 18 && (
+                <g>
+                  <line x1={ox + sw} y1={y - 7} x2={ox + sw + tw} y2={y - 7}
+                    stroke={EC.gray60} strokeWidth={EC.lineLight} />
+                  <line x1={ox + sw} y1={y - 11} x2={ox + sw} y2={y - 3}
+                    stroke={EC.gray60} strokeWidth={EC.lineLight} />
+                  <line x1={ox + sw + tw} y1={y - 11} x2={ox + sw + tw} y2={y - 3}
+                    stroke={EC.gray60} strokeWidth={EC.lineLight} />
+                  <text x={ox + sw + tw / 2} y={y - 13} textAnchor="middle"
+                    fontFamily={EC.font} fontSize={7} fontWeight={200} fill={EC.gray60}>
+                    {r.n} TOOLS
+                  </text>
+                </g>
+              )}
+
+              {/* Accent highlight on v5.0 workspace */}
+              {last && (
+                <rect x={ox + sw + tw} y={y} width={r.bw - sw - tw} height={sH}
+                  fill="none" stroke={EC.accent} strokeWidth={EC.lineBold} opacity={0.3} />
+              )}
+
+              {/* Hero number */}
+              <text
+                x={ox + r.bw + 28} y={y + sH / 2 + 10}
+                fontFamily={EC.font} fontSize={last ? 32 : 26} fontWeight={200}
+                fill={last ? EC.accent : EC.black}
+                style={{ fontVariantNumeric: "tabular-nums" }}>
+                {r.n}
+              </text>
+            </g>
+          );
+        })}
+
+        {/* Legend */}
+        <g transform={`translate(${ox}, ${H - 14})`}>
+          <rect width={8} height={8} fill="url(#ce1-hatch)"
+            stroke={EC.gray85} strokeWidth={EC.lineLight} />
+          <text x={14} y={7} fontFamily={EC.font} fontSize={7}
+            fontWeight={200} fill={EC.gray60}>SYSTEM</text>
+
+          <rect x={62} width={8} height={8} fill={EC.black} opacity={0.06}
+            stroke={EC.gray85} strokeWidth={EC.lineLight} />
+          <text x={76} y={7} fontFamily={EC.font} fontSize={7}
+            fontWeight={200} fill={EC.gray60}>TOOLS</text>
+
+          <rect x={118} width={8} height={8} fill="none"
+            stroke={EC.black} strokeWidth={EC.lineReg} />
+          <text x={132} y={7} fontFamily={EC.font} fontSize={7}
+            fontWeight={200} fill={EC.gray60}>WORKSPACE</text>
         </g>
-
-        {/* v3.3.1: Optimization */}
-        <g transform="translate(180, 0)">
-          <DViewport w={100} h={120} sys={25} tool={35} work={40} label="v3.3.1 (200K)" />
-          <DImpact num="15" sub="tools" x={50} y={160} />
-        </g>
-
-        {/* v5.0: The Horizon */}
-        <g transform="translate(320, 0)">
-          <DViewport w={260} h={120} sys={20} tool={10} work={230} label="v5.0 (1M)" highlight />
-          <DImpact num="3" sub="tools" x={130} y={160} accent />
-        </g>
-      </g>
-
-      {/* --- Legend: Centered --- */}
-      <g transform={`translate(${W / 2 - 105}, 275)`}>
-        <rect width={6} height={6} fill={COLORS["solid-primary"].fill} />
-        <text x={12} y={6} fontFamily={TYPO.family} fontSize={8} fontWeight={600} fill={TYPO.caption.color}>SYSTEM</text>
-        
-        <rect x={60} width={6} height={6} fill={COLORS.primary.fill} />
-        <text x={72} y={6} fontFamily={TYPO.family} fontSize={8} fontWeight={600} fill={TYPO.caption.color}>TOOLS</text>
-        
-        <rect x={120} width={6} height={6} fill="#FFFFFF" stroke={COLORS.surface.stroke} strokeWidth={0.5} strokeDasharray="1 1" />
-        <text x={132} y={6} fontFamily={TYPO.family} fontSize={8} fontWeight={600} fill={TYPO.caption.color}>FREE SPACE</text>
-      </g>
-    </DiagramContainer>
-  );
-}
-
-function DViewport({ w, h, sys, tool, work, label, highlight }: any) {
-  return (
-    <g>
-      {/* Outer Guide Marks (Blueprint style) */}
-      <path d={`M 0,10 L 0,0 L 10,0`} fill="none" stroke={COLORS.surface.stroke} strokeWidth={0.5} />
-      <path d={`M ${w-10},0 L ${w},0 L ${w},10`} fill="none" stroke={COLORS.surface.stroke} strokeWidth={0.5} />
-      
-      {/* Background Rail */}
-      <rect width={w} height={h} fill="#F8FAFC" stroke={COLORS.surface.stroke} strokeWidth={0.5} />
-      
-      {/* Segments */}
-      <rect width={sys} height={h} fill={COLORS["solid-primary"].fill} opacity={0.9} />
-      <rect x={sys} width={tool} height={h} fill={COLORS.primary.fill} stroke={COLORS.primary.stroke} strokeWidth={0.5} />
-      
-      {/* WORKSPACE: Gray Dashed Border */}
-      <rect x={sys + tool} width={work} height={h} fill="#FFFFFF" stroke={COLORS.surface.stroke} strokeWidth={0.5} strokeDasharray="2 2" />
-      
-      {/* Highlight for v5.0 Horizon */}
-      {highlight && (
-        <rect x={sys + tool} width={work} height={h} fill="none" stroke={COLORS.accent.fill} strokeWidth={0.5} opacity={0.5} />
-      )}
-
-      {/* FREE SPACE: Black text */}
-      {work > 60 && (
-        <text x={sys + tool + work/2} y={h/2} textAnchor="middle" dominantBaseline="middle" fontFamily={TYPO.family} fontSize={8} fontWeight={700} fill={TYPO.label.color} opacity={0.8}>FREE SPACE</text>
-      )}
-
-      <text x={0} y={-12} fontFamily={TYPO.family} fontSize={9} fontWeight={800} fill={TYPO.label.color} style={{ letterSpacing: '0.05em' }}>{label}</text>
-    </g>
-  );
-}
-
-function DImpact({ num, sub, x, y, accent }: any) {
-  return (
-    <g transform={`translate(${x}, ${y})`}>
-      <text textAnchor="middle" fontFamily={TYPO.family} fontSize={28} fontWeight={800} fill={accent ? COLORS.accent.fill : TYPO.label.color}>{num}</text>
-      <text y={14} textAnchor="middle" fontFamily={TYPO.family} fontSize={8} fontWeight={400} fill={TYPO.caption.color} style={{ letterSpacing: '0.1em' }}>{sub.toUpperCase()}</text>
-    </g>
+      </svg>
+    </div>
   );
 }

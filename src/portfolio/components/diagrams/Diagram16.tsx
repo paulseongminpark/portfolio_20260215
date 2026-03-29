@@ -26,13 +26,10 @@ const tools = [
   { name: "Hindsight",    what: "대화 인덱싱" },
 ];
 
-const startX = 10;
-const nameW = 80;
 const barX = 100;
 const barMaxW = 160;
 const rowH = 24;
 const startY = 30;
-const limitX = barX + barMaxW + 16;
 
 export function Diagram16() {
   return (

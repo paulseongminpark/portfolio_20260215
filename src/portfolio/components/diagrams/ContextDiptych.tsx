@@ -61,7 +61,7 @@ function LeftPanel() {
 
 /* ── Right: 수직 깊이 — 이 시스템만 도달한다 ── */
 function RightPanel() {
-  const cx = 100, startY = 24;
+  const cx = 100;
   const depths = [
     { y: 34,  label: "뭘 했는지",              gray: true },
     { y: 60,  label: "왜 그렇게 했는지",        gray: false },
