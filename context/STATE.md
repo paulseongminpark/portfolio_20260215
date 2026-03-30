@@ -93,6 +93,7 @@ _Last Session: 2026-03-29 — El Croquis 디자인 시스템 전면 적용 (D1~D
   - "이색적인 접합" 4번 카드 제거 — show vs tell 원칙
 
 ## 최근 결정
+- 2026-03-29: CE 다이어그램 1~7 + CEFolderPath El Croquis §12 전면 재설계 — DiagramContainer 제거, 8개 고유 형식, CE6=Foundation Plan, CE7=Double Helix
 - 2026-03-29: El Croquis 디자인 시스템 전면 적용 — D1~D16 재설계 + ContextDiptych/CEScaleDiptych/Diagram16/CEFolderPath 신규
 - 2026-03-29: Findings 섹션 신규 추가 — El Croquis 인라인 SVG 커버 + memory-ontology PDF 11종 + linguistic-llm-ontology PDF 1종
 - 2026-03-25: MCP-Memory 상세 TOC 카드 4장 추가, 노드 수 4962 갱신, 저장 구조 상세 설명 추가

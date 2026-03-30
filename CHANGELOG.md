@@ -2,6 +2,19 @@
 
 ## 2026-03-29
 
+### CE 다이어그램 1~7 + CEFolderPath El Croquis §12 전면 재설계
+- CE1: Erosion Section Strip (24→15→3 도구 비례 스트립)
+- CE2: Persistence Waveform (시간축 펄스 밀도 4층)
+- CE3: Scale Routing (Gate A/B/C 원+카드 수평)
+- CE4: Vertical Descent (읽기 순서 축소 원 수직)
+- CE3+CE4 Diptych: CEScaleDiptych 래퍼 (2fr 3fr)
+- CE5: Arc Gauge (500K/700K/900K 반원형 압력계)
+- CE6: Foundation Plan (92 유령 블록 + 3 accent 뿌리)
+- CE7: Double Helix (이중 나선, 3교차점 PE→CE→? 질문 진화)
+- CEFolderPath: 4컬럼 스펙시트 (Reading Path | Index | Rules | Pipeline)
+- §12-1 적용: DiagramContainer 제거 → 로컬 EC 토큰 + 자체 div+svg
+- 커밋: 61ee3e2 (CE3~7+FolderPath), f227b60 (CE1·2)
+
 ### El Croquis 디자인 시스템 전면 적용
 - D1~D16 전면 재설계: El Croquis 디자인 언어 (크림 배경, 기사 제목 타이포, 절제된 선)
 - CE 다이어그램 1~7 El Croquis 스타일 전환
