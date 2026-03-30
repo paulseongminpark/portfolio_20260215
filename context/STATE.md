@@ -1,6 +1,6 @@
 # portfolio STATE
-_Updated: 2026-03-29_
-_Last Session: 2026-03-29 — El Croquis 디자인 시스템 전면 적용 (D1~D16 재설계 + 신규 4개) + Findings 섹션 신규 (SVG 커버 + PDF 12종) + TS 빌드 에러 수정._
+_Updated: 2026-03-30_
+_Last Session: 2026-03-30 — session-end 정리. push 1커밋 대기, untracked findings/ 파일 확인._
 
 ## 목적
 개인 포트폴리오 웹사이트 (React + Vite, vanilla CSS, hash routing)
