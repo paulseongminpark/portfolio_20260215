@@ -26,9 +26,11 @@ import { CEDiagram1 } from './diagrams/ce/CEDiagram1';
 import { CEDiagram2 } from './diagrams/ce/CEDiagram2';
 import { CEDiagram3 } from './diagrams/ce/CEDiagram3';
 import { CEDiagram4 } from './diagrams/ce/CEDiagram4';
+import { CEScaleDiptych } from './diagrams/ce/CEScaleDiptych';
 import { CEDiagram5 } from './diagrams/ce/CEDiagram5';
 import { CEDiagram6 } from './diagrams/ce/CEDiagram6';
 import { CEDiagram7 } from './diagrams/ce/CEDiagram7';
+import { CEFolderPath } from './diagrams/ce/CEFolderPath';
 import { CosmosShader } from './CosmosShader';
 import { Triptych } from './diagrams/Triptych';
 import { Diptych } from './diagrams/Diptych';
@@ -450,9 +452,10 @@ function renderSingleBlock(block: Block, idx: number, activeWork: string, parent
         if (activeWork === 'context-engineering') {
           if (num === 1) return <CEDiagram1 key={idx} />;
           if (num === 2) return <CEDiagram2 key={idx} />;
-          if (num === 3) return <CEDiagram3 key={idx} />;
-          if (num === 4) return <CEDiagram4 key={idx} />;
+          if (num === 3) return <CEScaleDiptych key={idx} />;
+          if (num === 4) return null;
           if (num === 5) return <CEDiagram5 key={idx} />;
+          if (num === 55) return <CEFolderPath key={idx} />;
           if (num === 6) return <CEDiagram6 key={idx} />;
           if (num === 7) return <CEDiagram7 key={idx} />;
         } else {

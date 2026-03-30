@@ -1,65 +1,150 @@
-/** CEDiagram4: "읽기의 순서" 
- * PSS Sequential Engine Applied
+/** CEDiagram4 — "읽기의 순서"
+ * Format: Vertical Descent — shrinking circles with cost tags
+ * El Croquis Design System §12
  */
-import { DiagramContainer, COLORS, TYPO, } from "../diagramTokens";
 
-export function CEDiagram4() {
-  const W = 480;
-  const H = 420;
+const EC = {
+  accent:    "#CC0000",
+  black:     "#000000",
+  gray40:    "#666666",
+  gray60:    "#999999",
+  gray85:    "#D8D8D8",
+  gray90:    "#E8E8E8",
+  font:      "'Inter', -apple-system, 'Noto Sans KR', sans-serif",
+  lineLight: 0.25,
+  lineReg:   0.5,
+  lineBold:  0.75,
+} as const;
+
+export function CEDiagram4({ diptych }: { diptych?: boolean } = {}) {
+  const W = 420, H = 360;
+  const cx = 160;
+
   const steps = [
-    { label: "INDEX", sub: "00_index.md", tokens: "100t", w1: 320, w2: 260, fill: COLORS.surface.fill },
-    { label: "SYMBOLS", sub: "get_symbols_overview", tokens: "500t", w1: 260, w2: 180, fill: COLORS.primary.fill },
-    { label: "SIGNATURE", sub: "find_symbol(body=F)", tokens: "200t", w1: 180, w2: 100, fill: COLORS["solid-primary"].fill, dark: true },
-    { label: "BODY", sub: "Full Context Read", tokens: "Varies", w1: 100, w2: 40, fill: COLORS["solid-neutral"].fill, dark: true },
+    { label: "INDEX",     sub: "00_index.md",          cost: "~100t",  r: 42 },
+    { label: "SYMBOLS",   sub: "get_symbols_overview",  cost: "~500t",  r: 33 },
+    { label: "SIGNATURE", sub: "find_symbol(body=F)",   cost: "~200t",  r: 24 },
+    { label: "BODY",      sub: "Full context read",     cost: "Varies", r: 15 },
   ];
 
-  let currentY = 60;
-  const stepH = 72;
-  const midX = 220;
+  /* vertical positions: accumulate based on radius + gap */
+  const positions: number[] = [];
+  let py = 52;
+  for (const s of steps) {
+    py += s.r;
+    positions.push(py);
+    py += s.r + 14;
+  }
+
+  const tagX = cx + 70;
 
   return (
-    <DiagramContainer viewBox={`0 0 ${W} ${H}`} maxWidth={500} marginTop={40}>
-      {/* --- Centered Header --- */}
-      <g transform={`translate(${W / 2}, 30)`}>
-        <text textAnchor="middle" fontFamily={TYPO.family} fontSize={8} fontWeight={800} fill={TYPO.caption.color} style={{ letterSpacing: '0.1em' }}>
-          READING PIPELINE: TOKEN EFFICIENCY FLOW
+    <div style={diptych ? {} : { margin: "48px auto 40px", maxWidth: 460 }}>
+      <svg viewBox={`0 0 ${W} ${H}`} width="100%" style={{ display: "block" }}>
+
+        {/* Title */}
+        <text x={cx} y={22} textAnchor="middle" fontFamily={EC.font} fontSize={9}
+          fontWeight={300} fill={EC.gray40} style={{ letterSpacing: "1.5px" }}>
+          PROGRESSIVE READING
         </text>
-        <line x1={-90} y1={8} x2={90} y2={8} stroke={COLORS.surface.stroke} strokeWidth={0.5} />
-      </g>
+        <line x1={cx - 60} y1={30} x2={cx + 60} y2={30}
+          stroke={EC.gray90} strokeWidth={EC.lineLight} />
 
-      {steps.map((s, i) => {
-        const y = currentY;
-        currentY += stepH + 4;
-        const txtColor = s.dark ? TYPO.onDark : TYPO.label.color;
-        const subColor = s.dark ? "rgba(255,255,255,0.6)" : TYPO.caption.color;
+        {/* Depth axis label */}
+        <g transform={`translate(24, ${positions[0]})`}>
+          <line x1={0} y1={0} x2={0} y2={positions[3] - positions[0]}
+            stroke={EC.gray85} strokeWidth={EC.lineReg} />
+          <text x={0} y={-8} textAnchor="middle" fontFamily={EC.font} fontSize={6}
+            fontWeight={200} fill={EC.gray60} style={{ letterSpacing: "1px" }}>
+            BROAD
+          </text>
+          <text x={0} y={positions[3] - positions[0] + 12} textAnchor="middle"
+            fontFamily={EC.font} fontSize={6} fontWeight={200} fill={EC.gray60}
+            style={{ letterSpacing: "1px" }}>
+            DEEP
+          </text>
+        </g>
 
-        return (
-          <g key={i}>
-            {/* Funnel Segment */}
-            <path d={`M ${midX - s.w1/2},${y} L ${midX + s.w1/2},${y} L ${midX + s.w2/2},${y + stepH} L ${midX - s.w2/2},${y + stepH} Z`} 
-              fill={s.fill} stroke={COLORS.surface.stroke} strokeWidth={0.5} />
-            
-            {/* Labels */}
-            <text x={midX} y={y + 28} textAnchor="middle" fontFamily={TYPO.family} fontSize={10} fontWeight={800} fill={txtColor} style={{ letterSpacing: '0.1em' }}>{s.label}</text>
-            <text x={midX} y={y + 44} textAnchor="middle" fontFamily={TYPO.family} fontSize={8} fill={subColor}>{s.sub}</text>
-            
-            {/* Cost Metric (Right) */}
-            <g transform={`translate(${midX + s.w1/2 + 25}, ${y + stepH/2})`}>
-               <text fontFamily={TYPO.family} fontSize={8} fontWeight={400} fill={TYPO.caption.color}>COST</text>
-               <text y={12} fontFamily={TYPO.family} fontSize={9} fontWeight={800} fill={TYPO.label.color}>{s.tokens}</text>
+        {/* Connector spine */}
+        {steps.map((s, i) => {
+          if (i === steps.length - 1) return null;
+          const y1 = positions[i] + s.r;
+          const y2 = positions[i + 1] - steps[i + 1].r;
+          return (
+            <line key={i} x1={cx} y1={y1} x2={cx} y2={y2}
+              stroke={EC.gray85} strokeWidth={EC.lineLight} />
+          );
+        })}
+
+        {/* Steps */}
+        {steps.map((s, i) => {
+          const y = positions[i];
+          const isLast = i === steps.length - 1;
+          const stk = isLast ? EC.gray60 : EC.black;
+          const stw = i === 0 ? EC.lineBold : EC.lineReg;
+
+          return (
+            <g key={i}>
+              {/* Halo */}
+              <circle cx={cx} cy={y} r={s.r + 4}
+                fill="none" stroke={EC.gray90} strokeWidth={EC.lineLight} />
+
+              {/* Main circle */}
+              <circle cx={cx} cy={y} r={s.r}
+                fill="white" stroke={stk} strokeWidth={stw} />
+
+              {/* Label inside circle */}
+              <text x={cx} y={y + 1} textAnchor="middle" dominantBaseline="middle"
+                fontFamily={EC.font} fontSize={s.r > 20 ? 9 : 7} fontWeight={300}
+                fill={stk} style={{ letterSpacing: "0.5px" }}>
+                {s.label}
+              </text>
+
+              {/* ── Cost tag (rectangle, right side) ── */}
+              <line x1={cx + s.r} y1={y} x2={tagX - 2} y2={y}
+                stroke={EC.gray85} strokeWidth={EC.lineLight} />
+
+              <rect x={tagX} y={y - 14} width={72} height={28}
+                fill="none" stroke={EC.gray85} strokeWidth={EC.lineLight} />
+              <text x={tagX + 36} y={y - 2} textAnchor="middle"
+                fontFamily={EC.font} fontSize={7} fontWeight={200} fill={EC.gray60}>
+                {s.sub}
+              </text>
+              <text x={tagX + 36} y={y + 10} textAnchor="middle"
+                fontFamily={EC.font} fontSize={9} fontWeight={300} fill={EC.black}
+                style={{ fontVariantNumeric: "tabular-nums" }}>
+                {s.cost}
+              </text>
             </g>
-          </g>
-        );
-      })}
+          );
+        })}
 
-      {/* --- High-Impact Annotation --- */}
-      <g transform="translate(40, 120)">
-        <path d="M 0,0 C -15,0 -15,140 0,140" fill="none" stroke={COLORS.accent.fill} strokeWidth={1} strokeDasharray="3 2" />
-        <circle cx={0} cy={0} r={1.5} fill={COLORS.accent.fill} />
-        <circle cx={0} cy={140} r={1.5} fill={COLORS.accent.fill} />
-        <text x={-10} y={70} textAnchor="middle" fontFamily={TYPO.family} fontSize={9} fontWeight={800} fill={COLORS.accent.fill} transform="rotate(-90, -10, 70)">EFFICIENCY ZONE</text>
-        <text x={10} y={70} fontFamily={TYPO.family} fontSize={8} fill={TYPO.caption.color}>대부분 여기서 끝남</text>
-      </g>
-    </DiagramContainer>
+        {/* "대부분 여기서 끝남" annotation at SIGNATURE level */}
+        {(() => {
+          const ay = positions[2];
+          return (
+            <g>
+              <line x1={cx - steps[2].r - 4} y1={ay} x2={52} y2={ay}
+                stroke={EC.accent} strokeWidth={EC.lineLight} />
+              <circle cx={52} cy={ay} r={1.5} fill={EC.accent} />
+              <text x={50} y={ay - 6} textAnchor="end"
+                fontFamily={EC.font} fontSize={7} fontWeight={300} fill={EC.accent}>
+                대부분 여기서
+              </text>
+              <text x={50} y={ay + 6} textAnchor="end"
+                fontFamily={EC.font} fontSize={7} fontWeight={300} fill={EC.accent}>
+                끝남
+              </text>
+            </g>
+          );
+        })()}
+
+        {/* Bottom caption */}
+        <text x={cx} y={H - 12} textAnchor="middle"
+          fontFamily={EC.font} fontSize={9} fontWeight={200} fill={EC.gray60}>
+          인덱스만 읽으면 되는데 전문을 읽는 건 낭비다
+        </text>
+      </svg>
+    </div>
   );
 }
