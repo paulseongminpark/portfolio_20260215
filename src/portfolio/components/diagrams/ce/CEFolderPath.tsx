@@ -19,20 +19,6 @@ const EC = {
 const fs = 9;
 const lh = 15;
 
-/* ── Shared: section header ── */
-function _SecHead({ y, label, w }: { y: number; label: string; w: number }) {
-  return (
-    <g>
-      <text x={0} y={y} fontFamily={EC.font} fontSize={6} fontWeight={300}
-        fill={EC.gray85} style={{ letterSpacing: "2px" }}>
-        {label}
-      </text>
-      <line x1={0} y1={y + 4} x2={w * 0.4} y2={y + 4}
-        stroke={EC.gray90} strokeWidth={EC.lineLight} />
-    </g>
-  );
-}
-
 /* ── Shared: hero number ── */
 function Hero({ x, y, n, sub }: { x: number; y: number; n: string; sub: string }) {
   return (
@@ -313,7 +299,7 @@ function Col3({ x, w }: { x: number; w: number }) {
       {(() => {
         let cy = 98;
         return sections.map((sec, si) => {
-          const _sectionY = cy;
+          void cy; // anchor for section start
 
           /* Section label — floating above first item */
           const labelEl = sec.label ? (
