@@ -7,6 +7,7 @@ import { FadeIn } from "./components/FadeIn";
 import { SectionLabel } from "./components/SectionLabel";
 import { GridCard } from "./components/WorkCard";
 import { WorkDetail } from "./components/WorkDetail";
+import { FindingsSection } from "./components/FindingsSection";
 
 // ── TOC ──────────────────────────────────────────────────────────
 function scrollToId(id: string) {
@@ -32,8 +33,9 @@ const P12_TOC: Array<{ id: string; label: string; mini: string; items: Array<{ i
     { id: "now-flow",   label: "Flow" },
     { id: "now-loop",   label: "Loop" },
   ]},
-  { id: "forward", label: "Forward", mini: "FW", items: [] },
-  { id: "contact", label: "Contact", mini: "CT", items: [] },
+  { id: "forward",  label: "Forward",  mini: "FW", items: [] },
+  { id: "findings", label: "Findings", mini: "FD", items: [] },
+  { id: "contact",  label: "Contact",  mini: "CT", items: [] },
 ];
 
 // ── 데이터 ──────────────────────────────────────────────────────
@@ -156,8 +158,9 @@ const NAV_LINKS = [
   { label: "Journey",        id: "journey" },
   { label: "Work",           id: "work" },
   { label: "Now",            id: "now" },
-  { label: "Forward",        id: "forward" },
-  { label: "Contact",        id: "contact" },
+  { label: "Forward",        id: "forward"  },
+  { label: "Findings",       id: "findings" },
+  { label: "Contact",        id: "contact"  },
 ];
 
 function Nav({ onLogoClick, onNavClick, showLogo = true }: { onLogoClick?: () => void; onNavClick?: (id: string) => void; showLogo?: boolean }) {
@@ -610,11 +613,14 @@ export default function Page12() {
         </div>
       </section>
 
-      {/* ── 07 · Contact ── */}
+      {/* ── 07 · Findings ── */}
+      <FindingsSection />
+
+      {/* ── 08 · Contact ── */}
       <section id="contact" className="p12-section" style={{ background: "#ffffff" }}>
         <div className="p12-container">
           <FadeIn>
-            <SectionLabel>07 · Contact</SectionLabel>
+            <SectionLabel>08 · Contact</SectionLabel>
             <h2 className="p12-h2" style={{ color: "#111", marginTop: 8, marginBottom: 48 }}>Let's talk.</h2>
             <a href="mailto:paulseongminpark@gmail.com" className="p12-contact-link" style={{ color: "#111111" }}>
               paulseongminpark@gmail.com

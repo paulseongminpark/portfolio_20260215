@@ -1037,4 +1037,197 @@
   .wd-placeholder-grid { grid-template-columns: 1fr 1fr; }
   .wd-diagram-bg-1, .wd-diagram-bg-2 { padding: 20px 16px; }
   .wd-dark-card { padding: 20px 16px; }
+
+  /* Findings mobile */
+  .p12-finding-essay-card { max-width: 100%; }
+  .p12-finding-series-grid { grid-template-columns: repeat(2, 1fr); gap: 10px; }
+}
+
+/* ── Findings ── */
+
+/* Essay — portrait, solo row */
+.p12-finding-essay-card {
+  display: block;
+  text-decoration: none;
+  color: inherit;
+  max-width: 216px;
+  margin-bottom: 64px;
+  cursor: pointer;
+}
+.p12-finding-essay-cover {
+  aspect-ratio: 3 / 4;
+  overflow: hidden;
+  border-radius: 2px;
+  border: 1px solid #e8e8e8;
+  margin-bottom: 14px;
+  background: #f5f5f5;
+  position: relative;
+}
+.p12-finding-essay-cover svg {
+  display: block;
+  width: 100%;
+  height: 100%;
+  transition: opacity 0.3s ease;
+}
+.p12-finding-essay-card:hover .p12-finding-essay-cover svg {
+  opacity: 0.92;
+}
+.p12-finding-essay-meta {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  padding: 2px 0;
+}
+.p12-finding-essay-title {
+  font-family: 'Inter', sans-serif;
+  font-size: 17px;
+  font-weight: 700;
+  color: #111;
+  line-height: 1.25;
+  letter-spacing: -0.01em;
+}
+.p12-finding-essay-sub {
+  font-family: 'Noto Sans KR', sans-serif;
+  font-size: 13px;
+  color: #666;
+  line-height: 1.5;
+}
+
+/* Group label — 통일 스타일 */
+.p12-finding-group-label {
+  font-family: 'Inter', sans-serif;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  color: #bbb;
+  margin-bottom: 14px;
+}
+
+.p12-finding-eyebrow {
+  font-family: 'Inter', sans-serif;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: #aaa;
+  display: block;
+  margin-bottom: 10px;
+}
+.p12-finding-title {
+  font-family: 'Inter', sans-serif;
+  font-size: 22px;
+  font-weight: 700;
+  color: #111;
+  margin: 0 0 8px;
+  line-height: 1.25;
+  letter-spacing: -0.01em;
+}
+.p12-finding-subtitle {
+  font-family: 'Noto Sans KR', sans-serif;
+  font-size: 14px;
+  color: #555;
+  margin: 0 0 14px;
+  line-height: 1.6;
+}
+.p12-finding-tags {
+  font-family: 'Inter', sans-serif;
+  font-size: 12px;
+  color: #999;
+  letter-spacing: 0.02em;
+  margin: 0;
+}
+.p12-finding-read {
+  font-family: 'Inter', sans-serif;
+  font-size: 13px;
+  font-weight: 600;
+  color: #D4632D;
+  letter-spacing: 0.04em;
+  align-self: flex-end;
+}
+
+/* Series header */
+.p12-finding-series-header {
+  margin-bottom: 20px;
+}
+.p12-finding-series-title {
+  font-family: 'Inter', 'Noto Sans KR', sans-serif;
+  font-size: 18px;
+  font-weight: 700;
+  color: #111;
+  margin: 4px 0 4px;
+  letter-spacing: -0.01em;
+}
+.p12-finding-series-subtitle {
+  font-family: 'Noto Sans KR', sans-serif;
+  font-size: 13px;
+  color: #888;
+  margin: 0;
+}
+
+/* Series grid — 5열 */
+.p12-finding-series-grid {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 16px;
+}
+.p12-finding-doc-card {
+  text-decoration: none;
+  color: inherit;
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+}
+.p12-finding-doc-cover {
+  aspect-ratio: 3 / 4;
+  overflow: hidden;
+  border-radius: 2px;
+  border: 1px solid #e8e8e8;
+  margin-bottom: 8px;
+  background: #f5f5f5;
+  position: relative;
+}
+.p12-finding-doc-cover svg {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+.p12-finding-doc-card:hover .p12-finding-doc-cover svg {
+  opacity: 0.92;
+  transition: opacity 0.3s ease;
+}
+.p12-finding-doc-meta {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+.p12-finding-doc-number {
+  font-family: 'Inter', sans-serif;
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  color: #bbb;
+  text-transform: uppercase;
+}
+.p12-finding-doc-title {
+  font-family: 'Inter', sans-serif;
+  font-size: 13px;
+  font-weight: 600;
+  color: #333;
+  line-height: 1.3;
+}
+
+/* Read → 커버 오버레이 */
+.p12-finding-cover-read {
+  position: absolute;
+  bottom: 12px;
+  right: 14px;
+  font-family: 'Inter', sans-serif;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: #CC0000;
+  pointer-events: none;
+  user-select: none;
 }
