@@ -63,7 +63,7 @@ export function CEDiagram6() {
   const scale = totalW > fieldW ? fieldW / totalW : 1;
 
   /* root card positions */
-  const rootY = gradeY + 14;
+  const _rootY = gradeY + 14;
   const cardY = H - 68;
   const cardW = 80, cardH = 36;
 

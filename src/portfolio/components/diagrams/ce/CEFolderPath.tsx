@@ -20,7 +20,7 @@ const fs = 9;
 const lh = 15;
 
 /* ── Shared: section header ── */
-function SecHead({ y, label, w }: { y: number; label: string; w: number }) {
+function _SecHead({ y, label, w }: { y: number; label: string; w: number }) {
   return (
     <g>
       <text x={0} y={y} fontFamily={EC.font} fontSize={6} fontWeight={300}
@@ -174,7 +174,7 @@ function Col2({ x, w }: { x: number; w: number }) {
     items.push({ y, text, color: EC.black, weight: 300, isFmt: true });
     y += lh + 1;
   }
-  function rule(text: string, color = EC.gray60) {
+  function rule(text: string, color: string = EC.gray60) {
     items.push({ y, text, color, weight: 200 });
     y += lh;
   }
@@ -313,7 +313,7 @@ function Col3({ x, w }: { x: number; w: number }) {
       {(() => {
         let cy = 98;
         return sections.map((sec, si) => {
-          const sectionY = cy;
+          const _sectionY = cy;
 
           /* Section label — floating above first item */
           const labelEl = sec.label ? (

@@ -24,8 +24,6 @@ import { Diagram15 } from './diagrams/Diagram15';
 import { Diagram16 } from './diagrams/Diagram16';
 import { CEDiagram1 } from './diagrams/ce/CEDiagram1';
 import { CEDiagram2 } from './diagrams/ce/CEDiagram2';
-import { CEDiagram3 } from './diagrams/ce/CEDiagram3';
-import { CEDiagram4 } from './diagrams/ce/CEDiagram4';
 import { CEScaleDiptych } from './diagrams/ce/CEScaleDiptych';
 import { CEDiagram5 } from './diagrams/ce/CEDiagram5';
 import { CEDiagram6 } from './diagrams/ce/CEDiagram6';
