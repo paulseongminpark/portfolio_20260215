@@ -1,5 +1,23 @@
 # Portfolio CHANGELOG
 
+## 2026-03-29
+
+### El Croquis 디자인 시스템 전면 적용
+- D1~D16 전면 재설계: El Croquis 디자인 언어 (크림 배경, 기사 제목 타이포, 절제된 선)
+- CE 다이어그램 1~7 El Croquis 스타일 전환
+- 신규 다이어그램 4개: ContextDiptych, CEScaleDiptych, Diagram16, CEFolderPath (4컬럼)
+- 텍스트 하이라이트 시스템 추가
+
+### Findings 섹션 신규 (07 · Findings)
+- El Croquis 인라인 SVG 커버 디자인
+- memory-ontology PDF 11종 (00_Index ~ 09_Lens_E)
+- linguistic-llm-ontology PDF 추가 (8.7MB, 폰트 최적화)
+- FindingsSection.tsx 컴포넌트 구현
+
+### 빌드 에러 수정
+- TS6133 미사용 변수 제거 (2회)
+- TS2345 타입 확장
+
 ## 2026-03-26
 
 ### 다이어그램 도식 시스템 구축 + D1~D5 + CE 7개
