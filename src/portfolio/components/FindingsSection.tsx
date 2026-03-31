@@ -154,7 +154,7 @@ function DocCoverSVG({ doc }: { doc: DocData }) {
       <text x="278" y="70" fontFamily="Inter, sans-serif" fontSize="44" fontWeight="800" letterSpacing="-2" fill="#f0f0f0" textAnchor="end">{doc.n}</text>
 
       {/* eyebrow */}
-      <text x={MARGIN} y="26" fontFamily="Inter, sans-serif" fontSize="7.5" fontWeight="600" letterSpacing="2" fill="#aaa">{doc.label}</text>
+      <text x={MARGIN} y="26" fontFamily="Inter, sans-serif" fontSize="8.5" fontWeight="600" letterSpacing="2" fill="#CC0000">{doc.label}</text>
       <line x1={MARGIN} y1="34" x2="278" y2="34" stroke="#e0e0e0" strokeWidth="0.5"/>
 
       {/* title */}
