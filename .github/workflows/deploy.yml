@@ -27,11 +27,6 @@ jobs:
       - name: Build
         run: npm run build
 
-      - name: Copy context
-        run: |
-          mkdir -p dist/context
-          cp context/STATE.md dist/context/
-
       - name: Copy vercel.json to dist
         run: cp vercel.json dist/
 

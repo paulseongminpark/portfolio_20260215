@@ -54,9 +54,20 @@ ce-check.png
 ce-s3.png
 포트폴리오 - 모바일 작업.sti
 
+# Internal docs in src
+desktop.ini
+*.sti
+src/portfolio/components/diagrams/**/*.md
+src/portfolio/components/diagrams/**/*.png
+!src/portfolio/components/diagrams/**/*.tsx
+
 # Unused ideation variants
 src/portfolio/components/OntologySection_codex.tsx
 src/portfolio/components/OntologySection_gemini.tsx
 public/work/new projects/
 public/work/pmcc/pmcc_add1.jpg
 public/work/pmcc/pmcc_add2.JPG
+# also ignore versioned content
+src/portfolio/content/*_v[0-9]*.md
+src/portfolio/content/ORCHESTRATION_DETAIL_KO.md
+src/portfolio/content/TECH_REVIEW_DETAIL_KO.md
