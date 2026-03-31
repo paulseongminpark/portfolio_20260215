@@ -37,8 +37,6 @@ import { StructureDiptych } from './diagrams/StructureDiptych';
 import { ContextDiptych } from './diagrams/ContextDiptych';
 import { TRDiagram1 } from './diagrams/tr/TRDiagram1';
 import { TRDiagram2 } from './diagrams/tr/TRDiagram2';
-import { TRDiagram3 } from './diagrams/tr/TRDiagram3';
-import { TRDiagram4 } from './diagrams/tr/TRDiagram4';
 import { TRDiagram5 } from './diagrams/tr/TRDiagram5';
 import { TRDiagram6 } from './diagrams/tr/TRDiagram6';
 import { TRDiagram7 } from './diagrams/tr/TRDiagram7';
