@@ -21,6 +21,7 @@ const P12_TOC: Array<{ id: string; label: string; mini: string; items: Array<{ i
   { id: "why",     label: "Why I Build AI",  mini: "WH", items: [] },
   { id: "journey", label: "Journey",         mini: "JN", items: [] },
   { id: "work",    label: "Work",            mini: "WK", items: [
+    { id: "work-orchestration", label: "Orchestration" },
     { id: "work-mcp-memory",  label: "MCP-Memory" },
     { id: "work-ce",          label: "Context Engineering" },
     { id: "work-tech-review", label: "Tech Review" },
@@ -41,6 +42,7 @@ const P12_TOC: Array<{ id: string; label: string; mini: string; items: Array<{ i
 // ── 데이터 ──────────────────────────────────────────────────────
 const _B = import.meta.env.BASE_URL;
 const workItems = [
+  { id: "work-orchestration", workKey: "orchestration" as WorkKey, label: "Orchestration", eyebrow: "", tag: "AI · System", description: "AI를 조율하는 운영체제를 만든 과정. 스크립트 모음이 커널이 되기까지, 여러 번의 재설계가 필요했다." },
   { id: "work-mcp-memory", workKey: "mcp-memory" as WorkKey, label: "MCP-Memory", eyebrow: "", tag: "AI · Memory", description: "AI가 맥락을 추론하도록 지식의 구조를 설계한 실험. 25개 타입, 4,685개 노드의 온톨로지 기반 외부 기억 시스템.", bgImage: `${_B}work/mcp-memory/card.png` },
   { id: "work-ce", workKey: "context-engineering" as WorkKey, label: "Context Engineering", eyebrow: "", tag: "AI · System", description: "AI의 추론 품질을 극대화하기 위한 맥락 큐레이션 체계. 무엇을 넣고, 어떤 순서로 보여주고, 언제 덜어낼지를 4개 레이어로 설계한다. 시스템이 아니라 원칙이다.", bgImage: `${_B}work/context-engineering/card.png` },
   { id: "work-tech-review", workKey: "tech-review" as WorkKey, label: "Tech Review", eyebrow: "", tag: "AI · Automation", description: "매일 새벽 5시, 시스템이 깨어난다. 기사를 읽고, 영상을 보고, 트윗을 수집하고, 왜 중요한지를 쓰고, 발행하고, 다시 잠든다. 편집장이 없는 뉴스룸. 기자 대신 파이프라인.", bgImage: `${_B}work/tech-review/card.png`, bgPosition: "top center" },
@@ -50,6 +52,7 @@ const workItems = [
 ];
 
 function getWorkTitle(key: WorkKey) {
+  if (key === "orchestration") return "Orchestration";
   if (key === "mcp-memory") return "MCP-Memory";
   if (key === "context-engineering") return "Context Engineering";
   if (key === "tech-review") return "Tech Review";
@@ -58,7 +61,7 @@ function getWorkTitle(key: WorkKey) {
   return "PMCC";
 }
 
-const WORK_KEY_SET = new Set<WorkKey>(["mcp-memory", "context-engineering", "empty-house", "skin-diary", "pmcc", "tech-review"]);
+const WORK_KEY_SET = new Set<WorkKey>(["mcp-memory", "context-engineering", "empty-house", "skin-diary", "pmcc", "tech-review", "orchestration"]);
 
 function parseWorkFromSearch(search: string): WorkKey | null {
   const params = new URLSearchParams(search);
@@ -340,6 +343,7 @@ export default function Page12() {
   }, []);
 
   const WORK_KEY_MAP: Record<string, WorkKey> = {
+    "work-orchestration": "orchestration",
     "work-mcp-memory":   "mcp-memory",
     "work-ce":           "context-engineering",
     "work-tech-review":  "tech-review",

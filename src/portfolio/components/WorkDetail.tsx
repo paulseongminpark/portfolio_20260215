@@ -13,6 +13,7 @@ const GRADIENTS: Record<string, string> = {
   "empty-house":  "linear-gradient(135deg, #c0d0e5 0%, #9ab3d0 100%)",
   "skin-diary":   "linear-gradient(135deg, #b0d8c4 0%, #88c4a8 100%)",
   "pmcc":         "linear-gradient(135deg, #fed7aa 0%, #fbbf24 50%, #f59e0b 100%)",
+  orchestration:  "radial-gradient(ellipse at 25% 30%, rgba(120,80,200,0.7) 0%, transparent 50%), radial-gradient(ellipse at 75% 70%, rgba(90,60,170,0.6) 0%, transparent 45%), radial-gradient(ellipse at 50% 45%, rgba(70,40,150,0.5) 0%, transparent 55%), linear-gradient(150deg, #1a0f3a 0%, #3b2565 40%, #6b4daa 100%)",
 };
 
 const WORK_META: Record<string, {
@@ -87,6 +88,17 @@ const WORK_META: Record<string, {
       { value: "3", label: "해석 층" },
     ],
     overview: "매일 새벽 5시, 시스템이 깨어난다. 기사를 읽고, 영상을 보고, 트윗을 수집하고, 왜 중요한지를 쓰고, 발행한다.\n편집장이 없는 뉴스룸. 기자 대신 파이프라인. 내가 설계한 것은 렌즈뿐이다.",
+  },
+  orchestration: {
+    period: "2026–현재",
+    role: "시스템 설계 · 오케스트레이션",
+    tools: ["Claude Code", "Python Hooks", "MCP Protocol", "Bash", "Task Scheduler"],
+    stats: [
+      { value: "14", label: "Hooks" },
+      { value: "13", label: "Skills" },
+      { value: "3", label: "Workers" },
+    ],
+    overview: "AI를 조율하는 운영체제를 만든 과정.\n스크립트 모음이 커널이 되기까지, 여러 번의 재설계가 필요했다.",
   },
 };
 
@@ -239,6 +251,25 @@ export function WorkDetail({ activeWork, title, heroSubtitle: _heroSubtitle, par
   })();
 
   // mcp-memory: grouped TOC
+  const orchToc = [
+    { label: "시작", items: [
+      { name: "세션을 열면 아무것도 없다", id: "s-3" },
+      { name: "기억 × 거버넌스", id: "s-4" },
+    ]},
+    { label: "설계", items: [
+      { name: "1막 · 만들 수 있으니까", id: "s-5" },
+      { name: "2막 · 42K", id: "s-6" },
+      { name: "3막 · What만 남기다", id: "s-7" },
+      { name: "4막 · AI 없이 측정한다", id: "s-8" },
+    ]},
+    { label: "실체", items: [
+      { name: "커널", id: "s-9" },
+    ]},
+    { label: "강화", items: [
+      { name: "규율의 원천", id: "s-10" },
+      { name: "이 원리는 도구를 넘는다", id: "s-11" },
+    ]},
+  ];
   const mcpToc = [
     { label: "시작", items: [
       { name: "매일 일어나는 일", id: "s-3" },
@@ -318,8 +349,8 @@ export function WorkDetail({ activeWork, title, heroSubtitle: _heroSubtitle, par
       { name: "Takeaways", id: "s-8" },
     ]},
   ];
-  const isGroupedToc = activeWork === 'mcp-memory' || activeWork === 'context-engineering' || activeWork === 'tech-review' || activeWork === 'pmcc';
-  const groupedTocData = activeWork === 'pmcc' ? pmccToc : activeWork === 'context-engineering' ? ceToc : activeWork === 'tech-review' ? trToc : mcpToc;
+  const isGroupedToc = activeWork === 'mcp-memory' || activeWork === 'context-engineering' || activeWork === 'tech-review' || activeWork === 'pmcc' || activeWork === 'orchestration';
+  const groupedTocData = activeWork === 'pmcc' ? pmccToc : activeWork === 'orchestration' ? orchToc : activeWork === 'context-engineering' ? ceToc : activeWork === 'tech-review' ? trToc : mcpToc;
 
   const [activeGroup, setActiveGroup] = useState(isGroupedToc ? groupedTocData[0]?.label ?? "" : "");
   const [activeItem, setActiveItem] = useState(isGroupedToc ? groupedTocData[0]?.items[0]?.id ?? "" : tocItems[0]?.id ?? "");

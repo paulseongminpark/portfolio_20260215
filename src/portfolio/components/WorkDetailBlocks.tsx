@@ -43,6 +43,12 @@ import { TRDiagram7 } from './diagrams/tr/TRDiagram7';
 import { TRDiagram8 } from './diagrams/tr/TRDiagram8';
 import { TRDiagram9 } from './diagrams/tr/TRDiagram9';
 import { TRInterpretationDiptych } from './diagrams/tr/TRInterpretationDiptych';
+import { ORCHNetworkDiptych } from './diagrams/orch/ORCHNetworkDiptych';
+import { ORCHDiagram2 } from './diagrams/orch/ORCHDiagram2';
+import { ORCHKernelDiptych } from './diagrams/orch/ORCHKernelDiptych';
+import { ORCHDiagram5 } from './diagrams/orch/ORCHDiagram5';
+import { ORCHDiagram6 } from './diagrams/orch/ORCHDiagram6';
+import { ORCHDiagram7 } from './diagrams/orch/ORCHDiagram7';
 
 export function renderBold(text: string) {
   const parts = text.split(/(\*\*.+?\*\*|\{\{o:.+?\}\}|\{\{b:.+?\}\})/g).filter(Boolean);
@@ -464,6 +470,14 @@ function renderSingleBlock(block: Block, idx: number, activeWork: string, parent
           if (num === 55) return <CEFolderPath key={idx} />;
           if (num === 6) return <CEDiagram6 key={idx} />;
           if (num === 7) return <CEDiagram7 key={idx} />;
+        } else if (activeWork === 'orchestration') {
+          if (num === 1) return <ORCHNetworkDiptych key={idx} />;
+          if (num === 2) return <ORCHDiagram2 key={idx} />;
+          if (num === 3) return <ORCHKernelDiptych key={idx} />;
+          if (num === 4) return null;
+          if (num === 5) return <ORCHDiagram5 key={idx} />;
+          if (num === 6) return <ORCHDiagram6 key={idx} />;
+          if (num === 7) return <ORCHDiagram7 key={idx} />;
         } else if (activeWork === 'tech-review') {
           if (num === 1) return <TRDiagram1 key={idx} />;
           if (num === 2) return <TRDiagram2 key={idx} />;

@@ -4,8 +4,9 @@ import emptyHouseRaw from './EMPTY_HOUSE_CPS_DETAIL_KO.md?raw';
 import skinDiaryRaw from './SKIN_DIARY_DETAIL_KO.md?raw';
 import pmccRaw from './PMCC_DETAIL_KO.md?raw';
 import techReviewRaw from './TECH_REVIEW_DETAIL_KO_v2.md?raw';
+import orchestrationRaw from './ORCHESTRATION_DETAIL_KO_v3.md?raw';
 
-export type WorkKey = 'mcp-memory' | 'context-engineering' | 'empty-house' | 'skin-diary' | 'pmcc' | 'tech-review';
+export type WorkKey = 'mcp-memory' | 'context-engineering' | 'empty-house' | 'skin-diary' | 'pmcc' | 'tech-review' | 'orchestration';
 
 export const workRawMap: Record<WorkKey, string> = {
   'mcp-memory': mcpMemoryRaw,
@@ -14,4 +15,5 @@ export const workRawMap: Record<WorkKey, string> = {
   'skin-diary': skinDiaryRaw,
   pmcc: pmccRaw,
   'tech-review': techReviewRaw,
+  orchestration: orchestrationRaw,
 };

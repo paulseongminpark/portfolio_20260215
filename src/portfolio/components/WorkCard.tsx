@@ -1,6 +1,7 @@
 import { type WorkKey } from "../content/work";
 
 const GRADIENTS: Record<string, string> = {
+  orchestration: "radial-gradient(ellipse at 40% 50%, #2d1b4e 0%, #0f0a1a 100%)",
   "empty-house": "radial-gradient(ellipse at 40% 50%, #1e3a5f 0%, #0f172a 100%)",
   "skin-diary":  "radial-gradient(ellipse at 40% 50%, #0d4f3c 0%, #052e16 100%)",
   "pmcc":        "radial-gradient(ellipse at 40% 50%, #451a03 0%, #1c0a00 100%)",
