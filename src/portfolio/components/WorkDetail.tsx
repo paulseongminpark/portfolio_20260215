@@ -405,6 +405,7 @@ export function WorkDetail({ activeWork, title, heroSubtitle: _heroSubtitle, par
         const isTrHero = activeWork === 'tech-review';
         const isCeHero = activeWork === 'context-engineering';
         const isMcpHero = activeWork === 'mcp-memory';
+        const isOrchHero = activeWork === 'orchestration';
         const trHeroBg = isTrHero
           ? `url(${_B}work/tech-review/hero.png) center/cover no-repeat, #1a1a1a`
           : undefined;
@@ -414,10 +415,13 @@ export function WorkDetail({ activeWork, title, heroSubtitle: _heroSubtitle, par
         const mcpHeroBg = isMcpHero
           ? `linear-gradient(rgba(0,0,0,0.25), rgba(0,0,0,0.25)), url(${_B}work/mcp-memory/card.png) center/cover no-repeat`
           : undefined;
+        const orchHeroBg = isOrchHero
+          ? `linear-gradient(rgba(0,0,0,0.3), rgba(0,0,0,0.3)), url(${_B}work/orchestration/card.jpg) center/cover no-repeat`
+          : undefined;
         return (
         <>
         {/* CASE STUDY ~ 메타 정보 */}
-        <div style={{ background: isMcpHero ? mcpHeroBg : isCeHero ? ceHeroBg : isTrHero ? trHeroBg : hg ? GRADIENTS[activeWork] : "#f9f9f7", padding: "120px 0 48px", ...(tocItems.length > 0 ? { marginLeft: 200 } : {}) }}>
+        <div style={{ background: isOrchHero ? orchHeroBg : isMcpHero ? mcpHeroBg : isCeHero ? ceHeroBg : isTrHero ? trHeroBg : hg ? GRADIENTS[activeWork] : "#f9f9f7", padding: "120px 0 48px", ...(tocItems.length > 0 ? { marginLeft: 200 } : {}) }}>
           <div style={{ maxWidth: 1540, margin: "0 auto", padding: "0 48px" }}>
             <p style={{ fontFamily: F, fontSize: 11, fontWeight: 600,
               letterSpacing: "0.18em", textTransform: "uppercase",
@@ -546,7 +550,7 @@ export function WorkDetail({ activeWork, title, heroSubtitle: _heroSubtitle, par
             const hasEyebrow = section.blocks[0]?.type === 'section-title';
             return (
               <div key={section.name} id={`s-${idx + 2}`} style={{
-                padding: idx === 0 ? "0 0 64px" : "64px 0",
+                padding: idx === 0 ? (activeWork === 'tech-review' ? "0 0 64px" : "64px 0 64px") : "64px 0",
                 borderBottom: "none",
                 opacity: isFootnote(section.name) ? 0.55 : 1,
               }}>

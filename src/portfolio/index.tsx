@@ -21,13 +21,13 @@ const P12_TOC: Array<{ id: string; label: string; mini: string; items: Array<{ i
   { id: "why",     label: "Why I Build AI",  mini: "WH", items: [] },
   { id: "journey", label: "Journey",         mini: "JN", items: [] },
   { id: "work",    label: "Work",            mini: "WK", items: [
-    { id: "work-orchestration", label: "Orchestration" },
     { id: "work-mcp-memory",  label: "MCP-Memory" },
+    { id: "work-orchestration", label: "Orchestration" },
     { id: "work-ce",          label: "Context Engineering" },
     { id: "work-tech-review", label: "Tech Review" },
+    { id: "work-pmcc",        label: "PMCC" },
     { id: "work-empty-house", label: "Empty House" },
     { id: "work-skin-diary",  label: "Skin Diary" },
-    { id: "work-pmcc",        label: "PMCC" },
   ]},
   { id: "now",     label: "Now",     mini: "NW", items: [
     { id: "now-memory", label: "Memory" },
@@ -42,13 +42,13 @@ const P12_TOC: Array<{ id: string; label: string; mini: string; items: Array<{ i
 // ── 데이터 ──────────────────────────────────────────────────────
 const _B = import.meta.env.BASE_URL;
 const workItems = [
-  { id: "work-orchestration", workKey: "orchestration" as WorkKey, label: "Orchestration", eyebrow: "", tag: "AI · System", description: "AI를 조율하는 운영체제를 만든 과정. 스크립트 모음이 커널이 되기까지, 여러 번의 재설계가 필요했다." },
   { id: "work-mcp-memory", workKey: "mcp-memory" as WorkKey, label: "MCP-Memory", eyebrow: "", tag: "AI · Memory", description: "AI가 맥락을 추론하도록 지식의 구조를 설계한 실험. 25개 타입, 4,685개 노드의 온톨로지 기반 외부 기억 시스템.", bgImage: `${_B}work/mcp-memory/card.png` },
+  { id: "work-orchestration", workKey: "orchestration" as WorkKey, label: "Orchestration", eyebrow: "", tag: "AI · System", description: "AI를 조율하는 운영체제를 만든 과정. 스크립트 모음이 커널이 되기까지, 여러 번의 재설계가 필요했다.", bgImage: `${_B}work/orchestration/card.jpg` },
   { id: "work-ce", workKey: "context-engineering" as WorkKey, label: "Context Engineering", eyebrow: "", tag: "AI · System", description: "AI의 추론 품질을 극대화하기 위한 맥락 큐레이션 체계. 무엇을 넣고, 어떤 순서로 보여주고, 언제 덜어낼지를 4개 레이어로 설계한다. 시스템이 아니라 원칙이다.", bgImage: `${_B}work/context-engineering/card.png` },
   { id: "work-tech-review", workKey: "tech-review" as WorkKey, label: "Tech Review", eyebrow: "", tag: "AI · Automation", description: "매일 새벽 5시, 시스템이 깨어난다. 기사를 읽고, 영상을 보고, 트윗을 수집하고, 왜 중요한지를 쓰고, 발행하고, 다시 잠든다. 편집장이 없는 뉴스룸. 기자 대신 파이프라인.", bgImage: `${_B}work/tech-review/card.png`, bgPosition: "top center" },
+  { id: "work-pmcc", workKey: "pmcc" as WorkKey, label: "PMCC", eyebrow: "2023–2026", tag: "Community · Design", description: "처음 만난 사람들이 진정한 대화를 나눌 수 있도록 환경을 설계한 러닝 커뮤니티. 경계·흐름·의례를 직접 만들고 3년간 168명과 운영.", bgImage: `${_B}work/pmcc/visual%20cues%209%20logo.webp`, bgPosition: "center" },
   { id: "work-empty-house", workKey: "empty-house" as WorkKey, label: "Empty House CPS", eyebrow: "June 2025", tag: "Data · Policy", description: "빈집 문제를 도시 시스템 단위로 분석. 인구·상권·교통·노후 데이터를 온톨로지로 연결해 4개 통합지표로 개입 우선순위를 판단한다." },
   { id: "work-skin-diary", workKey: "skin-diary" as WorkKey, label: "Skin Diary AI", eyebrow: "August 2025", tag: "Data · AI · Mobile", description: "피부 이미지를 부위별로 분석하고, 날씨·환경 맥락을 결합해 행동을 제안하는 앱. 점수가 아니라 '지금 무엇을 해야 하는지'를 알려준다." },
-  { id: "work-pmcc", workKey: "pmcc" as WorkKey, label: "PMCC", eyebrow: "2023–2026", tag: "Community · Design", description: "처음 만난 사람들이 진정한 대화를 나눌 수 있도록 환경을 설계한 러닝 커뮤니티. 경계·흐름·의례를 직접 만들고 3년간 168명과 운영.", bgImage: `${_B}work/pmcc/visual%20cues%209%20logo.webp`, bgPosition: "center" },
 ];
 
 function getWorkTitle(key: WorkKey) {
