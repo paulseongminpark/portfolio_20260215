@@ -10,8 +10,8 @@ const GRADIENTS: Record<string, string> = {
   "mcp-memory":   "radial-gradient(ellipse at 25% 30%, rgba(59,130,246,0.7) 0%, transparent 50%), radial-gradient(ellipse at 75% 70%, rgba(96,165,250,0.6) 0%, transparent 45%), radial-gradient(ellipse at 50% 45%, rgba(37,99,195,0.5) 0%, transparent 55%), linear-gradient(150deg, #1e3a6f 0%, #2d5a9a 40%, #4a8ad4 100%)",
   "context-engineering": "radial-gradient(ellipse at 25% 30%, rgba(232,140,60,0.7) 0%, transparent 50%), radial-gradient(ellipse at 75% 70%, rgba(212,99,45,0.6) 0%, transparent 45%), radial-gradient(ellipse at 50% 45%, rgba(196,120,60,0.5) 0%, transparent 55%), linear-gradient(150deg, #8b3a0f 0%, #c4703a 40%, #e8a050 100%)",
   "tech-review":  "radial-gradient(ellipse at 25% 30%, rgba(107,92,231,0.7) 0%, transparent 50%), radial-gradient(ellipse at 75% 70%, rgba(232,164,184,0.6) 0%, transparent 45%), radial-gradient(ellipse at 50% 45%, rgba(139,122,207,0.5) 0%, transparent 55%), linear-gradient(150deg, #3b2e6e 0%, #7a65a5 40%, #d4a4ba 100%)",
-  "empty-house":  "linear-gradient(135deg, #dbeafe 0%, #ede9fe 50%, #fce7f3 100%)",
-  "skin-diary":   "linear-gradient(135deg, #d1fae5 0%, #a7f3d0 50%, #6ee7b7 100%)",
+  "empty-house":  "linear-gradient(135deg, #c0d0e5 0%, #9ab3d0 100%)",
+  "skin-diary":   "linear-gradient(135deg, #b0d8c4 0%, #88c4a8 100%)",
   "pmcc":         "linear-gradient(135deg, #fed7aa 0%, #fbbf24 50%, #f59e0b 100%)",
 };
 
@@ -80,13 +80,13 @@ const WORK_META: Record<string, {
   "tech-review": {
     period: "2026–현재",
     role: "파이프라인 설계 · 자동화",
-    tools: ["Python", "Claude Sonnet", "Gemini Flash", "OpenAI", "Groq Whisper", "Jekyll", "Task Scheduler"],
+    tools: ["Python", "Claude", "Gemini", "OpenAI", "Groq Whisper", "Jekyll", "Task Scheduler"],
     stats: [
       { value: "100+", label: "발행" },
       { value: "3", label: "소스" },
       { value: "3", label: "해석 층" },
     ],
-    overview: "매일 새벽 5시, 시스템이 깨어난다. 기사를 읽고, 영상을 보고, 트윗을 수집하고, 왜 중요한지를 쓰고, 발행하고, 다시 잠든다.\n편집장이 없는 뉴스룸. 기자 대신 파이프라인. 내가 설계한 것은 렌즈뿐이다.",
+    overview: "매일 새벽 5시, 시스템이 깨어난다. 기사를 읽고, 영상을 보고, 트윗을 수집하고, 왜 중요한지를 쓰고, 발행한다.\n편집장이 없는 뉴스룸. 기자 대신 파이프라인. 내가 설계한 것은 렌즈뿐이다.",
   },
 };
 
@@ -381,12 +381,12 @@ export function WorkDetail({ activeWork, title, heroSubtitle: _heroSubtitle, par
           ? `url(${_B}work/context-engineering/card.png) center/cover no-repeat`
           : undefined;
         const mcpHeroBg = isMcpHero
-          ? `linear-gradient(rgba(0,0,0,0.4), rgba(0,0,0,0.4)), url(${_B}work/mcp-memory/card.png) center/cover no-repeat`
+          ? `linear-gradient(rgba(0,0,0,0.25), rgba(0,0,0,0.25)), url(${_B}work/mcp-memory/card.png) center/cover no-repeat`
           : undefined;
         return (
         <>
         {/* CASE STUDY ~ 메타 정보 */}
-        <div style={{ background: isMcpHero ? mcpHeroBg : isCeHero ? ceHeroBg : isTrHero ? trHeroBg : hg ? GRADIENTS[activeWork] : "#f9f9f7", padding: "120px 0 48px" }}>
+        <div style={{ background: isMcpHero ? mcpHeroBg : isCeHero ? ceHeroBg : isTrHero ? trHeroBg : hg ? GRADIENTS[activeWork] : "#f9f9f7", padding: "120px 0 48px", ...(tocItems.length > 0 ? { marginLeft: 200 } : {}) }}>
           <div style={{ maxWidth: 1540, margin: "0 auto", padding: "0 48px" }}>
             <p style={{ fontFamily: F, fontSize: 11, fontWeight: 600,
               letterSpacing: "0.18em", textTransform: "uppercase",
@@ -427,24 +427,6 @@ export function WorkDetail({ activeWork, title, heroSubtitle: _heroSubtitle, par
         );
       })()}
 
-      {/* ── Stats ── */}
-      <div style={{ borderBottom: "1px solid #e8e8e8" }}>
-        <div style={{ maxWidth: 1540, margin: "0 auto", padding: "0 48px",
-          display: "grid", gridTemplateColumns: `repeat(${meta.stats.length}, 1fr)` }}>
-          {meta.stats.map((s, i) => (
-            <div key={i} style={{ padding: "36px 24px", textAlign: "center",
-              borderRight: i < meta.stats.length - 1 ? "1px solid #e8e8e8" : "none" }}>
-              <div style={{ fontFamily: F, fontSize: 40, fontWeight: 700,
-                letterSpacing: "-0.02em", color: "#111", lineHeight: 1, marginBottom: 6 }}>
-                {s.value}
-              </div>
-              <div style={{ fontFamily: F, fontSize: 12, color: "#999", letterSpacing: "0.04em" }}>
-                {s.label}
-              </div>
-            </div>
-          ))}
-        </div>
-      </div>
 
       {/* ── fixed TOC sidebar (all detail pages) ── */}
       {tocItems.length > 0 && (
@@ -511,12 +493,29 @@ export function WorkDetail({ activeWork, title, heroSubtitle: _heroSubtitle, par
       {/* ── 본문 ── */}
       <div style={tocItems.length > 0 ? { marginLeft: 200 } : undefined}>
       <div className="wd-body">
+        {/* ── Tech Review LIVE SITE 링크 ── */}
+        {activeWork === 'tech-review' && (
+          <div style={{ paddingTop: 32, paddingBottom: 32 }}>
+            <div>
+              <a href="https://paulseongminpark.github.io/tech-review/ko/youtube/"
+                target="_blank" rel="noopener noreferrer"
+                style={{ fontFamily: "'Inter', sans-serif", fontSize: 11, fontWeight: 700,
+                  letterSpacing: "1.5px", textTransform: "uppercase" as const, textDecoration: "none",
+                  color: "#CC0000", transition: "opacity 0.2s" }}
+                onMouseEnter={(e) => e.currentTarget.style.opacity = "0.6"}
+                onMouseLeave={(e) => e.currentTarget.style.opacity = "1"}>
+                LIVE SITE — PAULSEONGMINPARK.GITHUB.IO/TECH-REVIEW →
+              </a>
+            </div>
+          </div>
+        )}
+
         {filteredSections.length > 0 ? (
           filteredSections.map((section, idx) => {
             const hasEyebrow = section.blocks[0]?.type === 'section-title';
             return (
               <div key={section.name} id={`s-${idx + 2}`} style={{
-                padding: "64px 0",
+                padding: idx === 0 ? "0 0 64px" : "64px 0",
                 borderBottom: "none",
                 opacity: isFootnote(section.name) ? 0.55 : 1,
               }}>

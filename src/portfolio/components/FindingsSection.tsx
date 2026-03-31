@@ -185,7 +185,7 @@ export function FindingsSection() {
 
         {/* ── Essay ── */}
         <FadeIn delay={0.05}>
-          <div className="p12-finding-group-label">ESSAY</div>
+          <div className="p12-finding-group-label">ESSAY <span style={{ fontWeight: 400, color: "#bbb", marginLeft: 8 }}>2026</span></div>
           <a href={ESSAY.pdf} target="_blank" rel="noopener noreferrer" className="p12-finding-essay-card">
             <div className="p12-finding-essay-cover">
               <svg viewBox="0 0 300 400" xmlns="http://www.w3.org/2000/svg" style={{ width: "100%", height: "100%", display: "block" }}>
@@ -221,7 +221,7 @@ export function FindingsSection() {
 
         {/* ── Series ── */}
         <FadeIn delay={0.08}>
-          <div className="p12-finding-group-label">MCP-MEMORY · ANALYSIS SERIES</div>
+          <div className="p12-finding-group-label">MCP-MEMORY · ANALYSIS SERIES <span style={{ fontWeight: 400, color: "#bbb", marginLeft: 8 }}>2026</span></div>
           <div className="p12-finding-series-grid">
             {SERIES_DOCS.map((doc) => (
               <a key={doc.n} href={doc.pdf} target="_blank" rel="noopener noreferrer" className="p12-finding-doc-card">

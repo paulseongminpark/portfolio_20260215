@@ -46,7 +46,7 @@ const workItems = [
   { id: "work-tech-review", workKey: "tech-review" as WorkKey, label: "Tech Review", eyebrow: "", tag: "AI · Automation", description: "매일 새벽 5시, 시스템이 깨어난다. 기사를 읽고, 영상을 보고, 트윗을 수집하고, 왜 중요한지를 쓰고, 발행하고, 다시 잠든다. 편집장이 없는 뉴스룸. 기자 대신 파이프라인.", bgImage: `${_B}work/tech-review/card.png`, bgPosition: "top center" },
   { id: "work-empty-house", workKey: "empty-house" as WorkKey, label: "Empty House CPS", eyebrow: "June 2025", tag: "Data · Policy", description: "빈집 문제를 도시 시스템 단위로 분석. 인구·상권·교통·노후 데이터를 온톨로지로 연결해 4개 통합지표로 개입 우선순위를 판단한다." },
   { id: "work-skin-diary", workKey: "skin-diary" as WorkKey, label: "Skin Diary AI", eyebrow: "August 2025", tag: "Data · AI · Mobile", description: "피부 이미지를 부위별로 분석하고, 날씨·환경 맥락을 결합해 행동을 제안하는 앱. 점수가 아니라 '지금 무엇을 해야 하는지'를 알려준다." },
-  { id: "work-pmcc", workKey: "pmcc" as WorkKey, label: "PMCC", eyebrow: "2023–2026", tag: "Community · Design", description: "처음 만난 사람들이 진정한 대화를 나눌 수 있도록 환경을 설계한 러닝 커뮤니티. 경계·흐름·의례를 직접 만들고 3년간 168명과 운영." },
+  { id: "work-pmcc", workKey: "pmcc" as WorkKey, label: "PMCC", eyebrow: "2023–2026", tag: "Community · Design", description: "처음 만난 사람들이 진정한 대화를 나눌 수 있도록 환경을 설계한 러닝 커뮤니티. 경계·흐름·의례를 직접 만들고 3년간 168명과 운영.", bgImage: `${_B}work/pmcc/visual%20cues%209%20logo.webp`, bgPosition: "center" },
 ];
 
 function getWorkTitle(key: WorkKey) {
@@ -607,7 +607,7 @@ export default function Page12() {
             <ProseBlock paragraphs={[
               "도구는 바뀌기 마련이다.",
               "\uadf8\ub798\uc11c \ub0b4\uac00 \uc9c0\uc18d\uc801\uc73c\ub85c \uc124\uacc4\ud558\ub294 \uac83\uc740 \ub3c4\uad6c\uac00 \uc544\ub2c8\ub77c \uc6b4\uc601 \uc2dc\uc2a4\ud15c\uc774\ub2e4. \uacb0\uc815, \uc2e4\ud328, \uc9c8\ubb38\uc774 \uc0ac\ub77c\uc9c0\uc9c0 \uc54a\uace0 \uc313\uc778\ub2e4. \uc313\uc778 \uac83\uc744 \uae30\ubc18\uc73c\ub85c, \uc2dc\uc2a4\ud15c\uc740 \uc790\uae30 \uc0c1\ud0dc\ub97c \uce21\uc815\ud558\uace0, \ubb38\uc81c\ub97c \ucc3e\uace0, \ub354 \ub098\uc740 \ubc29\ud5a5\uc744 \uc81c\uc548\ud55c\ub2e4.",
-              "내 관심은 Living System에 있다. 사람이 잊어도 시스템이 기억하고, 놓친 것을 먼저 드러내고, 스스로 나아진다. 같은 구조가 조직의 의사결정 기억이 될 수 있다고 생각한다. 시스템이 복원을 맡으면, 나는 사고에 에너지를 쓸 수 있다.",
+              "내 관심은 Living System에 있다. 사람이 잊어도 시스템이 기억하고, 놓친 것을 먼저 드러내고, 스스로 나아진다. 같은 구조가 조직의 의사결정 기억이 될 수 있다고 생각한다. 시스템이 맥락의 연속성을 유지해주면, 나는 사고에 에너지를 쓸 수 있다.",
             ]} />
           </FadeIn>
         </div>
@@ -622,7 +622,22 @@ export default function Page12() {
           <FadeIn>
             <SectionLabel>08 · Contact</SectionLabel>
             <h2 className="p12-h2" style={{ color: "#111", marginTop: 8, marginBottom: 48 }}>Let's talk.</h2>
-            <a href="mailto:paulseongminpark@gmail.com" className="p12-contact-link" style={{ color: "#111111" }}>
+            <a href="#" className="p12-contact-link" style={{ color: "#111111", position: "relative" }}
+              onClick={(e) => {
+                e.preventDefault();
+                navigator.clipboard.writeText("paulseongminpark@gmail.com");
+                const toast = document.createElement("div");
+                toast.textContent = "Copied to clipboard";
+                Object.assign(toast.style, {
+                  position: "fixed", top: "50%", left: "50%", transform: "translate(-50%, -50%)",
+                  background: "#111", color: "#fff", padding: "14px 28px", borderRadius: "8px",
+                  fontFamily: "'Inter',sans-serif", fontSize: "14px", fontWeight: "500",
+                  zIndex: "9999", opacity: "0", transition: "opacity 0.2s",
+                });
+                document.body.appendChild(toast);
+                requestAnimationFrame(() => { toast.style.opacity = "1"; });
+                setTimeout(() => { toast.style.opacity = "0"; setTimeout(() => toast.remove(), 200); }, 1500);
+              }}>
               paulseongminpark@gmail.com
             </a>
             <a href="https://github.com/paulseongminpark" target="_blank" rel="noopener noreferrer" className="p12-contact-link" style={{ color: "#111111" }}>
