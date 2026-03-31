@@ -80,11 +80,11 @@ const WORK_META: Record<string, {
   "tech-review": {
     period: "2026–현재",
     role: "파이프라인 설계 · 자동화",
-    tools: ["Python", "Playwright", "Claude", "Perplexity", "Jekyll", "Task Scheduler"],
+    tools: ["Python", "Claude Sonnet", "Gemini Flash", "OpenAI", "Groq Whisper", "Jekyll", "Task Scheduler"],
     stats: [
       { value: "100+", label: "발행" },
       { value: "3", label: "소스" },
-      { value: "7", label: "렌즈" },
+      { value: "3", label: "해석 층" },
     ],
     overview: "매일 새벽 5시, 시스템이 깨어난다. 기사를 읽고, 영상을 보고, 트윗을 수집하고, 왜 중요한지를 쓰고, 발행하고, 다시 잠든다.\n편집장이 없는 뉴스룸. 기자 대신 파이프라인. 내가 설계한 것은 렌즈뿐이다.",
   },
@@ -286,7 +286,7 @@ export function WorkDetail({ activeWork, title, heroSubtitle: _heroSubtitle, par
     ]},
     { label: "설계", items: [
       { name: "3개 소스", id: "s-4" },
-      { name: "WIM 7렌즈", id: "s-5" },
+      { name: "3층 해석 체계", id: "s-5" },
       { name: "새벽 5시", id: "s-6" },
     ]},
     { label: "실체", items: [

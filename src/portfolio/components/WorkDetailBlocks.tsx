@@ -35,6 +35,16 @@ import { Diptych } from './diagrams/Diptych';
 import { FailureDiptych } from './diagrams/FailureDiptych';
 import { StructureDiptych } from './diagrams/StructureDiptych';
 import { ContextDiptych } from './diagrams/ContextDiptych';
+import { TRDiagram1 } from './diagrams/tr/TRDiagram1';
+import { TRDiagram2 } from './diagrams/tr/TRDiagram2';
+import { TRDiagram3 } from './diagrams/tr/TRDiagram3';
+import { TRDiagram4 } from './diagrams/tr/TRDiagram4';
+import { TRDiagram5 } from './diagrams/tr/TRDiagram5';
+import { TRDiagram6 } from './diagrams/tr/TRDiagram6';
+import { TRDiagram7 } from './diagrams/tr/TRDiagram7';
+import { TRDiagram8 } from './diagrams/tr/TRDiagram8';
+import { TRDiagram9 } from './diagrams/tr/TRDiagram9';
+import { TRInterpretationDiptych } from './diagrams/tr/TRInterpretationDiptych';
 
 export function renderBold(text: string) {
   const parts = text.split(/(\*\*.+?\*\*|\{\{o:.+?\}\}|\{\{b:.+?\}\})/g).filter(Boolean);
@@ -456,6 +466,16 @@ function renderSingleBlock(block: Block, idx: number, activeWork: string, parent
           if (num === 55) return <CEFolderPath key={idx} />;
           if (num === 6) return <CEDiagram6 key={idx} />;
           if (num === 7) return <CEDiagram7 key={idx} />;
+        } else if (activeWork === 'tech-review') {
+          if (num === 1) return <TRDiagram1 key={idx} />;
+          if (num === 2) return <TRDiagram2 key={idx} />;
+          if (num === 3) return <TRInterpretationDiptych key={idx} />;
+          if (num === 4) return null;
+          if (num === 5) return <TRDiagram5 key={idx} />;
+          if (num === 6) return <TRDiagram6 key={idx} />;
+          if (num === 7) return <TRDiagram7 key={idx} />;
+          if (num === 8) return <TRDiagram8 key={idx} />;
+          if (num === 9) return <TRDiagram9 key={idx} />;
         } else {
           if (num === 1) return <Diagram1 key={idx} />;
           if (num === 2) return <Diagram2 key={idx} />;

@@ -48,6 +48,15 @@ export function parseWorkDetail(raw: string): WorkSection[] {
     // Empty line → skip
     if (trimmed === '') continue;
 
+    // HTML comment → skip
+    if (trimmed.startsWith('<!--')) {
+      // multi-line comment: skip until -->
+      if (!trimmed.includes('-->')) {
+        while (++i < lines.length && !lines[i].includes('-->')) {}
+      }
+      continue;
+    }
+
     // SectionTitle block: collect eyebrow/title/desc
     if (trimmed === '### SectionTitle' || trimmed === '**SectionTitle**') {
       let eyebrow = '';
