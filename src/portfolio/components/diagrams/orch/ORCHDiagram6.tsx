@@ -36,7 +36,7 @@ const COL_TOP = 135;
 const COL_BOT = 340;
 const COL_MID = (COL_TOP + COL_BOT) / 2;
 const STYLO_TOP = 345;
-const STYLO_BOT = 391;
+
 
 const columns = [
   { label: "mcp-memory",      role: "기억",   x: TX + 50 },

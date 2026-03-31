@@ -43,13 +43,13 @@ export function ORCHDiagram4({ diptych }: { diptych?: boolean }) {
 
         {/* ── Column headers ── */}
         <text x={mx - 80} y={45}
-          textAnchor="center"
+          textAnchor="middle"
           fontFamily={EC.font} fontSize={fs} fontWeight={200}
           fill={EC.gray50} letterSpacing="1px">
           v3.3
         </text>
         <text x={mx + 80} y={45}
-          textAnchor="center"
+          textAnchor="middle"
           fontFamily={EC.font} fontSize={fs} fontWeight={200}
           fill={EC.gray50} letterSpacing="1px">
           v6
