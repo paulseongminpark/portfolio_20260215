@@ -1,0 +1,1002 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<title>Alpha — 왜 구조인가</title>
+<style>
+  :root {
+    --page-width: 247mm;
+    --page-height: 340mm;
+    --page-left: 25mm;
+    --page-right: 78mm;
+    --page-top: 20mm;
+    --page-bottom: 15mm;
+    --text-body-width: 145mm;
+    --quote-indent: 14mm;
+    --sans: "Helvetica Neue", Arial, "Noto Sans KR", sans-serif;
+    --serif: Georgia, "Times New Roman", serif;
+    --fg: #111111;
+    --fg-mid: #666666;
+    --fg-light: #999999;
+    --fg-faint: #bbbbbb;
+    --line: #d8d8d8;
+    --line-faint: #ececec;
+    --accent: #c51616;
+    --text-toc-number: 6.8pt;
+    --text-toc-item: 8.8pt;
+    --text-toc-lede: 15.8pt;
+  }
+  * { box-sizing: border-box; }
+  html, body {
+    margin: 0;
+    padding: 0;
+    background: #ffffff;
+    color: var(--fg);
+  }
+  body {
+    font-family: var(--sans);
+  }
+  .page {
+    position: relative;
+    width: var(--page-width);
+    min-height: var(--page-height);
+    margin: 24px auto;
+    padding: var(--page-top) var(--page-right) var(--page-bottom) var(--page-left);
+    background: #ffffff;
+    overflow: hidden;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.06);
+  }
+  .page-label {
+    position: absolute;
+    top: 8mm;
+    left: var(--page-left);
+    font-size: 6.8pt;
+    font-weight: 300;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: var(--fg-light);
+  }
+  .page-number {
+    position: absolute;
+    right: 20mm;
+    bottom: 10mm;
+    font-size: 7.5pt;
+    font-weight: 200;
+    letter-spacing: 2px;
+    color: var(--fg-faint);
+  }
+  .section-sep {
+    width: var(--text-body-width);
+    height: 1px;
+    margin: 0 0 5mm;
+    background: var(--line);
+  }
+  .section-header {
+    width: var(--text-body-width);
+  }
+  .section-label {
+    display: inline-block;
+    font-size: 6.8pt;
+    font-weight: 300;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: var(--fg-light);
+  }
+  .accent-num {
+    color: var(--accent);
+  }
+  .section-header h2 {
+    margin: 4mm 0 2mm;
+    font-size: 16pt;
+    font-weight: 400;
+    line-height: 1.26;
+    color: var(--fg);
+  }
+  .section-sub {
+    display: block;
+    font-size: 7pt;
+    font-weight: 200;
+    letter-spacing: 0.6px;
+    color: var(--fg-light);
+  }
+  .accent-line {
+    width: 6mm;
+    height: 1px;
+    margin-top: 6mm;
+    background: var(--accent);
+  }
+  .body-serif {
+    width: var(--text-body-width);
+    font-family: var(--serif);
+    font-size: 10.5pt;
+    line-height: 1.55;
+    color: var(--fg);
+  }
+  .body-serif p {
+    margin: 0 0 4.5mm;
+  }
+  .quote-block {
+    margin: 5mm 0;
+    padding-left: var(--quote-indent);
+    border-left: none;
+    position: relative;
+    color: var(--fg-mid);
+  }
+  .quote-block::before {
+    content: '';
+    position: absolute;
+    left: calc(var(--quote-indent) - 4mm);
+    top: 0;
+    bottom: 0;
+    width: 0.8px;
+    background: var(--accent);
+  }
+  .quote-block p {
+    margin: 0;
+    font-size: 9.2pt;
+    line-height: 1.75;
+  }
+  .plate-caption {
+    margin-top: 2mm;
+    font-size: 6px;
+    font-weight: 200;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    color: var(--fg-faint);
+  }
+  .colophon {
+    position: absolute;
+    left: var(--page-left);
+    right: var(--page-right);
+    bottom: 22mm;
+  }
+  .colophon-title {
+    font-size: 7pt;
+    font-weight: 300;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: var(--fg-light);
+  }
+  .colophon-rule {
+    width: var(--text-body-width);
+    height: 1px;
+    margin: 3mm 0 4mm;
+    background: var(--line);
+  }
+  .colophon-body {
+    width: var(--text-body-width);
+    font-size: 8pt;
+    line-height: 1.65;
+    color: var(--fg-mid);
+  }
+  svg text {
+    font-family: var(--sans);
+  }
+  .toc-grid { margin-top: 6mm; }
+  .toc-item { display: flex; align-items: baseline; margin-bottom: 3.5mm; }
+  .toc-num {
+    font-size: var(--text-toc-number);
+    font-weight: 300;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: var(--accent);
+    min-width: 18mm;
+    flex-shrink: 0;
+  }
+  .toc-title {
+    font-size: var(--text-toc-item);
+    font-weight: 300;
+    color: var(--fg);
+    line-height: 1.5;
+  }
+  .toc-title .toc-desc {
+    display: block;
+    font-size: 7pt;
+    font-weight: 200;
+    color: var(--fg-light);
+    letter-spacing: 0.5px;
+    margin-top: 0.5mm;
+  }
+  .toc-lede {
+    font-size: var(--text-toc-lede);
+    font-weight: 200;
+    color: var(--fg);
+    margin-bottom: 6mm;
+    max-width: var(--text-body-width);
+    line-height: 1.4;
+  }
+  /* === WYSIWYG Editor Mode === */
+  @media screen {
+    html { background: #f3f3f3; }
+    body { background: #f3f3f3; padding: 20px 0; }
+  }
+  @media print {
+    html, body { background: #fff; }
+    .page { margin: 0; box-shadow: none; }
+  }
+</style>
+</head>
+<body contenteditable="true">
+<script>
+document.addEventListener('keydown', e => {
+  if ((e.ctrlKey || e.metaKey) && e.key === 's') {
+    e.preventDefault();
+    document.body.removeAttribute('contenteditable');
+    const scripts = document.querySelectorAll('script');
+    scripts.forEach(s => s.remove());
+    const html = '<!DOCTYPE html>\n' + document.documentElement.outerHTML;
+    document.body.setAttribute('contenteditable', 'true');
+    const blob = new Blob([html], {type: 'text/html'});
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(blob);
+    a.download = '01_Alpha_r6_codex.html';
+    a.click();
+  }
+});
+</script>
+
+<!-- PAGE 1: COVER (Sonnet style — top-heavy layout) -->
+<div class="page" style="padding: 0;">
+  <!-- Top line (BLACK) -->
+  <div style="position: absolute; top: 15.5mm; left: 10mm; right: 20mm; height: 0.9px; background: var(--fg);"></div>
+
+  <div style="padding: 32mm 78mm 15mm 25mm;">
+    <div style="margin-top: 0; font-size: 7pt; font-weight: 300; letter-spacing: 3px; text-transform: uppercase; color: var(--fg-light);">
+      ALPHA &mdash; TRILOGY I OF III &middot; 삼부작의 첫 번째
+    </div>
+
+    <div style="margin-top: 21mm; font-size: 39px; font-weight: 300; line-height: 1.25; color: var(--fg); max-width: 550px;">
+      LLM 시대에 인간의 사고는<br>어떤 외부 <span style="color: var(--accent);">구조</span>를<br>필요로 하는가
+    </div>
+
+    <div style="margin-top: 8mm; font-size: 13.5px; font-weight: 300; line-height: 1.8; color: var(--fg-mid); max-width: 340px;">
+      이론에서 시스템으로의 연역적 논증.<br>
+      LLM의 구조적 불가능에서 출발해,<br>
+      자기개선 온톨로지의 필연성을 증명한다.
+    </div>
+  </div>
+
+  <div style="position: absolute; bottom: 171mm; left: 10mm; right: 20mm;">
+    <div style="width: 100%; height: 0.9px; background: var(--accent);"></div>
+    <div style="display: flex; justify-content: space-between; padding: 3mm 0 0 0;">
+      <span style="font-size: 7.5pt; font-weight: 300; letter-spacing: 2.5px; text-transform: uppercase; color: var(--fg-faint);">연역 &middot; 온톨로지 &middot; 인지 외부화 &middot; 자기개선 구조 &middot; 11 Theses</span>
+      <span style="font-size: 7.5pt; font-weight: 300; letter-spacing: 2px; color: var(--fg-faint);">2026</span>
+    </div>
+  </div>
+
+  <span class="page-number">1</span>
+</div>
+
+<!-- PAGE 2: TABLE OF THESES -->
+<div class="page">
+  <span class="page-label">Alpha</span>
+  <span class="page-number">2</span>
+
+  <div class="toc-lede">11 Theses</div>
+
+  <div class="section-sep"></div>
+
+  <div class="toc-grid">
+    <div class="toc-item">
+      <span class="toc-num">Thesis 0</span>
+      <span class="toc-title">LLM은 무엇이 구조적으로 불가능한가<span class="toc-desc">할루시네이션&middot;맥락소멸&middot;비구조성은 스케일링으로 해결 안 된다</span></span>
+    </div>
+    <div class="toc-item">
+      <span class="toc-num">Thesis 1</span>
+      <span class="toc-title">토큰에서 의미까지의 세 가지 간극<span class="toc-desc">토큰-의미, 문장-구조, 컨텍스트-세계</span></span>
+    </div>
+    <div class="toc-item">
+      <span class="toc-num">Thesis 2</span>
+      <span class="toc-title">온톨로지의 필연: 왜 벡터 DB로는 안 되는가<span class="toc-desc">벡터 DB의 세 가지 실패 모드 &rarr; 하이브리드 검색</span></span>
+    </div>
+    <div class="toc-item">
+      <span class="toc-num">Thesis 3</span>
+      <span class="toc-title">정적 온톨로지도 부족하다<span class="toc-desc">BFO/DOLCE/Gene Ontology가 개인 인지에 안 맞는 이유</span></span>
+    </div>
+    <div class="toc-item">
+      <span class="toc-num">Thesis 4</span>
+      <span class="toc-title">승격: 경험이 원칙이 되는 메커니즘<span class="toc-desc">L0&rarr;L5 증류 피라미드, BCM 게이트, DB 분포 실증</span></span>
+    </div>
+    <div class="toc-item">
+      <span class="toc-num">Thesis 5</span>
+      <span class="toc-title">역방향 흐름: 원칙이 경험을 재해석한다<span class="toc-desc">WIM 7렌즈, 들뢰즈 반-현실화</span></span>
+    </div>
+    <div class="toc-item">
+      <span class="toc-num">Thesis 6</span>
+      <span class="toc-title">자기교정: 2차 피드백 루프의 구현<span class="toc-desc">Correction recall 최우선, node #5353/#5369</span></span>
+    </div>
+    <div class="toc-item">
+      <span class="toc-num">Thesis 7</span>
+      <span class="toc-title">세션 주입: 의식의 작업대를 설계한다<span class="toc-desc">작업기억 대응, L2+ 우선, Context as Currency</span></span>
+    </div>
+    <div class="toc-item">
+      <span class="toc-num">Thesis 8</span>
+      <span class="toc-title">에코시스템: 온톨로지 바깥의 온톨로지<span class="toc-desc">12개 프로젝트, foundation/ 자기참조, 인지 순환</span></span>
+    </div>
+    <div class="toc-item">
+      <span class="toc-num">Thesis 9</span>
+      <span class="toc-title">경쟁 지형: 아무도 점유하지 않은 공간<span class="toc-desc">2&times;2 매트릭스, 우상단 빈 공간</span></span>
+    </div>
+    <div class="toc-item">
+      <span class="toc-num">Thesis 10</span>
+      <span class="toc-title">이것이 Human-AI 협업의 미래에 대해 말하는 것<span class="toc-desc">LLM은 매체, 매체에는 구조, 구조는 살아있어야</span></span>
+    </div>
+  </div>
+</div>
+
+<!-- PAGE 3: THESIS 0 -->
+<div class="page">
+  <span class="page-label">Alpha</span>
+  <span class="page-number">3</span>
+
+  <div class="section-sep"></div>
+  <div class="section-header">
+    <span class="section-label">Thesis <span class="accent-num">00</span></span>
+    <h2>LLM은 무엇이 구조적으로 불가능한가</h2>
+    <span class="section-sub">할루시네이션, 맥락 소멸, 비구조적 지식 &mdash; 파라미터 스케일링으로 해결되지 않는 아키텍처적 한계</span>
+  </div>
+  <div class="accent-line"></div>
+
+  <div class="body-serif" style="margin-top: 6mm;">
+    <p>LLM의 실패는 스케일 부족이 아니라 구조 한계다. 토큰 확률 모델은 세 가지를 끝까지 내부화하지 못한다. 진위 판별, 세션을 넘는 상태, 타입화된 관계.</p>
+
+    <div class="quote-block">
+      <p>할루시네이션은 오류 이전에 함수다. 모델은 참을 고르는 것이 아니라, 가장 그럴듯한 다음 토큰을 고른다.</p>
+    </div>
+
+    <p>같은 이유로 컨텍스트는 창이 닫히면 소멸하고, 지식은 flat embedding으로 남는다. "원인", "반증", "상위 개념"은 명시적 객체가 아니라 희미한 근접성으로만 남는다.</p>
+
+    <p>o3/o4와 1M 컨텍스트는 증상을 완화하지만 수학적 구조를 바꾸지 않는다. 그래서 여기 필요한 것은 더 큰 모델이 아니라, 영속 상태와 typed relation을 가진 외부 구조다. 운영 기록 node #5367 같은 실패 사례는 이 한계가 추상이 아니라 실무 문제임을 보여준다.</p>
+  </div>
+
+  <div style="position: absolute; right: 12mm; top: 35mm; width: 55mm;">
+    <svg viewBox="0 0 208 270" width="58mm" xmlns="http://www.w3.org/2000/svg">
+      <text x="0" y="10" font-size="7" font-weight="200" fill="#999" letter-spacing="2">STRUCTURAL IMPOSSIBILITIES</text>
+      <line x1="0" y1="20" x2="190" y2="20" stroke="#111" stroke-width="0.55"/>
+      <line x1="16" y1="32" x2="16" y2="224" stroke="#d8d8d8" stroke-width="0.45"/>
+
+      <text x="0" y="42" font-size="6.6" font-weight="300" fill="#c51616" letter-spacing="1.4">01</text>
+      <text x="26" y="42" font-size="8.2" font-weight="300" fill="#111">hallucination</text>
+      <line x1="26" y1="48" x2="164" y2="48" stroke="#e5e5e5" stroke-width="0.4"/>
+      <text x="26" y="63" font-size="7.5" font-weight="200" fill="#666">plausible next token</text>
+      <text x="26" y="74" font-size="7.5" font-weight="200" fill="#666">is not a truth condition</text>
+
+      <text x="0" y="108" font-size="6.6" font-weight="300" fill="#999" letter-spacing="1.4">02</text>
+      <text x="26" y="108" font-size="8.2" font-weight="300" fill="#111">context loss</text>
+      <line x1="26" y1="114" x2="164" y2="114" stroke="#e5e5e5" stroke-width="0.4"/>
+      <text x="26" y="129" font-size="7.5" font-weight="200" fill="#666">window closes</text>
+      <text x="26" y="140" font-size="7.5" font-weight="200" fill="#666">state disappears</text>
+
+      <text x="0" y="174" font-size="6.6" font-weight="300" fill="#999" letter-spacing="1.4">03</text>
+      <text x="26" y="174" font-size="8.2" font-weight="300" fill="#111">unstructured knowledge</text>
+      <line x1="26" y1="180" x2="164" y2="180" stroke="#e5e5e5" stroke-width="0.4"/>
+      <text x="26" y="195" font-size="7.5" font-weight="200" fill="#666">cause, refute, superclass</text>
+      <text x="26" y="206" font-size="7.5" font-weight="200" fill="#666">collapse into proximity</text>
+
+      <line x1="0" y1="230" x2="190" y2="230" stroke="#111" stroke-width="0.55"/>
+      <rect x="0" y="242" width="28" height="3" fill="#c51616"/>
+      <text x="36" y="247" font-size="7.2" font-weight="300" fill="#111" letter-spacing="0.4">scaling does not remove them</text>
+    </svg>
+    <div class="plate-caption">FIG. 00 &mdash; impossibility register</div>
+  </div>
+</div>
+
+<!-- PAGE 4: THESIS 1 -->
+<div class="page">
+  <span class="page-label">Alpha</span>
+  <span class="page-number">4</span>
+
+  <div class="section-sep"></div>
+  <div class="section-header">
+    <span class="section-label">Thesis <span class="accent-num">01</span></span>
+    <h2>토큰에서 의미까지의 세 가지 간극</h2>
+    <span class="section-sub">언어학의 세 층위에서 LLM이 어디까지 도달하고 어디서 끊기는지</span>
+  </div>
+  <div class="accent-line"></div>
+
+  <div class="body-serif" style="margin-top: 6mm;">
+    <p>언어는 token, sentence, context, meaning이 자연스럽게 이어지는 하나의 층이 아니다. 각 층 사이에는 별도의 구조가 필요하고, LLM은 그 절개면에서 멈춘다.</p>
+
+    <div class="quote-block">
+      <p>간극 1은 의미 단위의 정의 부재, 간극 2는 관계 타입의 부재, 간극 3은 세계 모델과 영속 컨텍스트의 부재다.</p>
+    </div>
+
+    <p>BPE와 attention은 각각 형태소와 통사 의존성의 근사치까지만 준다. CoT와 ToT도 세션 안의 일관성은 높이지만 세션을 넘는 논리 연속성을 저장하지는 못한다.</p>
+
+    <p>그래서 이 페이지의 결론은 숫자 셋으로 환원된다. semantic unit, typed relation, persistent layer. 세 간극을 동시에 메우는 최소 구조가 온톨로지다.</p>
+  </div>
+
+  <div style="position: absolute; right: 12mm; top: 35mm; width: 55mm;">
+    <svg viewBox="0 0 208 300" width="58mm" xmlns="http://www.w3.org/2000/svg">
+      <text x="0" y="10" font-size="7" font-weight="200" fill="#999" letter-spacing="2">THREE GAPS</text>
+      <line x1="96" y1="24" x2="96" y2="234" stroke="#d8d8d8" stroke-width="0.45"/>
+
+      <rect x="38" y="26" width="116" height="22" fill="none" stroke="#111" stroke-width="0.55"/>
+      <text x="96" y="40" text-anchor="middle" font-size="8.2" font-weight="300" fill="#111" letter-spacing="1.2">TOKEN</text>
+
+      <text x="112" y="64" font-size="6.8" font-weight="300" fill="#c51616" letter-spacing="1.2">GAP 1</text>
+      <line x1="72" y1="60" x2="108" y2="60" stroke="#c51616" stroke-width="0.45" stroke-dasharray="2,2"/>
+
+      <rect x="30" y="78" width="132" height="22" fill="none" stroke="#111" stroke-width="0.55"/>
+      <text x="96" y="92" text-anchor="middle" font-size="8.2" font-weight="300" fill="#111" letter-spacing="1.2">SENTENCE</text>
+
+      <text x="112" y="116" font-size="6.8" font-weight="300" fill="#999" letter-spacing="1.2">GAP 2</text>
+      <line x1="72" y1="112" x2="108" y2="112" stroke="#999" stroke-width="0.45" stroke-dasharray="2,2"/>
+
+      <rect x="26" y="130" width="140" height="22" fill="none" stroke="#111" stroke-width="0.55"/>
+      <text x="96" y="144" text-anchor="middle" font-size="8.2" font-weight="300" fill="#111" letter-spacing="1.2">CONTEXT</text>
+
+      <text x="112" y="168" font-size="6.8" font-weight="300" fill="#999" letter-spacing="1.2">GAP 3</text>
+      <line x1="72" y1="164" x2="108" y2="164" stroke="#999" stroke-width="0.45" stroke-dasharray="2,2"/>
+
+      <rect x="18" y="182" width="156" height="22" fill="none" stroke="#111" stroke-width="0.55"/>
+      <text x="96" y="196" text-anchor="middle" font-size="8.2" font-weight="300" fill="#111" letter-spacing="1.2">MEANING</text>
+
+      <line x1="0" y1="226" x2="190" y2="226" stroke="#111" stroke-width="0.55"/>
+      <text x="0" y="242" font-size="7.2" font-weight="200" fill="#999">gap 1</text>
+      <text x="52" y="242" font-size="7.2" font-weight="300" fill="#111">semantic units</text>
+      <text x="0" y="254" font-size="7.2" font-weight="200" fill="#999">gap 2</text>
+      <text x="52" y="254" font-size="7.2" font-weight="300" fill="#111">typed relations</text>
+      <text x="0" y="266" font-size="7.2" font-weight="200" fill="#999">gap 3</text>
+      <text x="52" y="266" font-size="7.2" font-weight="300" fill="#111">persistent layers</text>
+      <rect x="0" y="280" width="24" height="3" fill="#c51616"/>
+      <text x="32" y="285" font-size="7.2" font-weight="300" fill="#111">all three together = ontology</text>
+    </svg>
+    <div class="plate-caption">FIG. 01 &mdash; gap spine</div>
+  </div>
+
+  <div style="margin-top: 6mm; max-width: 145mm;">
+    <svg viewBox="0 0 540 108" width="100%" xmlns="http://www.w3.org/2000/svg">
+      <line x1="0" y1="8" x2="540" y2="8" stroke="#111" stroke-width="0.55"/>
+      <line x1="180" y1="24" x2="180" y2="88" stroke="#d8d8d8" stroke-width="0.45"/>
+      <line x1="360" y1="24" x2="360" y2="88" stroke="#d8d8d8" stroke-width="0.45"/>
+
+      <text x="90" y="55" text-anchor="middle" font-size="31" font-weight="200" fill="#111">16</text>
+      <text x="90" y="70" text-anchor="middle" font-size="7.3" font-weight="300" fill="#111" letter-spacing="1.6">SEMANTIC UNITS</text>
+      <text x="90" y="82" text-anchor="middle" font-size="6.8" font-weight="200" fill="#999">gap 1</text>
+
+      <text x="270" y="55" text-anchor="middle" font-size="31" font-weight="200" fill="#c51616">49</text>
+      <text x="270" y="70" text-anchor="middle" font-size="7.3" font-weight="300" fill="#111" letter-spacing="1.6">RELATION TYPES</text>
+      <text x="270" y="82" text-anchor="middle" font-size="6.8" font-weight="200" fill="#999">gap 2</text>
+
+      <text x="450" y="55" text-anchor="middle" font-size="31" font-weight="200" fill="#111">6</text>
+      <text x="450" y="70" text-anchor="middle" font-size="7.3" font-weight="300" fill="#111" letter-spacing="1.6">PERSISTENT LAYERS</text>
+      <text x="450" y="82" text-anchor="middle" font-size="6.8" font-weight="200" fill="#999">gap 3</text>
+
+      <line x1="0" y1="96" x2="540" y2="96" stroke="#111" stroke-width="0.55"/>
+    </svg>
+    <div class="plate-caption">FIG. 02 &mdash; datum strip</div>
+  </div>
+</div>
+
+<!-- PAGE 5: THESIS 2 -->
+<div class="page">
+  <span class="page-label">Alpha</span>
+  <span class="page-number">5</span>
+
+  <div style="position: absolute; right: 12mm; top: 35mm; width: 55mm;">
+    <svg viewBox="0 0 208 252" width="58mm" xmlns="http://www.w3.org/2000/svg">
+      <text x="38" y="12" text-anchor="middle" font-size="7" font-weight="200" fill="#999" letter-spacing="1.6">VECTOR</text>
+      <text x="154" y="12" text-anchor="middle" font-size="7" font-weight="200" fill="#999" letter-spacing="1.6">ONTOLOGY</text>
+      <line x1="98" y1="20" x2="98" y2="224" stroke="#d8d8d8" stroke-width="0.45"/>
+
+      <text x="0" y="40" font-size="6.6" font-weight="300" fill="#999" letter-spacing="1.4">RELEVANCE</text>
+      <rect x="12" y="48" width="68" height="32" fill="none" stroke="#111" stroke-width="0.55"/>
+      <text x="46" y="62" text-anchor="middle" font-size="7.4" font-weight="300" fill="#111">similarity</text>
+      <text x="46" y="72" text-anchor="middle" font-size="7.4" font-weight="200" fill="#666">topic proximity</text>
+      <rect x="116" y="48" width="76" height="32" fill="none" stroke="#111" stroke-width="0.55"/>
+      <text x="154" y="62" text-anchor="middle" font-size="7.4" font-weight="300" fill="#111">fts + graph</text>
+      <text x="154" y="72" text-anchor="middle" font-size="7.4" font-weight="200" fill="#666">function retrieval</text>
+
+      <text x="0" y="106" font-size="6.6" font-weight="300" fill="#999" letter-spacing="1.4">RELATIONS</text>
+      <rect x="12" y="114" width="68" height="32" fill="none" stroke="#111" stroke-width="0.55"/>
+      <text x="46" y="128" text-anchor="middle" font-size="7.4" font-weight="300" fill="#111">flat edge</text>
+      <text x="46" y="138" text-anchor="middle" font-size="7.4" font-weight="200" fill="#666">near / far</text>
+      <rect x="116" y="114" width="76" height="32" fill="none" stroke="#111" stroke-width="0.55"/>
+      <rect x="116" y="114" width="22" height="3" fill="#c51616"/>
+      <text x="154" y="128" text-anchor="middle" font-size="7.4" font-weight="300" fill="#111">typed edge</text>
+      <text x="154" y="138" text-anchor="middle" font-size="7.4" font-weight="200" fill="#666">49 relations</text>
+
+      <text x="0" y="172" font-size="6.6" font-weight="300" fill="#999" letter-spacing="1.4">LAYERS</text>
+      <rect x="12" y="180" width="68" height="32" fill="none" stroke="#111" stroke-width="0.55"/>
+      <text x="46" y="194" text-anchor="middle" font-size="7.4" font-weight="300" fill="#111">same shelf</text>
+      <text x="46" y="204" text-anchor="middle" font-size="7.4" font-weight="200" fill="#666">note = principle</text>
+      <rect x="116" y="180" width="76" height="32" fill="none" stroke="#111" stroke-width="0.55"/>
+      <text x="154" y="194" text-anchor="middle" font-size="7.4" font-weight="300" fill="#111">L0 &rarr; L5</text>
+      <text x="154" y="204" text-anchor="middle" font-size="7.4" font-weight="200" fill="#666">ranked memory</text>
+
+      <line x1="0" y1="232" x2="192" y2="232" stroke="#111" stroke-width="0.55"/>
+      <text x="0" y="246" font-size="7.2" font-weight="300" fill="#111">1-dimensional retrieval &rarr; layered graph retrieval</text>
+    </svg>
+    <div class="plate-caption">FIG. 03 &mdash; retrieval comparison</div>
+  </div>
+
+  <div class="section-sep"></div>
+  <div class="section-header">
+    <span class="section-label">Thesis <span class="accent-num">02</span></span>
+    <h2>온톨로지의 필연: 왜 벡터 DB로는 안 되는가</h2>
+    <span class="section-sub">RAG의 세 가지 실패 모드와 하이브리드 검색의 필연</span>
+  </div>
+  <div class="accent-line"></div>
+
+  <div class="body-serif" style="margin-top: 6mm;">
+    <p>RAG는 가장 널리 쓰이는 대응이지만, 벡터 유사도만으로는 필요한 구조를 복구하지 못한다. 문제는 검색 품질보다 검색 차원의 부족이다.</p>
+
+    <div class="quote-block">
+      <p>벡터 DB는 주제적 근접성을 잘 찾지만, 기능적 관련성, typed relation, 계층의 세 층을 한 번에 다루지 못한다.</p>
+    </div>
+
+    <p>"Python 3.12의 새 기능"과 "Python 2에서 3으로 마이그레이션"이 가까워 보일 수는 있다. 그러나 관계의 종류와 문맥의 층위를 모르면 가까움은 곧 노이즈가 된다.</p>
+
+    <p>그래서 하이브리드가 필요하다. FTS는 정확한 이름을, 벡터는 표현 유사성을, graph traversal은 명시적 관계와 레이어를 복구한다.</p>
+  </div>
+</div>
+
+<!-- PAGE 6: THESIS 3 -->
+<div class="page">
+  <span class="page-label">Alpha</span>
+  <span class="page-number">6</span>
+
+  <div class="section-sep"></div>
+  <div class="section-header">
+    <span class="section-label">Thesis <span class="accent-num">03</span></span>
+    <h2>정적 온톨로지도 부족하다</h2>
+    <span class="section-sub">BFO, DOLCE, Gene Ontology &mdash; 전문가가 설계하고 시스템이 따르는 모델의 세 가지 불일치</span>
+  </div>
+  <div class="accent-line"></div>
+
+  <div class="body-serif" style="margin-top: 6mm;">
+    <p>정적 온톨로지는 전문가가 먼저 분류하고 시스템이 그 뒤를 따르는 모델이다. 여기서는 그 순서가 뒤집힌다. 경험이 먼저 오고, 분류는 뒤늦게 따라온다.</p>
+
+    <div class="quote-block">
+      <p>개인 인지는 범용 분류를 완전히 따르지 않는다. 그래서 여기에는 Unclassified가 있고, Correction이 나중에 생긴다.</p>
+    </div>
+
+    <p>핵심은 오류가 아니라 성장이다. 타입 수가 바뀌고 관계가 사후 생성되는 순간, 온톨로지는 더 이상 고정된 표준이 아니라 운영 중인 장치가 된다.</p>
+  </div>
+
+  <div style="margin-top: 6mm; max-width: 145mm;">
+    <svg viewBox="0 0 540 132" width="145mm" xmlns="http://www.w3.org/2000/svg">
+      <text x="0" y="12" font-size="9" font-weight="200" fill="#999" letter-spacing="2">ONTOLOGY EVOLUTION LINE</text>
+      <line x1="18" y1="62" x2="520" y2="62" stroke="#111" stroke-width="0.55"/>
+
+      <circle cx="46" cy="62" r="3.5" fill="none" stroke="#111" stroke-width="0.55"/>
+      <text x="46" y="42" text-anchor="middle" font-size="8.3" font-weight="300" fill="#111">Gene</text>
+      <text x="46" y="52" text-anchor="middle" font-size="6.8" font-weight="200" fill="#999">domain</text>
+
+      <circle cx="152" cy="62" r="3.5" fill="none" stroke="#111" stroke-width="0.55"/>
+      <text x="152" y="42" text-anchor="middle" font-size="8.3" font-weight="300" fill="#111">BFO</text>
+      <text x="152" y="52" text-anchor="middle" font-size="6.8" font-weight="200" fill="#999">universal</text>
+
+      <circle cx="258" cy="62" r="3.5" fill="none" stroke="#111" stroke-width="0.55"/>
+      <text x="258" y="42" text-anchor="middle" font-size="8.3" font-weight="300" fill="#111">DOLCE</text>
+      <text x="258" y="52" text-anchor="middle" font-size="6.8" font-weight="200" fill="#999">cognitive</text>
+
+      <rect x="330" y="50" width="72" height="24" fill="none" stroke="#999" stroke-width="0.5" stroke-dasharray="2,2"/>
+      <text x="366" y="64" text-anchor="middle" font-size="7.2" font-weight="300" fill="#666">personal schema</text>
+
+      <line x1="402" y1="62" x2="430" y2="62" stroke="#c51616" stroke-width="0.55"/>
+      <rect x="430" y="48" width="92" height="28" fill="none" stroke="#111" stroke-width="0.55"/>
+      <rect x="430" y="48" width="24" height="3" fill="#c51616"/>
+      <text x="476" y="64" text-anchor="middle" font-size="8.3" font-weight="300" fill="#111">mcp-memory</text>
+
+      <line x1="0" y1="108" x2="170" y2="108" stroke="#111" stroke-width="0.45"/>
+      <text x="0" y="123" font-size="7.2" font-weight="300" fill="#111">from expert-designed to self-evolving</text>
+    </svg>
+    <div class="plate-caption">FIG. 04 &mdash; timeline plate</div>
+  </div>
+</div>
+
+<!-- PAGE 7: THESIS 4 -->
+<div class="page">
+  <span class="page-label">Alpha</span>
+  <span class="page-number">7</span>
+
+  <div style="position: absolute; right: 12mm; top: 35mm; width: 55mm;">
+    <svg viewBox="0 0 208 286" width="58mm" xmlns="http://www.w3.org/2000/svg">
+      <text x="0" y="10" font-size="7" font-weight="200" fill="#999" letter-spacing="2">DISTILLATION LADDER</text>
+      <rect x="72" y="24" width="50" height="20" fill="none" stroke="#111" stroke-width="0.55"/>
+      <rect x="62" y="58" width="70" height="20" fill="none" stroke="#111" stroke-width="0.55"/>
+      <rect x="46" y="92" width="102" height="20" fill="none" stroke="#111" stroke-width="0.55"/>
+      <rect x="24" y="126" width="146" height="20" fill="none" stroke="#111" stroke-width="0.55"/>
+      <rect x="10" y="160" width="174" height="20" fill="none" stroke="#111" stroke-width="0.55"/>
+      <rect x="0" y="194" width="194" height="20" fill="none" stroke="#111" stroke-width="0.55"/>
+      <rect x="72" y="24" width="18" height="3" fill="#c51616"/>
+
+      <text x="97" y="37" text-anchor="middle" font-size="7.4" font-weight="300" fill="#111">L5 axiom</text>
+      <text x="97" y="71" text-anchor="middle" font-size="7.4" font-weight="300" fill="#111">L4 framework</text>
+      <text x="97" y="105" text-anchor="middle" font-size="7.4" font-weight="300" fill="#111">L3 principle 360+</text>
+      <text x="97" y="139" text-anchor="middle" font-size="7.4" font-weight="300" fill="#111">L2 pattern 1,096</text>
+      <text x="97" y="173" text-anchor="middle" font-size="7.4" font-weight="300" fill="#111">L1 decision 1,227+</text>
+      <text x="97" y="207" text-anchor="middle" font-size="7.4" font-weight="300" fill="#111">L0 observation 734</text>
+
+      <line x1="202" y1="206" x2="202" y2="30" stroke="#c51616" stroke-width="0.55"/>
+      <text x="198" y="226" text-anchor="end" font-size="7.1" font-weight="300" fill="#c51616" letter-spacing="0.6">promotion</text>
+
+      <line x1="0" y1="244" x2="178" y2="244" stroke="#111" stroke-width="0.45"/>
+      <text x="0" y="259" font-size="7.2" font-weight="200" fill="#999">crystallized into</text>
+      <text x="0" y="271" font-size="7.2" font-weight="200" fill="#999">generalized to</text>
+      <text x="0" y="283" font-size="7.2" font-weight="300" fill="#111">cognitive distillation</text>
+    </svg>
+    <div class="plate-caption">FIG. 05 &mdash; ladder plate</div>
+  </div>
+
+  <div class="section-sep"></div>
+  <div class="section-header">
+    <span class="section-label">Thesis <span class="accent-num">04</span></span>
+    <h2>승격: 경험이 원칙이 되는 메커니즘</h2>
+    <span class="section-sub">L0&rarr;L5 증류 피라미드, BCM 가소성 게이트, DB 분포 실증</span>
+  </div>
+  <div class="accent-line"></div>
+
+  <div class="body-serif" style="margin-top: 6mm;">
+    <p>mcp-memory의 DB 분포는 피라미드를 그린다.</p>
+
+    <div class="quote-block">
+      <p>L0 734 &rarr; L1 1,227+ &rarr; L2 1,096 &rarr; L3+ 360+. 넓은 바닥에서 좁은 꼭대기로의 분포가 이미 승격 경로를 보여준다.</p>
+    </div>
+
+    <p>중요한 것은 숫자보다 이동이다. Observation이 반복되면 Pattern으로, Pattern이 검증되면 Principle로 승격된다. relation과 gate가 없는 기억 저장소는 이런 증류를 만들지 못한다.</p>
+
+    <p>현재 승격은 대부분 human-in-the-loop다. 그 느린 수동성 자체가 오히려 현재 단계의 정확도를 지켜준다. 즉시 자동화보다, 선별적 증류가 먼저다.</p>
+  </div>
+</div>
+
+<!-- PAGE 8: THESIS 5 -->
+<div class="page">
+  <span class="page-label">Alpha</span>
+
+  <div style="position: absolute; right: 12mm; top: 35mm; width: 55mm;">
+    <svg viewBox="0 0 208 284" width="58mm" xmlns="http://www.w3.org/2000/svg">
+      <text x="104" y="10" text-anchor="middle" font-size="7" font-weight="200" fill="#999" letter-spacing="2">COUNTERFLOW</text>
+      <text x="42" y="28" text-anchor="middle" font-size="6.5" font-weight="200" fill="#999" letter-spacing="1.2">PROMOTION</text>
+      <text x="160" y="28" text-anchor="middle" font-size="6.5" font-weight="300" fill="#c51616" letter-spacing="1.2">REINTERPRETATION</text>
+
+      <rect x="6" y="52" width="72" height="18" fill="none" stroke="#111" stroke-width="0.55"/>
+      <rect x="6" y="100" width="72" height="18" fill="none" stroke="#111" stroke-width="0.55"/>
+      <rect x="6" y="148" width="72" height="18" fill="none" stroke="#111" stroke-width="0.55"/>
+      <text x="42" y="64" text-anchor="middle" font-size="7.2" font-weight="300" fill="#111">L3 principle</text>
+      <text x="42" y="112" text-anchor="middle" font-size="7.2" font-weight="300" fill="#111">L2 pattern</text>
+      <text x="42" y="160" text-anchor="middle" font-size="7.2" font-weight="300" fill="#111">L0 observation</text>
+
+      <rect x="120" y="100" width="72" height="18" fill="none" stroke="#111" stroke-width="0.55"/>
+      <rect x="120" y="148" width="72" height="18" fill="none" stroke="#111" stroke-width="0.55"/>
+      <rect x="120" y="196" width="72" height="18" fill="none" stroke="#111" stroke-width="0.55"/>
+      <rect x="120" y="100" width="18" height="3" fill="#c51616"/>
+      <text x="156" y="112" text-anchor="middle" font-size="7.2" font-weight="300" fill="#111">lens</text>
+      <text x="156" y="160" text-anchor="middle" font-size="7.2" font-weight="300" fill="#111">re-read</text>
+      <text x="156" y="208" text-anchor="middle" font-size="7.2" font-weight="300" fill="#111">new observation</text>
+
+      <line x1="78" y1="61" x2="120" y2="109" stroke="#d8d8d8" stroke-width="0.45" stroke-dasharray="2,2"/>
+      <line x1="78" y1="109" x2="120" y2="109" stroke="#d8d8d8" stroke-width="0.45"/>
+      <line x1="156" y1="118" x2="156" y2="148" stroke="#c51616" stroke-width="0.5"/>
+      <line x1="156" y1="166" x2="156" y2="196" stroke="#c51616" stroke-width="0.5"/>
+
+      <line x1="0" y1="236" x2="192" y2="236" stroke="#111" stroke-width="0.45"/>
+      <text x="0" y="251" font-size="7.2" font-weight="200" fill="#999">principles do not end the chain</text>
+      <text x="0" y="263" font-size="7.2" font-weight="300" fill="#111">they return to reshape experience</text>
+    </svg>
+    <div class="plate-caption">FIG. 06 &mdash; counterflow plate</div>
+  </div>
+
+  <span class="page-number">8</span>
+
+  <div class="section-sep"></div>
+  <div class="section-header">
+    <span class="section-label">Thesis <span class="accent-num">05</span></span>
+    <h2>역방향 흐름: 원칙이 경험을 재해석한다</h2>
+    <span class="section-sub">정적 피라미드와 살아있는 시스템의 분기점 &mdash; 들뢰즈 반-현실화의 구현</span>
+  </div>
+  <div class="accent-line"></div>
+
+  <div class="body-serif" style="margin-top: 6mm;">
+    <p>정적 피라미드와 살아있는 시스템의 차이는 여기서 갈린다. 상위 노드가 아래를 다시 해석하기 시작할 때, 구조는 저장소가 아니라 장치가 된다.</p>
+
+    <div class="quote-block">
+      <p>Gene Ontology에서 분류는 대상을 바꾸지 않는다. 여기서는 Principle과 Lens가 이후 Observation의 해석 각도를 바꾼다.</p>
+    </div>
+
+    <p>WIM 7렌즈가 가장 선명한 사례다. 같은 뉴스도 렌즈 주입 전에는 요약으로 끝나지만, 주입 후에는 시스템 영향, 외부화 진전, 빼기의 관점 같은 다른 경로로 재해석된다.</p>
+  </div>
+</div>
+
+<!-- PAGE 9: THESIS 6 -->
+<div class="page">
+  <span class="page-label">Alpha</span>
+  <span class="page-number">9</span>
+
+  <div class="section-sep"></div>
+  <div class="section-header">
+    <span class="section-label">Thesis <span class="accent-num">06</span></span>
+    <h2>자기교정: 2차 피드백 루프의 구현</h2>
+    <span class="section-sub">사이버네틱스의 2차 피드백 &mdash; 행동을 바꾸는 규칙 자체를 바꾼다</span>
+  </div>
+  <div class="accent-line"></div>
+
+  <div class="body-serif" style="margin-top: 6mm;">
+    <p>보통 시스템의 오류 교정은 값 수정에서 끝난다. 여기서 Correction은 메타 레벨에서 작동한다. 틀린 결과보다, 그 결과를 낳은 판단 규칙을 먼저 겨냥한다.</p>
+
+    <div class="quote-block">
+      <p>1차 루프는 행동을 바꾸고, 2차 루프는 행동을 바꾸는 규칙을 바꾼다. `Correction recall 최우선`은 바로 그 2차 루프의 주입 방식이다.</p>
+    </div>
+
+    <p>Failure 노드는 과거의 사고 오류를 보존하고, 그 오류는 패턴과 원칙으로 승격된 뒤 다음 판단의 전제에 다시 삽입된다. 자기교정은 삭제가 아니라 재주입이다.</p>
+  </div>
+
+  <div style="margin-top: 6mm; max-width: 145mm;">
+    <svg viewBox="0 0 540 214" width="145mm" xmlns="http://www.w3.org/2000/svg">
+      <text x="270" y="12" text-anchor="middle" font-size="9" font-weight="200" fill="#999" letter-spacing="2">SECOND-ORDER FEEDBACK</text>
+
+      <rect x="56" y="58" width="88" height="22" fill="none" stroke="#111" stroke-width="0.55"/>
+      <rect x="188" y="58" width="88" height="22" fill="none" stroke="#111" stroke-width="0.55"/>
+      <rect x="188" y="124" width="88" height="22" fill="none" stroke="#111" stroke-width="0.55"/>
+      <rect x="56" y="124" width="88" height="22" fill="none" stroke="#111" stroke-width="0.55"/>
+      <text x="100" y="72" text-anchor="middle" font-size="8.1" font-weight="300" fill="#111">experience</text>
+      <text x="232" y="72" text-anchor="middle" font-size="8.1" font-weight="300" fill="#111">decision</text>
+      <text x="232" y="138" text-anchor="middle" font-size="8.1" font-weight="300" fill="#111">failure</text>
+      <text x="100" y="138" text-anchor="middle" font-size="8.1" font-weight="300" fill="#111">feedback</text>
+
+      <line x1="144" y1="69" x2="188" y2="69" stroke="#111" stroke-width="0.45"/>
+      <line x1="232" y1="80" x2="232" y2="124" stroke="#111" stroke-width="0.45"/>
+      <line x1="188" y1="135" x2="144" y2="135" stroke="#111" stroke-width="0.45"/>
+      <line x1="100" y1="124" x2="100" y2="80" stroke="#111" stroke-width="0.45"/>
+
+      <rect x="368" y="74" width="108" height="22" fill="none" stroke="#111" stroke-width="0.55"/>
+      <rect x="368" y="108" width="108" height="22" fill="none" stroke="#111" stroke-width="0.55"/>
+      <rect x="368" y="142" width="108" height="22" fill="none" stroke="#111" stroke-width="0.55"/>
+      <rect x="368" y="142" width="24" height="3" fill="#c51616"/>
+      <text x="422" y="88" text-anchor="middle" font-size="8.1" font-weight="300" fill="#111">pattern</text>
+      <text x="422" y="122" text-anchor="middle" font-size="8.1" font-weight="300" fill="#111">principle</text>
+      <text x="422" y="156" text-anchor="middle" font-size="8.1" font-weight="300" fill="#111">correction recall</text>
+
+      <line x1="276" y1="135" x2="368" y2="85" stroke="#c51616" stroke-width="0.5"/>
+      <line x1="422" y1="96" x2="422" y2="108" stroke="#c51616" stroke-width="0.5"/>
+      <line x1="422" y1="130" x2="422" y2="142" stroke="#c51616" stroke-width="0.5"/>
+      <line x1="368" y1="154" x2="144" y2="136" stroke="#c51616" stroke-width="0.45" stroke-dasharray="2,2"/>
+
+      <text x="154" y="184" font-size="7.2" font-weight="200" fill="#999" letter-spacing="1.2">1ST ORDER</text>
+      <text x="390" y="184" font-size="7.2" font-weight="300" fill="#c51616" letter-spacing="1.2">2ND ORDER</text>
+    </svg>
+    <div class="plate-caption">FIG. 07 &mdash; loop plate</div>
+  </div>
+</div>
+
+<!-- PAGE 10: THESIS 7 -->
+<div class="page">
+  <span class="page-label">Alpha</span>
+  <span class="page-number">10</span>
+
+  <div class="section-sep"></div>
+  <div class="section-header">
+    <span class="section-label">Thesis <span class="accent-num">07</span></span>
+    <h2>세션 주입: 의식의 작업대를 설계한다</h2>
+    <span class="section-sub">인지과학의 작업기억 대응 &mdash; 컨텍스트 윈도우에 무엇을 놓을 것인가</span>
+  </div>
+  <div class="accent-line"></div>
+
+  <div class="body-serif" style="margin-top: 6mm;">
+    <p>세션이 시작될 때 컨텍스트 윈도우에 무엇이 놓이느냐가 사고 품질을 결정한다. 인지과학의 작업기억(working memory)과 정확히 대응한다.</p>
+
+    <p>mcp-memory의 세션 주입 정책은 세 가지를 조합한다:</p>
+
+    <div class="quote-block">
+      <p>L2+ 상위 15개 &rarr; 구조적 지속성<br>
+      최근 30일 Signal &rarr; 약한 변화 감지<br>
+      최근 7일 Observation &rarr; 현장성</p>
+    </div>
+
+    <p>추상도 매몰과 잡음 매몰 사이의 균형. 200K 컨텍스트를 42K baseline &rarr; 150K auto-compact로 관리하는 "Context as Currency" 원칙이 이 주입 정책의 경제학이다.</p>
+  </div>
+</div>
+
+<!-- PAGE 11: THESIS 8 -->
+<div class="page">
+  <span class="page-label">Alpha</span>
+  <span class="page-number">11</span>
+
+  <div class="section-sep"></div>
+  <div class="section-header">
+    <span class="section-label">Thesis <span class="accent-num">08</span></span>
+    <h2>에코시스템: 온톨로지 바깥의 온톨로지</h2>
+    <span class="section-sub">12개 프로젝트가 구성하는 인지 순환과 foundation/ 자기참조</span>
+  </div>
+  <div class="accent-line"></div>
+
+  <div class="body-serif" style="margin-top: 6mm;">
+    <p>mcp-memory는 단독 프로젝트가 아니라 12개 프로젝트의 인지 순환 한가운데 놓여 있다. 주변 서비스는 단순 주변장치가 아니라 기억, 주입, 교정, 관계, 문서화의 각 기능을 맡는다.</p>
+
+    <div class="quote-block">
+      <p>중요한 것은 연결 수보다 연결 방식이다. foundation 문서가 세션에 주입되고, 그 문서가 다시 운영 결과로 갱신될 때 시스템은 자기 원칙을 참조하는 온톨로지가 된다.</p>
+    </div>
+
+    <p>README는 설명이지만 foundation은 전제다. 설명이 아니라 전제가 순환 안에 들어올 때, 설정 파일은 메타데이터에서 작동 구조로 바뀐다.</p>
+  </div>
+
+  <div style="margin-top: 6mm; max-width: 145mm;">
+    <svg viewBox="0 0 540 190" width="145mm" xmlns="http://www.w3.org/2000/svg">
+      <text x="0" y="12" font-size="9" font-weight="200" fill="#999" letter-spacing="2">ECOSYSTEM FIELD</text>
+      <line x1="270" y1="92" x2="70" y2="46" stroke="#111" stroke-width="0.55"/>
+      <line x1="270" y1="92" x2="86" y2="148" stroke="#111" stroke-width="0.45"/>
+      <line x1="270" y1="92" x2="180" y2="34" stroke="#d8d8d8" stroke-width="0.45"/>
+      <line x1="270" y1="92" x2="178" y2="150" stroke="#d8d8d8" stroke-width="0.45"/>
+      <line x1="270" y1="92" x2="376" y2="152" stroke="#111" stroke-width="0.45"/>
+      <line x1="270" y1="92" x2="430" y2="38" stroke="#d8d8d8" stroke-width="0.45"/>
+      <line x1="270" y1="92" x2="470" y2="122" stroke="#d8d8d8" stroke-width="0.45"/>
+      <line x1="270" y1="92" x2="510" y2="70" stroke="#d8d8d8" stroke-width="0.45"/>
+
+      <circle cx="270" cy="92" r="11" fill="none" stroke="#111" stroke-width="0.6"/>
+      <rect x="259" y="81" width="22" height="3" fill="#c51616"/>
+      <text x="270" y="74" text-anchor="middle" font-size="9" font-weight="300" fill="#111">mcp-memory</text>
+
+      <circle cx="70" cy="46" r="4.5" fill="none" stroke="#111" stroke-width="0.55"/>
+      <text x="70" y="34" text-anchor="middle" font-size="7.2" font-weight="300" fill="#111">orchestration</text>
+      <circle cx="86" cy="148" r="4.5" fill="none" stroke="#111" stroke-width="0.55"/>
+      <text x="86" y="162" text-anchor="middle" font-size="7.2" font-weight="300" fill="#111">context-cascade</text>
+      <circle cx="180" cy="34" r="3.8" fill="none" stroke="#999" stroke-width="0.5"/>
+      <text x="180" y="22" text-anchor="middle" font-size="7" font-weight="300" fill="#666">index-system</text>
+      <circle cx="178" cy="150" r="3.8" fill="none" stroke="#999" stroke-width="0.5"/>
+      <text x="178" y="164" text-anchor="middle" font-size="7" font-weight="300" fill="#666">documentation</text>
+      <circle cx="376" cy="152" r="3.8" fill="none" stroke="#111" stroke-width="0.5"/>
+      <text x="376" y="166" text-anchor="middle" font-size="7" font-weight="300" fill="#111">auto-iterate</text>
+      <circle cx="430" cy="38" r="3.4" fill="none" stroke="#999" stroke-width="0.45"/>
+      <text x="430" y="26" text-anchor="middle" font-size="6.8" font-weight="300" fill="#666">portfolio</text>
+      <circle cx="470" cy="122" r="3.4" fill="none" stroke="#999" stroke-width="0.45"/>
+      <text x="470" y="136" text-anchor="middle" font-size="6.8" font-weight="300" fill="#666">tech-review</text>
+      <circle cx="510" cy="70" r="3.4" fill="none" stroke="#999" stroke-width="0.45"/>
+      <text x="510" y="58" text-anchor="middle" font-size="6.8" font-weight="300" fill="#666">daily-memo</text>
+
+      <line x1="0" y1="178" x2="146" y2="178" stroke="#111" stroke-width="0.45"/>
+      <text x="156" y="182" font-size="7.2" font-weight="200" fill="#999">line weight = operative dependency</text>
+    </svg>
+    <div class="plate-caption">FIG. 08 &mdash; network field</div>
+  </div>
+</div>
+
+<!-- PAGE 12: THESIS 9 -->
+<div class="page">
+  <span class="page-label">Alpha</span>
+  <span class="page-number">12</span>
+
+  <div class="section-sep"></div>
+  <div class="section-header">
+    <span class="section-label">Thesis <span class="accent-num">09</span></span>
+    <h2>경쟁 지형: 아무도 점유하지 않은 공간</h2>
+    <span class="section-sub">구조화 &times; 자기개선 2&times;2 매트릭스의 우상단</span>
+  </div>
+  <div class="accent-line"></div>
+
+  <div class="body-serif" style="margin-top: 6mm;">
+    <p>두 축은 단순하다. 구조화 정도와 자기개선 정도. 중요한 것은 각 축의 이름보다, 그 조합이 현재 시장에서 어떻게 비어 있는지다.</p>
+
+    <div class="quote-block">
+      <p>flat + static, flat + self-improving, structured + static는 이미 점유되어 있다. 비어 있는 곳은 structured + self-improving의 우상단뿐이다.</p>
+    </div>
+
+    <p>이 위치가 비어 있는 이유는 기술 난이도보다 결합 난이도 때문이다. 엔지니어링, 인지과학, 철학, 운영 루프가 동시에 필요하다. Letta가 가장 가깝지만 초점은 장기 기억 에이전트이지 자기개선 구조가 아니다.</p>
+  </div>
+
+  <div style="margin-top: 6mm; max-width: 145mm;">
+    <svg viewBox="0 0 540 212" width="145mm" xmlns="http://www.w3.org/2000/svg">
+      <text x="270" y="12" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="8" font-weight="300" fill="#999" letter-spacing="2">COMPETITIVE FIELD</text>
+      <line x1="122" y1="18" x2="418" y2="18" stroke="#999" stroke-width="0.45"/>
+
+      <line x1="58" y1="108" x2="490" y2="108" stroke="#111" stroke-width="0.55"/>
+      <line x1="276" y1="28" x2="276" y2="188" stroke="#111" stroke-width="0.55"/>
+
+      <line x1="58" y1="68" x2="490" y2="68" stroke="#e3e3e3" stroke-width="0.35"/>
+      <line x1="58" y1="148" x2="490" y2="148" stroke="#e3e3e3" stroke-width="0.35"/>
+      <line x1="166" y1="28" x2="166" y2="188" stroke="#e3e3e3" stroke-width="0.35"/>
+      <line x1="386" y1="28" x2="386" y2="188" stroke="#e3e3e3" stroke-width="0.35"/>
+
+      <text x="58" y="122" font-family="Helvetica, Arial, sans-serif" font-size="7.2" font-weight="300" fill="#999" letter-spacing="1.2">FLAT</text>
+      <text x="490" y="122" text-anchor="end" font-family="Helvetica, Arial, sans-serif" font-size="7.2" font-weight="300" fill="#999" letter-spacing="1.2">STRUCTURED</text>
+      <text x="270" y="122" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="7" font-weight="300" fill="#999" letter-spacing="1.1">degree of structure</text>
+
+      <text x="268" y="34" text-anchor="end" font-family="Helvetica, Arial, sans-serif" font-size="7.2" font-weight="300" fill="#999" letter-spacing="1.2">SELF-IMPROVING</text>
+      <text x="268" y="186" text-anchor="end" font-family="Helvetica, Arial, sans-serif" font-size="7.2" font-weight="300" fill="#999" letter-spacing="1.2">STATIC</text>
+
+      <text x="84" y="42" font-family="Helvetica, Arial, sans-serif" font-size="6.6" font-weight="300" fill="#cfcfcf" letter-spacing="1">flat / adaptive</text>
+      <text x="334" y="46" font-family="Helvetica, Arial, sans-serif" font-size="6.6" font-weight="300" fill="#cfcfcf" letter-spacing="1">structured / adaptive</text>
+      <text x="112" y="170" font-family="Helvetica, Arial, sans-serif" font-size="6.6" font-weight="300" fill="#cfcfcf" letter-spacing="1">flat / static</text>
+      <text x="334" y="170" font-family="Helvetica, Arial, sans-serif" font-size="6.6" font-weight="300" fill="#cfcfcf" letter-spacing="1">structured / static</text>
+
+      <circle cx="112" cy="152" r="4.6" fill="none" stroke="#666" stroke-width="0.45"/>
+      <text x="112" y="165" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="7.4" font-weight="300" fill="#666">Mem0</text>
+      <circle cx="162" cy="160" r="4.6" fill="none" stroke="#666" stroke-width="0.45"/>
+      <text x="162" y="173" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="7.4" font-weight="300" fill="#666">Zep</text>
+      <circle cx="84" cy="168" r="4.6" fill="none" stroke="#999" stroke-width="0.45"/>
+      <text x="84" y="181" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="6.8" font-weight="300" fill="#999">LangChain</text>
+
+      <circle cx="154" cy="78" r="4.6" fill="none" stroke="#666" stroke-width="0.45"/>
+      <text x="154" y="60" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="7.2" font-weight="300" fill="#666">OpenAI</text>
+      <text x="154" y="70" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="7.2" font-weight="300" fill="#666">Memory</text>
+
+      <circle cx="372" cy="150" r="4.6" fill="none" stroke="#666" stroke-width="0.45"/>
+      <text x="372" y="163" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="7.4" font-weight="300" fill="#666">Cognee</text>
+      <circle cx="422" cy="160" r="4.6" fill="none" stroke="#999" stroke-width="0.45"/>
+      <text x="422" y="173" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="6.8" font-weight="300" fill="#999">Notion AI</text>
+
+      <circle cx="336" cy="78" r="4.8" fill="none" stroke="#111" stroke-width="0.55"/>
+      <text x="336" y="67" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="7.4" font-weight="300" fill="#111">Letta</text>
+      <text x="336" y="90" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="6.4" font-weight="300" fill="#999">closest current approach</text>
+      <line x1="342" y1="76" x2="434" y2="52" stroke="#b8b8b8" stroke-width="0.4" stroke-dasharray="2,2"/>
+
+      <circle cx="444" cy="50" r="6" fill="none" stroke="#b31c1c" stroke-width="0.65"/>
+      <line x1="444" y1="42" x2="444" y2="58" stroke="#b31c1c" stroke-width="0.55"/>
+      <line x1="436" y1="50" x2="452" y2="50" stroke="#b31c1c" stroke-width="0.55"/>
+      <text x="458" y="46" font-family="Helvetica, Arial, sans-serif" font-size="7.8" font-weight="300" fill="#b31c1c">mcp-memory</text>
+      <text x="458" y="56" font-family="Helvetica, Arial, sans-serif" font-size="6.4" font-weight="300" fill="#b31c1c">structured + self-improving</text>
+
+      <rect x="404" y="26" width="98" height="18" fill="none" stroke="#b31c1c" stroke-width="0.4" stroke-dasharray="2,2"/>
+      <text x="453" y="38" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="6.6" font-weight="300" fill="#b31c1c" letter-spacing="0.6">previously unoccupied</text>
+
+      <line x1="58" y1="196" x2="490" y2="196" stroke="#111" stroke-width="0.55"/>
+      <text x="58" y="206" font-family="Helvetica, Arial, sans-serif" font-size="6.6" font-weight="300" fill="#999" letter-spacing="0.8">register</text>
+      <text x="114" y="206" font-family="Helvetica, Arial, sans-serif" font-size="6.6" font-weight="300" fill="#666">integration burden</text>
+      <text x="208" y="206" font-family="Helvetica, Arial, sans-serif" font-size="6.4" font-weight="300" fill="#999">ontology + memory + promotion + reflection</text>
+    </svg>
+    <div class="plate-caption">FIG. 09 &mdash; field plate</div>
+  </div>
+</div>
+
+<!-- PAGE 13: THESIS 10 -->
+<div class="page">
+  <span class="page-label">Alpha</span>
+  <span class="page-number">13</span>
+
+  <div class="section-sep"></div>
+  <div class="section-header">
+    <span class="section-label">Thesis <span class="accent-num">10</span></span>
+    <h2>이것이 Human-AI 협업의 미래에 대해 말하는 것</h2>
+    <span class="section-sub">세 문장의 선언 &mdash; 매체, 구조, 생명</span>
+  </div>
+  <div class="accent-line"></div>
+
+  <div class="body-serif" style="margin-top: 6mm;">
+    <p>세 문장.</p>
+
+    <div class="quote-block">
+      <p>LLM은 도구가 아니라 매체다. 인쇄술이 생각의 형태를 바꿨듯, LLM은 사고의 형태를 바꾼다.</p>
+    </div>
+
+    <div class="quote-block">
+      <p>매체에는 구조가 필요하다. 인쇄술에 문법과 편집과 도서관 분류가 필요했듯, LLM에는 온톨로지가 필요하다.</p>
+    </div>
+
+    <div class="quote-block">
+      <p>구조는 살아있어야 한다. 문법이 언어와 함께 진화하듯, 온톨로지는 사용자와 함께 성장해야 한다.</p>
+    </div>
+
+    <p>mcp-memory는 세 번째 선언의 작동하는 증거다. 4,786개 노드, 6,765개 엣지, L0에서 L5까지의 인지 계층. 이 숫자들은 단순한 스케일이 아니다. 경험이 판단으로, 판단이 원칙으로, 원칙이 다시 경험의 해석으로 순환하는 자기개선 인지 엔진의 현재 스냅샷이다.</p>
+
+    <p>온톨로지는 이 엔진의 현재 상태를 기록한 것이지, 엔진 자체가 아니다. 진짜 엔진은 순환이다.</p>
+
+    <p>한계도 분명하다. 첫째, "LLM 단독으로 불충분하다"를 증명하지만 "온톨로지가 유일한 해법"을 증명하지는 않는다. 뉴로심볼릭 AI, 형식 검증 등 다른 접근도 같은 문제를 다른 방식으로 다룬다. 둘째, 살아있는 온톨로지의 유지 비용이 이익을 초과하는 시나리오가 있다 &mdash; 단순 반복 작업, 일회성 프로젝트, 자기 관찰에 관심 없는 사용자. 셋째, 수동 승격 의존이 구조적 약점이다. 사용자가 구조화를 멈추면 시스템은 flat memory로 퇴행한다.</p>
+  </div>
+</div>
+
+<!-- PAGE 14: COLOPHON -->
+<div class="page">
+  <span class="page-label">Alpha</span>
+  <span class="page-number">14</span>
+
+  <div class="body-serif" style="margin-top: 20mm;">
+    <p style="font-family: var(--sans); font-size: 8pt; font-weight: 200; color: var(--fg-light); letter-spacing: 1px;">다음 문서: Beta &mdash; "무엇이 드러났는가: 4,786개 노드가 말하는 인간-AI 인지 협업의 실증적 발견"</p>
+  </div>
+
+  <div class="colophon">
+    <div class="colophon-title">Colophon</div>
+    <div class="colophon-rule"></div>
+    <div class="colophon-body">
+      Alpha &mdash; 왜 구조인가<br>
+      LLM 시대의 인지 외부화와 자기개선 온톨로지의 필연성<br>
+      Paul Park &times; Claude<br>
+      2026-03-28<br>
+      mcp-memory v3.1.0-dev<br>
+      4,786 nodes &middot; 6,765 edges &middot; 25 types &middot; L0&ndash;L5
+    </div>
+  </div>
+</div>
+
+</body>
+</html>
