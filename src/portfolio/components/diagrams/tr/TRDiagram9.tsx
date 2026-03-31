@@ -49,8 +49,6 @@ function rowY(i: number) { return PY + ROW_PAD + i * (ROW_H + ROW_GAP); }
 /* ── shared section y ── */
 const SHARED_Y = PY + PH + 36;
 const OUT_Y = SHARED_Y + 36;
-const ANN_Y = OUT_Y + 40;
-const AL = 14;
 
 export function TRDiagram9() {
   const leftCx = PL_X + PW / 2;
