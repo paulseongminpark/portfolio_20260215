@@ -203,7 +203,6 @@ function Nav({ onLogoClick, onNavClick, showLogo = true }: { onLogoClick?: () =>
             {l.label}
           </a>
         ))}
-        <a href="mailto:paulseongminpark@gmail.com" className="p12-nav-cta">Contact &rarr;</a>
       </div>
       {/* 모바일 햄버거 버튼 */}
       <button
@@ -224,9 +223,6 @@ function Nav({ onLogoClick, onNavClick, showLogo = true }: { onLogoClick?: () =>
               {l.label}
             </a>
           ))}
-          <a href="mailto:paulseongminpark@gmail.com" className="p12-nav-mobile-cta">
-            Contact &rarr;
-          </a>
         </div>
       )}
     </nav>
@@ -477,7 +473,7 @@ export default function Page12() {
   if (activeWork) {
     return (
       <div className="p12-root" style={{ background: "#ffffff", minHeight: "100vh" }}>
-        <Nav onLogoClick={() => closeWorkDetail("contact")} />
+        <Nav onLogoClick={() => closeWorkDetail("contact")} onNavClick={(id) => closeWorkDetail(id)} />
         <AnimatePresence mode="wait">
           <motion.div key={activeWork}
             initial={{ opacity: 0, x: 30 }} animate={{ opacity: 1, x: 0 }}

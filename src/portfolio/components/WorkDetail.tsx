@@ -581,7 +581,6 @@ export function WorkDetail({ activeWork, title, heroSubtitle: _heroSubtitle, par
   return (
     <PageEditorProvider workKey={activeWork}>
       {content}
-      <EditorToggle />
     </PageEditorProvider>
   );
 }
