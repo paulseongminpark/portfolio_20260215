@@ -26,7 +26,7 @@ const R = 32;
 const actors = [
   { cx: 120, label: "Paul",    sub: "판단 · 결정 · 질문",      desc: "행동하고, 결과를 기록하고, 방향을 잡는다" },
   { cx: 340, label: "Claude",  sub: "꺼내고 · 연결하고 · 경고", desc: "관련 기억, 맥락, 반복 방지" },
-  { cx: 560, label: "온톨로지", sub: "자기 정제 · 강화 · 승격",  desc: "4,962 노드 · 고아 0 · 테스트 169" },
+  { cx: 560, label: "온톨로지", sub: "자기 정제 · 강화 · 승격",  desc: "4,686 노드 · 테스트 179" },
 ];
 
 /* ── Edge labels (between actors) ── */

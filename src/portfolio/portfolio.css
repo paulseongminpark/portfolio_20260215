@@ -1231,3 +1231,236 @@
   pointer-events: none;
   user-select: none;
 }
+
+/* ── Code Block (El Croquis style) ── */
+.wd-code-pair {
+  display: flex;
+  gap: 32px;
+  max-width: 800px;
+  margin: 28px auto 32px;
+}
+.wd-code-pair .wd-code-block {
+  flex: 1;
+  min-width: 0;
+  margin: 0;
+  max-width: none;
+}
+@media (max-width: 768px) {
+  .wd-code-pair {
+    flex-direction: column;
+    max-width: 540px;
+  }
+}
+.wd-code-block {
+  max-width: 540px;
+  margin: 28px auto 32px;
+  background: #faf9f7;
+  padding: 16px 20px;
+  border-radius: 2px;
+  cursor: pointer;
+  position: relative;
+  transition: box-shadow 0.2s;
+}
+.wd-code-block:hover {
+  box-shadow: 0 2px 12px rgba(0,0,0,0.06);
+}
+.wd-code-expand {
+  position: absolute;
+  bottom: 8px;
+  right: 12px;
+  color: #CC0000;
+  font-family: 'Inter', sans-serif;
+  font-size: 9px;
+  font-weight: 600;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+.wd-code-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 12px;
+}
+.wd-code-label {
+  font-family: 'Inter', sans-serif;
+  font-size: 10px;
+  font-weight: 600;
+  color: #CC0000;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+.wd-code-copy {
+  background: none;
+  border: none;
+  color: #ccc;
+  cursor: pointer;
+  padding: 2px 4px;
+  display: flex;
+  align-items: center;
+  transition: color 0.15s;
+  opacity: 0;
+}
+.wd-code-block:hover .wd-code-copy {
+  opacity: 1;
+}
+.wd-code-copy svg {
+  width: 12px;
+  height: 12px;
+}
+.wd-code-copy:hover {
+  color: #888;
+}
+.wd-code-pre {
+  margin: 0;
+  padding: 0;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
+.wd-code-pre code {
+  font-family: 'SF Mono', 'Fira Code', 'Consolas', 'Monaco', monospace;
+  font-size: 11px;
+  line-height: 1.6;
+  color: #333;
+  white-space: pre;
+  tab-size: 4;
+}
+.wd-code-kw {
+  color: #7C3AED;
+}
+.wd-code-fn {
+  color: #D4632D;
+}
+.wd-code-comment {
+  color: #999;
+}
+
+/* ── Code Lightbox ── */
+.wd-code-lightbox-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.5);
+  z-index: 9000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 40px;
+}
+.wd-code-lightbox {
+  background: #fff;
+  max-width: 900px;
+  width: 100%;
+  max-height: 85vh;
+  overflow-y: auto;
+  position: relative;
+  padding: 48px 56px;
+}
+.wd-code-lightbox-label {
+  font-family: 'Inter', sans-serif;
+  font-size: 10px;
+  font-weight: 600;
+  color: #CC0000;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  margin-bottom: 24px;
+}
+.wd-code-lightbox pre {
+  margin: 0;
+  padding: 0;
+  overflow-x: auto;
+}
+.wd-code-lightbox pre code {
+  font-family: 'SF Mono', 'Fira Code', 'Consolas', 'Monaco', monospace;
+  font-size: 13px;
+  line-height: 1.7;
+  color: #333;
+  white-space: pre;
+  tab-size: 4;
+}
+.wd-code-lightbox-close {
+  position: absolute;
+  top: 20px;
+  right: 24px;
+  background: none;
+  border: none;
+  font-size: 20px;
+  color: #bbb;
+  cursor: pointer;
+  transition: color 0.15s;
+  padding: 4px 8px;
+}
+.wd-code-lightbox-close:hover {
+  color: #333;
+}
+.wd-code-lightbox-body {
+  margin-top: 36px;
+  padding-top: 28px;
+  border-top: 1px solid #eee;
+  font-family: 'Inter', 'Noto Sans KR', sans-serif;
+  font-size: 14px;
+  line-height: 1.85;
+  color: #444;
+}
+.wd-code-lightbox-body p {
+  margin: 0 0 14px;
+}
+.wd-code-lightbox-body h4 {
+  font-family: 'Inter', sans-serif;
+  font-size: 11px;
+  font-weight: 700;
+  color: #CC0000;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  margin: 32px 0 12px;
+}
+.wd-code-lightbox-body ol,
+.wd-code-lightbox-body ul {
+  margin: 0 0 16px;
+  padding-left: 20px;
+}
+.wd-code-lightbox-body li {
+  margin-bottom: 4px;
+}
+.wd-code-lightbox-body code {
+  font-family: 'SF Mono', 'Fira Code', 'Consolas', monospace;
+  font-size: 12px;
+  color: #7C3AED;
+  background: #f5f3ff;
+  padding: 1px 5px;
+  border-radius: 3px;
+}
+.wd-code-lightbox-body pre {
+  background: #faf9f7;
+  padding: 14px 18px;
+  margin: 12px 0 16px;
+  overflow-x: auto;
+}
+.wd-code-lightbox-body pre code {
+  background: none;
+  padding: 0;
+  color: #333;
+  font-size: 13px;
+  line-height: 1.6;
+}
+.wd-code-lightbox-body table {
+  width: 100%;
+  margin: 12px 0 20px;
+  border-collapse: collapse;
+}
+.wd-code-lightbox-body td {
+  padding: 6px 12px 6px 0;
+  border-bottom: 1px solid #f0f0f0;
+  font-size: 13px;
+  vertical-align: top;
+}
+.wd-code-lightbox-body td:first-child {
+  white-space: nowrap;
+  width: 1%;
+}
+.wd-code-lightbox-body strong {
+  color: #222;
+  font-weight: 600;
+}
+@media (max-width: 768px) {
+  .wd-code-lightbox-overlay { padding: 16px; }
+  .wd-code-lightbox { padding: 32px 24px; }
+}

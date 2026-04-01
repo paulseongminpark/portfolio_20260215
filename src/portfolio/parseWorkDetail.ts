@@ -11,7 +11,9 @@ export type Block =
   | { type: 'placeholder'; count: number }
   | { type: 'visual-cues-gallery' }
   | { type: 'activity-gallery' }
-  | { type: 'pmcc-flowchart' };
+  | { type: 'pmcc-flowchart' }
+  | { type: 'code-block'; label: string; code: string }
+  | { type: 'code-pair'; blocks: { label: string; code: string }[] };
 
 export interface WorkSection {
   name: string;
@@ -47,6 +49,22 @@ export function parseWorkDetail(raw: string): WorkSection[] {
 
     // Empty line → skip
     if (trimmed === '') continue;
+
+    // Code fence → code-block
+    if (trimmed.startsWith('```')) {
+      const meta = trimmed.slice(3).trim(); // e.g. "python recall.py"
+      const parts = meta.split(/\s+/);
+      const label = parts.length > 1 ? parts.slice(1).join(' ') : parts[0] || 'code';
+      const codeLines: string[] = [];
+      i++;
+      while (i < lines.length && !lines[i].trim().startsWith('```')) {
+        codeLines.push(lines[i]);
+        i++;
+      }
+      // i now points to closing ```, loop will i++ past it
+      currentSection.blocks.push({ type: 'code-block', label, code: codeLines.join('\n') });
+      continue;
+    }
 
     // HTML comment → skip
     if (trimmed.startsWith('<!--')) {
@@ -262,6 +280,31 @@ export function parseWorkDetail(raw: string): WorkSection[] {
     const phMatch = trimmed.match(/^\*\*\[placeholder:\s*(\d+)\]\*\*$/);
     if (phMatch) {
       currentSection.blocks.push({ type: 'placeholder', count: parseInt(phMatch[1], 10) });
+      continue;
+    }
+
+    // Code pair block
+    if (trimmed === '**[code-pair]**') {
+      const pairBlocks: { label: string; code: string }[] = [];
+      i++;
+      while (i < lines.length && lines[i].trim() !== '**[/code-pair]**') {
+        if (lines[i].trim().startsWith('```')) {
+          const meta = lines[i].trim().slice(3).trim();
+          const parts = meta.split(/\s+/);
+          const label = parts.length > 1 ? parts.slice(1).join(' ') : parts[0] || 'code';
+          const codeLines: string[] = [];
+          i++;
+          while (i < lines.length && !lines[i].trim().startsWith('```')) {
+            codeLines.push(lines[i]);
+            i++;
+          }
+          pairBlocks.push({ label, code: codeLines.join('\n') });
+        }
+        i++;
+      }
+      if (pairBlocks.length > 0) {
+        currentSection.blocks.push({ type: 'code-pair', blocks: pairBlocks });
+      }
       continue;
     }
 

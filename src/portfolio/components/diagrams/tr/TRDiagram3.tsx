@@ -233,7 +233,7 @@ export function TRDiagram3() {
         <text x="460" y={L3_Y} textAnchor="end"
           fontFamily={EC.font} fontSize={7} fontWeight={200}
           fill={EC.gray60}>
-          {"← mcp-memory 4,900 nodes"}
+          {"← mcp-memory 4,686 nodes"}
         </text>
 
         {/* caption */}

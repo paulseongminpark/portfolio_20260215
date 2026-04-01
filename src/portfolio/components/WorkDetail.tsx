@@ -28,11 +28,11 @@ const WORK_META: Record<string, {
     role: "온톨로지 설계 · 시스템 구축",
     tools: ["Python", "SQLite", "FTS5", "ChromaDB", "NetworkX", "MCP Protocol"],
     stats: [
-      { value: "4,685", label: "노드" },
+      { value: "4,686", label: "노드" },
       { value: "25", label: "타입" },
-      { value: "4,368", label: "엣지" },
+      { value: "6,678", label: "엣지" },
     ],
-    overview: "AI가 맥락을 추론하도록 지식의 구조를 설계한 실험.\n25개 타입과 4,368개 엣지로 이루어진 온톨로지 기반 외부 기억 시스템.",
+    overview: "AI가 맥락을 추론하도록 지식의 구조를 설계한 실험.\n25개 타입과 6,678개 엣지로 이루어진 온톨로지 기반 외부 기억 시스템.",
   },
   "context-engineering": {
     period: "2026–현재",

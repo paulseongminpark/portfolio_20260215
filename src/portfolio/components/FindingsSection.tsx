@@ -31,7 +31,7 @@ const SERIES_DOCS: DocData[] = [
     label: "INDEX · MCP-MEMORY",
     lines: ["9개 렌즈로 분해한", "하나의 시스템"],
     redWord: "시스템", redLine: 1,
-    tags: "4,786 nodes · 6,765 edges", tags2: "25 types · 99 SECTIONS",
+    tags: "4,686 nodes · 6,678 edges", tags2: "25 types · 99 SECTIONS",
     numInfo: "00 / 09",
   },
   {
@@ -47,9 +47,9 @@ const SERIES_DOCS: DocData[] = [
     n: "02", title: "Beta",
     pdf: `${_B}findings/memory-ontology/02_Beta.pdf`,
     label: "TRILOGY II OF III",
-    lines: ["4,786개 노드가 말하는", "인간-AI 인지 협업의", "실증적 발견"],
+    lines: ["4,686개 노드가 말하는", "인간-AI 인지 협업의", "실증적 발견"],
     redWord: "발견", redLine: 2,
-    tags: "귀납 · 실증 · 4,786 노드", tags2: "인지 협업 · 17 SECTIONS",
+    tags: "귀납 · 실증 · 4,686 노드", tags2: "인지 협업 · 17 SECTIONS",
     numInfo: "02 / 09",
   },
   {

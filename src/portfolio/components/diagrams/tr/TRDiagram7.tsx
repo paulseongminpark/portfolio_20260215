@@ -185,7 +185,7 @@ export function TRDiagram7() {
         <text x={X3 - 26} y={bm + 14} textAnchor="end"
           fontFamily={EC.font} fontSize={7} fontWeight={200}
           fill={EC.gray60} letterSpacing="0.5">
-          4,900 nodes
+          4,686 nodes
         </text>
 
         {/* ═══ STAGE 4: 5 doubled lines ═══ */}

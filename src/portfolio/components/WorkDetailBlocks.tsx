@@ -422,6 +422,395 @@ function PmccFlowchart() {
   );
 }
 
+const PY_KW = /\b(def|class|if|elif|else|for|while|return|import|from|as|not|and|or|in|is|with|try|except|finally|raise|yield|pass|break|continue|lambda|True|False|None|self)\b/g;
+const PY_FUNC = /\b([a-zA-Z_]\w*)\s*(?=\()/g;
+
+function highlightPython(code: string) {
+  return code.split('\n').map((line, li) => {
+    const commentIdx = line.indexOf('#');
+    const before = commentIdx >= 0 ? line.slice(0, commentIdx) : line;
+    const comment = commentIdx >= 0 ? line.slice(commentIdx) : '';
+
+    // collect all token positions
+    const tokens: { start: number; end: number; cls: string }[] = [];
+    let m: RegExpExecArray | null;
+    const kwRe = new RegExp(PY_KW.source, 'g');
+    while ((m = kwRe.exec(before)) !== null) tokens.push({ start: m.index, end: m.index + m[0].length, cls: 'wd-code-kw' });
+    const fnRe = new RegExp(PY_FUNC.source, 'g');
+    while ((m = fnRe.exec(before)) !== null) {
+      const overlap = tokens.some(t => m!.index >= t.start && m!.index < t.end);
+      if (!overlap) tokens.push({ start: m.index, end: m.index + m[1].length, cls: 'wd-code-fn' });
+    }
+    tokens.sort((a, b) => a.start - b.start);
+
+    const parts: React.ReactNode[] = [];
+    let lastIdx = 0;
+    for (const t of tokens) {
+      if (t.start > lastIdx) parts.push(before.slice(lastIdx, t.start));
+      parts.push(<span key={`${li}-${t.start}`} className={t.cls}>{before.slice(t.start, t.end)}</span>);
+      lastIdx = t.end;
+    }
+    if (lastIdx < before.length) parts.push(before.slice(lastIdx));
+    if (comment) parts.push(<span key={`${li}-c`} className="wd-code-comment">{comment}</span>);
+
+    return <span key={li}>{parts}{'\n'}</span>;
+  });
+}
+
+function CopyButton({ text }: { text: string }) {
+  const [copied, setCopied] = useState(false);
+  return (
+    <button
+      className="wd-code-copy"
+      aria-label="Copy code"
+      onClick={(e) => { e.stopPropagation(); navigator.clipboard.writeText(text); setCopied(true); setTimeout(() => setCopied(false), 1200); }}
+    >
+      {copied ? (
+        <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M3 8.5l3 3 7-7" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/></svg>
+      ) : (
+        <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><rect x="5" y="5" width="8" height="8" rx="1.5" stroke="currentColor" strokeWidth="1.2"/><path d="M3 11V3.5A.5.5 0 013.5 3H11" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round"/></svg>
+      )}
+    </button>
+  );
+}
+
+function CodeBlockWithLightbox({ label, code }: { label: string; code: string }) {
+  const [open, setOpen] = useState(false);
+  return (
+    <>
+      <div className="wd-code-block" onClick={() => setOpen(true)}>
+        <div className="wd-code-header">
+          <span className="wd-code-label">{label}</span>
+          <CopyButton text={code} />
+        </div>
+        <pre className="wd-code-pre"><code>{highlightPython(code)}</code></pre>
+        <span className="wd-code-expand">click</span>
+      </div>
+      {open && <CodeLightbox label={label} code={code} onClose={() => setOpen(false)} />}
+    </>
+  );
+}
+
+const CODE_EXPLANATIONS: Record<string, React.ReactNode> = {
+  "storage/hybrid.py — BCM Learning": (
+    <>
+      <p>이 함수는 이번 검색에서 <strong>실제로 함께 활성화된 연결만</strong> 골라 strength를 업데이트합니다.</p>
+      <ol>
+        <li>활성화된 edge 선택</li>
+        <li>source / target 활성도 정규화</li>
+        <li>source 기준치(<code>θ_m</code>) 계산</li>
+        <li>BCM 식으로 변화량 산출</li>
+        <li>기존 strength에 반영</li>
+        <li><code>0.01 ~ 1.0</code> 범위로 제한</li>
+      </ol>
+      <p>즉, <strong>검색 자체가 그래프를 다시 학습하는 구조</strong>입니다.</p>
+      <h4>Core Calculation</h4>
+      <pre><code>{`edge.strength = clamp(
+    edge.strength + eta * v_i * (v_i - theta) * v_j,
+    0.01, 1.0
+)`}</code></pre>
+      <table className="wd-lb-table">
+        <tbody>
+          <tr><td><code>edge.strength</code></td><td>기존 연결 강도</td></tr>
+          <tr><td><code>eta</code></td><td>업데이트 민감도</td></tr>
+          <tr><td><code>v_i</code></td><td>소스 기억의 현재 활성도</td></tr>
+          <tr><td><code>(v_i - theta)</code></td><td>평소 기준 대비 현재 활성도 차이</td></tr>
+          <tr><td><code>v_j</code></td><td>타깃 기억의 현재 활성도</td></tr>
+          <tr><td><code>clamp()</code></td><td>연결 강도 폭주 방지</td></tr>
+        </tbody>
+      </table>
+      <p>핵심은 단순한 공동 등장 여부가 아니라, 이번 호출이 평소보다 충분히 강했는가를 함께 본다는 점입니다.</p>
+      <h4>Why BCM</h4>
+      <p>단순 Hebbian 방식은 "같이 뜨면 계속 강화"되기 때문에 자주 불리는 노드로 쏠릴 수 있습니다. BCM은 기준선 θ_m을 넣어 의미 있게 강한 활성화일 때만 강화되도록 만들고, 그렇지 않으면 강화 억제 또는 약화가 일어나게 합니다.</p>
+      <p>즉, 적응성은 유지하면서도 과잉 강화와 허브 편향을 막는 안정화 규칙입니다.</p>
+      <h4>Intended System Behavior</h4>
+      <ol>
+        <li><strong>Frequently co-retrieved memories become stronger</strong> — 함께 자주 호출되는 기억 쌍은 점점 더 강하게 연결됩니다.</li>
+        <li><strong>Isolated memories are not over-reinforced</strong> — 혼자 뜨는 기억은 결속이 과도하게 커지지 않습니다.</li>
+        <li><strong>Higher layers remain stable</strong> — 원칙·규범 같은 상위 레이어는 낮은 학습률로 쉽게 흔들리지 않게 합니다.</li>
+        <li><strong>Lower layers adapt quickly</strong> — 관찰·사례·실패 기록 같은 하위 레이어는 더 빠르게 재편되어 현재 맥락을 반영합니다.</li>
+      </ol>
+    </>
+  ),
+  "tools/recall.py": (
+    <>
+      <p>이 함수는 단순 검색 함수가 아니라, <strong>검색 → 다양성 보정 → 검색 후 학습 → 사용자 교정 우선 적용</strong>까지 한 번에 처리하는 recall 파이프라인입니다.</p>
+      <p>기본 검색은 세 가지 신호를 함께 사용합니다.</p>
+      <ul>
+        <li><strong>FTS5</strong> : 키워드 기반 검색</li>
+        <li><strong>ChromaDB</strong> : 의미 기반 검색</li>
+        <li><strong>Graph</strong> : 관계 기반 검색</li>
+      </ul>
+      <p>즉, 이 구조는 하나의 검색 방식에 의존하지 않고, <strong>문자 일치 / 의미 유사성 / 그래프 관계</strong>를 함께 묶어 recall 품질을 높이도록 설계되어 있습니다.</p>
+
+      <h4>What the Code Does</h4>
+      <ol>
+        <li><code>hybrid_search()</code>로 초기 검색 실행</li>
+        <li>결과가 한 프로젝트에 과도하게 몰렸는지 확인</li>
+        <li>몰림이 심하면 다른 프로젝트 결과를 섞어 다양성 보정</li>
+        <li>검색 결과를 바탕으로 <code>post_search_learn()</code> 실행</li>
+        <li><code>Correction</code> 타입이 있으면 최우선으로 앞에 배치</li>
+        <li>최종 결과 반환</li>
+      </ol>
+      <p>즉, 이 함수는 <strong>잘 찾는 것</strong>, <strong>한쪽으로 쏠리지 않는 것</strong>, <strong>검색할수록 학습하는 것</strong>, <strong>사용자 교정을 우선 반영하는 것</strong>을 동시에 처리합니다.</p>
+
+      <h4>Core Logic</h4>
+      <pre><code>{`results = hybrid_search(query, top_k, mode)`}</code></pre>
+      <p>초기 검색 단계입니다. 키워드, 의미, 관계 신호를 결합해 기본 후보를 가져옵니다.</p>
+      <pre><code>{`if _is_patch_saturated(results):
+    alt = hybrid_search(query, excluded_project=_dominant(results))
+    results = results[:top_k//2] + alt[:top_k//2]`}</code></pre>
+      <p>결과가 같은 프로젝트에 과도하게 몰리면, 지배적인 프로젝트를 제외한 대체 검색을 다시 수행해 결과를 절반씩 섞습니다. 핵심은 정확도만이 아니라 <strong>탐색 다양성</strong>도 유지한다는 점입니다.</p>
+      <pre><code>{`post_search_learn(results, query)`}</code></pre>
+      <p>검색 후 학습 단계입니다. 이번에 함께 호출된 기억들을 바탕으로 그래프 연결을 갱신합니다. 즉, recall은 검색으로 끝나지 않고 <strong>검색 결과가 다시 메모리 구조를 학습</strong>하게 만듭니다.</p>
+      <pre><code>{`if not type_filter:
+    corrections = hybrid_search(query, type_filter="Correction")
+    results = (corrections + results)[:top_k]`}</code></pre>
+      <p>사용자 교정 기록이 있으면 일반 검색 결과보다 앞에 둡니다. 이 구조는 모델의 일반 추론보다 <strong>사용자의 명시적 수정 이력을 더 높은 우선순위</strong>로 두기 위한 설계입니다.</p>
+
+      <h4>Why This Design</h4>
+      <p>단순 검색만으로는 두 가지 문제가 생깁니다.</p>
+      <ul>
+        <li>같은 프로젝트/같은 패턴으로 결과가 반복되는 <strong>patch saturation</strong></li>
+        <li>사용자가 이미 수정한 사실보다 일반 검색 결과가 앞서는 <strong>교정 무시</strong></li>
+      </ul>
+      <p>이 함수는 그 두 문제를 직접 다룹니다. 결과가 한 패치에 몰리면 다른 프로젝트 결과를 강제로 섞어 탐색 범위를 넓히고, Correction 타입을 최상위에 두어 사용자의 수정 이력을 항상 우선 반영합니다.</p>
+
+      <h4>Intended System Behavior</h4>
+      <ol>
+        <li><strong>Hybrid retrieval improves recall quality</strong> — 키워드, 의미, 관계를 함께 사용해 단일 검색 방식보다 더 안정적으로 관련 기억을 찾습니다.</li>
+        <li><strong>Patch saturation is actively corrected</strong> — 같은 프로젝트 결과만 반복되면 다른 프로젝트 결과를 섞어 검색 편향을 줄입니다.</li>
+        <li><strong>Retrieval also updates memory structure</strong> — 검색 결과는 <code>post_search_learn()</code>으로 다시 그래프 학습에 반영됩니다.</li>
+        <li><strong>User corrections override generic recall</strong> — 사용자 교정 기록은 일반 검색 결과보다 먼저 배치되어, 모델보다 사용자의 수정 이력이 우선합니다.</li>
+      </ol>
+    </>
+  ),
+  "storage/hybrid.py — UCB Traverse": (
+    <>
+      <p>이 함수는 seed 노드에서 시작해, 그래프 안에서 <strong>강한 연결은 우선 활용하고 아직 덜 본 노드는 탐색하는 방식</strong>으로 주변 노드를 확장합니다.</p>
+      <p>핵심 점수식은 다음과 같습니다.</p>
+      <pre><code>{`Score = w_ij + c · √(ln(N_i + 1) / (N_j + 1))`}</code></pre>
+      <table>
+        <tbody>
+          <tr><td><code>w_ij</code></td><td>현재 노드와 이웃 노드 사이의 연결 강도</td></tr>
+          <tr><td><code>N_i</code></td><td>현재 노드의 방문 횟수</td></tr>
+          <tr><td><code>N_j</code></td><td>이웃 노드의 방문 횟수</td></tr>
+          <tr><td><code>c</code></td><td>탐색 성향 계수 — <code>focus=0.3</code> (강한 경로 중심) / <code>dmn=2.5</code> (넓게 탐색)</td></tr>
+        </tbody>
+      </table>
+      <p>즉, 이 규칙은 <strong>이미 강한 관계를 따라가되, 너무 익숙한 경로에만 갇히지 않도록 새로운 후보도 함께 열어두는 탐색 방식</strong>입니다.</p>
+
+      <h4>What the Code Does</h4>
+      <ol>
+        <li>seed 노드들을 시작점으로 설정</li>
+        <li>현재 frontier의 이웃 노드들을 후보로 수집</li>
+        <li>연결 강도와 방문 횟수를 조합해 UCB 점수 계산</li>
+        <li>상위 20개 후보만 다음 frontier로 선택</li>
+        <li>이 과정을 <code>depth</code>만큼 반복</li>
+        <li>seed를 제외한 새로 확장된 노드 집합 반환</li>
+      </ol>
+      <p>즉, 이 함수는 단순 BFS가 아니라 <strong>관계 강도와 탐색 다양성을 함께 고려하는 제한적 그래프 확장</strong>입니다.</p>
+
+      <h4>Core Logic</h4>
+      <pre><code>{`candidates.append((w + c * sqrt(log(n_i+1)/(n_j+1)), nbr))`}</code></pre>
+      <p>각 이웃 노드의 <strong>확장 우선순위 점수</strong>를 계산합니다.</p>
+      <ul>
+        <li><code>w</code> — 연결 강도. 값이 클수록 이미 의미 있는 관계</li>
+        <li><code>c</code> — 탐색 계수. 작으면 강한 경로 신뢰, 크면 덜 본 노드 적극 탐색</li>
+        <li><code>log(n_i+1)</code> — 현재 노드가 많이 참조된 중심점일수록 주변 탐색 이유가 커짐</li>
+        <li><code>(n_j+1)</code> — 아직 덜 방문한 노드일수록 점수가 높아짐</li>
+        <li><code>sqrt(...)</code> — UCB 탐색 보너스. 덜 본 노드일수록 높아지고, 자주 본 노드는 줄어듦</li>
+      </ul>
+      <pre><code>{`frontier = {n for _, n in sorted(candidates, reverse=True)[:20]}`}</code></pre>
+      <p>매 단계에서 점수가 높은 후보 20개만 남겨 다음 frontier로 넘깁니다. 확장을 무한정 늘리지 않고 <strong>상위 후보만 제한적으로 유지</strong>합니다.</p>
+      <pre><code>{`return visited - set(seeds)`}</code></pre>
+      <p>처음 seed를 제외하고, 탐색 과정에서 새롭게 확장된 노드들만 반환합니다.</p>
+
+      <h4>Why This Design</h4>
+      <p>단순한 그래프 확장은 보통 두 가지 문제를 가집니다.</p>
+      <ul>
+        <li>연결 강한 허브만 계속 따라가며 <strong>익숙한 경로에 갇히는 문제</strong></li>
+        <li>반대로 너무 무작위로 퍼져 <strong>관련성이 약해지는 문제</strong></li>
+      </ul>
+      <p>UCB 방식은 이 둘 사이 균형을 잡습니다. <code>w_ij</code>가 exploitation 역할을 맡아 이미 의미 있는 관계를 우선 활용하고, UCB 보너스가 exploration 역할을 맡아 아직 덜 방문한 후보를 일정 부분 밀어줍니다.</p>
+
+      <h4>Intended System Behavior</h4>
+      <ol>
+        <li><strong>Strong paths are reused first</strong> — 이미 연결 강도가 높은 경로는 우선적으로 다시 확장됩니다.</li>
+        <li><strong>Underexplored nodes are still discoverable</strong> — 방문 횟수가 적은 노드는 UCB 보너스를 받아 새로운 연결 후보로 올라올 수 있습니다.</li>
+        <li><strong>Traversal style can be tuned by mode</strong> — <code>c</code> 값을 조절해 집중 탐색과 확산 탐색 사이를 전환할 수 있습니다.</li>
+        <li><strong>Expansion remains bounded and efficient</strong> — 매 단계 상위 20개 후보만 유지하고 depth를 제한해, 탐색이 과도하게 퍼지지 않도록 설계했습니다.</li>
+      </ol>
+    </>
+  ),
+  "scripts/run-all-pipelines.py": (
+    <>
+      <p>이 함수는 전체 콘텐츠 생산 파이프라인의 <strong>실행 진입점</strong>입니다. 실행 환경을 먼저 정비한 뒤, Daily Post, YouTube, Twitter 세 개의 워크플로우를 순차적으로 돌리고 각 결과를 <code>results</code>에 기록합니다.</p>
+      <p>핵심 역할은 단순 실행이 아니라, <strong>여러 소스와 여러 모델이 섞인 파이프라인을 하나의 메인 루프로 안정적으로 운영하는 것</strong>입니다.</p>
+
+      <h4>What the Code Does</h4>
+      <ol>
+        <li>Chrome CDP 실행 환경 보장</li>
+        <li>Git 최신 상태 동기화</li>
+        <li>Daily Post 파이프라인 실행</li>
+        <li>YouTube 분석 파이프라인 실행</li>
+        <li>Twitter 분석 파이프라인 실행</li>
+        <li>각 단계 결과를 <code>results</code>에 저장</li>
+      </ol>
+      <p>즉, 이 함수는 개별 분석 로직을 직접 처리하기보다, <strong>전체 자동화 워크플로우를 순서대로 호출하고 관리하는 오케스트레이션 레이어</strong>입니다.</p>
+
+      <h4>Core Logic</h4>
+      <pre><code>{`ensure_cdp_chrome()`}</code></pre>
+      <p>Chrome CDP 환경을 먼저 보장합니다. Twitter 파이프라인처럼 브라우저 제어가 필요한 작업이 안정적으로 실행되도록 사전 조건을 맞추는 단계입니다.</p>
+      <pre><code>{`os.system("git pull --rebase origin master")`}</code></pre>
+      <p>실행 전 최신 코드와 상태를 먼저 동기화합니다. 즉, 로컬 기준이 아니라 <strong>원격 저장소 기준의 최신 파이프라인 상태</strong>에서 작업을 시작하게 만듭니다.</p>
+      <pre><code>{`results["daily"] = run_step(...)
+results["youtube"] = run_step(...)
+results["twitter"] = run_step(...)`}</code></pre>
+      <p>각 작업은 <code>run_step()</code>으로 감싸 실행됩니다. 이 구조는 파이프라인 단위를 명확히 분리하고, 단계별 결과와 실패 여부를 독립적으로 관리하기 위한 설계입니다.</p>
+
+      <h4>Why This Design</h4>
+      <p>여러 데이터 소스와 여러 모델이 섞인 자동화 시스템에서는 개별 스크립트보다 <strong>실행 순서, 환경 보장, 단계 분리, 결과 기록</strong>이 더 중요해집니다.</p>
+      <ul>
+        <li>실행 전 환경을 먼저 맞추고</li>
+        <li>단계별 작업을 독립적으로 호출하고</li>
+        <li>긴 작업마다 다른 timeout을 주고</li>
+        <li>결과를 한곳에 모아 관리</li>
+      </ul>
+      <p>즉, 이 함수는 분석 자체보다 <strong>파이프라인 운영의 안정성과 재실행 가능성</strong>을 확보하기 위한 메인 컨트롤러 역할을 합니다.</p>
+
+      <h4>Pipeline Structure</h4>
+      <ol>
+        <li><strong>Daily Post</strong> — RSS / Reddit / HN 수집 후 Claude Sonnet으로 요약 및 정리</li>
+        <li><strong>YouTube</strong> — <code>yt-dlp</code> → Groq Whisper → Codex → Claude → <code>gpt-4.1-mini</code>. 긴 영상을 추출, 전사, 구조화, 정제하는 다단계 파이프라인</li>
+        <li><strong>Twitter</strong> — Chrome CDP 기반 수집 후 Codex 병렬 분석. 실시간성 높은 소셜 입력을 빠르게 구조화</li>
+      </ol>
+
+      <h4>Intended System Behavior</h4>
+      <ol>
+        <li><strong>Environment is prepared before execution</strong> — 브라우저와 코드 상태를 먼저 정비한 뒤 파이프라인을 시작합니다.</li>
+        <li><strong>Each workflow is isolated as a step</strong> — Daily, YouTube, Twitter를 각각 독립된 실행 단위로 분리해 관리합니다.</li>
+        <li><strong>Different pipelines can use different model chains</strong> — 각 워크플로우는 소스 특성에 맞는 모델 조합과 처리 체인을 가질 수 있습니다.</li>
+        <li><strong>Results are collected into a single orchestration state</strong> — 모든 단계 결과를 <code>results</code>에 모아 이후 처리와 모니터링의 기준점으로 사용합니다.</li>
+      </ol>
+    </>
+  ),
+  ".claude/settings.json — Hook Gates": (
+    <>
+      <p>이 설정은 Claude Code의 훅을 이용해 <strong>중요 파일 변경과 세션 종료를 자동 감시하는 운영 규칙</strong>입니다. 핵심은 사용자의 기억에 의존하지 않고, 파일 변경과 세션 종료 시점에 필요한 행동을 시스템이 먼저 개입하도록 만드는 데 있습니다.</p>
+
+      <h4>What the Config Does</h4>
+      <ol>
+        <li><code>Edit | Write</code> 이후 실행되는 <code>PostToolUse</code> 훅 감시</li>
+        <li><code>STATE.md</code>, <code>CLAUDE.md</code>, <code>CHANGELOG.md</code> 변경 시 <code>/sync</code> 필요 알림</li>
+        <li>세션 종료 시 로그 복사</li>
+        <li>세션 종료 시 세션 상태 저장</li>
+        <li><code>STATE.md</code>가 커밋되지 않았으면 종료 실패 처리</li>
+      </ol>
+      <p>즉, 이 구조는 <strong>작업 중 경고</strong>, <strong>종료 시 기록 보존</strong>, <strong>상태 파일 미커밋 방지</strong>를 자동화합니다.</p>
+
+      <h4>Core Logic</h4>
+      <pre><code>{`"PostToolUse": [{ "matcher": "Edit|Write" }]`}</code></pre>
+      <p>파일 편집이나 쓰기 작업이 일어날 때마다 훅이 실행됩니다. 시스템은 사용자의 명시적 명령을 기다리지 않고 <strong>변경 이벤트 자체를 감시 기준</strong>으로 사용합니다.</p>
+      <pre><code>{`"command": "if STATE.md|CLAUDE.md|CHANGELOG.md → '⚠️ 중요 파일 변경. /sync 권장'"`}</code></pre>
+      <p>핵심 상태 파일이 바뀌면 즉시 <code>/sync</code> 필요성을 알립니다. 중요한 파일이 수정됐는데도 동기화를 놓치는 실수를 줄이기 위한 장치입니다.</p>
+      <pre><code>{`"Stop": [
+  { "command": "copy-session-log.py" },
+  { "command": "save_session()" },
+  { "command": "if STATE.md uncommitted → exit 1" }
+]`}</code></pre>
+      <p>세션이 끝날 때는 세 가지가 순서대로 실행됩니다.</p>
+      <ul>
+        <li><code>copy-session-log.py</code> — 세션 로그 보존</li>
+        <li><code>save_session()</code> — 세션 상태 저장</li>
+        <li><code>if STATE.md uncommitted → exit 1</code> — 상태 파일이 커밋되지 않았으면 종료 차단</li>
+      </ul>
+
+      <h4>Why This Design</h4>
+      <p>세션 운영에서 가장 자주 생기는 문제는 두 가지입니다.</p>
+      <ul>
+        <li>중요한 파일을 수정했지만 동기화를 잊는 문제</li>
+        <li>세션은 끝났는데 상태 파일이 저장·커밋되지 않은 문제</li>
+      </ul>
+      <p>이 설정은 그 문제를 사람의 기억이 아니라 <strong>이벤트 기반 훅</strong>으로 해결합니다. 규칙을 문서에 적어두는 데서 끝나지 않고, 실제 작업 흐름 안에서 자동으로 개입하도록 만든 구조입니다.</p>
+
+      <h4>Intended System Behavior</h4>
+      <ol>
+        <li><strong>Important file changes are immediately surfaced</strong> — 상태 파일이나 규칙 파일이 바뀌면 바로 동기화 필요성을 드러냅니다.</li>
+        <li><strong>Session-end always triggers record preservation</strong> — 세션 종료 시 로그 복사와 상태 저장이 자동으로 실행됩니다.</li>
+        <li><strong>Uncommitted state is treated as a failure condition</strong> — <code>STATE.md</code>가 미커밋 상태면 정상 종료되지 않도록 막습니다.</li>
+        <li><strong>Operational discipline is moved into the environment</strong> — 사용자가 기억해서 지키는 대신, 시스템이 작업 흐름 안에서 규율을 강제합니다.</li>
+      </ol>
+    </>
+  ),
+  "auto-iterate/src/measure.py": (
+    <>
+      <p>이 구조는 시스템 상태를 한 번에 보지 않고, <strong>인프라 → 설정 → 지식 → 파이프라인 → 성장</strong>의 다섯 레이어로 나눠 점검하는 health check 체계입니다.</p>
+      <p>핵심은 단순히 "문제가 있는가"를 보는 것이 아니라, <strong>어느 레이어에서 운영 품질이 무너지는지 구분 가능하게 만드는 것</strong>입니다.</p>
+
+      <h4>Layer Structure</h4>
+      <p><strong>L1 — Infrastructure</strong></p>
+      <ul>
+        <li><code>check_claude_md_agents()</code> — 에이전트 파일 존재 여부</li>
+        <li><code>check_security()</code> — <code>.env</code>, 키 파일 노출 스캔</li>
+        <li><code>check_external()</code> — GitHub API, 포트폴리오 사이트 상태</li>
+      </ul>
+      <p><strong>L2 — Config Integrity</strong></p>
+      <ul>
+        <li><code>check_claude_md_projects()</code> — <code>CLAUDE.md</code>와 실제 폴더 구조 정합성</li>
+        <li><code>check_rules_sync()</code> — 규칙 문서와 JSON 설정 동기화 여부</li>
+      </ul>
+      <p><strong>L3 — Knowledge</strong></p>
+      <ul>
+        <li><code>check_orphan_nodes()</code> — 연결 없는 노드 비율</li>
+        <li><code>check_broken_edges()</code> — 삭제된 노드를 가리키는 엣지</li>
+        <li><code>check_session_freshness()</code> — 마지막 세션 저장 경과일</li>
+      </ul>
+      <p><strong>L4 — Pipeline</strong></p>
+      <ul>
+        <li><code>check_living_docs()</code> — <code>STATE.md</code>, <code>CHANGELOG.md</code> 존재 및 최신성</li>
+        <li><code>check_pipeline_freshness()</code> — ACTIVE 파이프라인 정체 여부</li>
+      </ul>
+      <p><strong>L5 — Growth</strong></p>
+      <ul>
+        <li><code>check_test_suites()</code> — <code>pytest</code>, <code>validate_pipeline.py</code> 통과 여부</li>
+        <li><code>check_weekly_delta()</code> — 최근 7일 기준 점수 변화</li>
+      </ul>
+
+      <h4>Why This Design</h4>
+      <p>운영 시스템의 문제는 한 군데에서만 생기지 않습니다. 파일은 멀쩡하지만 설정이 어긋날 수 있고, 설정은 맞아도 지식 그래프가 손상될 수 있으며, 모든 것이 정상처럼 보여도 파이프라인이 실제로 멈춰 있을 수 있습니다.</p>
+      <p>이 구조는 그런 문제를 하나의 체크리스트로 뭉개지 않고, <strong>문제가 발생한 층위를 분리해서 진단할 수 있게 만드는 설계</strong>입니다.</p>
+
+      <h4>Intended System Behavior</h4>
+      <ol>
+        <li><strong>Failures are localized by layer</strong> — 문제가 생겨도 어느 층에서 발생했는지 바로 구분할 수 있습니다.</li>
+        <li><strong>Static config and live operation are checked separately</strong> — 설정 정합성과 실제 운영 상태를 분리해 점검합니다.</li>
+        <li><strong>Knowledge quality is treated as a measurable system asset</strong> — 그래프 구조와 세션 신선도도 운영 건강도의 일부로 측정합니다.</li>
+        <li><strong>Growth is monitored, not assumed</strong> — 현재 정상 여부뿐 아니라 최근 7일 변화까지 포함해 개선 추세를 확인합니다.</li>
+      </ol>
+    </>
+  ),
+};
+
+function CodeLightbox({ label, code, onClose }: { label: string; code: string; onClose: () => void }) {
+  useEffect(() => {
+    const handler = (e: KeyboardEvent) => { if (e.key === 'Escape') onClose(); };
+    window.addEventListener('keydown', handler);
+    return () => window.removeEventListener('keydown', handler);
+  }, [onClose]);
+  const explanation = CODE_EXPLANATIONS[label];
+  return (
+    <div className="wd-code-lightbox-overlay" onClick={onClose}>
+      <div className="wd-code-lightbox" onClick={(e) => e.stopPropagation()}>
+        <button className="wd-code-lightbox-close" onClick={onClose}>✕</button>
+        <div className="wd-code-lightbox-label">{label}</div>
+        <pre><code>{highlightPython(code)}</code></pre>
+        {explanation && <div className="wd-code-lightbox-body">{explanation}</div>}
+      </div>
+    </div>
+  );
+}
+
 function E({ id, type, children }: { id: string; type: string; children: React.ReactNode }) {
   return <EditableBlock id={id} type={type}>{children}</EditableBlock>;
 }
@@ -624,6 +1013,16 @@ function renderSingleBlock(block: Block, idx: number, activeWork: string, parent
       return <ActivityGallery key={idx} />;
     case 'pmcc-flowchart':
       return <PmccFlowchart key={idx} />;
+    case 'code-block':
+      return <CodeBlockWithLightbox key={idx} label={block.label} code={block.code} />;
+    case 'code-pair':
+      return (
+        <div key={idx} className="wd-code-pair">
+          {block.blocks.map((cb, ci) => (
+            <CodeBlockWithLightbox key={ci} label={cb.label} code={cb.code} />
+          ))}
+        </div>
+      );
     default:
       return null;
   }

@@ -42,8 +42,8 @@ const P12_TOC: Array<{ id: string; label: string; mini: string; items: Array<{ i
 // ── 데이터 ──────────────────────────────────────────────────────
 const _B = import.meta.env.BASE_URL;
 const workItems = [
-  { id: "work-mcp-memory", workKey: "mcp-memory" as WorkKey, label: "MCP-Memory", eyebrow: "", tag: "AI · Memory", description: "AI가 맥락을 추론하도록 지식의 구조를 설계한 실험. 25개 타입, 4,685개 노드의 온톨로지 기반 외부 기억 시스템.", bgImage: `${_B}work/mcp-memory/card.png` },
-  { id: "work-orchestration", workKey: "orchestration" as WorkKey, label: "Orchestration", eyebrow: "", tag: "AI · System", description: "AI를 조율하는 운영체제를 만든 과정. 스크립트 모음이 커널이 되기까지, 여러 번의 재설계가 필요했다. 에이전트 24→3, baseline 64% 축소.", bgImage: `${_B}work/orchestration/card.jpg` },
+  { id: "work-mcp-memory", workKey: "mcp-memory" as WorkKey, label: "MCP-Memory", eyebrow: "", tag: "AI · Memory", description: "AI가 맥락을 추론하도록 지식의 구조를 설계한 실험. 25개 타입, 4,686개 노드의 온톨로지 기반 외부 기억 시스템.", bgImage: `${_B}work/mcp-memory/card.png` },
+  { id: "work-orchestration", workKey: "orchestration" as WorkKey, label: "Orchestration", eyebrow: "", tag: "AI · System", description: "AI를 조율하는 운영체제를 만든 과정. 스크립트 모음이 커널이 되기까지, 여러 번의 재설계가 필요했다. 에이전트 24→3, baseline 42K에서 절반 이하로.", bgImage: `${_B}work/orchestration/card.jpg` },
   { id: "work-ce", workKey: "context-engineering" as WorkKey, label: "Context Engineering", eyebrow: "", tag: "AI · System", description: "AI의 추론 품질을 극대화하기 위한 맥락 큐레이션 체계. 무엇을 넣고, 어떤 순서로 보여주고, 언제 덜어낼지를 4개 레이어로 설계한다. 92개 파일을 만들었다. 남은 건 원칙이었다.", bgImage: `${_B}work/context-engineering/card.png` },
   { id: "work-tech-review", workKey: "tech-review" as WorkKey, label: "Tech Review", eyebrow: "", tag: "AI · Automation", description: "매일 새벽 5시, 시스템이 깨어난다. 기사를 읽고, 영상을 보고, 트윗을 수집하고, 왜 중요한지를 쓰고, 발행하고, 다시 잠든다. 편집장이 없는 뉴스룸. 기자 대신 파이프라인.", bgImage: `${_B}work/tech-review/card.png`, bgPosition: "top center" },
   { id: "work-pmcc", workKey: "pmcc" as WorkKey, label: "PMCC", eyebrow: "2023–2026", tag: "Community · Design", description: "처음 만난 사람들이 진정한 대화를 나눌 수 있도록 환경을 설계한 러닝 커뮤니티. 경계·흐름·의례를 직접 만들고 3년간 168명과 운영.", bgImage: `${_B}work/pmcc/visual%20cues%209%20logo.webp`, bgPosition: "center" },
@@ -249,6 +249,16 @@ function Hero() {
           >
             Paul Seongmin Park
           </motion.h1>
+          <motion.p
+            style={{ fontFamily: "'Inter', sans-serif", fontSize: 13, fontWeight: 600,
+              letterSpacing: "2.5px", textTransform: "uppercase" as const,
+              color: "#888888", marginBottom: 12 }}
+            initial={{ opacity: 0, y: 15 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6, delay: 0.45 }}
+          >
+            AI Systems Designer
+          </motion.p>
           <motion.p
             className="p12-hero-sub"
             style={{ color: "#444444", fontSize: "clamp(18px, 2.5vw, 26px)", fontWeight: 400 }}
@@ -513,6 +523,7 @@ export default function Page12() {
               "\uac70\uae30\uc11c \uc775\ud78c \uac74 \uae30\uc220\uc774 \uc544\ub2c8\ub77c \uac10\uac01\uc774\uc5c8\ub2e4 \u2014 \ud558\ub098\uc758 \uacb0\uacfc\ub97c \ud558\ub098\uc758 \uc6d0\uc778\uc73c\ub85c \uc124\uba85\ud558\ub294 \ubc29\uc2dd\ubcf4\ub2e4, \uc11c\ub85c \ub2e4\ub978 \uce35\uc704\uac00 \ub9cc\ub098\uba74\uc11c \ubb34\uc5c7\uc774 \ub9cc\ub4e4\uc5b4\uc9c0\ub294\uc9c0\ub97c \ub354 \uc624\ub798 \ubc14\ub77c\ubcf4\ub294 \uac10\uac01. \uc77c\uc5d0\uc11c\ub3c4, \uad00\uacc4\uc5d0\uc11c\ub3c4, \uc0b6 \uc790\uccb4\uc5d0\uc11c\ub3c4, \uadf8\ub807\uac8c \uc0ac\uace0\ud55c\ub2e4.",
               "\uc0b4\uc544\uc624\uba74\uc11c \uc54c\uac8c \ub41c \uc0ac\uc2e4\uc740, \uc0ac\ub78c\uc740 \uc758\uc9c0\uac00 \uc544\ub2c8\ub77c \uc870\uac74\uc5d0 \uc758\ud574 \uc6c0\uc9c1\uc778\ub2e4\ub294 \uac83\uc774\uc5c8\ub2e4. \uc88b\uc740 \uc758\ub3c4\ub9cc\uc73c\ub85c \uc88b\uc740 \uacb0\uacfc\uac00 \ub098\uc624\uc9c0 \uc54a\uc558\ub2e4. \uc758\ub3c4\ubcf4\ub2e4 \ud658\uacbd\uc744, \ub178\ub825\ubcf4\ub2e4 \uad6c\uc870\ub97c \ubc14\uafb8\ub294 \ucabd\uc774 \uc77c\uad00\ub418\uac8c \ud6a8\uacfc\uac00 \uc788\uc5c8\ub2e4. \ub0b4\uac00 \uc0ac\uace0\ud558\ub294 \ubc29\uc2dd\uc5d0\ub3c4 \uac19\uc740 \ubb38\uc81c\uac00 \uc788\uc5c8\ub2e4 \u2014 \uc5f0\uacb0\uc740 \ub9ce\uc774 \ubcf4\uc774\ub294\ub370, \uadf8\uac78 \uc720\uc9c0\ud560 \uc218 \uc788\ub294 \ud658\uacbd\uc774 \uc5c6\uc5c8\ub2e4.",
               "\uc9c0\uae08\uc740 AI \uc6b4\uc601 \uc2dc\uc2a4\ud15c\uc73c\ub85c \uadf8 \ud658\uacbd\uc744 \ub9cc\ub4e4\uace0 \uc788\ub2e4.",
+              "사람이든 AI든, 행동은 환경에서 나온다. 이 포트폴리오의 프로젝트들은 전부 같은 질문에서 출발한다 — 어떤 조건을 설계하면 더 나은 판단이 나오는가.",
             ]} />
           </FadeIn>
         </div>
@@ -544,8 +555,8 @@ export default function Page12() {
           <FadeIn delay={0.05}>
             <ProseBlock paragraphs={[
               "\ud558\ub098\uc758 CLI\uc5d0\uc11c \uc2dc\uc791\ub410\ub2e4.",
-              "Claude Code\ub97c \ucc98\uc74c \ub9cc\ub0ac\uc744 \ub54c, \uba38\ub9bf\uc18d\uc5d0\uc11c \ub5a0\uc624\ub974\ub294 \uc544\uc774\ub514\uc5b4\ub4e4\uc744 \uc989\uac01 \uad6c\ud604\ud560 \uc218 \uc788\uaca0\ub2e4\ub294 \uc0dd\uac01\uc774 \ub4e4\uc5c8\ub2e4. \ud074\ub85c\ub4dc\ub294 \ub098\uc5d0\uac8c \ub2e4\uc591\ud55c \ud504\ub808\uc784\uc6cc\ud06c\ub4e4\uc744 \uc81c\uc2dc\ud588\uace0, \ub098\ub294 \uc2e0\uc774 \ub098\uc11c \ud3c9\uc18c\uc5d0 \uad00\uc2ec \uc788\ub358 \uc544\uc774\ub514\uc5b4\ub4e4\uc744 \ub9c8\uad6c \uc2e4\ud5d8\ud574\ubcf4\uc558\ub2e4. \uba38\ub9bf\uc18d\uc5d0\uc11c\ub9cc \ubc18\ubcf5\uc801\uc73c\ub85c \ud30c\uace0\ub4e4\ub358 \uc0ac\uace0\ub97c \ud558\ub098\uc529 \ud074\ub85c\ub4dc\ud55c\ud14c \uc8fc\uc785\ud558\uae30 \uc2dc\uc791\ud588\ub2e4. \uadf8\ub7ec\uba74\uc11c \ud074\ub85c\ub4dc\ub97c \ub354 \uc798 \uc4f0\uace0 \uc2f6\ub2e4\ub294 \uc0dd\uac01\uc774 \ub4e4\uc5c8\uace0, \ud074\ub85c\ub4dc \uc790\uccb4\ub97c \uc798 \uc4f0\uae30 \uc704\ud55c \ubc29\ubc95\uc744 \uc5f0\uad6c\ud588\ub2e4. \uc5ec\ub7ec \ub3c4\uad6c\ub97c \uc9c1\uc811 \ucee4\uc2a4\ud130\ub9c8\uc774\uc9d5\ud588\ub2e4. orchestrator, synthesizer, compressor \u2014 \uc870\uc728\ud558\uace0, \ud310\ub2e8\ud558\uace0, \uae30\uc5b5\uc744 \uc815\ub9ac\ud558\ub294 \uc77c\uc744 \ub118\uacbc\ub2e4. \ube60\ub728\ub9ac\ub294 \uac8c \ub450\ub824\uc6cc\uc11c \ubcf4\uc774\ub294 \uc871\uc871 \ub9cc\ub4e4\uc5c8\ub2e4. 7\uc77c \ub9cc\uc5d0 3\uac1c\uac00 24\uac1c\uac00 \ub410\ub2e4.",
-              "AI\uac00 \ud55c \ubc88\uc5d0 \ubcfc \uc218 \uc788\ub294 \uacf5\uac04\uc740 \ud55c\uc815\ub3fc \uc788\uc5c8\ub2e4. \ub9cc\ub4e0 \uac83\ub4e4\uc758 \uc815\uc758\ub9cc\uc73c\ub85c \uadf8 \uacf5\uac04\uc758 \uc808\ubc18\uc774 \ucc3c\ub2e4. \ub9cc\ub4e4\uc218\ub85d \uc0dd\uac01\ud560 \uacf5\uac04\uc774 \uc904\uace0 \uc788\uc5c8\ub294\ub370, \ub9cc\ub4dc\ub294 \ub3d9\uc548\uc5d0\ub294 \uadf8\uac78 \ubcf4\uc9c0 \ubabb\ud588\ub2e4. \uba48\ucd94\uace0 \uc77d\uae30 \uc2dc\uc791\ud588\ub2e4. \uacb9\uce58\ub294 \uac83\uc774 \ubcf4\uc600\ub2e4. 24\uac1c\ub294 15\uac1c\ub85c, 15\uac1c\ub294 3\uac1c\ub85c \uc904\uc5c8\ub2e4. \uc4f0\uc774\uc9c0 \uc54a\ub294 \uac83\uc740 \ubc84\ub838\ub2e4. \uae30\uc900\uc740 \ub2e8\uc21c\ud588\ub2e4 \u2014 \ud3ec\uc2a4\ud2b8\uc787 \ud55c \uc7a5\uc5d0 \uc804\uccb4\uac00 \uc548 \ub4e4\uc5b4\uac00\uba74 \uc544\uc9c1 \uc774\ud574\ud55c \uac8c \uc544\ub2c8\ub2e4. \uadf8 \uacfc\uc815\uc5d0\uc11c \uc0ac\uace0\ub3c4 \uacaa\uc5c8\ub2e4. \uc774\uac74 \ub3c4\uad6c \ubaa8\uc74c\uc774 \uc544\ub2c8\ub77c, \ud558\ub098\uc758 \uad6c\uc870\ub85c \uc774\ud574\ud560 \uc218 \uc788\uc5b4\uc57c \ud55c\ub2e4\ub294 \uac78 \uc54c\uc558\ub2e4.",
+              "Claude Code\ub97c \ucc98\uc74c \ub9cc\ub0ac\uc744 \ub54c, \uba38\ub9bf\uc18d\uc5d0\uc11c \ub5a0\uc624\ub974\ub294 \uc544\uc774\ub514\uc5b4\ub4e4\uc744 \uc989\uac01 \uad6c\ud604\ud560 \uc218 \uc788\uaca0\ub2e4\ub294 \uc0dd\uac01\uc774 \ub4e4\uc5c8\ub2e4. \ud074\ub85c\ub4dc\ub294 \ub098\uc5d0\uac8c \ub2e4\uc591\ud55c \ud504\ub808\uc784\uc6cc\ud06c\ub4e4\uc744 \uc81c\uc2dc\ud588\uace0, \ub098\ub294 \uc2e0\uc774 \ub098\uc11c \ud3c9\uc18c\uc5d0 \uad00\uc2ec \uc788\ub358 \uc544\uc774\ub514\uc5b4\ub4e4\uc744 \ub9c8\uad6c \uc2e4\ud5d8\ud574\ubcf4\uc558\ub2e4. \uba38\ub9bf\uc18d\uc5d0\uc11c\ub9cc \ubc18\ubcf5\uc801\uc73c\ub85c \ud30c\uace0\ub4e4\ub358 \uc0ac\uace0\ub97c \ud558\ub098\uc529 \ud074\ub85c\ub4dc\ud55c\ud14c \uc8fc\uc785\ud558\uae30 \uc2dc\uc791\ud588\ub2e4. \uadf8\ub7ec\uba74\uc11c \ud074\ub85c\ub4dc\ub97c \ub354 \uc798 \uc4f0\uace0 \uc2f6\ub2e4\ub294 \uc0dd\uac01\uc774 \ub4e4\uc5c8\uace0, \ud074\ub85c\ub4dc \uc790\uccb4\ub97c \uc798 \uc4f0\uae30 \uc704\ud55c \ubc29\ubc95\uc744 \uc5f0\uad6c\ud588\ub2e4. \uc5ec\ub7ec \ub3c4\uad6c\ub97c \uc9c1\uc811 \ucee4\uc2a4\ud130\ub9c8\uc774\uc9d5\ud588\ub2e4. orchestrator, synthesizer, compressor \u2014 \uc870\uc728\ud558\uace0, \ud310\ub2e8\ud558\uace0, \uae30\uc5b5\uc744 \uc815\ub9ac\ud558\ub294 \uc77c\uc744 \ub118\uacbc\ub2e4. \ube60\ub728\ub9ac\ub294 \uac8c \ub450\ub824\uc6cc\uc11c \ubcf4\uc774\ub294 \uc871\uc871 \ub9cc\ub4e4\uc5c8\ub2e4. \uae08\uc138 \uac10\ub2f9\ud560 \uc218 \uc5c6\uc744 \ub9cc\ud07c \ub298\uc5b4\ub0ac\ub2e4.",
+              "AI\uac00 \ud55c \ubc88\uc5d0 \ubcfc \uc218 \uc788\ub294 \uacf5\uac04\uc740 \ud55c\uc815\ub3fc \uc788\uc5c8\ub2e4. \ub9cc\ub4e4\uc218\ub85d \uc0dd\uac01\ud560 \uacf5\uac04\uc774 \uc904\uace0 \uc788\uc5c8\ub294\ub370, \ub9cc\ub4dc\ub294 \ub3d9\uc548\uc5d0\ub294 \uadf8\uac78 \ubcf4\uc9c0 \ubabb\ud588\ub2e4. \uba48\ucd94\uace0 \uc77d\uae30 \uc2dc\uc791\ud588\ub2e4. \uacb9\uce58\ub294 \uac83\uc774 \ubcf4\uc600\ub2e4. \uc904\uc774\uae30 \uc2dc\uc791\ud588\ub2e4. \uc4f0\uc774\uc9c0 \uc54a\ub294 \uac83\uc740 \ubc84\ub838\ub2e4. \uae30\uc900\uc740 \ub2e8\uc21c\ud588\ub2e4 \u2014 \ud3ec\uc2a4\ud2b8\uc787 \ud55c \uc7a5\uc5d0 \uc804\uccb4\uac00 \uc548 \ub4e4\uc5b4\uac00\uba74 \uc544\uc9c1 \uc774\ud574\ud55c \uac8c \uc544\ub2c8\ub2e4. \uadf8 \uacfc\uc815\uc5d0\uc11c \uc0ac\uace0\ub3c4 \uacaa\uc5c8\ub2e4. \uc774\uac74 \ub3c4\uad6c \ubaa8\uc74c\uc774 \uc544\ub2c8\ub77c, \ud558\ub098\uc758 \uad6c\uc870\ub85c \uc774\ud574\ud560 \uc218 \uc788\uc5b4\uc57c \ud55c\ub2e4\ub294 \uac78 \uc54c\uc558\ub2e4.",
               "\uc798 \ub3cc\uc544\uac00\ub294 \uac83\uacfc, \uc790\uae30 \uc0c1\ud0dc\ub97c \uc544\ub294 \uac83\uc740 \ub2e4\ub978 \ubb38\uc81c\uc600\ub2e4. \uc2dc\uc2a4\ud15c\uc774 \uc2a4\uc2a4\ub85c \uc0c1\ud0dc\ub97c \uce21\uc815\ud558\uae30 \uc2dc\uc791\ud588\uace0, \ubb38\uc81c\ub97c \ubc1c\uacac\ud558\uace0, \uc81c\uc548\ud558\uace0, \uc2b9\uc778\ub41c \uac83\ub9cc \ubc14\ub00c\uc5c8\ub2e4. \uc78a\uc5b4\ub3c4 \ub2e4\uc2dc \uc7a1\ud614\ub2e4. \uadf8\ub54c \ucc98\uc74c \uc774\uac78 \uc0b4\uc544 \uc788\ub2e4\uace0 \ub290\uaf08\ub2e4. \uacb0\uc815\uc744 \ub300\uc2e0\ud574\uc11c\uac00 \uc544\ub2c8\ub2e4. \ub0b4\uac00 \ub193\uce60 \uac83\uc744 \uba3c\uc800 \ub4dc\ub7ec\ub0b4\uae30 \uc2dc\uc791\ud588\uae30 \ub54c\ubb38\uc774\ub2e4.",
             ]} />
           </FadeIn>
@@ -557,7 +568,15 @@ export default function Page12() {
         <div className="p12-container">
           <FadeIn>
             <SectionLabel>04 · Work</SectionLabel>
-
+          </FadeIn>
+          <FadeIn delay={0.05}>
+            <p style={{
+              fontFamily: "'Inter','Noto Sans KR',sans-serif",
+              fontSize: 15, color: "#555", lineHeight: 1.85,
+              maxWidth: 800, margin: "0 auto", marginBottom: 32,
+            }}>
+              환경을 설계해 행동을 바꾼다 — 사람의 관계에서, 도시의 데이터에서, AI의 맥락에서.
+            </p>
           </FadeIn>
 
           {/* 전체 6개 카드 — 3열 통합 그리드 */}
@@ -583,7 +602,7 @@ export default function Page12() {
               <NowSubsection
                 id="now-memory"
                 label="Memory"
-                text={"세션에서 나온 판단, 실패, 질문이 노드로 저장된다. 다음 세션에서 관련 키워드를 검색하면, 4개 채널이 동시에 뒤져서 가장 관련 높은 기억을 점수순으로 꺼내온다. 자주 쓰이는 기억은 점수가 올라가고, 안 쓰이는 기억은 서서히 흐려진다. 관찰은 빠르게 흐려지고, 원칙은 오래 남는다 — 뇌가 하는 일을 모사한 것이다. 지금 4,685개의 노드가 하나도 끊기지 않고 연결돼 있다."}
+                text={"세션에서 나온 판단, 실패, 질문이 노드로 저장된다. 다음 세션에서 관련 키워드를 검색하면, 4개 채널이 동시에 뒤져서 가장 관련 높은 기억을 점수순으로 꺼내온다. 자주 쓰이는 기억은 점수가 올라가고, 안 쓰이는 기억은 서서히 흐려진다. 관찰은 빠르게 흐려지고, 원칙은 오래 남는다 — 뇌가 하는 일을 모사한 것이다. 지금 4,686개의 노드가 연결돼 있다."}
               />
               <NowSubsection
                 id="now-flow"
@@ -610,8 +629,9 @@ export default function Page12() {
           <FadeIn delay={0.05}>
             <ProseBlock paragraphs={[
               "도구는 바뀌기 마련이다.",
-              "\uadf8\ub798\uc11c \ub0b4\uac00 \uc9c0\uc18d\uc801\uc73c\ub85c \uc124\uacc4\ud558\ub294 \uac83\uc740 \ub3c4\uad6c\uac00 \uc544\ub2c8\ub77c \uc6b4\uc601 \uc2dc\uc2a4\ud15c\uc774\ub2e4. \uacb0\uc815, \uc2e4\ud328, \uc9c8\ubb38\uc774 \uc0ac\ub77c\uc9c0\uc9c0 \uc54a\uace0 \uc313\uc778\ub2e4. \uc313\uc778 \uac83\uc744 \uae30\ubc18\uc73c\ub85c, \uc2dc\uc2a4\ud15c\uc740 \uc790\uae30 \uc0c1\ud0dc\ub97c \uce21\uc815\ud558\uace0, \ubb38\uc81c\ub97c \ucc3e\uace0, \ub354 \ub098\uc740 \ubc29\ud5a5\uc744 \uc81c\uc548\ud55c\ub2e4.",
-              "내 관심은 Living System에 있다. 사람이 잊어도 시스템이 기억하고, 놓친 것을 먼저 드러내고, 스스로 나아진다. 같은 구조가 조직의 의사결정 기억이 될 수 있다고 생각한다. 시스템이 맥락의 연속성을 유지해주면, 나는 사고에 에너지를 쓸 수 있다.",
+              "그래서 내가 지속적으로 설계하는 것은 도구가 아니라 운영 구조다. 결정, 실패, 질문이 사라지지 않고 쌓인다. 쌓인 것을 기반으로, 시스템은 자기 상태를 측정하고, 문제를 찾고, 더 나은 방향을 제안한다. 내 관심은 Living System에 있다 — 사람이 잊어도 시스템이 기억하고, 놓친 것을 먼저 드러내고, 스스로 나아지는 구조.",
+              "이 시스템은 개인용으로 만들었지만, 풀고 있는 문제는 조직에도 있다. AI 에이전트를 프로덕션에 넣으면 같은 문제가 생긴다 — 일관성, 맥락 유지, 품질 관리. Orchestration은 그 문제의 프로토타입이다. 조직의 지식이 구조화되지 않으면 AI는 추론할 수 없다 — MCP Memory가 개인에게 한 일을 조직의 knowledge base에 할 수 있다. 자동화 파이프라인은 이미 매일 돌아가고 있다 — Tech Review는 운영 가능한 시스템의 증거다.",
+              "시스템이 맥락의 연속성을 유지해주면, 사람은 사고에 에너지를 쓸 수 있다. 개인에서 시작해 조직으로 확장하는 것이 다음 단계다.",
             ]} />
           </FadeIn>
         </div>

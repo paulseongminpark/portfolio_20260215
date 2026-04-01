@@ -100,7 +100,7 @@ export function TRDiagram9() {
 
         {/* internal rows (white cutouts) */}
         {([
-          { label: "mcp-memory", sub: "4,900 nodes" },
+          { label: "mcp-memory", sub: "4,686 nodes" },
           { label: "WIM 7렌즈", sub: "개인 프로젝트 · 결정 · 실패" },
           { label: "5W1H apply_point", sub: "" },
         ] as const).map((row, i) => {
