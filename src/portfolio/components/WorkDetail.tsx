@@ -2,8 +2,7 @@ import { useRef, useState, useEffect } from "react";
 import { type WorkKey } from "../content/work";
 import { type WorkSection } from "../parseWorkDetail";
 import { WorkDetailBlocks } from "./WorkDetailBlocks";
-import { PageEditorProvider, usePageEditor } from "./PageEditorContext";
-import { PageEditorPanel } from "./PageEditorPanel";
+import { PageEditorProvider } from "./PageEditorContext";
 import "./PageEditor.css";
 
 const GRADIENTS: Record<string, string> = {
@@ -210,20 +209,6 @@ function isFootnote(name: string) { return /footnote/i.test(name); }
 
 const IS_DEV = import.meta.env.DEV;
 
-function EditorToggle() {
-  const editor = usePageEditor();
-  if (!editor || !IS_DEV) return null;
-  return (
-    <>
-      {!editor.enabled && (
-        <button className="pe-toggle-edit" onClick={() => editor.setEnabled(true)}>
-          Edit Page
-        </button>
-      )}
-      {editor.enabled && <PageEditorPanel />}
-    </>
-  );
-}
 
 export function WorkDetail({ activeWork, title, heroSubtitle: _heroSubtitle, parsedWork, onBack }: Props) {
   const filteredSections = parsedWork?.filter((s) => s.name !== "Hero") ?? [];
