@@ -239,22 +239,6 @@ export function AiWorkflowSection({ raw: _raw }: { raw?: string }) {
 
   const orchGraphUrl = useMemo(() => `${import.meta.env.BASE_URL}orch-graph.html?v=${Date.now()}`, []);
 
-  const handleSaveLayout = () => {
-    const cw = iframeRef.current?.contentWindow as any;
-    if (!cw?.getLayoutData) return;
-    const data = cw.getLayoutData();
-    if (!data) return;
-    fetch('/save-layout', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(data),
-    }).then(r => r.json()).then(res => {
-      if (res.ok) {
-        iframeRef.current?.contentWindow?.location.reload();
-      }
-    }).catch(() => {});
-  };
-
   // Lock body scroll + history API for back-button close
   useEffect(() => {
     if (!orchExpanded) return;
@@ -444,24 +428,6 @@ export function AiWorkflowSection({ raw: _raw }: { raw?: string }) {
             onClick={() => setOrchExpanded(true)}
           />
         </div>
-        <div className="p12-save-layout" style={{ marginTop: 10, textAlign: 'right', paddingRight: 4 }}>
-          <button
-            onClick={handleSaveLayout}
-            style={{
-              background: 'transparent',
-              border: '1px solid rgba(0,0,0,0.15)',
-              color: 'rgba(0,0,0,0.35)',
-              padding: '5px 13px',
-              borderRadius: 18,
-              cursor: 'pointer',
-              fontSize: 11,
-              fontFamily: font,
-            }}
-          >
-            ⊙ save layout
-          </button>
-        </div>
-
         <p className="wd-paragraph" style={{ maxWidth: 800, marginTop: 24, color: '#111' }}>
           {NARRATIVE.systemDetail}
         </p>
